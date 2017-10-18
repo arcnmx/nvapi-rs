@@ -90,3 +90,74 @@ nvapi! {
     /// - To retrieve info for all sensors, set sensorIndex to NVAPI_THERMAL_TARGET_ALL.
     pub unsafe fn NvAPI_GPU_GetThermalSettings;
 }
+
+/// Undocumented API
+pub mod private {
+    use status::NvAPI_Status;
+    use handles::NvPhysicalGpuHandle;
+
+    pub const NVAPI_MAX_THERMAL_INFO_ENTRIES: usize = 4;
+
+    nvstruct! {
+        pub struct NV_GPU_THERMAL_INFO_ENTRY {
+            pub controller: super::NV_THERMAL_CONTROLLER,
+            pub unknown: u32,
+            pub minTemp: i32,
+            pub defaultTemp: i32,
+            pub maxTemp: i32,
+            pub defaultFlags: u32,
+        }
+    }
+    const NV_GPU_THERMAL_INFO_ENTRY_SIZE: usize = 4 * 6;
+
+    nvstruct! {
+        pub struct NV_GPU_THERMAL_INFO_V2 {
+            pub version: u32,
+            pub flags: u32,
+            pub entries: [NV_GPU_THERMAL_INFO_ENTRY; NVAPI_MAX_THERMAL_INFO_ENTRIES],
+        }
+    }
+    const NV_GPU_THERMAL_INFO_V2_SIZE: usize = 4 * 2 + NV_GPU_THERMAL_INFO_ENTRY_SIZE * NVAPI_MAX_THERMAL_INFO_ENTRIES;
+
+    pub type NV_GPU_THERMAL_INFO = NV_GPU_THERMAL_INFO_V2;
+
+    nvversion! { NV_GPU_THERMAL_INFO_VER_2(NV_GPU_THERMAL_INFO_V2 = NV_GPU_THERMAL_INFO_V2_SIZE, 2) }
+    nvversion! { NV_GPU_THERMAL_INFO_VER = NV_GPU_THERMAL_INFO_VER_2 }
+
+    nvapi! {
+        pub unsafe fn NvAPI_GPU_ClientThermalPoliciesGetInfo(hPhysicalGPU: NvPhysicalGpuHandle, pThermalInfo: *mut NV_GPU_THERMAL_INFO) -> NvAPI_Status;
+    }
+
+    pub const NVAPI_MAX_THERMAL_LIMIT_ENTRIES: usize = 4;
+
+    nvstruct! {
+        pub struct NV_GPU_THERMAL_LIMIT_ENTRY {
+            pub controller: super::NV_THERMAL_CONTROLLER,
+            pub value: u32,
+            pub flags: u32,
+        }
+    }
+    const NV_GPU_THERMAL_LIMIT_ENTRY_SIZE: usize = 4 * 3;
+
+    nvstruct! {
+        pub struct NV_GPU_THERMAL_LIMIT_V2 {
+            pub version: u32,
+            pub flags: u32,
+            pub entries: [NV_GPU_THERMAL_LIMIT_ENTRY; NVAPI_MAX_THERMAL_LIMIT_ENTRIES],
+        }
+    }
+    const NV_GPU_THERMAL_LIMIT_V2_SIZE: usize = 4 * 2 + NV_GPU_THERMAL_LIMIT_ENTRY_SIZE * NVAPI_MAX_THERMAL_LIMIT_ENTRIES;
+
+    pub type NV_GPU_THERMAL_LIMIT = NV_GPU_THERMAL_LIMIT_V2;
+
+    nvversion! { NV_GPU_THERMAL_LIMIT_VER_2(NV_GPU_THERMAL_LIMIT_V2 = NV_GPU_THERMAL_LIMIT_V2_SIZE, 2) }
+    nvversion! { NV_GPU_THERMAL_LIMIT_VER = NV_GPU_THERMAL_LIMIT_VER_2 }
+
+    nvapi! {
+        pub unsafe fn NvAPI_GPU_ClientThermalPoliciesGetLimit(hPhysicalGPU: NvPhysicalGpuHandle, pThermalLimit: *mut NV_GPU_THERMAL_LIMIT) -> NvAPI_Status;
+    }
+
+    nvapi! {
+        pub unsafe fn NvAPI_GPU_ClientThermalPoliciesSetLimit(hPhysicalGPU: NvPhysicalGpuHandle, pThermalLimit: *const NV_GPU_THERMAL_LIMIT) -> NvAPI_Status;
+    }
+}
