@@ -93,6 +93,7 @@ pub mod private {
 
     use status::NvAPI_Status;
     use handles::NvPhysicalGpuHandle;
+    use debug_array::Array;
 
     nvstruct! {
         pub struct NV_USAGES_INFO_USAGE {
@@ -126,13 +127,12 @@ pub mod private {
         pub unsafe fn NvAPI_GPU_GetUsages;
     }
 
+    debug_array_impl! { [u32; NVAPI_MAX_CLOCKS_PER_GPU] }
+
     nvstruct! {
         pub struct NV_CLOCKS_INFO_V1 {
             pub version: u32,
-            // pub clocks: [u32; NVAPI_MAX_CLOCKS_PER_GPU] doesn't auto-derive
-            pub clocks: [u32; 32],
-            /// Hacky representation because `clocks` is too big
-            pub clocks2: [(u32, u32, u32, u32, u32, u32, u32, u32); (NVAPI_MAX_CLOCKS_PER_GPU - 32) / 8],
+            pub clocks: Array<[u32; NVAPI_MAX_CLOCKS_PER_GPU]>,
         }
     }
 

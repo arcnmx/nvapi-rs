@@ -9,6 +9,10 @@ extern crate kernel32;
 #[macro_use]
 mod macros;
 
+#[macro_use]
+mod debug_array;
+pub use debug_array::Array;
+
 pub mod nvid;
 pub mod nvapi;
 pub mod status;
