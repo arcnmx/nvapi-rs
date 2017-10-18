@@ -36,6 +36,11 @@ deploy:
 before_deploy:
 - cargo doc
 - cargo package
+- cd $TRAVIS_BUILD_DIR/sys
+- cargo package
 after_deploy:
 - cargo pages-publish
+- cd $TRAVIS_BUILD_DIR/sys
+- cargo publish
+- cd $TRAVIS_BUILD_DIR
 - cargo publish

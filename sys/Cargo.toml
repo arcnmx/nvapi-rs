@@ -1,0 +1,17 @@
+[package]
+name = "nvapi-sys"
+version = "0.0.1"
+authors = ["arcnmx"]
+
+description = "NVIDIA NVAPI FFI bindings"
+keywords = ["nvidia", "nvapi", "gtx"]
+
+documentation = "http://arcnmx.github.io/nvapi-rs/nvapi_sys"
+repository = "https://github.com/arcnmx/nvapi-rs"
+readme = "README.md"
+license = "MIT"
+
+[target.'cfg(windows)'.dependencies]
+#winapi = { version = "0.3", features = ["libloaderapi", "unknwnbase"] }
+winapi = "0.2"
+kernel32-sys = "0.2"
