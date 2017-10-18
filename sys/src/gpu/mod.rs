@@ -30,6 +30,8 @@ pub mod clock;
 /// various thermal sensors associated with the GPU.
 pub mod thermal;
 
+pub mod power;
+
 nvapi! {
     pub type EnumPhysicalGPUsFn = extern "C" fn(nvGPUHandle: *mut [NvPhysicalGpuHandle; types::NVAPI_MAX_PHYSICAL_GPUS], pGpuCount: *mut u32) -> NvAPI_Status;
 
