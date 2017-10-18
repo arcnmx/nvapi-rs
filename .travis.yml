@@ -36,12 +36,13 @@ deploy:
 before_deploy:
 - cargo doc -p nvapi-sys
 - cargo doc
-- cargo package
 - cd $TRAVIS_BUILD_DIR/sys
 - cargo package
 after_deploy:
+- cd $TRAVIS_BUILD_DIR
 - cargo pages-publish
 - cd $TRAVIS_BUILD_DIR/sys
 - cargo publish
 - cd $TRAVIS_BUILD_DIR
+- cargo package
 - cargo publish
