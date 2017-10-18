@@ -8,7 +8,7 @@ keywords = ["nvidia", "nvapi", "gtx"]
 
 documentation = "http://arcnmx.github.io/nvapi-rs/nvapi_sys"
 repository = "https://github.com/arcnmx/nvapi-rs"
-readme = "README.md"
+readme = "../README.md"
 license = "MIT"
 
 [target.'cfg(windows)'.dependencies]
