@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `status` mod in crate `nvapi_sys`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, status">
+
+    <title>nvapi_sys::status - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc mod">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Module status</p><div class="block items"><ul><li><a href="#enums">Enums</a></li><li><a href="#constants">Constants</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'><a href='../index.html'>nvapi_sys</a></p><script>window.sidebarCurrent = {name: 'status', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>nvapi_sys</a>::<wbr><a class="mod" href=''>status</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../src/nvapi_sys/status.rs.html#1-277' title='goto source code'>[src]</a></span></h1>
+<h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.Status.html"
+                                  title='enum nvapi_sys::status::Status'>Status</a></td>
+                           <td class='docblock-short'>
+                                <p>NvAPI Status Values</p>
+                           </td>
+                       </tr></table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_ACCESS_DENIED.html"
+                                  title='constant nvapi_sys::status::NVAPI_ACCESS_DENIED'>NVAPI_ACCESS_DENIED</a></td>
+                           <td class='docblock-short'>
+                                <p>No access to the caller.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_ADVANCED_DISPLAY_TOPOLOGY_REQUIRED.html"
+                                  title='constant nvapi_sys::status::NVAPI_ADVANCED_DISPLAY_TOPOLOGY_REQUIRED'>NVAPI_ADVANCED_DISPLAY_TOPOLOGY_REQUIRED</a></td>
+                           <td class='docblock-short'>
+                                <p>Information can&#39;t be returned due to &quot;advanced display topology&quot;.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_API_IN_USE.html"
+                                  title='constant nvapi_sys::status::NVAPI_API_IN_USE'>NVAPI_API_IN_USE</a></td>
+                           <td class='docblock-short'>
+                                <p>Atleast an API is still being called</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_API_NOT_INITIALIZED.html"
+                                  title='constant nvapi_sys::status::NVAPI_API_NOT_INITIALIZED'>NVAPI_API_NOT_INITIALIZED</a></td>
+                           <td class='docblock-short'>
+                                <p>NvAPI_Initialize has not been called (successfully)</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_ARGUMENT_EXCEED_MAX_SIZE.html"
+                                  title='constant nvapi_sys::status::NVAPI_ARGUMENT_EXCEED_MAX_SIZE'>NVAPI_ARGUMENT_EXCEED_MAX_SIZE</a></td>
+                           <td class='docblock-short'>
+                                <p>Argument exceeds the expected size.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_CLUSTER_ALREADY_EXISTS.html"
+                                  title='constant nvapi_sys::status::NVAPI_CLUSTER_ALREADY_EXISTS'>NVAPI_CLUSTER_ALREADY_EXISTS</a></td>
+                           <td class='docblock-short'>
+                                <p>A cluster is already defined with the given configuration.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_D3D10_1_LIBRARY_NOT_FOUND.html"
+                                  title='constant nvapi_sys::status::NVAPI_D3D10_1_LIBRARY_NOT_FOUND'>NVAPI_D3D10_1_LIBRARY_NOT_FOUND</a></td>
+                           <td class='docblock-short'>
+                                <p>d3d10_1.dll cannot be loaded.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_D3D11_LIBRARY_NOT_FOUND.html"
+                                  title='constant nvapi_sys::status::NVAPI_D3D11_LIBRARY_NOT_FOUND'>NVAPI_D3D11_LIBRARY_NOT_FOUND</a></td>
+                           <td class='docblock-short'>
+                                <p>d3d11.dll/d3d11_beta.dll cannot be loaded.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_D3D_DEVICE_LOST.html"
+                                  title='constant nvapi_sys::status::NVAPI_D3D_DEVICE_LOST'>NVAPI_D3D_DEVICE_LOST</a></td>
+                           <td class='docblock-short'>
+                                <p>D3D device status is D3DERR_DEVICELOST or D3DERR_DEVICENOTRESET - the user has to reset the device.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_D3D_DEVICE_NOT_REGISTERED.html"
+                                  title='constant nvapi_sys::status::NVAPI_D3D_DEVICE_NOT_REGISTERED'>NVAPI_D3D_DEVICE_NOT_REGISTERED</a></td>
+                           <td class='docblock-short'>
+                                <p>The user tried to use a deferred context without registering the device first    </p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_DATATYPE_MISMATCH.html"
+                                  title='constant nvapi_sys::status::NVAPI_DATATYPE_MISMATCH'>NVAPI_DATATYPE_MISMATCH</a></td>
+                           <td class='docblock-short'>
+                                <p>Data Type mismatch </p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_DATA_NOT_FOUND.html"
+                                  title='constant nvapi_sys::status::NVAPI_DATA_NOT_FOUND'>NVAPI_DATA_NOT_FOUND</a></td>
+                           <td class='docblock-short'>
+                                <p>Requested data was not found</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_DEFAULT_STEREO_PROFILE_DOES_NOT_EXIST.html"
+                                  title='constant nvapi_sys::status::NVAPI_DEFAULT_STEREO_PROFILE_DOES_NOT_EXIST'>NVAPI_DEFAULT_STEREO_PROFILE_DOES_NOT_EXIST</a></td>
+                           <td class='docblock-short'>
+                                <p>Default stereo profile does not exist</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_DEFAULT_STEREO_PROFILE_IS_NOT_DEFINED.html"
+                                  title='constant nvapi_sys::status::NVAPI_DEFAULT_STEREO_PROFILE_IS_NOT_DEFINED'>NVAPI_DEFAULT_STEREO_PROFILE_IS_NOT_DEFINED</a></td>
+                           <td class='docblock-short'>
+                                <p>Default stereo profile is not currently defined</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_DEVICE_BUSY.html"
+                                  title='constant nvapi_sys::status::NVAPI_DEVICE_BUSY'>NVAPI_DEVICE_BUSY</a></td>
+                           <td class='docblock-short'>
+                                <p>Device is busy; request not fulfilled</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_DEVICE_SWITCHING_NOT_ALLOWED.html"
+                                  title='constant nvapi_sys::status::NVAPI_DEVICE_SWITCHING_NOT_ALLOWED'>NVAPI_DEVICE_SWITCHING_NOT_ALLOWED</a></td>
+                           <td class='docblock-short'>
+                                <p>Inhibit is ON due to one of the flags in NV_GPU_DISPLAY_CHANGE_INHIBIT or SLI active.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_DISPLAYCONFIG_VALIDATION_FAILED.html"
+                                  title='constant nvapi_sys::status::NVAPI_DISPLAYCONFIG_VALIDATION_FAILED'>NVAPI_DISPLAYCONFIG_VALIDATION_FAILED</a></td>
+                           <td class='docblock-short'>
+                                <p>Display topology is not valid so the driver cannot do a mode set on this configuration.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_DISPLAY_IN_USE.html"
+                                  title='constant nvapi_sys::status::NVAPI_DISPLAY_IN_USE'>NVAPI_DISPLAY_IN_USE</a></td>
+                           <td class='docblock-short'>
+                                <p>DirectMode Display is already in use</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_DPMST_CHANGED.html"
+                                  title='constant nvapi_sys::status::NVAPI_DPMST_CHANGED'>NVAPI_DPMST_CHANGED</a></td>
+                           <td class='docblock-short'>
+                                <p>Display Port Multi-Stream topology has been changed.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_DPMST_DISPLAY_ID_EXPECTED.html"
+                                  title='constant nvapi_sys::status::NVAPI_DPMST_DISPLAY_ID_EXPECTED'>NVAPI_DPMST_DISPLAY_ID_EXPECTED</a></td>
+                           <td class='docblock-short'>
+                                <p>The input display id is not that of a multi stream enabled connector or a display device in a multi stream topology </p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_DRIVER_NOTRUNNING.html"
+                                  title='constant nvapi_sys::status::NVAPI_DRIVER_NOTRUNNING'>NVAPI_DRIVER_NOTRUNNING</a></td>
+                           <td class='docblock-short'>
+                                <p>Driver is not running.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_DRIVER_RUNNING.html"
+                                  title='constant nvapi_sys::status::NVAPI_DRIVER_RUNNING'>NVAPI_DRIVER_RUNNING</a></td>
+                           <td class='docblock-short'>
+                                <p>Driver is running.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_ECID_KEY_VERIFICATION_FAILED.html"
+                                  title='constant nvapi_sys::status::NVAPI_ECID_KEY_VERIFICATION_FAILED'>NVAPI_ECID_KEY_VERIFICATION_FAILED</a></td>
+                           <td class='docblock-short'>
+                                <p>The encrypted public key verification has failed.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_ECID_SIGN_ALGO_UNSUPPORTED.html"
+                                  title='constant nvapi_sys::status::NVAPI_ECID_SIGN_ALGO_UNSUPPORTED'>NVAPI_ECID_SIGN_ALGO_UNSUPPORTED</a></td>
+                           <td class='docblock-short'>
+                                <p>The specified signing algorithm is not supported.
+Either an incorrect value was entered or the current installed driver/hardware does not support the input value.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_END_ENUMERATION.html"
+                                  title='constant nvapi_sys::status::NVAPI_END_ENUMERATION'>NVAPI_END_ENUMERATION</a></td>
+                           <td class='docblock-short'>
+                                <p>No more items to enumerate</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_ERROR.html"
+                                  title='constant nvapi_sys::status::NVAPI_ERROR'>NVAPI_ERROR</a></td>
+                           <td class='docblock-short'>
+                                <p>Generic error</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_ERROR_DRIVER_RELOAD_REQUIRED.html"
+                                  title='constant nvapi_sys::status::NVAPI_ERROR_DRIVER_RELOAD_REQUIRED'>NVAPI_ERROR_DRIVER_RELOAD_REQUIRED</a></td>
+                           <td class='docblock-short'>
+                                <p>A driver reload is required to apply these settings.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_EXECUTABLE_ALREADY_IN_USE.html"
+                                  title='constant nvapi_sys::status::NVAPI_EXECUTABLE_ALREADY_IN_USE'>NVAPI_EXECUTABLE_ALREADY_IN_USE</a></td>
+                           <td class='docblock-short'>
+                                <p>Application already exists in the other profile.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_EXECUTABLE_NOT_FOUND.html"
+                                  title='constant nvapi_sys::status::NVAPI_EXECUTABLE_NOT_FOUND'>NVAPI_EXECUTABLE_NOT_FOUND</a></td>
+                           <td class='docblock-short'>
+                                <p>Application not found in the Profile.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_EXECUTABLE_PATH_IS_AMBIGUOUS.html"
+                                  title='constant nvapi_sys::status::NVAPI_EXECUTABLE_PATH_IS_AMBIGUOUS'>NVAPI_EXECUTABLE_PATH_IS_AMBIGUOUS</a></td>
+                           <td class='docblock-short'>
+                                <p>The path provided was too short to determine the correct NVDRS_APPLICATION</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_EXPECTED_ANALOG_DISPLAY.html"
+                                  title='constant nvapi_sys::status::NVAPI_EXPECTED_ANALOG_DISPLAY'>NVAPI_EXPECTED_ANALOG_DISPLAY</a></td>
+                           <td class='docblock-short'>
+                                <p>Expected an analog display</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_EXPECTED_COMPUTE_GPU_HANDLE.html"
+                                  title='constant nvapi_sys::status::NVAPI_EXPECTED_COMPUTE_GPU_HANDLE'>NVAPI_EXPECTED_COMPUTE_GPU_HANDLE</a></td>
+                           <td class='docblock-short'>
+                                <p>Setting Physx GPU requires that the GPU is compute-capable.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_EXPECTED_DIGITAL_FLAT_PANEL.html"
+                                  title='constant nvapi_sys::status::NVAPI_EXPECTED_DIGITAL_FLAT_PANEL'>NVAPI_EXPECTED_DIGITAL_FLAT_PANEL</a></td>
+                           <td class='docblock-short'>
+                                <p>Expected a digital flat panel.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_EXPECTED_DISPLAY_HANDLE.html"
+                                  title='constant nvapi_sys::status::NVAPI_EXPECTED_DISPLAY_HANDLE'>NVAPI_EXPECTED_DISPLAY_HANDLE</a></td>
+                           <td class='docblock-short'>
+                                <p>Expected an NV display handle for one or more parameters</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_EXPECTED_LOGICAL_GPU_HANDLE.html"
+                                  title='constant nvapi_sys::status::NVAPI_EXPECTED_LOGICAL_GPU_HANDLE'>NVAPI_EXPECTED_LOGICAL_GPU_HANDLE</a></td>
+                           <td class='docblock-short'>
+                                <p>Expected a logical GPU handle for one or more parameters</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_EXPECTED_NON_PRIMARY_DISPLAY_HANDLE.html"
+                                  title='constant nvapi_sys::status::NVAPI_EXPECTED_NON_PRIMARY_DISPLAY_HANDLE'>NVAPI_EXPECTED_NON_PRIMARY_DISPLAY_HANDLE</a></td>
+                           <td class='docblock-short'>
+                                <p>The handle corresponds to GDIPrimary.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_EXPECTED_PHYSICAL_GPU_HANDLE.html"
+                                  title='constant nvapi_sys::status::NVAPI_EXPECTED_PHYSICAL_GPU_HANDLE'>NVAPI_EXPECTED_PHYSICAL_GPU_HANDLE</a></td>
+                           <td class='docblock-short'>
+                                <p>Expected a physical GPU handle for one or more parameters</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_EXPECTED_TV_DISPLAY.html"
+                                  title='constant nvapi_sys::status::NVAPI_EXPECTED_TV_DISPLAY'>NVAPI_EXPECTED_TV_DISPLAY</a></td>
+                           <td class='docblock-short'>
+                                <p>Expected a TV output display</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_EXPECTED_TV_DISPLAY_ON_DCONNECTOR.html"
+                                  title='constant nvapi_sys::status::NVAPI_EXPECTED_TV_DISPLAY_ON_DCONNECTOR'>NVAPI_EXPECTED_TV_DISPLAY_ON_DCONNECTOR</a></td>
+                           <td class='docblock-short'>
+                                <p>Expected a TV output on the D Connector - HDTV_EIAJ4120.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_EXPECTED_UNATTACHED_DISPLAY_HANDLE.html"
+                                  title='constant nvapi_sys::status::NVAPI_EXPECTED_UNATTACHED_DISPLAY_HANDLE'>NVAPI_EXPECTED_UNATTACHED_DISPLAY_HANDLE</a></td>
+                           <td class='docblock-short'>
+                                <p>Expected an unattached display handle as one of the input parameters.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_FILE_NOT_FOUND.html"
+                                  title='constant nvapi_sys::status::NVAPI_FILE_NOT_FOUND'>NVAPI_FILE_NOT_FOUND</a></td>
+                           <td class='docblock-short'>
+                                <p>The file was not found.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_FIRMWARE_OUT_OF_DATE.html"
+                                  title='constant nvapi_sys::status::NVAPI_FIRMWARE_OUT_OF_DATE'>NVAPI_FIRMWARE_OUT_OF_DATE</a></td>
+                           <td class='docblock-short'>
+                                <p>The device&#39;s firmware is out of date.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_FIRMWARE_REVISION_NOT_SUPPORTED.html"
+                                  title='constant nvapi_sys::status::NVAPI_FIRMWARE_REVISION_NOT_SUPPORTED'>NVAPI_FIRMWARE_REVISION_NOT_SUPPORTED</a></td>
+                           <td class='docblock-short'>
+                                <p>The device&#39;s firmware is not supported.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_FUNCTION_NOT_FOUND.html"
+                                  title='constant nvapi_sys::status::NVAPI_FUNCTION_NOT_FOUND'>NVAPI_FUNCTION_NOT_FOUND</a></td>
+                           <td class='docblock-short'>
+                                <p>Couldn&#39;t find the function in the loaded DLL.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_IN_DEBUG_MODE.html"
+                                  title='constant nvapi_sys::status::NVAPI_GPU_IN_DEBUG_MODE'>NVAPI_GPU_IN_DEBUG_MODE</a></td>
+                           <td class='docblock-short'>
+                                <p>GPU is in debug mode, OC is NOT allowed.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_WORKSTATION_FEATURE_INCOMPLETE.html"
+                                  title='constant nvapi_sys::status::NVAPI_GPU_WORKSTATION_FEATURE_INCOMPLETE'>NVAPI_GPU_WORKSTATION_FEATURE_INCOMPLETE</a></td>
+                           <td class='docblock-short'>
+                                <p>The requested workstation feature set has incomplete driver internal allocation resources</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_HANDLE_INVALIDATED.html"
+                                  title='constant nvapi_sys::status::NVAPI_HANDLE_INVALIDATED'>NVAPI_HANDLE_INVALIDATED</a></td>
+                           <td class='docblock-short'>
+                                <p>The handle is no longer valid (likely due to GPU or display re-configuration)</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_HDCP_DISABLED.html"
+                                  title='constant nvapi_sys::status::NVAPI_HDCP_DISABLED'>NVAPI_HDCP_DISABLED</a></td>
+                           <td class='docblock-short'>
+                                <p>When a non-HDCP capable HMD is connected, we would inform user by this code.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_HDCP_ENCRYPTION_FAILED.html"
+                                  title='constant nvapi_sys::status::NVAPI_HDCP_ENCRYPTION_FAILED'>NVAPI_HDCP_ENCRYPTION_FAILED</a></td>
+                           <td class='docblock-short'>
+                                <p>HDCP Encryption Failed for the device. Would be applicable when the device is HDCP Capable.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_ID_OUT_OF_RANGE.html"
+                                  title='constant nvapi_sys::status::NVAPI_ID_OUT_OF_RANGE'>NVAPI_ID_OUT_OF_RANGE</a></td>
+                           <td class='docblock-short'>
+                                <p>The DisplayId corresponds to a display which is not within the normal outputId range.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_IMPLICIT_SET_GPU_TOPOLOGY_CHANGE_NOT_ALLOWED.html"
+                                  title='constant nvapi_sys::status::NVAPI_IMPLICIT_SET_GPU_TOPOLOGY_CHANGE_NOT_ALLOWED'>NVAPI_IMPLICIT_SET_GPU_TOPOLOGY_CHANGE_NOT_ALLOWED</a></td>
+                           <td class='docblock-short'>
+                                <p>There is no implicit GPU topology active. Use NVAPI_SetHybridMode to change topology.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_INCOMPATIBLE_AUDIO_DRIVER.html"
+                                  title='constant nvapi_sys::status::NVAPI_INCOMPATIBLE_AUDIO_DRIVER'>NVAPI_INCOMPATIBLE_AUDIO_DRIVER</a></td>
+                           <td class='docblock-short'>
+                                <p>Older audio driver version than required</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_INCOMPATIBLE_STRUCT_VERSION.html"
+                                  title='constant nvapi_sys::status::NVAPI_INCOMPATIBLE_STRUCT_VERSION'>NVAPI_INCOMPATIBLE_STRUCT_VERSION</a></td>
+                           <td class='docblock-short'>
+                                <p>An argument&#39;s structure version is not supported</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_INCORRECT_VENDOR.html"
+                                  title='constant nvapi_sys::status::NVAPI_INCORRECT_VENDOR'>NVAPI_INCORRECT_VENDOR</a></td>
+                           <td class='docblock-short'>
+                                <p>NVAPI cannot be called by this vendor</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_INSTRUMENTATION_DISABLED.html"
+                                  title='constant nvapi_sys::status::NVAPI_INSTRUMENTATION_DISABLED'>NVAPI_INSTRUMENTATION_DISABLED</a></td>
+                           <td class='docblock-short'>
+                                <p>OpenGL Expert is supported, but driver instrumentation is currently disabled</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_INSUFFICIENT_BUFFER.html"
+                                  title='constant nvapi_sys::status::NVAPI_INSUFFICIENT_BUFFER'>NVAPI_INSUFFICIENT_BUFFER</a></td>
+                           <td class='docblock-short'>
+                                <p>Input buffer is insufficient to hold the contents. </p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_INVALID_ADDRESS.html"
+                                  title='constant nvapi_sys::status::NVAPI_INVALID_ADDRESS'>NVAPI_INVALID_ADDRESS</a></td>
+                           <td class='docblock-short'>
+                                <p>Address is outside of valid range.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_INVALID_ARGUMENT.html"
+                                  title='constant nvapi_sys::status::NVAPI_INVALID_ARGUMENT'>NVAPI_INVALID_ARGUMENT</a></td>
+                           <td class='docblock-short'>
+                                <p>The argument/parameter value is not valid or NULL.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_INVALID_CALL.html"
+                                  title='constant nvapi_sys::status::NVAPI_INVALID_CALL'>NVAPI_INVALID_CALL</a></td>
+                           <td class='docblock-short'>
+                                <p>The method call is invalid. For example, a method&#39;s parameter may not be a valid pointer.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_INVALID_COMBINATION.html"
+                                  title='constant nvapi_sys::status::NVAPI_INVALID_COMBINATION'>NVAPI_INVALID_COMBINATION</a></td>
+                           <td class='docblock-short'>
+                                <p>The combination of parameters is not valid. </p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_INVALID_CONFIGURATION.html"
+                                  title='constant nvapi_sys::status::NVAPI_INVALID_CONFIGURATION'>NVAPI_INVALID_CONFIGURATION</a></td>
+                           <td class='docblock-short'>
+                                <p>The requested action cannot be performed in the current state.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_INVALID_DIRECT_MODE_DISPLAY.html"
+                                  title='constant nvapi_sys::status::NVAPI_INVALID_DIRECT_MODE_DISPLAY'>NVAPI_INVALID_DIRECT_MODE_DISPLAY</a></td>
+                           <td class='docblock-short'>
+                                <p>DirectMode not Enabled on the Display</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_INVALID_DISPLAY_ID.html"
+                                  title='constant nvapi_sys::status::NVAPI_INVALID_DISPLAY_ID'>NVAPI_INVALID_DISPLAY_ID</a></td>
+                           <td class='docblock-short'>
+                                <p>The input display id is not valid or the monitor associated to it does not support the current operation</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_INVALID_HANDLE.html"
+                                  title='constant nvapi_sys::status::NVAPI_INVALID_HANDLE'>NVAPI_INVALID_HANDLE</a></td>
+                           <td class='docblock-short'>
+                                <p>Invalid handle</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_INVALID_HYBRID_MODE.html"
+                                  title='constant nvapi_sys::status::NVAPI_INVALID_HYBRID_MODE'>NVAPI_INVALID_HYBRID_MODE</a></td>
+                           <td class='docblock-short'>
+                                <p>The function is not supported with the current Hybrid mode.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_INVALID_PERF_LEVEL.html"
+                                  title='constant nvapi_sys::status::NVAPI_INVALID_PERF_LEVEL'>NVAPI_INVALID_PERF_LEVEL</a></td>
+                           <td class='docblock-short'>
+                                <p>Invalid perf level </p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_INVALID_POINTER.html"
+                                  title='constant nvapi_sys::status::NVAPI_INVALID_POINTER'>NVAPI_INVALID_POINTER</a></td>
+                           <td class='docblock-short'>
+                                <p>An invalid pointer, usually NULL, was passed as a parameter</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_INVALID_SYNC_TOPOLOGY.html"
+                                  title='constant nvapi_sys::status::NVAPI_INVALID_SYNC_TOPOLOGY'>NVAPI_INVALID_SYNC_TOPOLOGY</a></td>
+                           <td class='docblock-short'>
+                                <p>Invalid displays passed in the NV_GSYNC_DISPLAY pointer.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_INVALID_USER_PRIVILEGE.html"
+                                  title='constant nvapi_sys::status::NVAPI_INVALID_USER_PRIVILEGE'>NVAPI_INVALID_USER_PRIVILEGE</a></td>
+                           <td class='docblock-short'>
+                                <p>Current User is not Admin.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_LIBRARY_NOT_FOUND.html"
+                                  title='constant nvapi_sys::status::NVAPI_LIBRARY_NOT_FOUND'>NVAPI_LIBRARY_NOT_FOUND</a></td>
+                           <td class='docblock-short'>
+                                <p>NVAPI support library cannot be loaded.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_LICENSE_CALLER_AUTHENTICATION_FAILED.html"
+                                  title='constant nvapi_sys::status::NVAPI_LICENSE_CALLER_AUTHENTICATION_FAILED'>NVAPI_LICENSE_CALLER_AUTHENTICATION_FAILED</a></td>
+                           <td class='docblock-short'>
+                                <p>The caller is not authorized to modify the License.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MATCHING_DEVICE_NOT_FOUND.html"
+                                  title='constant nvapi_sys::status::NVAPI_MATCHING_DEVICE_NOT_FOUND'>NVAPI_MATCHING_DEVICE_NOT_FOUND</a></td>
+                           <td class='docblock-short'>
+                                <p>The input does not match any of the available devices.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_DISPLAY_LIMIT_REACHED.html"
+                                  title='constant nvapi_sys::status::NVAPI_MAX_DISPLAY_LIMIT_REACHED'>NVAPI_MAX_DISPLAY_LIMIT_REACHED</a></td>
+                           <td class='docblock-short'>
+                                <p>GPU&#39;s Max Display Limit has Reached</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MIXED_TARGET_TYPES.html"
+                                  title='constant nvapi_sys::status::NVAPI_MIXED_TARGET_TYPES'>NVAPI_MIXED_TARGET_TYPES</a></td>
+                           <td class='docblock-short'>
+                                <p>The target types are not all the same</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MODE_CHANGE_FAILED.html"
+                                  title='constant nvapi_sys::status::NVAPI_MODE_CHANGE_FAILED'>NVAPI_MODE_CHANGE_FAILED</a></td>
+                           <td class='docblock-short'>
+                                <p>An attempt to do a display resolution mode change has failed. </p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MOSAIC_NOT_ACTIVE.html"
+                                  title='constant nvapi_sys::status::NVAPI_MOSAIC_NOT_ACTIVE'>NVAPI_MOSAIC_NOT_ACTIVE</a></td>
+                           <td class='docblock-short'>
+                                <p>The requested action cannot be performed without Mosaic being enabled.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_NOT_SUPPORTED.html"
+                                  title='constant nvapi_sys::status::NVAPI_NOT_SUPPORTED'>NVAPI_NOT_SUPPORTED</a></td>
+                           <td class='docblock-short'>
+                                <p>Requested feature is not supported in the selected GPU</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_NO_ACTIVE_SLI_TOPOLOGY.html"
+                                  title='constant nvapi_sys::status::NVAPI_NO_ACTIVE_SLI_TOPOLOGY'>NVAPI_NO_ACTIVE_SLI_TOPOLOGY</a></td>
+                           <td class='docblock-short'>
+                                <p>SLI is not active on this device.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_NO_CONNECTOR_FOUND.html"
+                                  title='constant nvapi_sys::status::NVAPI_NO_CONNECTOR_FOUND'>NVAPI_NO_CONNECTOR_FOUND</a></td>
+                           <td class='docblock-short'>
+                                <p>No connector on GPU found. </p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_NO_GL_EXPERT.html"
+                                  title='constant nvapi_sys::status::NVAPI_NO_GL_EXPERT'>NVAPI_NO_GL_EXPERT</a></td>
+                           <td class='docblock-short'>
+                                <p>OpenGL Expert is not supported by the current drivers</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_NO_GL_NSIGHT.html"
+                                  title='constant nvapi_sys::status::NVAPI_NO_GL_NSIGHT'>NVAPI_NO_GL_NSIGHT</a></td>
+                           <td class='docblock-short'>
+                                <p>OpenGL does not support Nsight</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_NO_IMPLEMENTATION.html"
+                                  title='constant nvapi_sys::status::NVAPI_NO_IMPLEMENTATION'>NVAPI_NO_IMPLEMENTATION</a></td>
+                           <td class='docblock-short'>
+                                <p>not implemented in current driver installation</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_NO_VIDLINK.html"
+                                  title='constant nvapi_sys::status::NVAPI_NO_VIDLINK'>NVAPI_NO_VIDLINK</a></td>
+                           <td class='docblock-short'>
+                                <p>No SLI video bridge is present</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_NVIDIA_DEVICE_NOT_FOUND.html"
+                                  title='constant nvapi_sys::status::NVAPI_NVIDIA_DEVICE_NOT_FOUND'>NVAPI_NVIDIA_DEVICE_NOT_FOUND</a></td>
+                           <td class='docblock-short'>
+                                <p>No NVIDIA display driver, or NVIDIA GPU driving a display, was found.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_NVIDIA_DISPLAY_NOT_FOUND.html"
+                                  title='constant nvapi_sys::status::NVAPI_NVIDIA_DISPLAY_NOT_FOUND'>NVAPI_NVIDIA_DISPLAY_NOT_FOUND</a></td>
+                           <td class='docblock-short'>
+                                <p>No display found on Nvidia GPU(s).</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_NV_PERSIST_FILE_NOT_FOUND.html"
+                                  title='constant nvapi_sys::status::NVAPI_NV_PERSIST_FILE_NOT_FOUND'>NVAPI_NV_PERSIST_FILE_NOT_FOUND</a></td>
+                           <td class='docblock-short'>
+                                <p>NV persist file is not found</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_OK.html"
+                                  title='constant nvapi_sys::status::NVAPI_OK'>NVAPI_OK</a></td>
+                           <td class='docblock-short'>
+                                <p>Success. Request is completed.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_OPENGL_CONTEXT_NOT_CURRENT.html"
+                                  title='constant nvapi_sys::status::NVAPI_OPENGL_CONTEXT_NOT_CURRENT'>NVAPI_OPENGL_CONTEXT_NOT_CURRENT</a></td>
+                           <td class='docblock-short'>
+                                <p>No NVIDIA OpenGL context is current (but needs to be)</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_OUT_OF_MEMORY.html"
+                                  title='constant nvapi_sys::status::NVAPI_OUT_OF_MEMORY'>NVAPI_OUT_OF_MEMORY</a></td>
+                           <td class='docblock-short'>
+                                <p>Could not allocate sufficient memory to complete the call.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_PCLK_LIMITATION_FAILED.html"
+                                  title='constant nvapi_sys::status::NVAPI_PCLK_LIMITATION_FAILED'>NVAPI_PCLK_LIMITATION_FAILED</a></td>
+                           <td class='docblock-short'>
+                                <p>Provided mode is over sink device pclk limitation.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_PERSIST_DATA_NOT_FOUND.html"
+                                  title='constant nvapi_sys::status::NVAPI_PERSIST_DATA_NOT_FOUND'>NVAPI_PERSIST_DATA_NOT_FOUND</a></td>
+                           <td class='docblock-short'>
+                                <p>NV persist data is not found</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_PORTID_NOT_FOUND.html"
+                                  title='constant nvapi_sys::status::NVAPI_PORTID_NOT_FOUND'>NVAPI_PORTID_NOT_FOUND</a></td>
+                           <td class='docblock-short'>
+                                <p>No port ID was found for the I2C transaction</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_PRIV_SEC_VIOLATION.html"
+                                  title='constant nvapi_sys::status::NVAPI_PRIV_SEC_VIOLATION'>NVAPI_PRIV_SEC_VIOLATION</a></td>
+                           <td class='docblock-short'>
+                                <p>Priv security violation, improper access to a secured register.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_PROFILE_NAME_EMPTY.html"
+                                  title='constant nvapi_sys::status::NVAPI_PROFILE_NAME_EMPTY'>NVAPI_PROFILE_NAME_EMPTY</a></td>
+                           <td class='docblock-short'>
+                                <p>Profile name is empty.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_PROFILE_NAME_IN_USE.html"
+                                  title='constant nvapi_sys::status::NVAPI_PROFILE_NAME_IN_USE'>NVAPI_PROFILE_NAME_IN_USE</a></td>
+                           <td class='docblock-short'>
+                                <p>Profile name is duplicated.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_PROFILE_NOT_FOUND.html"
+                                  title='constant nvapi_sys::status::NVAPI_PROFILE_NOT_FOUND'>NVAPI_PROFILE_NOT_FOUND</a></td>
+                           <td class='docblock-short'>
+                                <p>Profile is not found.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_PROFILE_REMOVED.html"
+                                  title='constant nvapi_sys::status::NVAPI_PROFILE_REMOVED'>NVAPI_PROFILE_REMOVED</a></td>
+                           <td class='docblock-short'>
+                                <p>The profile passed as parameter has been removed and is no longer valid.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_REQUEST_USER_TO_CLOSE_NON_MIGRATABLE_APPS.html"
+                                  title='constant nvapi_sys::status::NVAPI_REQUEST_USER_TO_CLOSE_NON_MIGRATABLE_APPS'>NVAPI_REQUEST_USER_TO_CLOSE_NON_MIGRATABLE_APPS</a></td>
+                           <td class='docblock-short'>
+                                <p>Prompt the user to close all non-migratable applications. </p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_REQUEST_USER_TO_DISABLE_DWM.html"
+                                  title='constant nvapi_sys::status::NVAPI_REQUEST_USER_TO_DISABLE_DWM'>NVAPI_REQUEST_USER_TO_DISABLE_DWM</a></td>
+                           <td class='docblock-short'>
+                                <p>The user should disable DWM before calling NvAPI.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_REQUIRES_REBOOT.html"
+                                  title='constant nvapi_sys::status::NVAPI_REQUIRES_REBOOT'>NVAPI_REQUIRES_REBOOT</a></td>
+                           <td class='docblock-short'>
+                                <p>NVAPI requires a reboot for the settings to take effect</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_RESOURCE_NOT_ACQUIRED.html"
+                                  title='constant nvapi_sys::status::NVAPI_RESOURCE_NOT_ACQUIRED'>NVAPI_RESOURCE_NOT_ACQUIRED</a></td>
+                           <td class='docblock-short'>
+                                <p>Head or SourceId was not reserved for the VR Display before doing the Modeset.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_SETTING_NOT_FOUND.html"
+                                  title='constant nvapi_sys::status::NVAPI_SETTING_NOT_FOUND'>NVAPI_SETTING_NOT_FOUND</a></td>
+                           <td class='docblock-short'>
+                                <p>Setting is not found.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_SETTING_SIZE_TOO_LARGE.html"
+                                  title='constant nvapi_sys::status::NVAPI_SETTING_SIZE_TOO_LARGE'>NVAPI_SETTING_SIZE_TOO_LARGE</a></td>
+                           <td class='docblock-short'>
+                                <p>Setting size is too large.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_SET_NOT_ALLOWED.html"
+                                  title='constant nvapi_sys::status::NVAPI_SET_NOT_ALLOWED'>NVAPI_SET_NOT_ALLOWED</a></td>
+                           <td class='docblock-short'>
+                                <p>Intended setting is not allowed.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_SHARE_RESOURCE_RELOCATED.html"
+                                  title='constant nvapi_sys::status::NVAPI_SHARE_RESOURCE_RELOCATED'>NVAPI_SHARE_RESOURCE_RELOCATED</a></td>
+                           <td class='docblock-short'>
+                                <p>The surface is relocated away from video memory.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_SLI_RENDERING_MODE_NOTALLOWED.html"
+                                  title='constant nvapi_sys::status::NVAPI_SLI_RENDERING_MODE_NOTALLOWED'>NVAPI_SLI_RENDERING_MODE_NOTALLOWED</a></td>
+                           <td class='docblock-short'>
+                                <p>Setup of SLI rendering mode is not possible right now.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_STEREO_FRUSTUM_ADJUST_MODE_NOT_SUPPORTED.html"
+                                  title='constant nvapi_sys::status::NVAPI_STEREO_FRUSTUM_ADJUST_MODE_NOT_SUPPORTED'>NVAPI_STEREO_FRUSTUM_ADJUST_MODE_NOT_SUPPORTED</a></td>
+                           <td class='docblock-short'>
+                                <p>The given frustum adjust mode is not supported.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_STEREO_HANDSHAKE_NOT_DONE.html"
+                                  title='constant nvapi_sys::status::NVAPI_STEREO_HANDSHAKE_NOT_DONE'>NVAPI_STEREO_HANDSHAKE_NOT_DONE</a></td>
+                           <td class='docblock-short'>
+                                <p>Call failed as stereo handshake not completed.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_STEREO_INIT_ACTIVATION_NOT_DONE.html"
+                                  title='constant nvapi_sys::status::NVAPI_STEREO_INIT_ACTIVATION_NOT_DONE'>NVAPI_STEREO_INIT_ACTIVATION_NOT_DONE</a></td>
+                           <td class='docblock-short'>
+                                <p>Call failed because InitActivation was not called.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_STEREO_INVALID_DEVICE_INTERFACE.html"
+                                  title='constant nvapi_sys::status::NVAPI_STEREO_INVALID_DEVICE_INTERFACE'>NVAPI_STEREO_INVALID_DEVICE_INTERFACE</a></td>
+                           <td class='docblock-short'>
+                                <p>Invalid device interface.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_STEREO_NOT_ENABLED.html"
+                                  title='constant nvapi_sys::status::NVAPI_STEREO_NOT_ENABLED'>NVAPI_STEREO_NOT_ENABLED</a></td>
+                           <td class='docblock-short'>
+                                <p>Stereo is not enabled and the function needed it to execute completely.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_STEREO_NOT_INITIALIZED.html"
+                                  title='constant nvapi_sys::status::NVAPI_STEREO_NOT_INITIALIZED'>NVAPI_STEREO_NOT_INITIALIZED</a></td>
+                           <td class='docblock-short'>
+                                <p>The Stereo part of NVAPI failed to initialize completely. Check if the stereo driver is installed.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_STEREO_NOT_TURNED_ON.html"
+                                  title='constant nvapi_sys::status::NVAPI_STEREO_NOT_TURNED_ON'>NVAPI_STEREO_NOT_TURNED_ON</a></td>
+                           <td class='docblock-short'>
+                                <p>Stereo is not turned on and the function needed it to execute completely.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_STEREO_PARAMETER_OUT_OF_RANGE.html"
+                                  title='constant nvapi_sys::status::NVAPI_STEREO_PARAMETER_OUT_OF_RANGE'>NVAPI_STEREO_PARAMETER_OUT_OF_RANGE</a></td>
+                           <td class='docblock-short'>
+                                <p>Separation percentage or JPEG image capture quality is out of [0-100] range.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_STEREO_REGISTRY_ACCESS_FAILED.html"
+                                  title='constant nvapi_sys::status::NVAPI_STEREO_REGISTRY_ACCESS_FAILED'>NVAPI_STEREO_REGISTRY_ACCESS_FAILED</a></td>
+                           <td class='docblock-short'>
+                                <p>Access to stereo-related registry keys or values has failed.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_STEREO_REGISTRY_PROFILE_TYPE_NOT_SUPPORTED.html"
+                                  title='constant nvapi_sys::status::NVAPI_STEREO_REGISTRY_PROFILE_TYPE_NOT_SUPPORTED'>NVAPI_STEREO_REGISTRY_PROFILE_TYPE_NOT_SUPPORTED</a></td>
+                           <td class='docblock-short'>
+                                <p>The given registry profile type is not supported.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_STEREO_REGISTRY_VALUE_NOT_SUPPORTED.html"
+                                  title='constant nvapi_sys::status::NVAPI_STEREO_REGISTRY_VALUE_NOT_SUPPORTED'>NVAPI_STEREO_REGISTRY_VALUE_NOT_SUPPORTED</a></td>
+                           <td class='docblock-short'>
+                                <p>The given registry value is not supported.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_STREAM_IS_OUT_OF_SYNC.html"
+                                  title='constant nvapi_sys::status::NVAPI_STREAM_IS_OUT_OF_SYNC'>NVAPI_STREAM_IS_OUT_OF_SYNC</a></td>
+                           <td class='docblock-short'>
+                                <p>While playing secure audio stream, stream goes out of sync</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_STRING_TOO_SMALL.html"
+                                  title='constant nvapi_sys::status::NVAPI_STRING_TOO_SMALL'>NVAPI_STRING_TOO_SMALL</a></td>
+                           <td class='docblock-short'>
+                                <p>The pre-allocated string is too small to hold the result.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_SYNC_MASTER_NOT_FOUND.html"
+                                  title='constant nvapi_sys::status::NVAPI_SYNC_MASTER_NOT_FOUND'>NVAPI_SYNC_MASTER_NOT_FOUND</a></td>
+                           <td class='docblock-short'>
+                                <p>The requested action cannot be performed without Sync Master being enabled.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_SYNC_NOT_ACTIVE.html"
+                                  title='constant nvapi_sys::status::NVAPI_SYNC_NOT_ACTIVE'>NVAPI_SYNC_NOT_ACTIVE</a></td>
+                           <td class='docblock-short'>
+                                <p>The requested action cannot be performed without Sync being enabled. </p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_SYSWOW64_NOT_SUPPORTED.html"
+                                  title='constant nvapi_sys::status::NVAPI_SYSWOW64_NOT_SUPPORTED'>NVAPI_SYSWOW64_NOT_SUPPORTED</a></td>
+                           <td class='docblock-short'>
+                                <p>The function is not supported from 32-bit on a 64-bit system.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_TESTING_CLOCKS_NOT_SUPPORTED.html"
+                                  title='constant nvapi_sys::status::NVAPI_TESTING_CLOCKS_NOT_SUPPORTED'>NVAPI_TESTING_CLOCKS_NOT_SUPPORTED</a></td>
+                           <td class='docblock-short'>
+                                <p>Testing of clocks is not supported.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_TIMEOUT.html"
+                                  title='constant nvapi_sys::status::NVAPI_TIMEOUT'>NVAPI_TIMEOUT</a></td>
+                           <td class='docblock-short'>
+                                <p>Requested operation timed out </p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_TIMEOUT_RECONFIGURING_GPU_TOPO.html"
+                                  title='constant nvapi_sys::status::NVAPI_TIMEOUT_RECONFIGURING_GPU_TOPO'>NVAPI_TIMEOUT_RECONFIGURING_GPU_TOPO</a></td>
+                           <td class='docblock-short'>
+                                <p>Timeout while reconfiguring GPUs</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_TIMING_NOT_SUPPORTED.html"
+                                  title='constant nvapi_sys::status::NVAPI_TIMING_NOT_SUPPORTED'>NVAPI_TIMING_NOT_SUPPORTED</a></td>
+                           <td class='docblock-short'>
+                                <p>Provided timing is not supported.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_TOO_MANY_SETTINGS_IN_PROFILE.html"
+                                  title='constant nvapi_sys::status::NVAPI_TOO_MANY_SETTINGS_IN_PROFILE'>NVAPI_TOO_MANY_SETTINGS_IN_PROFILE</a></td>
+                           <td class='docblock-short'>
+                                <p>There are too many settings for a profile. </p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_TOO_MANY_UNIQUE_STATE_OBJECTS.html"
+                                  title='constant nvapi_sys::status::NVAPI_TOO_MANY_UNIQUE_STATE_OBJECTS'>NVAPI_TOO_MANY_UNIQUE_STATE_OBJECTS</a></td>
+                           <td class='docblock-short'>
+                                <p>There are too many unique instances of a particular type of state object.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_TOPO_NOT_POSSIBLE.html"
+                                  title='constant nvapi_sys::status::NVAPI_TOPO_NOT_POSSIBLE'>NVAPI_TOPO_NOT_POSSIBLE</a></td>
+                           <td class='docblock-short'>
+                                <p>The mosaic topology is not possible given the current state of the hardware.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_UNKNOWN_UNDERSCAN_CONFIG.html"
+                                  title='constant nvapi_sys::status::NVAPI_UNKNOWN_UNDERSCAN_CONFIG'>NVAPI_UNKNOWN_UNDERSCAN_CONFIG</a></td>
+                           <td class='docblock-short'>
+                                <p>The specified underscan config is from an unknown source (e.g. INF)</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_UNREGISTERED_RESOURCE.html"
+                                  title='constant nvapi_sys::status::NVAPI_UNREGISTERED_RESOURCE'>NVAPI_UNREGISTERED_RESOURCE</a></td>
+                           <td class='docblock-short'>
+                                <p>An unregistered resource was passed as a parameter. </p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_UNSUPPORTED_CONFIG_NON_HDCP_HMD.html"
+                                  title='constant nvapi_sys::status::NVAPI_UNSUPPORTED_CONFIG_NON_HDCP_HMD'>NVAPI_UNSUPPORTED_CONFIG_NON_HDCP_HMD</a></td>
+                           <td class='docblock-short'>
+                                <p>The Config is having Non-NVidia GPU with Non-HDCP HMD connected</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_VALUE_ALREADY_SET.html"
+                                  title='constant nvapi_sys::status::NVAPI_VALUE_ALREADY_SET'>NVAPI_VALUE_ALREADY_SET</a></td>
+                           <td class='docblock-short'>
+                                <p>Value already set, setting again not allowed.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_WAS_STILL_DRAWING.html"
+                                  title='constant nvapi_sys::status::NVAPI_WAS_STILL_DRAWING'>NVAPI_WAS_STILL_DRAWING</a></td>
+                           <td class='docblock-short'>
+                                <p>The previous operation that is transferring information to or from this surface is incomplete.</p>
+                           </td>
+                       </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NvAPI_Status.html"
+                                  title='type nvapi_sys::status::NvAPI_Status'>NvAPI_Status</a></td>
+                           <td class='docblock-short'>
+                                <p>NvAPI Status Values</p>
+                           </td>
+                       </tr></table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "nvapi_sys";
+    </script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

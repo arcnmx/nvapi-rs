@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="Source to the Rust file `sys/src/status.rs`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang">
+
+    <title>status.rs.html -- source</title>
+
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc source">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content"><pre class="line-numbers"><span id="1">  1</span>
+<span id="2">  2</span>
+<span id="3">  3</span>
+<span id="4">  4</span>
+<span id="5">  5</span>
+<span id="6">  6</span>
+<span id="7">  7</span>
+<span id="8">  8</span>
+<span id="9">  9</span>
+<span id="10"> 10</span>
+<span id="11"> 11</span>
+<span id="12"> 12</span>
+<span id="13"> 13</span>
+<span id="14"> 14</span>
+<span id="15"> 15</span>
+<span id="16"> 16</span>
+<span id="17"> 17</span>
+<span id="18"> 18</span>
+<span id="19"> 19</span>
+<span id="20"> 20</span>
+<span id="21"> 21</span>
+<span id="22"> 22</span>
+<span id="23"> 23</span>
+<span id="24"> 24</span>
+<span id="25"> 25</span>
+<span id="26"> 26</span>
+<span id="27"> 27</span>
+<span id="28"> 28</span>
+<span id="29"> 29</span>
+<span id="30"> 30</span>
+<span id="31"> 31</span>
+<span id="32"> 32</span>
+<span id="33"> 33</span>
+<span id="34"> 34</span>
+<span id="35"> 35</span>
+<span id="36"> 36</span>
+<span id="37"> 37</span>
+<span id="38"> 38</span>
+<span id="39"> 39</span>
+<span id="40"> 40</span>
+<span id="41"> 41</span>
+<span id="42"> 42</span>
+<span id="43"> 43</span>
+<span id="44"> 44</span>
+<span id="45"> 45</span>
+<span id="46"> 46</span>
+<span id="47"> 47</span>
+<span id="48"> 48</span>
+<span id="49"> 49</span>
+<span id="50"> 50</span>
+<span id="51"> 51</span>
+<span id="52"> 52</span>
+<span id="53"> 53</span>
+<span id="54"> 54</span>
+<span id="55"> 55</span>
+<span id="56"> 56</span>
+<span id="57"> 57</span>
+<span id="58"> 58</span>
+<span id="59"> 59</span>
+<span id="60"> 60</span>
+<span id="61"> 61</span>
+<span id="62"> 62</span>
+<span id="63"> 63</span>
+<span id="64"> 64</span>
+<span id="65"> 65</span>
+<span id="66"> 66</span>
+<span id="67"> 67</span>
+<span id="68"> 68</span>
+<span id="69"> 69</span>
+<span id="70"> 70</span>
+<span id="71"> 71</span>
+<span id="72"> 72</span>
+<span id="73"> 73</span>
+<span id="74"> 74</span>
+<span id="75"> 75</span>
+<span id="76"> 76</span>
+<span id="77"> 77</span>
+<span id="78"> 78</span>
+<span id="79"> 79</span>
+<span id="80"> 80</span>
+<span id="81"> 81</span>
+<span id="82"> 82</span>
+<span id="83"> 83</span>
+<span id="84"> 84</span>
+<span id="85"> 85</span>
+<span id="86"> 86</span>
+<span id="87"> 87</span>
+<span id="88"> 88</span>
+<span id="89"> 89</span>
+<span id="90"> 90</span>
+<span id="91"> 91</span>
+<span id="92"> 92</span>
+<span id="93"> 93</span>
+<span id="94"> 94</span>
+<span id="95"> 95</span>
+<span id="96"> 96</span>
+<span id="97"> 97</span>
+<span id="98"> 98</span>
+<span id="99"> 99</span>
+<span id="100">100</span>
+<span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+</pre><pre class="rust ">
+<span class="macro">nvenum</span><span class="macro">!</span> {
+    <span class="doccomment">/// NvAPI Status Values</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// All NvAPI functions return one of these codes.</span>
+    <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">NvAPI_Status</span> <span class="op">/</span> <span class="ident">Status</span> {
+        <span class="doccomment">/// Success. Request is completed.</span>
+        <span class="ident">NVAPI_OK</span> <span class="op">/</span> <span class="prelude-val">Ok</span> <span class="op">=</span> <span class="number">0</span>,
+        <span class="doccomment">/// Generic error</span>
+        <span class="ident">NVAPI_ERROR</span> <span class="op">/</span> <span class="ident">Error</span> <span class="op">=</span> <span class="op">-</span><span class="number">1</span>,
+        <span class="doccomment">/// NVAPI support library cannot be loaded.</span>
+        <span class="ident">NVAPI_LIBRARY_NOT_FOUND</span> <span class="op">/</span> <span class="ident">LibraryNotFound</span> <span class="op">=</span> <span class="op">-</span><span class="number">2</span>,
+        <span class="doccomment">/// not implemented in current driver installation</span>
+        <span class="ident">NVAPI_NO_IMPLEMENTATION</span> <span class="op">/</span> <span class="ident">NoImplementation</span> <span class="op">=</span> <span class="op">-</span><span class="number">3</span>,
+        <span class="doccomment">/// NvAPI_Initialize has not been called (successfully)</span>
+        <span class="ident">NVAPI_API_NOT_INITIALIZED</span> <span class="op">/</span> <span class="ident">ApiNotInitialized</span> <span class="op">=</span> <span class="op">-</span><span class="number">4</span>,
+        <span class="doccomment">/// The argument/parameter value is not valid or NULL.</span>
+        <span class="ident">NVAPI_INVALID_ARGUMENT</span> <span class="op">/</span> <span class="ident">InvalidArgument</span> <span class="op">=</span> <span class="op">-</span><span class="number">5</span>,
+        <span class="doccomment">/// No NVIDIA display driver, or NVIDIA GPU driving a display, was found.</span>
+        <span class="ident">NVAPI_NVIDIA_DEVICE_NOT_FOUND</span> <span class="op">/</span> <span class="ident">NvidiaDeviceNotFound</span> <span class="op">=</span> <span class="op">-</span><span class="number">6</span>,
+        <span class="doccomment">/// No more items to enumerate</span>
+        <span class="ident">NVAPI_END_ENUMERATION</span> <span class="op">/</span> <span class="ident">EndEnumeration</span> <span class="op">=</span> <span class="op">-</span><span class="number">7</span>,
+        <span class="doccomment">/// Invalid handle</span>
+        <span class="ident">NVAPI_INVALID_HANDLE</span> <span class="op">/</span> <span class="ident">InvalidHandle</span> <span class="op">=</span> <span class="op">-</span><span class="number">8</span>,
+        <span class="doccomment">/// An argument&#39;s structure version is not supported</span>
+        <span class="ident">NVAPI_INCOMPATIBLE_STRUCT_VERSION</span> <span class="op">/</span> <span class="ident">IncompatibleStructVersion</span> <span class="op">=</span> <span class="op">-</span><span class="number">9</span>,
+        <span class="doccomment">/// The handle is no longer valid (likely due to GPU or display re-configuration)</span>
+        <span class="ident">NVAPI_HANDLE_INVALIDATED</span> <span class="op">/</span> <span class="ident">HandleInvalidated</span> <span class="op">=</span> <span class="op">-</span><span class="number">10</span>,
+        <span class="doccomment">/// No NVIDIA OpenGL context is current (but needs to be)</span>
+        <span class="ident">NVAPI_OPENGL_CONTEXT_NOT_CURRENT</span> <span class="op">/</span> <span class="ident">OpenglContextNotCurrent</span> <span class="op">=</span> <span class="op">-</span><span class="number">11</span>,
+        <span class="doccomment">/// An invalid pointer, usually NULL, was passed as a parameter</span>
+        <span class="ident">NVAPI_INVALID_POINTER</span> <span class="op">/</span> <span class="ident">InvalidPointer</span> <span class="op">=</span> <span class="op">-</span><span class="number">14</span>,
+        <span class="doccomment">/// OpenGL Expert is not supported by the current drivers</span>
+        <span class="ident">NVAPI_NO_GL_EXPERT</span> <span class="op">/</span> <span class="ident">NoGlExpert</span> <span class="op">=</span> <span class="op">-</span><span class="number">12</span>,
+        <span class="doccomment">/// OpenGL Expert is supported, but driver instrumentation is currently disabled</span>
+        <span class="ident">NVAPI_INSTRUMENTATION_DISABLED</span> <span class="op">/</span> <span class="ident">InstrumentationDisabled</span> <span class="op">=</span> <span class="op">-</span><span class="number">13</span>,
+        <span class="doccomment">/// OpenGL does not support Nsight</span>
+        <span class="ident">NVAPI_NO_GL_NSIGHT</span> <span class="op">/</span> <span class="ident">NoGlNsight</span> <span class="op">=</span> <span class="op">-</span><span class="number">15</span>,
+
+        <span class="doccomment">/// Expected a logical GPU handle for one or more parameters</span>
+        <span class="ident">NVAPI_EXPECTED_LOGICAL_GPU_HANDLE</span> <span class="op">/</span> <span class="ident">ExpectedLogicalGpuHandle</span> <span class="op">=</span> <span class="op">-</span><span class="number">100</span>,
+        <span class="doccomment">/// Expected a physical GPU handle for one or more parameters</span>
+        <span class="ident">NVAPI_EXPECTED_PHYSICAL_GPU_HANDLE</span> <span class="op">/</span> <span class="ident">ExpectedPhysicalGpuHandle</span> <span class="op">=</span> <span class="op">-</span><span class="number">101</span>,
+        <span class="doccomment">/// Expected an NV display handle for one or more parameters</span>
+        <span class="ident">NVAPI_EXPECTED_DISPLAY_HANDLE</span> <span class="op">/</span> <span class="ident">ExpectedDisplayHandle</span> <span class="op">=</span> <span class="op">-</span><span class="number">102</span>,
+        <span class="doccomment">/// The combination of parameters is not valid. </span>
+        <span class="ident">NVAPI_INVALID_COMBINATION</span> <span class="op">/</span> <span class="ident">InvalidCombination</span> <span class="op">=</span> <span class="op">-</span><span class="number">103</span>,
+        <span class="doccomment">/// Requested feature is not supported in the selected GPU</span>
+        <span class="ident">NVAPI_NOT_SUPPORTED</span> <span class="op">/</span> <span class="ident">NotSupported</span> <span class="op">=</span> <span class="op">-</span><span class="number">104</span>,
+        <span class="doccomment">/// No port ID was found for the I2C transaction</span>
+        <span class="ident">NVAPI_PORTID_NOT_FOUND</span> <span class="op">/</span> <span class="ident">PortidNotFound</span> <span class="op">=</span> <span class="op">-</span><span class="number">105</span>,
+        <span class="doccomment">/// Expected an unattached display handle as one of the input parameters.</span>
+        <span class="ident">NVAPI_EXPECTED_UNATTACHED_DISPLAY_HANDLE</span> <span class="op">/</span> <span class="ident">ExpectedUnattachedDisplayHandle</span> <span class="op">=</span> <span class="op">-</span><span class="number">106</span>,
+        <span class="doccomment">/// Invalid perf level </span>
+        <span class="ident">NVAPI_INVALID_PERF_LEVEL</span> <span class="op">/</span> <span class="ident">InvalidPerfLevel</span> <span class="op">=</span> <span class="op">-</span><span class="number">107</span>,
+        <span class="doccomment">/// Device is busy; request not fulfilled</span>
+        <span class="ident">NVAPI_DEVICE_BUSY</span> <span class="op">/</span> <span class="ident">DeviceBusy</span> <span class="op">=</span> <span class="op">-</span><span class="number">108</span>,
+        <span class="doccomment">/// NV persist file is not found</span>
+        <span class="ident">NVAPI_NV_PERSIST_FILE_NOT_FOUND</span> <span class="op">/</span> <span class="ident">NvPersistFileNotFound</span> <span class="op">=</span> <span class="op">-</span><span class="number">109</span>,
+        <span class="doccomment">/// NV persist data is not found</span>
+        <span class="ident">NVAPI_PERSIST_DATA_NOT_FOUND</span> <span class="op">/</span> <span class="ident">PersistDataNotFound</span> <span class="op">=</span> <span class="op">-</span><span class="number">110</span>,
+        <span class="doccomment">/// Expected a TV output display</span>
+        <span class="ident">NVAPI_EXPECTED_TV_DISPLAY</span> <span class="op">/</span> <span class="ident">ExpectedTvDisplay</span> <span class="op">=</span> <span class="op">-</span><span class="number">111</span>,
+        <span class="doccomment">/// Expected a TV output on the D Connector - HDTV_EIAJ4120.</span>
+        <span class="ident">NVAPI_EXPECTED_TV_DISPLAY_ON_DCONNECTOR</span> <span class="op">/</span> <span class="ident">ExpectedTvDisplayOnDconnector</span> <span class="op">=</span> <span class="op">-</span><span class="number">112</span>,
+        <span class="doccomment">/// SLI is not active on this device.</span>
+        <span class="ident">NVAPI_NO_ACTIVE_SLI_TOPOLOGY</span> <span class="op">/</span> <span class="ident">NoActiveSliTopology</span> <span class="op">=</span> <span class="op">-</span><span class="number">113</span>,
+        <span class="doccomment">/// Setup of SLI rendering mode is not possible right now.</span>
+        <span class="ident">NVAPI_SLI_RENDERING_MODE_NOTALLOWED</span> <span class="op">/</span> <span class="ident">SliRenderingModeNotallowed</span> <span class="op">=</span> <span class="op">-</span><span class="number">114</span>,
+        <span class="doccomment">/// Expected a digital flat panel.</span>
+        <span class="ident">NVAPI_EXPECTED_DIGITAL_FLAT_PANEL</span> <span class="op">/</span> <span class="ident">ExpectedDigitalFlatPanel</span> <span class="op">=</span> <span class="op">-</span><span class="number">115</span>,
+        <span class="doccomment">/// Argument exceeds the expected size.</span>
+        <span class="ident">NVAPI_ARGUMENT_EXCEED_MAX_SIZE</span> <span class="op">/</span> <span class="ident">ArgumentExceedMaxSize</span> <span class="op">=</span> <span class="op">-</span><span class="number">116</span>,
+        <span class="doccomment">/// Inhibit is ON due to one of the flags in NV_GPU_DISPLAY_CHANGE_INHIBIT or SLI active.</span>
+        <span class="ident">NVAPI_DEVICE_SWITCHING_NOT_ALLOWED</span> <span class="op">/</span> <span class="ident">DeviceSwitchingNotAllowed</span> <span class="op">=</span> <span class="op">-</span><span class="number">117</span>,
+        <span class="doccomment">/// Testing of clocks is not supported.</span>
+        <span class="ident">NVAPI_TESTING_CLOCKS_NOT_SUPPORTED</span> <span class="op">/</span> <span class="ident">TestingClocksNotSupported</span> <span class="op">=</span> <span class="op">-</span><span class="number">118</span>,
+        <span class="doccomment">/// The specified underscan config is from an unknown source (e.g. INF)</span>
+        <span class="ident">NVAPI_UNKNOWN_UNDERSCAN_CONFIG</span> <span class="op">/</span> <span class="ident">UnknownUnderscanConfig</span> <span class="op">=</span> <span class="op">-</span><span class="number">119</span>,
+        <span class="doccomment">/// Timeout while reconfiguring GPUs</span>
+        <span class="ident">NVAPI_TIMEOUT_RECONFIGURING_GPU_TOPO</span> <span class="op">/</span> <span class="ident">TimeoutReconfiguringGpuTopo</span> <span class="op">=</span> <span class="op">-</span><span class="number">120</span>,
+        <span class="doccomment">/// Requested data was not found</span>
+        <span class="ident">NVAPI_DATA_NOT_FOUND</span> <span class="op">/</span> <span class="ident">DataNotFound</span> <span class="op">=</span> <span class="op">-</span><span class="number">121</span>,
+        <span class="doccomment">/// Expected an analog display</span>
+        <span class="ident">NVAPI_EXPECTED_ANALOG_DISPLAY</span> <span class="op">/</span> <span class="ident">ExpectedAnalogDisplay</span> <span class="op">=</span> <span class="op">-</span><span class="number">122</span>,
+        <span class="doccomment">/// No SLI video bridge is present</span>
+        <span class="ident">NVAPI_NO_VIDLINK</span> <span class="op">/</span> <span class="ident">NoVidlink</span> <span class="op">=</span> <span class="op">-</span><span class="number">123</span>,
+        <span class="doccomment">/// NVAPI requires a reboot for the settings to take effect</span>
+        <span class="ident">NVAPI_REQUIRES_REBOOT</span> <span class="op">/</span> <span class="ident">RequiresReboot</span> <span class="op">=</span> <span class="op">-</span><span class="number">124</span>,
+        <span class="doccomment">/// The function is not supported with the current Hybrid mode.</span>
+        <span class="ident">NVAPI_INVALID_HYBRID_MODE</span> <span class="op">/</span> <span class="ident">InvalidHybridMode</span> <span class="op">=</span> <span class="op">-</span><span class="number">125</span>,
+        <span class="doccomment">/// The target types are not all the same</span>
+        <span class="ident">NVAPI_MIXED_TARGET_TYPES</span> <span class="op">/</span> <span class="ident">MixedTargetTypes</span> <span class="op">=</span> <span class="op">-</span><span class="number">126</span>,
+        <span class="doccomment">/// The function is not supported from 32-bit on a 64-bit system.</span>
+        <span class="ident">NVAPI_SYSWOW64_NOT_SUPPORTED</span> <span class="op">/</span> <span class="ident">Syswow64NotSupported</span> <span class="op">=</span> <span class="op">-</span><span class="number">127</span>,
+        <span class="doccomment">/// There is no implicit GPU topology active. Use NVAPI_SetHybridMode to change topology.</span>
+        <span class="ident">NVAPI_IMPLICIT_SET_GPU_TOPOLOGY_CHANGE_NOT_ALLOWED</span> <span class="op">/</span> <span class="ident">ImplicitSetGpuTopologyChangeNotAllowed</span> <span class="op">=</span> <span class="op">-</span><span class="number">128</span>,
+        <span class="doccomment">/// Prompt the user to close all non-migratable applications. </span>
+        <span class="ident">NVAPI_REQUEST_USER_TO_CLOSE_NON_MIGRATABLE_APPS</span> <span class="op">/</span> <span class="ident">RequestUserToCloseNonMigratableApps</span> <span class="op">=</span> <span class="op">-</span><span class="number">129</span>,
+        <span class="doccomment">/// Could not allocate sufficient memory to complete the call.</span>
+        <span class="ident">NVAPI_OUT_OF_MEMORY</span> <span class="op">/</span> <span class="ident">OutOfMemory</span> <span class="op">=</span> <span class="op">-</span><span class="number">130</span>,
+        <span class="doccomment">/// The previous operation that is transferring information to or from this surface is incomplete.</span>
+        <span class="ident">NVAPI_WAS_STILL_DRAWING</span> <span class="op">/</span> <span class="ident">WasStillDrawing</span> <span class="op">=</span> <span class="op">-</span><span class="number">131</span>,
+        <span class="doccomment">/// The file was not found.</span>
+        <span class="ident">NVAPI_FILE_NOT_FOUND</span> <span class="op">/</span> <span class="ident">FileNotFound</span> <span class="op">=</span> <span class="op">-</span><span class="number">132</span>,
+        <span class="doccomment">/// There are too many unique instances of a particular type of state object.</span>
+        <span class="ident">NVAPI_TOO_MANY_UNIQUE_STATE_OBJECTS</span> <span class="op">/</span> <span class="ident">TooManyUniqueStateObjects</span> <span class="op">=</span> <span class="op">-</span><span class="number">133</span>,
+        <span class="doccomment">/// The method call is invalid. For example, a method&#39;s parameter may not be a valid pointer.</span>
+        <span class="ident">NVAPI_INVALID_CALL</span> <span class="op">/</span> <span class="ident">InvalidCall</span> <span class="op">=</span> <span class="op">-</span><span class="number">134</span>,
+        <span class="doccomment">/// d3d10_1.dll cannot be loaded.</span>
+        <span class="ident">NVAPI_D3D10_1_LIBRARY_NOT_FOUND</span> <span class="op">/</span> <span class="ident">D3d101LibraryNotFound</span> <span class="op">=</span> <span class="op">-</span><span class="number">135</span>,
+        <span class="doccomment">/// Couldn&#39;t find the function in the loaded DLL.</span>
+        <span class="ident">NVAPI_FUNCTION_NOT_FOUND</span> <span class="op">/</span> <span class="ident">FunctionNotFound</span> <span class="op">=</span> <span class="op">-</span><span class="number">136</span>,
+        <span class="doccomment">/// Current User is not Admin.</span>
+        <span class="ident">NVAPI_INVALID_USER_PRIVILEGE</span> <span class="op">/</span> <span class="ident">InvalidUserPrivilege</span> <span class="op">=</span> <span class="op">-</span><span class="number">137</span>,
+        <span class="doccomment">/// The handle corresponds to GDIPrimary.</span>
+        <span class="ident">NVAPI_EXPECTED_NON_PRIMARY_DISPLAY_HANDLE</span> <span class="op">/</span> <span class="ident">ExpectedNonPrimaryDisplayHandle</span> <span class="op">=</span> <span class="op">-</span><span class="number">138</span>,
+        <span class="doccomment">/// Setting Physx GPU requires that the GPU is compute-capable.</span>
+        <span class="ident">NVAPI_EXPECTED_COMPUTE_GPU_HANDLE</span> <span class="op">/</span> <span class="ident">ExpectedComputeGpuHandle</span> <span class="op">=</span> <span class="op">-</span><span class="number">139</span>,
+        <span class="doccomment">/// The Stereo part of NVAPI failed to initialize completely. Check if the stereo driver is installed.</span>
+        <span class="ident">NVAPI_STEREO_NOT_INITIALIZED</span> <span class="op">/</span> <span class="ident">StereoNotInitialized</span> <span class="op">=</span> <span class="op">-</span><span class="number">140</span>,
+        <span class="doccomment">/// Access to stereo-related registry keys or values has failed.</span>
+        <span class="ident">NVAPI_STEREO_REGISTRY_ACCESS_FAILED</span> <span class="op">/</span> <span class="ident">StereoRegistryAccessFailed</span> <span class="op">=</span> <span class="op">-</span><span class="number">141</span>,
+        <span class="doccomment">/// The given registry profile type is not supported.</span>
+        <span class="ident">NVAPI_STEREO_REGISTRY_PROFILE_TYPE_NOT_SUPPORTED</span> <span class="op">/</span> <span class="ident">StereoRegistryProfileTypeNotSupported</span> <span class="op">=</span> <span class="op">-</span><span class="number">142</span>,
+        <span class="doccomment">/// The given registry value is not supported.</span>
+        <span class="ident">NVAPI_STEREO_REGISTRY_VALUE_NOT_SUPPORTED</span> <span class="op">/</span> <span class="ident">StereoRegistryValueNotSupported</span> <span class="op">=</span> <span class="op">-</span><span class="number">143</span>,
+        <span class="doccomment">/// Stereo is not enabled and the function needed it to execute completely.</span>
+        <span class="ident">NVAPI_STEREO_NOT_ENABLED</span> <span class="op">/</span> <span class="ident">StereoNotEnabled</span> <span class="op">=</span> <span class="op">-</span><span class="number">144</span>,
+        <span class="doccomment">/// Stereo is not turned on and the function needed it to execute completely.</span>
+        <span class="ident">NVAPI_STEREO_NOT_TURNED_ON</span> <span class="op">/</span> <span class="ident">StereoNotTurnedOn</span> <span class="op">=</span> <span class="op">-</span><span class="number">145</span>,
+        <span class="doccomment">/// Invalid device interface.</span>
+        <span class="ident">NVAPI_STEREO_INVALID_DEVICE_INTERFACE</span> <span class="op">/</span> <span class="ident">StereoInvalidDeviceInterface</span> <span class="op">=</span> <span class="op">-</span><span class="number">146</span>,
+        <span class="doccomment">/// Separation percentage or JPEG image capture quality is out of [0-100] range.</span>
+        <span class="ident">NVAPI_STEREO_PARAMETER_OUT_OF_RANGE</span> <span class="op">/</span> <span class="ident">StereoParameterOutOfRange</span> <span class="op">=</span> <span class="op">-</span><span class="number">147</span>,
+        <span class="doccomment">/// The given frustum adjust mode is not supported.</span>
+        <span class="ident">NVAPI_STEREO_FRUSTUM_ADJUST_MODE_NOT_SUPPORTED</span> <span class="op">/</span> <span class="ident">StereoFrustumAdjustModeNotSupported</span> <span class="op">=</span> <span class="op">-</span><span class="number">148</span>,
+        <span class="doccomment">/// The mosaic topology is not possible given the current state of the hardware.</span>
+        <span class="ident">NVAPI_TOPO_NOT_POSSIBLE</span> <span class="op">/</span> <span class="ident">TopoNotPossible</span> <span class="op">=</span> <span class="op">-</span><span class="number">149</span>,
+        <span class="doccomment">/// An attempt to do a display resolution mode change has failed. </span>
+        <span class="ident">NVAPI_MODE_CHANGE_FAILED</span> <span class="op">/</span> <span class="ident">ModeChangeFailed</span> <span class="op">=</span> <span class="op">-</span><span class="number">150</span>,
+        <span class="doccomment">/// d3d11.dll/d3d11_beta.dll cannot be loaded.</span>
+        <span class="ident">NVAPI_D3D11_LIBRARY_NOT_FOUND</span> <span class="op">/</span> <span class="ident">D3d11LibraryNotFound</span> <span class="op">=</span> <span class="op">-</span><span class="number">151</span>,
+        <span class="doccomment">/// Address is outside of valid range.</span>
+        <span class="ident">NVAPI_INVALID_ADDRESS</span> <span class="op">/</span> <span class="ident">InvalidAddress</span> <span class="op">=</span> <span class="op">-</span><span class="number">152</span>,
+        <span class="doccomment">/// The pre-allocated string is too small to hold the result.</span>
+        <span class="ident">NVAPI_STRING_TOO_SMALL</span> <span class="op">/</span> <span class="ident">StringTooSmall</span> <span class="op">=</span> <span class="op">-</span><span class="number">153</span>,
+        <span class="doccomment">/// The input does not match any of the available devices.</span>
+        <span class="ident">NVAPI_MATCHING_DEVICE_NOT_FOUND</span> <span class="op">/</span> <span class="ident">MatchingDeviceNotFound</span> <span class="op">=</span> <span class="op">-</span><span class="number">154</span>,
+        <span class="doccomment">/// Driver is running.</span>
+        <span class="ident">NVAPI_DRIVER_RUNNING</span> <span class="op">/</span> <span class="ident">DriverRunning</span> <span class="op">=</span> <span class="op">-</span><span class="number">155</span>,
+        <span class="doccomment">/// Driver is not running.</span>
+        <span class="ident">NVAPI_DRIVER_NOTRUNNING</span> <span class="op">/</span> <span class="ident">DriverNotrunning</span> <span class="op">=</span> <span class="op">-</span><span class="number">156</span>,
+        <span class="doccomment">/// A driver reload is required to apply these settings.</span>
+        <span class="ident">NVAPI_ERROR_DRIVER_RELOAD_REQUIRED</span> <span class="op">/</span> <span class="ident">ErrorDriverReloadRequired</span> <span class="op">=</span> <span class="op">-</span><span class="number">157</span>,
+        <span class="doccomment">/// Intended setting is not allowed.</span>
+        <span class="ident">NVAPI_SET_NOT_ALLOWED</span> <span class="op">/</span> <span class="ident">SetNotAllowed</span> <span class="op">=</span> <span class="op">-</span><span class="number">158</span>,
+        <span class="doccomment">/// Information can&#39;t be returned due to &quot;advanced display topology&quot;.</span>
+        <span class="ident">NVAPI_ADVANCED_DISPLAY_TOPOLOGY_REQUIRED</span> <span class="op">/</span> <span class="ident">AdvancedDisplayTopologyRequired</span> <span class="op">=</span> <span class="op">-</span><span class="number">159</span>,
+        <span class="doccomment">/// Setting is not found.</span>
+        <span class="ident">NVAPI_SETTING_NOT_FOUND</span> <span class="op">/</span> <span class="ident">SettingNotFound</span> <span class="op">=</span> <span class="op">-</span><span class="number">160</span>,
+        <span class="doccomment">/// Setting size is too large.</span>
+        <span class="ident">NVAPI_SETTING_SIZE_TOO_LARGE</span> <span class="op">/</span> <span class="ident">SettingSizeTooLarge</span> <span class="op">=</span> <span class="op">-</span><span class="number">161</span>,
+        <span class="doccomment">/// There are too many settings for a profile. </span>
+        <span class="ident">NVAPI_TOO_MANY_SETTINGS_IN_PROFILE</span> <span class="op">/</span> <span class="ident">TooManySettingsInProfile</span> <span class="op">=</span> <span class="op">-</span><span class="number">162</span>,
+        <span class="doccomment">/// Profile is not found.</span>
+        <span class="ident">NVAPI_PROFILE_NOT_FOUND</span> <span class="op">/</span> <span class="ident">ProfileNotFound</span> <span class="op">=</span> <span class="op">-</span><span class="number">163</span>,
+        <span class="doccomment">/// Profile name is duplicated.</span>
+        <span class="ident">NVAPI_PROFILE_NAME_IN_USE</span> <span class="op">/</span> <span class="ident">ProfileNameInUse</span> <span class="op">=</span> <span class="op">-</span><span class="number">164</span>,
+        <span class="doccomment">/// Profile name is empty.</span>
+        <span class="ident">NVAPI_PROFILE_NAME_EMPTY</span> <span class="op">/</span> <span class="ident">ProfileNameEmpty</span> <span class="op">=</span> <span class="op">-</span><span class="number">165</span>,
+        <span class="doccomment">/// Application not found in the Profile.</span>
+        <span class="ident">NVAPI_EXECUTABLE_NOT_FOUND</span> <span class="op">/</span> <span class="ident">ExecutableNotFound</span> <span class="op">=</span> <span class="op">-</span><span class="number">166</span>,
+        <span class="doccomment">/// Application already exists in the other profile.</span>
+        <span class="ident">NVAPI_EXECUTABLE_ALREADY_IN_USE</span> <span class="op">/</span> <span class="ident">ExecutableAlreadyInUse</span> <span class="op">=</span> <span class="op">-</span><span class="number">167</span>,
+        <span class="doccomment">/// Data Type mismatch </span>
+        <span class="ident">NVAPI_DATATYPE_MISMATCH</span> <span class="op">/</span> <span class="ident">DatatypeMismatch</span> <span class="op">=</span> <span class="op">-</span><span class="number">168</span>,
+        <span class="doccomment">/// The profile passed as parameter has been removed and is no longer valid.</span>
+        <span class="ident">NVAPI_PROFILE_REMOVED</span> <span class="op">/</span> <span class="ident">ProfileRemoved</span> <span class="op">=</span> <span class="op">-</span><span class="number">169</span>,
+        <span class="doccomment">/// An unregistered resource was passed as a parameter. </span>
+        <span class="ident">NVAPI_UNREGISTERED_RESOURCE</span> <span class="op">/</span> <span class="ident">UnregisteredResource</span> <span class="op">=</span> <span class="op">-</span><span class="number">170</span>,
+        <span class="doccomment">/// The DisplayId corresponds to a display which is not within the normal outputId range.</span>
+        <span class="ident">NVAPI_ID_OUT_OF_RANGE</span> <span class="op">/</span> <span class="ident">IdOutOfRange</span> <span class="op">=</span> <span class="op">-</span><span class="number">171</span>,
+        <span class="doccomment">/// Display topology is not valid so the driver cannot do a mode set on this configuration.</span>
+        <span class="ident">NVAPI_DISPLAYCONFIG_VALIDATION_FAILED</span> <span class="op">/</span> <span class="ident">DisplayconfigValidationFailed</span> <span class="op">=</span> <span class="op">-</span><span class="number">172</span>,
+        <span class="doccomment">/// Display Port Multi-Stream topology has been changed.</span>
+        <span class="ident">NVAPI_DPMST_CHANGED</span> <span class="op">/</span> <span class="ident">DpmstChanged</span> <span class="op">=</span> <span class="op">-</span><span class="number">173</span>,
+        <span class="doccomment">/// Input buffer is insufficient to hold the contents. </span>
+        <span class="ident">NVAPI_INSUFFICIENT_BUFFER</span> <span class="op">/</span> <span class="ident">InsufficientBuffer</span> <span class="op">=</span> <span class="op">-</span><span class="number">174</span>,
+        <span class="doccomment">/// No access to the caller.</span>
+        <span class="ident">NVAPI_ACCESS_DENIED</span> <span class="op">/</span> <span class="ident">AccessDenied</span> <span class="op">=</span> <span class="op">-</span><span class="number">175</span>,
+        <span class="doccomment">/// The requested action cannot be performed without Mosaic being enabled.</span>
+        <span class="ident">NVAPI_MOSAIC_NOT_ACTIVE</span> <span class="op">/</span> <span class="ident">MosaicNotActive</span> <span class="op">=</span> <span class="op">-</span><span class="number">176</span>,
+        <span class="doccomment">/// The surface is relocated away from video memory.</span>
+        <span class="ident">NVAPI_SHARE_RESOURCE_RELOCATED</span> <span class="op">/</span> <span class="ident">ShareResourceRelocated</span> <span class="op">=</span> <span class="op">-</span><span class="number">177</span>,
+        <span class="doccomment">/// The user should disable DWM before calling NvAPI.</span>
+        <span class="ident">NVAPI_REQUEST_USER_TO_DISABLE_DWM</span> <span class="op">/</span> <span class="ident">RequestUserToDisableDwm</span> <span class="op">=</span> <span class="op">-</span><span class="number">178</span>,
+        <span class="doccomment">/// D3D device status is D3DERR_DEVICELOST or D3DERR_DEVICENOTRESET - the user has to reset the device.</span>
+        <span class="ident">NVAPI_D3D_DEVICE_LOST</span> <span class="op">/</span> <span class="ident">D3dDeviceLost</span> <span class="op">=</span> <span class="op">-</span><span class="number">179</span>,
+        <span class="doccomment">/// The requested action cannot be performed in the current state.</span>
+        <span class="ident">NVAPI_INVALID_CONFIGURATION</span> <span class="op">/</span> <span class="ident">InvalidConfiguration</span> <span class="op">=</span> <span class="op">-</span><span class="number">180</span>,
+        <span class="doccomment">/// Call failed as stereo handshake not completed.</span>
+        <span class="ident">NVAPI_STEREO_HANDSHAKE_NOT_DONE</span> <span class="op">/</span> <span class="ident">StereoHandshakeNotDone</span> <span class="op">=</span> <span class="op">-</span><span class="number">181</span>,
+        <span class="doccomment">/// The path provided was too short to determine the correct NVDRS_APPLICATION</span>
+        <span class="ident">NVAPI_EXECUTABLE_PATH_IS_AMBIGUOUS</span> <span class="op">/</span> <span class="ident">ExecutablePathIsAmbiguous</span> <span class="op">=</span> <span class="op">-</span><span class="number">182</span>,
+        <span class="doccomment">/// Default stereo profile is not currently defined</span>
+        <span class="ident">NVAPI_DEFAULT_STEREO_PROFILE_IS_NOT_DEFINED</span> <span class="op">/</span> <span class="ident">DefaultStereoProfileIsNotDefined</span> <span class="op">=</span> <span class="op">-</span><span class="number">183</span>,
+        <span class="doccomment">/// Default stereo profile does not exist</span>
+        <span class="ident">NVAPI_DEFAULT_STEREO_PROFILE_DOES_NOT_EXIST</span> <span class="op">/</span> <span class="ident">DefaultStereoProfileDoesNotExist</span> <span class="op">=</span> <span class="op">-</span><span class="number">184</span>,
+        <span class="doccomment">/// A cluster is already defined with the given configuration.</span>
+        <span class="ident">NVAPI_CLUSTER_ALREADY_EXISTS</span> <span class="op">/</span> <span class="ident">ClusterAlreadyExists</span> <span class="op">=</span> <span class="op">-</span><span class="number">185</span>,
+        <span class="doccomment">/// The input display id is not that of a multi stream enabled connector or a display device in a multi stream topology </span>
+        <span class="ident">NVAPI_DPMST_DISPLAY_ID_EXPECTED</span> <span class="op">/</span> <span class="ident">DpmstDisplayIdExpected</span> <span class="op">=</span> <span class="op">-</span><span class="number">186</span>,
+        <span class="doccomment">/// The input display id is not valid or the monitor associated to it does not support the current operation</span>
+        <span class="ident">NVAPI_INVALID_DISPLAY_ID</span> <span class="op">/</span> <span class="ident">InvalidDisplayId</span> <span class="op">=</span> <span class="op">-</span><span class="number">187</span>,
+        <span class="doccomment">/// While playing secure audio stream, stream goes out of sync</span>
+        <span class="ident">NVAPI_STREAM_IS_OUT_OF_SYNC</span> <span class="op">/</span> <span class="ident">StreamIsOutOfSync</span> <span class="op">=</span> <span class="op">-</span><span class="number">188</span>,
+        <span class="doccomment">/// Older audio driver version than required</span>
+        <span class="ident">NVAPI_INCOMPATIBLE_AUDIO_DRIVER</span> <span class="op">/</span> <span class="ident">IncompatibleAudioDriver</span> <span class="op">=</span> <span class="op">-</span><span class="number">189</span>,
+        <span class="doccomment">/// Value already set, setting again not allowed.</span>
+        <span class="ident">NVAPI_VALUE_ALREADY_SET</span> <span class="op">/</span> <span class="ident">ValueAlreadySet</span> <span class="op">=</span> <span class="op">-</span><span class="number">190</span>,
+        <span class="doccomment">/// Requested operation timed out </span>
+        <span class="ident">NVAPI_TIMEOUT</span> <span class="op">/</span> <span class="ident">Timeout</span> <span class="op">=</span> <span class="op">-</span><span class="number">191</span>,
+        <span class="doccomment">/// The requested workstation feature set has incomplete driver internal allocation resources</span>
+        <span class="ident">NVAPI_GPU_WORKSTATION_FEATURE_INCOMPLETE</span> <span class="op">/</span> <span class="ident">GpuWorkstationFeatureIncomplete</span> <span class="op">=</span> <span class="op">-</span><span class="number">192</span>,
+        <span class="doccomment">/// Call failed because InitActivation was not called.</span>
+        <span class="ident">NVAPI_STEREO_INIT_ACTIVATION_NOT_DONE</span> <span class="op">/</span> <span class="ident">StereoInitActivationNotDone</span> <span class="op">=</span> <span class="op">-</span><span class="number">193</span>,
+        <span class="doccomment">/// The requested action cannot be performed without Sync being enabled. </span>
+        <span class="ident">NVAPI_SYNC_NOT_ACTIVE</span> <span class="op">/</span> <span class="ident">SyncNotActive</span> <span class="op">=</span> <span class="op">-</span><span class="number">194</span>,
+        <span class="doccomment">/// The requested action cannot be performed without Sync Master being enabled.</span>
+        <span class="ident">NVAPI_SYNC_MASTER_NOT_FOUND</span> <span class="op">/</span> <span class="ident">SyncMasterNotFound</span> <span class="op">=</span> <span class="op">-</span><span class="number">195</span>,
+        <span class="doccomment">/// Invalid displays passed in the NV_GSYNC_DISPLAY pointer.</span>
+        <span class="ident">NVAPI_INVALID_SYNC_TOPOLOGY</span> <span class="op">/</span> <span class="ident">InvalidSyncTopology</span> <span class="op">=</span> <span class="op">-</span><span class="number">196</span>,
+        <span class="doccomment">/// The specified signing algorithm is not supported.</span>
+        <span class="doccomment">/// Either an incorrect value was entered or the current installed driver/hardware does not support the input value.</span>
+        <span class="ident">NVAPI_ECID_SIGN_ALGO_UNSUPPORTED</span> <span class="op">/</span> <span class="ident">EcidSignAlgoUnsupported</span> <span class="op">=</span> <span class="op">-</span><span class="number">197</span>,
+        <span class="doccomment">/// The encrypted public key verification has failed.</span>
+        <span class="ident">NVAPI_ECID_KEY_VERIFICATION_FAILED</span> <span class="op">/</span> <span class="ident">EcidKeyVerificationFailed</span> <span class="op">=</span> <span class="op">-</span><span class="number">198</span>,
+        <span class="doccomment">/// The device&#39;s firmware is out of date.</span>
+        <span class="ident">NVAPI_FIRMWARE_OUT_OF_DATE</span> <span class="op">/</span> <span class="ident">FirmwareOutOfDate</span> <span class="op">=</span> <span class="op">-</span><span class="number">199</span>,
+        <span class="doccomment">/// The device&#39;s firmware is not supported.</span>
+        <span class="ident">NVAPI_FIRMWARE_REVISION_NOT_SUPPORTED</span> <span class="op">/</span> <span class="ident">FirmwareRevisionNotSupported</span> <span class="op">=</span> <span class="op">-</span><span class="number">200</span>,
+        <span class="doccomment">/// The caller is not authorized to modify the License.</span>
+        <span class="ident">NVAPI_LICENSE_CALLER_AUTHENTICATION_FAILED</span> <span class="op">/</span> <span class="ident">LicenseCallerAuthenticationFailed</span> <span class="op">=</span> <span class="op">-</span><span class="number">201</span>,
+        <span class="doccomment">/// The user tried to use a deferred context without registering the device first 	 </span>
+        <span class="ident">NVAPI_D3D_DEVICE_NOT_REGISTERED</span> <span class="op">/</span> <span class="ident">D3dDeviceNotRegistered</span> <span class="op">=</span> <span class="op">-</span><span class="number">202</span>,
+        <span class="doccomment">/// Head or SourceId was not reserved for the VR Display before doing the Modeset.</span>
+        <span class="ident">NVAPI_RESOURCE_NOT_ACQUIRED</span> <span class="op">/</span> <span class="ident">ResourceNotAcquired</span> <span class="op">=</span> <span class="op">-</span><span class="number">203</span>,
+        <span class="doccomment">/// Provided timing is not supported.</span>
+        <span class="ident">NVAPI_TIMING_NOT_SUPPORTED</span> <span class="op">/</span> <span class="ident">TimingNotSupported</span> <span class="op">=</span> <span class="op">-</span><span class="number">204</span>,
+        <span class="doccomment">/// HDCP Encryption Failed for the device. Would be applicable when the device is HDCP Capable.</span>
+        <span class="ident">NVAPI_HDCP_ENCRYPTION_FAILED</span> <span class="op">/</span> <span class="ident">HdcpEncryptionFailed</span> <span class="op">=</span> <span class="op">-</span><span class="number">205</span>,
+        <span class="doccomment">/// Provided mode is over sink device pclk limitation.</span>
+        <span class="ident">NVAPI_PCLK_LIMITATION_FAILED</span> <span class="op">/</span> <span class="ident">PclkLimitationFailed</span> <span class="op">=</span> <span class="op">-</span><span class="number">206</span>,
+        <span class="doccomment">/// No connector on GPU found. </span>
+        <span class="ident">NVAPI_NO_CONNECTOR_FOUND</span> <span class="op">/</span> <span class="ident">NoConnectorFound</span> <span class="op">=</span> <span class="op">-</span><span class="number">207</span>,
+        <span class="doccomment">/// When a non-HDCP capable HMD is connected, we would inform user by this code.</span>
+        <span class="ident">NVAPI_HDCP_DISABLED</span> <span class="op">/</span> <span class="ident">HdcpDisabled</span> <span class="op">=</span> <span class="op">-</span><span class="number">208</span>,
+        <span class="doccomment">/// Atleast an API is still being called</span>
+        <span class="ident">NVAPI_API_IN_USE</span> <span class="op">/</span> <span class="ident">ApiInUse</span> <span class="op">=</span> <span class="op">-</span><span class="number">209</span>,
+        <span class="doccomment">/// No display found on Nvidia GPU(s).</span>
+        <span class="ident">NVAPI_NVIDIA_DISPLAY_NOT_FOUND</span> <span class="op">/</span> <span class="ident">NvidiaDisplayNotFound</span> <span class="op">=</span> <span class="op">-</span><span class="number">210</span>,
+        <span class="doccomment">/// Priv security violation, improper access to a secured register.</span>
+        <span class="ident">NVAPI_PRIV_SEC_VIOLATION</span> <span class="op">/</span> <span class="ident">PrivSecViolation</span> <span class="op">=</span> <span class="op">-</span><span class="number">211</span>,
+        <span class="doccomment">/// NVAPI cannot be called by this vendor</span>
+        <span class="ident">NVAPI_INCORRECT_VENDOR</span> <span class="op">/</span> <span class="ident">IncorrectVendor</span> <span class="op">=</span> <span class="op">-</span><span class="number">212</span>,
+        <span class="doccomment">/// DirectMode Display is already in use</span>
+        <span class="ident">NVAPI_DISPLAY_IN_USE</span> <span class="op">/</span> <span class="ident">DisplayInUse</span> <span class="op">=</span> <span class="op">-</span><span class="number">213</span>,
+        <span class="doccomment">/// The Config is having Non-NVidia GPU with Non-HDCP HMD connected</span>
+        <span class="ident">NVAPI_UNSUPPORTED_CONFIG_NON_HDCP_HMD</span> <span class="op">/</span> <span class="ident">UnsupportedConfigNonHdcpHmd</span> <span class="op">=</span> <span class="op">-</span><span class="number">214</span>,
+        <span class="doccomment">/// GPU&#39;s Max Display Limit has Reached</span>
+        <span class="ident">NVAPI_MAX_DISPLAY_LIMIT_REACHED</span> <span class="op">/</span> <span class="ident">MaxDisplayLimitReached</span> <span class="op">=</span> <span class="op">-</span><span class="number">215</span>,
+        <span class="doccomment">/// DirectMode not Enabled on the Display</span>
+        <span class="ident">NVAPI_INVALID_DIRECT_MODE_DISPLAY</span> <span class="op">/</span> <span class="ident">InvalidDirectModeDisplay</span> <span class="op">=</span> <span class="op">-</span><span class="number">216</span>,
+        <span class="doccomment">/// GPU is in debug mode, OC is NOT allowed.</span>
+        <span class="ident">NVAPI_GPU_IN_DEBUG_MODE</span> <span class="op">/</span> <span class="ident">GpuInDebugMode</span> <span class="op">=</span> <span class="op">-</span><span class="number">217</span>,
+    }
+}
+</pre>
+</section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "nvapi_sys";
+    </script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

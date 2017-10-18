@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `pstate` mod in crate `nvapi_sys`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, pstate">
+
+    <title>nvapi_sys::gpu::pstate - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc mod">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Module pstate</p><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#constants">Constants</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'><a href='../../index.html'>nvapi_sys</a>::<wbr><a href='../index.html'>gpu</a></p><script>window.sidebarCurrent = {name: 'pstate', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Module <a href='../../index.html'>nvapi_sys</a>::<wbr><a href='../index.html'>gpu</a>::<wbr><a class="mod" href=''>pstate</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../../src/nvapi_sys/gpu/pstate.rs.html#1-299' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>The GPU performance state APIs are used to get and set various performance
+levels on a per-GPU basis. P-States are GPU active/executing performance
+capability and power consumption states.</p>
+
+<p>P-States range from P0 to P15, with P0 being the highest performance/power
+state, and P15 being the lowest performance/power state. Each P-State maps
+to a performance level. Not all P-States are available on a given system.
+The definition of each P-States are currently as follows:</p>
+
+<ul>
+<li><code>P0</code>/<code>P1</code> Maximum 3D performance</li>
+<li><code>P2</code>/<code>P3</code> Balanced 3D performance-power</li>
+<li><code>P8</code> Basic HD video playback</li>
+<li><code>P10</code> DVD playback</li>
+<li><code>P12</code> Minimum idle power consumption</li>
+</ul>
+</div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="private/index.html"
+                                  title='mod nvapi_sys::gpu::pstate::private'>private</a></td>
+                           <td class='docblock-short'>
+                                <p>Undocumented API</p>
+                           </td>
+                       </tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.NV_GPU_DYNAMIC_PSTATES_INFO_EX.html"
+                                  title='struct nvapi_sys::gpu::pstate::NV_GPU_DYNAMIC_PSTATES_INFO_EX'>NV_GPU_DYNAMIC_PSTATES_INFO_EX</a></td>
+                           <td class='docblock-short'>
+                                <p>Used in NvAPI_GPU_GetDynamicPstatesInfoEx().</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.NV_GPU_DYNAMIC_PSTATES_INFO_EX_UTILIZATION.html"
+                                  title='struct nvapi_sys::gpu::pstate::NV_GPU_DYNAMIC_PSTATES_INFO_EX_UTILIZATION'>NV_GPU_DYNAMIC_PSTATES_INFO_EX_UTILIZATION</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.NV_GPU_PERF_PSTATE20_BASE_VOLTAGE_ENTRY_V1.html"
+                                  title='struct nvapi_sys::gpu::pstate::NV_GPU_PERF_PSTATE20_BASE_VOLTAGE_ENTRY_V1'>NV_GPU_PERF_PSTATE20_BASE_VOLTAGE_ENTRY_V1</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.NV_GPU_PERF_PSTATES20_INFO_V1.html"
+                                  title='struct nvapi_sys::gpu::pstate::NV_GPU_PERF_PSTATES20_INFO_V1'>NV_GPU_PERF_PSTATES20_INFO_V1</a></td>
+                           <td class='docblock-short'>
+                                <p>Used in NvAPI_GPU_GetPstates20() interface call.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.NV_GPU_PERF_PSTATES20_INFO_V2.html"
+                                  title='struct nvapi_sys::gpu::pstate::NV_GPU_PERF_PSTATES20_INFO_V2'>NV_GPU_PERF_PSTATES20_INFO_V2</a></td>
+                           <td class='docblock-short'>
+                                <p>Used in NvAPI_GPU_GetPstates20() interface call.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.NV_GPU_PERF_PSTATES20_PARAM_DELTA.html"
+                                  title='struct nvapi_sys::gpu::pstate::NV_GPU_PERF_PSTATES20_PARAM_DELTA'>NV_GPU_PERF_PSTATES20_PARAM_DELTA</a></td>
+                           <td class='docblock-short'>
+                                <p>Used to describe both voltage and frequency deltas</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.NV_GPU_PERF_PSTATES20_PSTATE.html"
+                                  title='struct nvapi_sys::gpu::pstate::NV_GPU_PERF_PSTATES20_PSTATE'>NV_GPU_PERF_PSTATES20_PSTATE</a></td>
+                           <td class='docblock-short'>
+                                <p>Performance state (P-State) settings</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.NV_GPU_PSTATE20_CLOCK_ENTRY_DATA.html"
+                                  title='struct nvapi_sys::gpu::pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_DATA'>NV_GPU_PSTATE20_CLOCK_ENTRY_DATA</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.NV_GPU_PSTATE20_CLOCK_ENTRY_RANGE.html"
+                                  title='struct nvapi_sys::gpu::pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_RANGE'>NV_GPU_PSTATE20_CLOCK_ENTRY_RANGE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.NV_GPU_PSTATE20_CLOCK_ENTRY_SINGLE.html"
+                                  title='struct nvapi_sys::gpu::pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_SINGLE'>NV_GPU_PSTATE20_CLOCK_ENTRY_SINGLE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.NV_GPU_PSTATE20_CLOCK_ENTRY_V1.html"
+                                  title='struct nvapi_sys::gpu::pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_V1'>NV_GPU_PSTATE20_CLOCK_ENTRY_V1</a></td>
+                           <td class='docblock-short'>
+                                <p>Used to describe single clock entry</p>
+                           </td>
+                       </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.NV_GPU_PSTATE20_CLOCK_ENTRY_DATA_VALUE.html"
+                                  title='enum nvapi_sys::gpu::pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_DATA_VALUE'>NV_GPU_PSTATE20_CLOCK_ENTRY_DATA_VALUE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.PstateClockType.html"
+                                  title='enum nvapi_sys::gpu::pstate::PstateClockType'>PstateClockType</a></td>
+                           <td class='docblock-short'>
+                                <p>Used to identify clock type</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.PstateId.html"
+                                  title='enum nvapi_sys::gpu::pstate::PstateId'>PstateId</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.UtilizationDomain.html"
+                                  title='enum nvapi_sys::gpu::pstate::UtilizationDomain'>UtilizationDomain</a></td>
+                           <td class='docblock-short'>
+                                <p>Domain index into NV_GPU_DYNAMIC_PSTATES_INFO_EX.utilization.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.VoltageInfoDomain.html"
+                                  title='enum nvapi_sys::gpu::pstate::VoltageInfoDomain'>VoltageInfoDomain</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PERF_PSTATE20_CLOCK_TYPE_RANGE.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_PERF_PSTATE20_CLOCK_TYPE_RANGE'>NVAPI_GPU_PERF_PSTATE20_CLOCK_TYPE_RANGE</a></td>
+                           <td class='docblock-short'>
+                                <p>Clock domains that allow range of frequency values within given pstate</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PERF_PSTATE20_CLOCK_TYPE_SINGLE.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_PERF_PSTATE20_CLOCK_TYPE_SINGLE'>NVAPI_GPU_PERF_PSTATE20_CLOCK_TYPE_SINGLE</a></td>
+                           <td class='docblock-short'>
+                                <p>Clock domains that use single frequency value within given pstate</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PERF_PSTATE_ALL.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_PERF_PSTATE_ALL'>NVAPI_GPU_PERF_PSTATE_ALL</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PERF_PSTATE_P0.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_PERF_PSTATE_P0'>NVAPI_GPU_PERF_PSTATE_P0</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PERF_PSTATE_P1.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_PERF_PSTATE_P1'>NVAPI_GPU_PERF_PSTATE_P1</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PERF_PSTATE_P2.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_PERF_PSTATE_P2'>NVAPI_GPU_PERF_PSTATE_P2</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PERF_PSTATE_P3.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_PERF_PSTATE_P3'>NVAPI_GPU_PERF_PSTATE_P3</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PERF_PSTATE_P4.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_PERF_PSTATE_P4'>NVAPI_GPU_PERF_PSTATE_P4</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PERF_PSTATE_P5.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_PERF_PSTATE_P5'>NVAPI_GPU_PERF_PSTATE_P5</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PERF_PSTATE_P6.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_PERF_PSTATE_P6'>NVAPI_GPU_PERF_PSTATE_P6</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PERF_PSTATE_P7.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_PERF_PSTATE_P7'>NVAPI_GPU_PERF_PSTATE_P7</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PERF_PSTATE_P8.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_PERF_PSTATE_P8'>NVAPI_GPU_PERF_PSTATE_P8</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PERF_PSTATE_P9.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_PERF_PSTATE_P9'>NVAPI_GPU_PERF_PSTATE_P9</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PERF_PSTATE_P10.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_PERF_PSTATE_P10'>NVAPI_GPU_PERF_PSTATE_P10</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PERF_PSTATE_P11.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_PERF_PSTATE_P11'>NVAPI_GPU_PERF_PSTATE_P11</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PERF_PSTATE_P12.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_PERF_PSTATE_P12'>NVAPI_GPU_PERF_PSTATE_P12</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PERF_PSTATE_P13.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_PERF_PSTATE_P13'>NVAPI_GPU_PERF_PSTATE_P13</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PERF_PSTATE_P14.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_PERF_PSTATE_P14'>NVAPI_GPU_PERF_PSTATE_P14</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PERF_PSTATE_P15.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_PERF_PSTATE_P15'>NVAPI_GPU_PERF_PSTATE_P15</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PERF_PSTATE_UNDEFINED.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_PERF_PSTATE_UNDEFINED'>NVAPI_GPU_PERF_PSTATE_UNDEFINED</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PERF_VOLTAGE_INFO_DOMAIN_CORE.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_PERF_VOLTAGE_INFO_DOMAIN_CORE'>NVAPI_GPU_PERF_VOLTAGE_INFO_DOMAIN_CORE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PERF_VOLTAGE_INFO_DOMAIN_UNDEFINED.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_PERF_VOLTAGE_INFO_DOMAIN_UNDEFINED'>NVAPI_GPU_PERF_VOLTAGE_INFO_DOMAIN_UNDEFINED</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_UTILIZATION_DOMAIN_BUS.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_UTILIZATION_DOMAIN_BUS'>NVAPI_GPU_UTILIZATION_DOMAIN_BUS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_UTILIZATION_DOMAIN_FB.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_UTILIZATION_DOMAIN_FB'>NVAPI_GPU_UTILIZATION_DOMAIN_FB</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_UTILIZATION_DOMAIN_GPU.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_UTILIZATION_DOMAIN_GPU'>NVAPI_GPU_UTILIZATION_DOMAIN_GPU</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_UTILIZATION_DOMAIN_VID.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_GPU_UTILIZATION_DOMAIN_VID'>NVAPI_GPU_UTILIZATION_DOMAIN_VID</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_GPU_PSTATE20_BASE_VOLTAGES.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_MAX_GPU_PSTATE20_BASE_VOLTAGES'>NVAPI_MAX_GPU_PSTATE20_BASE_VOLTAGES</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_GPU_PSTATE20_CLOCKS.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_MAX_GPU_PSTATE20_CLOCKS'>NVAPI_MAX_GPU_PSTATE20_CLOCKS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_GPU_PSTATE20_PSTATES.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_MAX_GPU_PSTATE20_PSTATES'>NVAPI_MAX_GPU_PSTATE20_PSTATES</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_GPU_UTILIZATIONS.html"
+                                  title='constant nvapi_sys::gpu::pstate::NVAPI_MAX_GPU_UTILIZATIONS'>NVAPI_MAX_GPU_UTILIZATIONS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_DYNAMIC_PSTATES_INFO_EX_VER.html"
+                                  title='constant nvapi_sys::gpu::pstate::NV_GPU_DYNAMIC_PSTATES_INFO_EX_VER'>NV_GPU_DYNAMIC_PSTATES_INFO_EX_VER</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_PERF_PSTATES20_INFO_VER.html"
+                                  title='constant nvapi_sys::gpu::pstate::NV_GPU_PERF_PSTATES20_INFO_VER'>NV_GPU_PERF_PSTATES20_INFO_VER</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_PERF_PSTATES20_INFO_VER1.html"
+                                  title='constant nvapi_sys::gpu::pstate::NV_GPU_PERF_PSTATES20_INFO_VER1'>NV_GPU_PERF_PSTATES20_INFO_VER1</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_PERF_PSTATES20_INFO_VER2.html"
+                                  title='constant nvapi_sys::gpu::pstate::NV_GPU_PERF_PSTATES20_INFO_VER2'>NV_GPU_PERF_PSTATES20_INFO_VER2</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_PERF_PSTATES20_INFO_VER3.html"
+                                  title='constant nvapi_sys::gpu::pstate::NV_GPU_PERF_PSTATES20_INFO_VER3'>NV_GPU_PERF_PSTATES20_INFO_VER3</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.NvAPI_GPU_GetCurrentPstate.html"
+                                  title='fn nvapi_sys::gpu::pstate::NvAPI_GPU_GetCurrentPstate'>NvAPI_GPU_GetCurrentPstate</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                <p>This function retrieves the current performance state (P-State).</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.NvAPI_GPU_GetDynamicPstatesInfoEx.html"
+                                  title='fn nvapi_sys::gpu::pstate::NvAPI_GPU_GetDynamicPstatesInfoEx'>NvAPI_GPU_GetDynamicPstatesInfoEx</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                <p>This API retrieves the NV_GPU_DYNAMIC_PSTATES_INFO_EX structure for the specified physical GPU.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.NvAPI_GPU_GetPstates20.html"
+                                  title='fn nvapi_sys::gpu::pstate::NvAPI_GPU_GetPstates20'>NvAPI_GPU_GetPstates20</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                <p>This API retrieves all performance states (P-States) 2.0 information.</p>
+                           </td>
+                       </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.GPU_GetCurrentPstateFn.html"
+                                  title='type nvapi_sys::gpu::pstate::GPU_GetCurrentPstateFn'>GPU_GetCurrentPstateFn</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.GPU_GetDynamicPstatesInfoExFn.html"
+                                  title='type nvapi_sys::gpu::pstate::GPU_GetDynamicPstatesInfoExFn'>GPU_GetDynamicPstatesInfoExFn</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.GPU_GetPstates20Fn.html"
+                                  title='type nvapi_sys::gpu::pstate::GPU_GetPstates20Fn'>GPU_GetPstates20Fn</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NV_GPU_PERF_PSTATE20_CLOCK_TYPE_ID.html"
+                                  title='type nvapi_sys::gpu::pstate::NV_GPU_PERF_PSTATE20_CLOCK_TYPE_ID'>NV_GPU_PERF_PSTATE20_CLOCK_TYPE_ID</a></td>
+                           <td class='docblock-short'>
+                                <p>Used to identify clock type</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NV_GPU_PERF_PSTATES20_INFO.html"
+                                  title='type nvapi_sys::gpu::pstate::NV_GPU_PERF_PSTATES20_INFO'>NV_GPU_PERF_PSTATES20_INFO</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NV_GPU_PERF_PSTATE_ID.html"
+                                  title='type nvapi_sys::gpu::pstate::NV_GPU_PERF_PSTATE_ID'>NV_GPU_PERF_PSTATE_ID</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NV_GPU_PERF_VOLTAGE_INFO_DOMAIN_ID.html"
+                                  title='type nvapi_sys::gpu::pstate::NV_GPU_PERF_VOLTAGE_INFO_DOMAIN_ID'>NV_GPU_PERF_VOLTAGE_INFO_DOMAIN_ID</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NV_GPU_UTILIZATION_DOMAIN_ID.html"
+                                  title='type nvapi_sys::gpu::pstate::NV_GPU_UTILIZATION_DOMAIN_ID'>NV_GPU_UTILIZATION_DOMAIN_ID</a></td>
+                           <td class='docblock-short'>
+                                <p>Domain index into NV_GPU_DYNAMIC_PSTATES_INFO_EX.utilization.</p>
+                           </td>
+                       </tr></table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../../";
+        window.currentCrate = "nvapi_sys";
+    </script>
+    <script src="../../../main.js"></script>
+    <script defer src="../../../search-index.js"></script>
+</body>
+</html>

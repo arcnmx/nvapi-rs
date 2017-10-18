@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `clock` mod in crate `nvapi_sys`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, clock">
+
+    <title>nvapi_sys::gpu::clock - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc mod">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Module clock</p><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#constants">Constants</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'><a href='../../index.html'>nvapi_sys</a>::<wbr><a href='../index.html'>gpu</a></p><script>window.sidebarCurrent = {name: 'clock', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Module <a href='../../index.html'>nvapi_sys</a>::<wbr><a href='../index.html'>gpu</a>::<wbr><a class="mod" href=''>clock</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../../src/nvapi_sys/gpu/clock.rs.html#1-160' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>The GPU clock control APIs are used to get and set individual clock domains
+on a per-GPU basis.</p>
+</div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="private/index.html"
+                                  title='mod nvapi_sys::gpu::clock::private'>private</a></td>
+                           <td class='docblock-short'>
+                                <p>Undocumented API</p>
+                           </td>
+                       </tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.NV_GPU_CLOCK_FREQUENCIES_DOMAIN.html"
+                                  title='struct nvapi_sys::gpu::clock::NV_GPU_CLOCK_FREQUENCIES_DOMAIN'>NV_GPU_CLOCK_FREQUENCIES_DOMAIN</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.NV_GPU_CLOCK_FREQUENCIES_V1.html"
+                                  title='struct nvapi_sys::gpu::clock::NV_GPU_CLOCK_FREQUENCIES_V1'>NV_GPU_CLOCK_FREQUENCIES_V1</a></td>
+                           <td class='docblock-short'>
+                                <p>Used in NvAPI_GPU_GetAllClockFrequencies()</p>
+                           </td>
+                       </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.ClockFrequencyType.html"
+                                  title='enum nvapi_sys::gpu::clock::ClockFrequencyType'>ClockFrequencyType</a></td>
+                           <td class='docblock-short'>
+                                <p>Used in NvAPI_GPU_GetAllClockFrequencies()</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.PublicClockId.html"
+                                  title='enum nvapi_sys::gpu::clock::PublicClockId'>PublicClockId</a></td>
+                           <td class='docblock-short'>
+                                <p>An index into NV_GPU_CLOCK_FREQUENCIES.domain[]</p>
+                           </td>
+                       </tr></table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PUBLIC_CLOCK_GRAPHICS.html"
+                                  title='constant nvapi_sys::gpu::clock::NVAPI_GPU_PUBLIC_CLOCK_GRAPHICS'>NVAPI_GPU_PUBLIC_CLOCK_GRAPHICS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PUBLIC_CLOCK_MEMORY.html"
+                                  title='constant nvapi_sys::gpu::clock::NVAPI_GPU_PUBLIC_CLOCK_MEMORY'>NVAPI_GPU_PUBLIC_CLOCK_MEMORY</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PUBLIC_CLOCK_PROCESSOR.html"
+                                  title='constant nvapi_sys::gpu::clock::NVAPI_GPU_PUBLIC_CLOCK_PROCESSOR'>NVAPI_GPU_PUBLIC_CLOCK_PROCESSOR</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PUBLIC_CLOCK_UNDEFINED.html"
+                                  title='constant nvapi_sys::gpu::clock::NVAPI_GPU_PUBLIC_CLOCK_UNDEFINED'>NVAPI_GPU_PUBLIC_CLOCK_UNDEFINED</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GPU_PUBLIC_CLOCK_VIDEO.html"
+                                  title='constant nvapi_sys::gpu::clock::NVAPI_GPU_PUBLIC_CLOCK_VIDEO'>NVAPI_GPU_PUBLIC_CLOCK_VIDEO</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_GPU_CLOCKS.html"
+                                  title='constant nvapi_sys::gpu::clock::NVAPI_MAX_GPU_CLOCKS'>NVAPI_MAX_GPU_CLOCKS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_GPU_PERF_CLOCKS.html"
+                                  title='constant nvapi_sys::gpu::clock::NVAPI_MAX_GPU_PERF_CLOCKS'>NVAPI_MAX_GPU_PERF_CLOCKS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_GPU_PERF_PSTATES.html"
+                                  title='constant nvapi_sys::gpu::clock::NVAPI_MAX_GPU_PERF_PSTATES'>NVAPI_MAX_GPU_PERF_PSTATES</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_GPU_PERF_VOLTAGES.html"
+                                  title='constant nvapi_sys::gpu::clock::NVAPI_MAX_GPU_PERF_VOLTAGES'>NVAPI_MAX_GPU_PERF_VOLTAGES</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_GPU_PUBLIC_CLOCKS.html"
+                                  title='constant nvapi_sys::gpu::clock::NVAPI_MAX_GPU_PUBLIC_CLOCKS'>NVAPI_MAX_GPU_PUBLIC_CLOCKS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_CLOCK_FREQUENCIES_BASE_CLOCK.html"
+                                  title='constant nvapi_sys::gpu::clock::NV_GPU_CLOCK_FREQUENCIES_BASE_CLOCK'>NV_GPU_CLOCK_FREQUENCIES_BASE_CLOCK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_CLOCK_FREQUENCIES_BOOST_CLOCK.html"
+                                  title='constant nvapi_sys::gpu::clock::NV_GPU_CLOCK_FREQUENCIES_BOOST_CLOCK'>NV_GPU_CLOCK_FREQUENCIES_BOOST_CLOCK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_CLOCK_FREQUENCIES_CLOCK_TYPE_NUM.html"
+                                  title='constant nvapi_sys::gpu::clock::NV_GPU_CLOCK_FREQUENCIES_CLOCK_TYPE_NUM'>NV_GPU_CLOCK_FREQUENCIES_CLOCK_TYPE_NUM</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_CLOCK_FREQUENCIES_CURRENT_FREQ.html"
+                                  title='constant nvapi_sys::gpu::clock::NV_GPU_CLOCK_FREQUENCIES_CURRENT_FREQ'>NV_GPU_CLOCK_FREQUENCIES_CURRENT_FREQ</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_CLOCK_FREQUENCIES_VER.html"
+                                  title='constant nvapi_sys::gpu::clock::NV_GPU_CLOCK_FREQUENCIES_VER'>NV_GPU_CLOCK_FREQUENCIES_VER</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_CLOCK_FREQUENCIES_VER_1.html"
+                                  title='constant nvapi_sys::gpu::clock::NV_GPU_CLOCK_FREQUENCIES_VER_1'>NV_GPU_CLOCK_FREQUENCIES_VER_1</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_CLOCK_FREQUENCIES_VER_2.html"
+                                  title='constant nvapi_sys::gpu::clock::NV_GPU_CLOCK_FREQUENCIES_VER_2'>NV_GPU_CLOCK_FREQUENCIES_VER_2</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_CLOCK_FREQUENCIES_VER_3.html"
+                                  title='constant nvapi_sys::gpu::clock::NV_GPU_CLOCK_FREQUENCIES_VER_3'>NV_GPU_CLOCK_FREQUENCIES_VER_3</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.NvAPI_GPU_GetAllClockFrequencies.html"
+                                  title='fn nvapi_sys::gpu::clock::NvAPI_GPU_GetAllClockFrequencies'>NvAPI_GPU_GetAllClockFrequencies</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                <p>This function retrieves the NV_GPU_CLOCK_FREQUENCIES structure for the specified physical GPU.</p>
+                           </td>
+                       </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.GPU_GetAllClockFrequenciesFn.html"
+                                  title='type nvapi_sys::gpu::clock::GPU_GetAllClockFrequenciesFn'>GPU_GetAllClockFrequenciesFn</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NV_GPU_CLOCK_FREQUENCIES.html"
+                                  title='type nvapi_sys::gpu::clock::NV_GPU_CLOCK_FREQUENCIES'>NV_GPU_CLOCK_FREQUENCIES</a></td>
+                           <td class='docblock-short'>
+                                <p>Used in NvAPI_GPU_GetAllClockFrequencies()</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NV_GPU_CLOCK_FREQUENCIES_CLOCK_TYPE.html"
+                                  title='type nvapi_sys::gpu::clock::NV_GPU_CLOCK_FREQUENCIES_CLOCK_TYPE'>NV_GPU_CLOCK_FREQUENCIES_CLOCK_TYPE</a></td>
+                           <td class='docblock-short'>
+                                <p>Used in NvAPI_GPU_GetAllClockFrequencies()</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NV_GPU_CLOCK_FREQUENCIES_V2.html"
+                                  title='type nvapi_sys::gpu::clock::NV_GPU_CLOCK_FREQUENCIES_V2'>NV_GPU_CLOCK_FREQUENCIES_V2</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NV_GPU_PUBLIC_CLOCK_ID.html"
+                                  title='type nvapi_sys::gpu::clock::NV_GPU_PUBLIC_CLOCK_ID'>NV_GPU_PUBLIC_CLOCK_ID</a></td>
+                           <td class='docblock-short'>
+                                <p>An index into NV_GPU_CLOCK_FREQUENCIES.domain[]</p>
+                           </td>
+                       </tr></table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../../";
+        window.currentCrate = "nvapi_sys";
+    </script>
+    <script src="../../../main.js"></script>
+    <script defer src="../../../search-index.js"></script>
+</body>
+</html>

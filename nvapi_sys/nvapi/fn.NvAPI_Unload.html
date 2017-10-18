@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `NvAPI_Unload` fn in crate `nvapi_sys`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, NvAPI_Unload">
+
+    <title>nvapi_sys::nvapi::NvAPI_Unload - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc fn">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>nvapi_sys</a>::<wbr><a href='index.html'>nvapi</a></p><script>window.sidebarCurrent = {name: 'NvAPI_Unload', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Function <a href='../index.html'>nvapi_sys</a>::<wbr><a href='index.html'>nvapi</a>::<wbr><a class="fn" href=''>NvAPI_Unload</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#116-123' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub unsafe fn NvAPI_Unload() -&gt; <a class="type" href="../../nvapi_sys/status/type.NvAPI_Status.html" title="type nvapi_sys::status::NvAPI_Status">NvAPI_Status</a></pre><div class='docblock'><p>Decrements the ref-counter and when it reaches ZERO, unloads NVAPI library.
+This must be called in pairs with NvAPI_Initialize.</p>
+
+<p>Unloading NvAPI library is not supported when the library is in a resource locked state.
+Some functions in the NvAPI library initiates an operation or allocates certain resources
+and there are corresponding functions available, to complete the operation or free the
+allocated resources. All such function pairs are designed to prevent unloading NvAPI library.</p>
+
+<p>For example, if NvAPI_Unload is called after NvAPI_XXX which locks a resource, it fails with
+NVAPI_ERROR. Developers need to call the corresponding NvAPI_YYY to unlock the resources,
+before calling NvAPI_Unload again.</p>
+
+<p>Note: By design, it is not mandatory to call NvAPI_Initialize before calling any NvAPI.
+When any NvAPI is called without first calling NvAPI_Initialize, the internal refcounter
+will be implicitly incremented. In such cases, calling NvAPI_Initialize from a different thread will
+result in incrementing the refcount again and the user has to call NvAPI_Unload twice to
+unload the library. However, note that the implicit increment of the refcounter happens only once.
+If the client wants unload functionality, it is recommended to always call NvAPI_Initialize and NvAPI_Unload in pairs.</p>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "nvapi_sys";
+    </script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

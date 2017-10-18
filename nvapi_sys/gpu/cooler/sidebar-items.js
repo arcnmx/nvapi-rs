@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["NvAPI_GPU_GetTachReading","This API retrieves the fan speed tachometer reading for the specified physical GPU."]],"mod":[["private","Undocumented API"]],"type":[["GPU_GetTachReadingFn",""]]});
