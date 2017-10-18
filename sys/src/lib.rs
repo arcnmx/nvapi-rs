@@ -1,4 +1,5 @@
 #![allow(non_camel_case_types, non_snake_case)]
+#![doc(html_root_url = "http://arcnmx.github.io/nvapi-rs/")]
 
 #[cfg(windows)]
 extern crate winapi;
@@ -41,8 +42,10 @@ pub use status::{NvAPI_Status, Status};
 
 use std::result;
 
+/// The result of a fallible NVAPI call.
 pub type Result<T> = result::Result<T, Status>;
 
+/// Treat `NVAPI_OK` as `Ok(())` and all else as an `Err(..)`.
 pub fn status_result(status: NvAPI_Status) -> Result<()> {
     match status {
         status::NVAPI_OK => Ok(()),
@@ -50,6 +53,7 @@ pub fn status_result(status: NvAPI_Status) -> Result<()> {
     }
 }
 
+/// Error type indicating a raw value is out of the range of known enum values.
 #[derive(Debug, Copy, Clone, Default)]
 pub struct ArgumentRangeError;
 
