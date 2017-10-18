@@ -1,0 +1,15 @@
+[package]
+name = "nvapi"
+version = "0.0.1"
+authors = ["arcnmx"]
+
+description = "NVIDIA NVAPI bindings"
+keywords = ["nvidia", "nvapi", "gtx"]
+
+documentation = "http://arcnmx.github.io/nvapi-rs/nvapi"
+repository = "https://github.com/arcnmx/nvapi-rs"
+readme = "README.md"
+license = "MIT"
+
+[dependencies]
+nvapi-sys = { version = "0.0.1", path = "sys" }
