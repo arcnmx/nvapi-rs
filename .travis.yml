@@ -34,6 +34,7 @@ deploy:
     all_branches: true
     condition: "$TRAVIS_RUST_VERSION = stable"
 before_deploy:
+- cargo doc -p nvapi-sys
 - cargo doc
 - cargo package
 - cd $TRAVIS_BUILD_DIR/sys
