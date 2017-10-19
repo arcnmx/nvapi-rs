@@ -27,7 +27,7 @@ pub mod private {
     nvstruct! {
         pub struct NV_VOLTAGE_BOOST_PERCENT_V1 {
             pub version: u32,
-            pub percent: i32,
+            pub percent: u32, // apparently actually i32?
             pub unknown: [u32; 8],
         }
     }
@@ -59,7 +59,9 @@ pub mod private {
         }
     }
 
-    nvstruct! {
+    // no real difference here
+    pub type NV_VFP_CURVE_MEM_ENTRY = NV_VFP_CURVE_GPU_ENTRY;
+    /*nvstruct! {
         pub struct NV_VFP_CURVE_MEM_ENTRY {
             pub a: u32, // 1 for idle values?
             pub freq_kHz: u32,
@@ -69,7 +71,7 @@ pub mod private {
             pub f: u32,
             pub g: u32,
         }
-    }
+    }*/
 
     debug_array_impl! { [NV_VFP_CURVE_GPU_ENTRY; 80] }
     debug_array_impl! { [u32; 1064] }

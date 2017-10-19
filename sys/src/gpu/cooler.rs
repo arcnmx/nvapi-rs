@@ -47,7 +47,9 @@ pub mod private {
             /// Cooler level adjusted at continuous thermal levels.
             NVAPI_COOLER_POLICY_TEMPERATURE_CONTINUOUS / TemperatureContinuous = 8,
             /// Hybrid of performance and temperature levels.
-            NVAPI_COOLER_POLICY_HYBRID / Hybrid = 9,
+            NVAPI_COOLER_POLICY_HYBRID / Hybrid = 9, // are you sure this isn't just a bitmask?
+            NVAPI_COOLER_POLICY_UNKNOWN_16 / Unknown16 = 16,
+            NVAPI_COOLER_POLICY_UNKNOWN_32 / Unknown32 = 32,
             // TODO: Default = 32 ??
         }
     }
@@ -77,6 +79,15 @@ pub mod private {
         pub enum NV_COOLER_ACTIVITY_LEVEL / CoolerActivityLevel {
             NVAPI_INACTIVE / Inactive = 0,
             NVAPI_ACTIVE / Active = 1,
+        }
+    }
+
+    impl CoolerActivityLevel {
+        pub fn get(&self) -> bool {
+            match *self {
+                CoolerActivityLevel::Active => true,
+                CoolerActivityLevel::Inactive => false,
+            }
         }
     }
 
@@ -178,7 +189,7 @@ pub mod private {
     }
 
     nvapi! {
-        pub type GPU_RestoreCoolerSettingsFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolerIndex: *mut u32, coolerCount: u32) -> NvAPI_Status;
+        pub type GPU_RestoreCoolerSettingsFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolerIndex: *const u32, coolerCount: u32) -> NvAPI_Status;
 
         /// Undocumented function.
         /// Restore the modified cooler settings to NVIDIA defaults.
@@ -238,7 +249,7 @@ pub mod private {
     }
 
     nvapi! {
-        pub type GPU_RestoreCoolerPolicyTableFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolerIndex: *mut u32, coolerCount: u32, policy: NV_COOLER_POLICY) -> NvAPI_Status;
+        pub type GPU_RestoreCoolerPolicyTableFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolerIndex: *const u32, coolerCount: u32, policy: NV_COOLER_POLICY) -> NvAPI_Status;
 
         /// Undocumented function.
         /// Restores the perf table policy levels to the defaults.

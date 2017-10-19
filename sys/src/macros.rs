@@ -97,6 +97,14 @@ macro_rules! nvenum {
             pub fn raw(&self) -> $enum {
                 *self as _
             }
+
+            pub fn values() -> ::std::iter::Cloned<::std::slice::Iter<'static, Self>> {
+                [
+                    $(
+                        $enum_name::$name
+                    ),*
+                ].into_iter().cloned()
+            }
         }
 
         impl Into<$enum> for $enum_name {
@@ -144,6 +152,13 @@ macro_rules! nvversion {
         /*pub fn $name() -> u32 {
             MAKE_NVAPI_VERSION::<$struct>($ver)
         }*/
+
+        mod $name {
+            #[test]
+            fn $name() {
+                assert_eq!(::types::GET_NVAPI_SIZE(super::$name), ::std::mem::size_of::<super::$struct>());
+            }
+        }
     };
     ($name:ident = $target:ident) => {
         pub const $name: u32 = $target;

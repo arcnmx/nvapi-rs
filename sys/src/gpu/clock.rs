@@ -115,7 +115,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_USAGES_INFO_VER_1(NV_USAGES_INFO_V1 = 4 * (1 + 4 * NVAPI_MAX_USAGES_PER_GPU), 1) }
+    nvversion! { NV_USAGES_INFO_VER_1(NV_USAGES_INFO_V1 = 4 * (2 + 4 * NVAPI_MAX_USAGES_PER_GPU), 1) }
     nvversion! { NV_USAGES_INFO_VER = NV_USAGES_INFO_VER_1 }
 
     pub type NV_USAGES_INFO = NV_USAGES_INFO_V1;
@@ -156,5 +156,125 @@ pub mod private {
         /// shader_clock = clocks[14] * 0.001f
         /// }
         pub unsafe fn NvAPI_GPU_GetAllClocks;
+    }
+
+    nvstruct! {
+        pub struct NV_CLOCK_TABLE_GPU_DELTA {
+            pub a: u32,
+            pub b: u32,
+            pub c: u32,
+            pub d: u32,
+            pub e: u32,
+            pub freqDeltaKHz: i32,
+            pub g: u32,
+            pub h: u32,
+            pub i: u32,
+        }
+    }
+
+    debug_array_impl! { [NV_CLOCK_TABLE_GPU_DELTA; 80] }
+    debug_array_impl! { [u32; 1529] }
+
+    nvstruct! {
+        pub struct NV_CLOCK_TABLE_V1 {
+            pub version: u32,
+            pub mask: [u32; 4], // 80 bits (might be 8xu32?)
+            pub unknown: [u32; 12],
+            pub gpuDeltas: Array<[NV_CLOCK_TABLE_GPU_DELTA; 80]>,
+            pub memFilled: [u32; 23], // maybe only 4 max
+            pub memDeltas: [i32; 23],
+            pub unknown2: Array<[u32; 1529]>,
+        }
+    }
+
+    nvversion! { NV_CLOCK_TABLE_VER_1(NV_CLOCK_TABLE_V1 = 9248, 1) }
+    nvversion! { NV_CLOCK_TABLE_VER = NV_CLOCK_TABLE_VER_1 }
+
+    pub type NV_CLOCK_TABLE = NV_CLOCK_TABLE_V1;
+
+    nvapi! {
+        /// Pascal only
+        pub unsafe fn NvAPI_GPU_GetClockBoostTable(hPhysicalGPU: NvPhysicalGpuHandle, pClockTable: *mut NV_CLOCK_TABLE) -> NvAPI_Status;
+    }
+
+    nvapi! {
+        /// Pascal only
+        pub unsafe fn NvAPI_GPU_SetClockBoostTable(hPhysicalGPU: NvPhysicalGpuHandle, pClockTable: *const NV_CLOCK_TABLE) -> NvAPI_Status;
+    }
+
+    nvstruct! {
+        pub struct NV_CLOCK_RANGES_ENTRY {
+            pub a: u32,
+            pub clockType: super::NV_GPU_PUBLIC_CLOCK_ID,
+            pub c: u32,
+            pub d: u32,
+            pub e: u32,
+            pub f: u32,
+            pub g: u32,
+            pub h: u32,
+            pub i: u32,
+            pub j: u32,
+            pub rangeMax: i32,
+            pub rangeMin: i32,
+            pub tempMax: i32, // unsure
+            pub n: u32,
+            pub o: u32,
+            pub p: u32,
+            pub q: u32,
+            pub r: u32,
+        }
+    }
+
+    nvstruct! {
+        pub struct NV_CLOCK_RANGES_V1 {
+            pub version: u32,
+            pub numClocks: u32, // unsure
+            pub zero: [u32; 8],
+            pub entries: [NV_CLOCK_RANGES_ENTRY; 32],
+        }
+    }
+
+    nvversion! { NV_CLOCK_RANGES_VER_1(NV_CLOCK_RANGES_V1 = 2344, 1) }
+    nvversion! { NV_CLOCK_RANGES_VER = NV_CLOCK_RANGES_VER_1 }
+
+    pub type NV_CLOCK_RANGES = NV_CLOCK_RANGES_V1;
+
+    nvapi! {
+        /// Pascal only
+        pub unsafe fn NvAPI_GPU_GetClockBoostRanges(hPhysicalGPU: NvPhysicalGpuHandle, pClockRanges: *mut NV_CLOCK_RANGES) -> NvAPI_Status;
+    }
+
+    nvstruct! {
+        pub struct NV_CLOCK_MASKS_CLOCK {
+            pub a: u32,
+            pub b: u32,
+            pub c: u32,
+            pub d: u32,
+            pub memDelta: u32, // 1 for mem
+            pub gpuDelta: u32, // 1 for gpu
+        }
+    }
+
+    debug_array_impl! { [NV_CLOCK_MASKS_CLOCK; 80 + 23] }
+    debug_array_impl! { [u32; 916] }
+
+    nvstruct! {
+        pub struct NV_CLOCK_MASKS_V1 {
+            pub version: u32,
+            pub mask: [u32; 4], // 80 bits
+            pub unknown: [u32; 8],
+            pub clocks: Array<[NV_CLOCK_MASKS_CLOCK; 80 + 23]>,
+            pub unknown2: Array<[u32; 916]>,
+        }
+    }
+
+    nvversion! { NV_CLOCK_MASKS_VER_1(NV_CLOCK_MASKS_V1 = 6188, 1) }
+    nvversion! { NV_CLOCK_MASKS_VER = NV_CLOCK_MASKS_VER_1 }
+
+    pub type NV_CLOCK_MASKS = NV_CLOCK_MASKS_V1;
+
+    nvapi! {
+        /// Pascal only
+        pub unsafe fn NvAPI_GPU_GetClockBoostMask(hPhysicalGPU: NvPhysicalGpuHandle, pClockMasks: *mut NV_CLOCK_MASKS) -> NvAPI_Status;
     }
 }
