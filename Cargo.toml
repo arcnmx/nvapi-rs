@@ -13,3 +13,4 @@ license = "MIT"
 
 [dependencies]
 nvapi-sys = { version = "0.0.1", path = "sys" }
+void = "1.0.2"
