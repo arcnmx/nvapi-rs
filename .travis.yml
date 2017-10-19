@@ -24,6 +24,10 @@ env:
 before_install:
 - curl -L https://github.com/arcnmx/ci/archive/0.1.tar.gz | tar -xzC $HOME && . $HOME/ci-0.1/src
 script:
+- cd $TRAVIS_BUILD_DIR/sys
+- cargo test
+- cargo build
+- cd $TRAVIS_BUILD_DIR
 - cargo test
 - cargo build
 deploy:
