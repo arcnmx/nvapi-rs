@@ -91,25 +91,24 @@ pub mod private {
     pub const NVAPI_MAX_USAGES_PER_GPU: usize = 8;
     pub const NVAPI_MAX_CLOCKS_PER_GPU: usize = 288;
 
+    use types::BoolU32;
     use status::NvAPI_Status;
     use handles::NvPhysicalGpuHandle;
     use debug_array::Array;
 
     nvstruct! {
         pub struct NV_USAGES_INFO_USAGE {
-            /// Maybe `NV_GPU_UTILIZATION_DOMAIN_ID`?
-            pub unknown0: u32,
+            pub bIsPresent: BoolU32,
             /// % 0 to 100 usage
             pub percentage: u32,
-            pub unknown1: [u32; 2],
+            pub unknown: [u32; 2],
         }
     }
 
     nvstruct! {
         pub struct NV_USAGES_INFO_V1 {
             pub version: u32,
-            /// not sure if this is right, double-check
-            pub count: u32,
+            pub flags: u32,
             /// (core_usage, memory_usage, video_engine_usage), probably indexed by NV_GPU_UTILIZATION_DOMAIN_ID
             pub usages: [NV_USAGES_INFO_USAGE; NVAPI_MAX_USAGES_PER_GPU],
         }

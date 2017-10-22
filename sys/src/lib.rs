@@ -6,6 +6,10 @@ extern crate winapi;
 #[cfg(all(windows, not(feature = "winapi3")))]
 extern crate kernel32;
 
+#[cfg(feature = "serde_derive")]
+#[macro_use]
+extern crate serde_derive;
+
 #[macro_use]
 mod macros;
 
@@ -63,7 +67,7 @@ pub struct ArgumentRangeError;
 
 impl From<ArgumentRangeError> for Status {
     fn from(_: ArgumentRangeError) -> Self {
-        Status::InvalidArgument
+        Status::ArgumentExceedMaxSize
     }
 }
 

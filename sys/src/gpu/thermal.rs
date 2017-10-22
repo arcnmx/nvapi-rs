@@ -38,7 +38,7 @@ nvenum! {
         NVAPI_THERMAL_CONTROLLER_ADT7473 / Adt7473 = 8,
         NVAPI_THERMAL_CONTROLLER_SBMAX6649 / Sbmax6649 = 9,
         NVAPI_THERMAL_CONTROLLER_VBIOSEVT / VbiosEvt = 10,
-        NVAPI_THERMAL_CONTROLLER_OS / Os = 11,
+        NVAPI_THERMAL_CONTROLLER_OS / OS = 11,
         NVAPI_THERMAL_CONTROLLER_UNKNOWN / Unknown = -1,
     }
 }
@@ -113,7 +113,9 @@ pub mod private {
     nvstruct! {
         pub struct NV_GPU_THERMAL_INFO_V2 {
             pub version: u32,
-            pub flags: u32,
+            pub count: u8,
+            pub flags: u8,
+            pub padding: [u8; 2],
             pub entries: [NV_GPU_THERMAL_INFO_ENTRY; NVAPI_MAX_THERMAL_INFO_ENTRIES],
         }
     }

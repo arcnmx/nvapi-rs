@@ -1,14 +1,13 @@
 use sys::gpu::{thermal, cooler};
 use sys;
-use types::{Percentage, Celsius, CelsiusShifted, RawConversion};
+use types::{Percentage, Celsius, CelsiusShifted, Range, RawConversion};
 
 pub use sys::gpu::thermal::{ThermalController, ThermalTarget};
 
 #[derive(Debug, Copy, Clone)]
 pub struct Sensor {
     pub controller: ThermalController,
-    pub default_min_temperature: Celsius,
-    pub default_max_temperature: Celsius,
+    pub default_temperature_range: Range<Celsius>,
     pub current_temperature: Celsius,
     pub target: ThermalTarget,
 }
@@ -20,8 +19,10 @@ impl RawConversion for thermal::NV_GPU_THERMAL_SETTINGS_SENSOR {
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         Ok(Sensor {
             controller: ThermalController::from_raw(self.controller)?,
-            default_min_temperature: Celsius(self.defaultMinTemp),
-            default_max_temperature: Celsius(self.defaultMaxTemp),
+            default_temperature_range: Range {
+                min: Celsius(self.defaultMinTemp),
+                max: Celsius(self.defaultMaxTemp),
+            },
             current_temperature: Celsius(self.currentTemp),
             target: ThermalTarget::from_raw(self.target)?,
         })
@@ -41,9 +42,8 @@ impl RawConversion for thermal::NV_GPU_THERMAL_SETTINGS {
 pub struct ThermalInfo {
     pub controller: ThermalController,
     pub unknown: u32,
-    pub min_temperature: CelsiusShifted,
+    pub temperature_range: Range<CelsiusShifted>,
     pub default_temperature: CelsiusShifted,
-    pub max_temperature: CelsiusShifted,
     pub default_flags: u32,
 }
 
@@ -55,9 +55,11 @@ impl RawConversion for thermal::private::NV_GPU_THERMAL_INFO_ENTRY {
         Ok(ThermalInfo {
             controller: ThermalController::from_raw(self.controller)?,
             unknown: self.unknown,
-            min_temperature: CelsiusShifted(self.minTemp),
+            temperature_range: Range {
+                min: CelsiusShifted(self.minTemp),
+                max: CelsiusShifted(self.maxTemp),
+            },
             default_temperature: CelsiusShifted(self.defaultTemp),
-            max_temperature: CelsiusShifted(self.maxTemp),
             default_flags: self.defaultFlags,
         })
     }
@@ -68,10 +70,10 @@ impl RawConversion for thermal::private::NV_GPU_THERMAL_INFO {
     type Error = sys::ArgumentRangeError;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        self.entries[..self.flags as usize & 0xff].iter()
+        self.entries[..self.count as usize].iter()
             .map(RawConversion::convert_raw)
             .collect::<Result<_, _>>()
-            .map(|t| (self.flags, t))
+            .map(|t| (self.flags as _, t))
     }
 }
 
@@ -112,10 +114,8 @@ pub use sys::gpu::cooler::private::{CoolerType, CoolerController, CoolerPolicy, 
 pub struct Cooler {
     pub kind: CoolerType,
     pub controller: CoolerController,
-    pub default_min_level: Percentage,
-    pub default_max_level: Percentage,
-    pub current_min_level: Percentage,
-    pub current_max_level: Percentage,
+    pub default_level_range: Range<Percentage>,
+    pub current_level_range: Range<Percentage>,
     pub current_level: Percentage,
     pub default_policy: CoolerPolicy,
     pub current_policy: CoolerPolicy,
@@ -132,10 +132,14 @@ impl RawConversion for cooler::private::NV_GPU_COOLER_SETTINGS_COOLER {
         Ok(Cooler {
             kind: CoolerType::from_raw(self.type_)?,
             controller: CoolerController::from_raw(self.controller)?,
-            default_min_level: Percentage::from_raw(self.defaultMinLevel)?,
-            default_max_level: Percentage::from_raw(self.defaultMaxLevel)?,
-            current_min_level: Percentage::from_raw(self.currentMinLevel)?,
-            current_max_level: Percentage::from_raw(self.currentMaxLevel)?,
+            default_level_range: Range {
+                min: Percentage::from_raw(self.defaultMinLevel)?,
+                max: Percentage::from_raw(self.defaultMaxLevel)?,
+            },
+            current_level_range: Range {
+                min: Percentage::from_raw(self.currentMinLevel)?,
+                max: Percentage::from_raw(self.currentMaxLevel)?,
+            },
             current_level: Percentage::from_raw(self.currentLevel)?,
             default_policy: CoolerPolicy::from_raw(self.defaultPolicy)?,
             current_policy: CoolerPolicy::from_raw(self.currentPolicy)?,

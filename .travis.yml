@@ -30,6 +30,9 @@ script:
 - cd $TRAVIS_BUILD_DIR
 - cargo test
 - cargo build
+- cd $TRAVIS_BUILD_DIR/hi
+- cargo test
+- cargo build
 deploy:
   provider: script
   script: 'true'
@@ -39,6 +42,7 @@ deploy:
     condition: "$TRAVIS_RUST_VERSION = stable"
 before_deploy:
 - cargo doc -p nvapi-sys
+- cargo doc -p nvapi-hi
 - cargo doc
 - cd $TRAVIS_BUILD_DIR/sys
 - cargo package
@@ -48,5 +52,8 @@ after_deploy:
 - cd $TRAVIS_BUILD_DIR/sys
 - cargo publish
 - cd $TRAVIS_BUILD_DIR
+- cargo package
+- cargo publish
+- cd $TRAVIS_BUILD_DIR/hi
 - cargo package
 - cargo publish

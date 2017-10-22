@@ -1,22 +1,21 @@
 [package]
-name = "nvapi"
+name = "nvapi-hi"
 version = "0.0.2"
 authors = ["arcnmx"]
 
-description = "NVIDIA NVAPI bindings"
+description = "NVIDIA NVAPI high level bindings"
 keywords = ["nvidia", "nvapi", "gtx"]
 
-documentation = "http://arcnmx.github.io/nvapi-rs/nvapi"
+documentation = "http://arcnmx.github.io/nvapi-rs/nvapi_hi"
 repository = "https://github.com/arcnmx/nvapi-rs"
-readme = "README.md"
+readme = "../README.md"
 license = "MIT"
 
 [dependencies]
-nvapi-sys = { version = "0.0.2", path = "sys" }
+nvapi = { version = "^0.0.2", path = "../" }
 serde = { version = "^1.0.0", optional = true }
 serde_derive = { version = "^1.0.0", optional = true }
-void = "1.0.2"
 
 [features]
-serde_types = ["serde", "serde_derive", "nvapi-sys/serde_types"]
+serde_types = ["serde", "serde_derive", "nvapi/serde_types"]
 default = ["serde_types"]

@@ -124,6 +124,12 @@ pub mod private {
 
     pub const NVAPI_MAX_PROCESSES: usize = 128;
 
+    nvapi! {
+        pub type GPU_GetShaderPipeCountFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pCount: *mut u32) -> NvAPI_Status;
+
+        pub unsafe fn NvAPI_GPU_GetShaderPipeCount;
+    }
+
     nvenum! {
         /// Undocumented function NvAPI_GPU_GetRamType()
         pub enum NV_GPU_RAM_TYPE / RamType {
@@ -137,6 +143,7 @@ pub mod private {
             NV_GPU_RAM_DDR3 / DDR3 = 7,
             NV_GPU_RAM_GDDR5 / GDDR5 = 8,
             NV_GPU_RAM_LPDDR2 / LPDDR2 = 9,
+            NV_GPU_RAM_GDDR5X / GDDR5X = 10,
         }
     }
 
@@ -208,5 +215,28 @@ pub mod private {
 
     nvapi! {
         pub unsafe fn NvAPI_GPU_GetFBWidthAndLocation(hPhysicalGpu: NvPhysicalGpuHandle, pWidth: *mut u32, pLocation: *mut u32) -> NvAPI_Status;
+    }
+
+    nvenum! {
+        pub enum NV_GPU_VENDOR / VendorId {
+            NV_GPU_VENDOR_ASUS / ASUS = 0x1043,
+            NV_GPU_VENDOR_ELSA / Elsa = 0x1048,
+            NV_GPU_VENDOR_LEADTEK / Leadtek = 0x107d,
+            NV_GPU_VENDOR_GAINWARD / Gainward = 0x10b0,
+            NV_GPU_VENDOR_NVIDIA / NVIDIA = 0x10de,
+            NV_GPU_VENDOR_GIGABYTE / Gigabyte = 0x1458,
+            NV_GPU_VENDOR_MSI / MSI = 0x1462,
+            NV_GPU_VENDOR_PNY_ / PNY_ = 0x154b, // maybe storage devices
+            NV_GPU_VENDOR_PALIT / Palit = 0x1569,
+            NV_GPU_VENDOR_XFX / XFX = 0x1682,
+            NV_GPU_VENDOR_CLUB3D / Club3D = 0x196d,
+            NV_GPU_VENDOR_PNY / PNY = 0x196e,
+            NV_GPU_VENDOR_ZOTAC / Zotac = 0x19da,
+            NV_GPU_VENDOR_BFG / BFG = 0x19f1,
+            NV_GPU_VENDOR_POV / PoV = 0x1acc,
+            NV_GPU_VENDOR_GALAX / Galax = 0x1b4c, // KFA2 in EU
+            NV_GPU_VENDOR_EVGA / EVGA = 0x3842,
+            NV_GPU_VENDOR_COLORFUL / Colorful = 0x7377,
+        }
     }
 }

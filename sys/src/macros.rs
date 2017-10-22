@@ -75,6 +75,7 @@ macro_rules! nvenum {
         )*
 
         $(#[$meta])*
+        #[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
         #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
         #[repr(i32)]
         pub enum $enum_name {

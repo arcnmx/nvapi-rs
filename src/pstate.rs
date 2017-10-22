@@ -2,12 +2,10 @@ use std::collections::BTreeMap;
 use void::{Void, ResultVoidExt};
 use sys::gpu::pstate;
 use sys;
-use types::{Microvolts, MicrovoltsDelta, Kilohertz, KilohertzDelta, Percentage, RawConversion};
+use types::{Microvolts, MicrovoltsDelta, Kilohertz, KilohertzDelta, Percentage, Range, Delta, RawConversion};
 use clock::ClockDomain;
 
-pub type PState = pstate::PstateId;
-
-pub type VoltageDomain = pstate::VoltageInfoDomain;
+pub use sys::gpu::pstate::{PstateId as PState, VoltageInfoDomain as VoltageDomain, UtilizationDomain};
 
 #[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct PStateSettings {
@@ -25,13 +23,6 @@ pub struct PStates {
 }
 
 #[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
-pub struct Delta<T> {
-    pub value: T,
-    pub min: T,
-    pub max: T,
-}
-
-#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub enum ClockEntry {
     Single {
         domain: ClockDomain,
@@ -43,12 +34,33 @@ pub enum ClockEntry {
         domain: ClockDomain,
         editable: bool,
         frequency_delta: Delta<KilohertzDelta>,
-        min_frequency: Kilohertz,
-        max_frequency: Kilohertz,
+        frequency_range: Range<Kilohertz>,
         voltage_domain: VoltageDomain,
-        min_voltage: Microvolts,
-        max_voltage: Microvolts,
+        voltage_range: Range<Microvolts>,
     },
+}
+
+impl ClockEntry {
+    pub fn domain(&self) -> ClockDomain {
+        match *self {
+            ClockEntry::Single { domain, .. } => domain,
+            ClockEntry::Range { domain, .. } => domain,
+        }
+    }
+
+    pub fn editable(&self) -> bool {
+        match *self {
+            ClockEntry::Single { editable, .. } => editable,
+            ClockEntry::Range { editable, .. } => editable,
+        }
+    }
+
+    pub fn frequency_delta(&self) -> Delta<KilohertzDelta> {
+        match *self {
+            ClockEntry::Single { frequency_delta, .. } => frequency_delta,
+            ClockEntry::Range { frequency_delta, .. } => frequency_delta,
+        }
+    }
 }
 
 #[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
@@ -93,10 +105,12 @@ impl RawConversion for pstate::NV_GPU_PERF_PSTATE20_BASE_VOLTAGE_ENTRY_V1 {
             editable: self.bIsEditable.get(),
             voltage: Microvolts(self.volt_uV),
             voltage_delta: match self.voltDelta_uV.convert_raw().void_unwrap() {
-                Delta { value, min, max } => Delta {
+                Delta { value, range } => Delta {
                     value: MicrovoltsDelta(value.0),
-                    min: MicrovoltsDelta(min.0),
-                    max: MicrovoltsDelta(max.0),
+                    range: Range {
+                        min: MicrovoltsDelta(range.min.0),
+                        max: MicrovoltsDelta(range.max.0),
+                    },
                 },
             },
         })
@@ -119,11 +133,15 @@ impl RawConversion for pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_V1 {
                 domain: ClockDomain::from_raw(self.domainId)?,
                 editable: self.bIsEditable.get(),
                 frequency_delta: self.freqDelta_kHz.convert_raw().void_unwrap(),
-                min_frequency: Kilohertz(range.minFreq_kHz),
-                max_frequency: Kilohertz(range.maxFreq_kHz),
+                frequency_range: Range {
+                    min: Kilohertz(range.minFreq_kHz),
+                    max: Kilohertz(range.maxFreq_kHz),
+                },
                 voltage_domain: VoltageDomain::from_raw(range.domainId)?,
-                min_voltage: Microvolts(range.minVoltage_uV),
-                max_voltage: Microvolts(range.maxVoltage_uV),
+                voltage_range: Range {
+                    min: Microvolts(range.minVoltage_uV),
+                    max: Microvolts(range.maxVoltage_uV),
+                },
             },
         })
     }
@@ -136,8 +154,10 @@ impl RawConversion for pstate::NV_GPU_PERF_PSTATES20_PARAM_DELTA {
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         Ok(Delta {
             value: KilohertzDelta(self.value),
-            min: KilohertzDelta(self.min),
-            max: KilohertzDelta(self.max),
+            range: Range {
+                min: KilohertzDelta(self.min),
+                max: KilohertzDelta(self.max),
+            },
         })
     }
 }
