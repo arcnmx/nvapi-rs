@@ -12,7 +12,7 @@ readme = "../README.md"
 license = "MIT"
 
 [dependencies]
-nvapi = { version = "^0.0.2", path = "../" }
+nvapi = { version = "^0.0.2", path = "../", default-features = false }
 serde = { version = "^1.0.0", optional = true }
 serde_derive = { version = "^1.0.0", optional = true }
 
