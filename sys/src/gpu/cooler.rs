@@ -27,12 +27,20 @@ pub mod private {
         }
     }
 
+    nvenum_display! {
+        CoolerType => _
+    }
+
     nvenum! {
         pub enum NV_COOLER_CONTROLLER / CoolerController {
             NVAPI_COOLER_CONTROLLER_NONE / None = 0,
             NVAPI_COOLER_CONTROLLER_ADI / ADI = 1,
             NVAPI_COOLER_CONTROLLER_INTERNAL / Internal = 2,
         }
+    }
+
+    nvenum_display! {
+        CoolerController => _
     }
 
     nvenum! {
@@ -48,9 +56,19 @@ pub mod private {
             NVAPI_COOLER_POLICY_TEMPERATURE_CONTINUOUS / TemperatureContinuous = 8,
             /// Hybrid of performance and temperature levels.
             NVAPI_COOLER_POLICY_HYBRID / Hybrid = 9, // are you sure this isn't just a bitmask?
-            NVAPI_COOLER_POLICY_UNKNOWN_16 / Unknown16 = 16,
+            /// Fan turns off at idle, default of MSI Gaming X
+            NVAPI_COOLER_POLICY_SILENT / Silent = 16,
+            /// Apparently a default of some GPUs
             NVAPI_COOLER_POLICY_UNKNOWN_32 / Unknown32 = 32,
-            // TODO: Default = 32 ??
+        }
+    }
+
+    nvenum_display! {
+        CoolerPolicy => {
+            TemperatureDiscrete = "Discrete Thermal",
+            TemperatureContinuous = "Continuous Thermal",
+            Silent = "Silent",
+            _ = _,
         }
     }
 
@@ -65,6 +83,14 @@ pub mod private {
         }
     }
 
+    nvenum_display! {
+        CoolerTarget => {
+            GPU = "Core",
+            PowerSupply = "VRM",
+            _ = _,
+        }
+    }
+
     nvenum! {
         pub enum NV_COOLER_CONTROL / CoolerControl {
             NVAPI_COOLER_CONTROL_NONE / None = 0,
@@ -73,6 +99,10 @@ pub mod private {
             /// Suppports variable control.
             NVAPI_COOLER_CONTROL_VARIABLE / Variable = 2,
         }
+    }
+
+    nvenum_display! {
+        CoolerControl => _
     }
 
     nvenum! {

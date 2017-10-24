@@ -24,22 +24,41 @@ nvenum! {
     }
 }
 
+nvenum_display! {
+    ThermalTarget => {
+        Gpu = "Core",
+        Memory = "Memory",
+        PowerSupply = "VRM",
+        VcdBoard = "VCD Board",
+        VcdInlet = "VCD Inlet",
+        VcdOutlet = "VCD Outlet",
+        _ = _,
+    }
+}
+
 nvenum! {
     /// NV_GPU_THERMAL_SETTINGS
     pub enum NV_THERMAL_CONTROLLER / ThermalController {
         NVAPI_THERMAL_CONTROLLER_NONE / None = 0,
         NVAPI_THERMAL_CONTROLLER_GPU_INTERNAL / GpuInternal = 1,
-        NVAPI_THERMAL_CONTROLLER_ADM1032 / Adm1032 = 2,
-        NVAPI_THERMAL_CONTROLLER_MAX6649 / Max6649 = 3,
-        NVAPI_THERMAL_CONTROLLER_MAX1617 / Max1617 = 4,
-        NVAPI_THERMAL_CONTROLLER_LM99 / Lm99 = 5,
-        NVAPI_THERMAL_CONTROLLER_LM89 / Lm89 = 6,
-        NVAPI_THERMAL_CONTROLLER_LM64 / Lm64 = 7,
-        NVAPI_THERMAL_CONTROLLER_ADT7473 / Adt7473 = 8,
-        NVAPI_THERMAL_CONTROLLER_SBMAX6649 / Sbmax6649 = 9,
-        NVAPI_THERMAL_CONTROLLER_VBIOSEVT / VbiosEvt = 10,
+        NVAPI_THERMAL_CONTROLLER_ADM1032 / ADM1032 = 2,
+        NVAPI_THERMAL_CONTROLLER_MAX6649 / MAX6649 = 3,
+        NVAPI_THERMAL_CONTROLLER_MAX1617 / MAX1617 = 4,
+        NVAPI_THERMAL_CONTROLLER_LM99 / LM99 = 5,
+        NVAPI_THERMAL_CONTROLLER_LM89 / LM89 = 6,
+        NVAPI_THERMAL_CONTROLLER_LM64 / LM64 = 7,
+        NVAPI_THERMAL_CONTROLLER_ADT7473 / ADT7473 = 8,
+        NVAPI_THERMAL_CONTROLLER_SBMAX6649 / SBMAX6649 = 9,
+        NVAPI_THERMAL_CONTROLLER_VBIOSEVT / VBIOSEVT = 10,
         NVAPI_THERMAL_CONTROLLER_OS / OS = 11,
         NVAPI_THERMAL_CONTROLLER_UNKNOWN / Unknown = -1,
+    }
+}
+
+nvenum_display! {
+    ThermalController => {
+        GpuInternal = "Internal",
+        _ = _,
     }
 }
 

@@ -19,6 +19,10 @@ nvenum! {
     }
 }
 
+nvenum_display! {
+    PublicClockId => _
+}
+
 nvstruct! {
     /// Used in NvAPI_GPU_GetAllClockFrequencies()
     pub struct NV_GPU_CLOCK_FREQUENCIES_V1 {
@@ -60,6 +64,10 @@ nvenum! {
         NV_GPU_CLOCK_FREQUENCIES_BOOST_CLOCK / Boost = 2,
         NV_GPU_CLOCK_FREQUENCIES_CLOCK_TYPE_NUM / Count = 3,
     }
+}
+
+nvenum_display! {
+    ClockFrequencyType => _
 }
 
 nvstruct! {
@@ -275,5 +283,48 @@ pub mod private {
     nvapi! {
         /// Pascal only
         pub unsafe fn NvAPI_GPU_GetClockBoostMask(hPhysicalGPU: NvPhysicalGpuHandle, pClockMasks: *mut NV_CLOCK_MASKS) -> NvAPI_Status;
+    }
+
+    nvenum! {
+        pub enum NV_GPU_CLOCK_LOCK_MODE / ClockLockMode {
+            NVAPI_GPU_CLOCK_LOCK_NONE / None = 0,
+            NVAPI_GPU_CLOCK_LOCK_MANUAL / Manual = 3,
+        }
+    }
+
+    nvstruct! {
+        pub struct NV_CLOCK_LOCK_ENTRY {
+            pub id: u32, // entry index
+            pub b: u32, // 0
+            pub mode: NV_GPU_CLOCK_LOCK_MODE, // 0 = default, 3 = manual voltage
+            pub d: u32, // 0
+            pub voltage_uV: u32, // 0 unless set explicitly, seems to always get set on the last/highest entry only
+            pub f: u32, // 0
+        }
+    }
+
+    nvstruct! {
+        // 2-030c: 0C 03 02 00 00 00 00 00 01 00 00 00 06 00 00 00
+        pub struct NV_CLOCK_LOCK_V2 {
+            pub version: u32,
+            pub flags: u32, // unknown, only see 0
+            pub count: u32,
+            pub entries: [NV_CLOCK_LOCK_ENTRY; 0x20],
+        }
+    }
+
+    pub type NV_CLOCK_LOCK = NV_CLOCK_LOCK_V2;
+
+    nvversion! { NV_CLOCK_LOCK_VER_2(NV_CLOCK_LOCK_V2 = 0x30c, 2) }
+    nvversion! { NV_CLOCK_LOCK_VER = NV_CLOCK_LOCK_VER_2 }
+
+    nvapi! {
+        /// Pascal only
+        pub unsafe fn NvAPI_GPU_GetClockBoostLock(hPhysicalGPU: NvPhysicalGpuHandle, pClockLocks: *mut NV_CLOCK_LOCK) -> NvAPI_Status;
+    }
+
+    nvapi! {
+        /// Pascal only
+        pub unsafe fn NvAPI_GPU_SetClockBoostLock(hPhysicalGPU: NvPhysicalGpuHandle, pClockLocks: *const NV_CLOCK_LOCK) -> NvAPI_Status;
     }
 }

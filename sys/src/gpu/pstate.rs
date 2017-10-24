@@ -47,6 +47,26 @@ nvenum! {
     }
 }
 
+nvenum_display! {
+    UtilizationDomain => {
+        FrameBuffer = "Frame Buffer",
+        VideoEngine = "Video Engine",
+        BusInterface = "Bus Interface",
+        _ = _,
+    }
+}
+
+impl UtilizationDomain {
+    pub fn from_clock(c: clock::PublicClockId) -> Option<Self> {
+        match c {
+            clock::PublicClockId::Graphics => Some(UtilizationDomain::Graphics),
+            clock::PublicClockId::Memory => Some(UtilizationDomain::FrameBuffer),
+            clock::PublicClockId::Video => Some(UtilizationDomain::VideoEngine),
+            _ => None,
+        }
+    }
+}
+
 nvversion! { NV_GPU_DYNAMIC_PSTATES_INFO_EX_VER(NV_GPU_DYNAMIC_PSTATES_INFO_EX = 4 * 2 + (4 * 2) * NVAPI_MAX_GPU_UTILIZATIONS, 1) }
 
 nvapi! {
@@ -88,6 +108,10 @@ nvenum! {
     }
 }
 
+nvenum_display! {
+    PstateId => _
+}
+
 nvapi! {
     pub type GPU_GetCurrentPstateFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pCurrentPstate: *mut NV_GPU_PERF_PSTATE_ID) -> NvAPI_Status;
 
@@ -101,6 +125,10 @@ nvenum! {
         // 1 - 15?
         NVAPI_GPU_PERF_VOLTAGE_INFO_DOMAIN_UNDEFINED / Undefined = clock::NVAPI_MAX_GPU_PERF_VOLTAGES,
     }
+}
+
+nvenum_display! {
+    VoltageInfoDomain => _
 }
 
 nvenum! {

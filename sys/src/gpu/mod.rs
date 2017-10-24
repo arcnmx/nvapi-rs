@@ -94,6 +94,10 @@ nvenum! {
     }
 }
 
+nvenum_display! {
+    SystemType => _
+}
+
 nvapi! {
     pub type GPU_GetSystemTypeFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pSystemType: *mut NV_SYSTEM_TYPE) -> NvAPI_Status;
 
@@ -121,6 +125,7 @@ nvapi! {
 pub mod private {
     use status::NvAPI_Status;
     use handles::NvPhysicalGpuHandle;
+    use types;
 
     pub const NVAPI_MAX_PROCESSES: usize = 128;
 
@@ -133,7 +138,7 @@ pub mod private {
     nvenum! {
         /// Undocumented function NvAPI_GPU_GetRamType()
         pub enum NV_GPU_RAM_TYPE / RamType {
-            NV_GPU_RAM_NONE / None = 0,
+            NV_GPU_RAM_UNKNOWN / Unknown = 0,
             NV_GPU_RAM_SDRAM / SDRAM = 1,
             NV_GPU_RAM_DDR1 / DDR1 = 2,
             NV_GPU_RAM_DDR2 / DDR2 = 3,
@@ -147,6 +152,10 @@ pub mod private {
         }
     }
 
+    nvenum_display! {
+        RamType => _
+    }
+
     nvapi! {
         pub type GPU_GetRamTypeFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pMemType: *mut NV_GPU_RAM_TYPE) -> NvAPI_Status;
 
@@ -158,7 +167,7 @@ pub mod private {
     nvenum! {
         /// Undocumented function NvAPI_GPU_GetRamMaker()
         pub enum NV_GPU_RAM_MAKER / RamMaker {
-            NV_GPU_RAM_MAKER_NONE / None = 0,
+            NV_GPU_RAM_MAKER_UNKNOWN / Unknown = 0,
             NV_GPU_RAM_MAKER_SAMSUNG / Samsung = 1,
             NV_GPU_RAM_MAKER_QIMONDA / Qimonda = 2,
             NV_GPU_RAM_MAKER_ELPIDA / Elpida = 3,
@@ -170,6 +179,10 @@ pub mod private {
             NV_GPU_RAM_MAKER_ELITE / Elite = 9,
             NV_GPU_RAM_MAKER_MICRON / Micron = 10,
         }
+    }
+
+    nvenum_display! {
+        RamMaker => _
     }
 
     nvapi! {
@@ -196,13 +209,25 @@ pub mod private {
     nvenum! {
         /// Undocumented function NvAPI_GPU_GetFoundry()
         pub enum NV_GPU_FOUNDRY / Foundry {
-            NV_GPU_FOUNDRY_NONE / None = 0,
+            NV_GPU_FOUNDRY_UNKNOWN / Unknown = 0,
             NV_GPU_FOUNDRY_TSMC / TSMC = 1,
             NV_GPU_FOUNDRY_UMC / UMC = 2,
             NV_GPU_FOUNDRY_IBM / IBM = 3,
             NV_GPU_FOUNDRY_SMIC / SMIC = 4,
             NV_GPU_FOUNDRY_CSM / CSM = 5,
             NV_GPU_FOUNDRY_TOSHIBA / Toshiba = 6,
+        }
+    }
+
+    nvenum_display! {
+        Foundry => {
+            TSMC = "Taiwan Semiconductor Manufacturing Company (TSMC)",
+            UMC = "United Microelectronics Corporation (UMC)",
+            IBM = "IBM Microelectronics",
+            SMIC = "Semiconductor Manufacturing International Corporation (SMIC)",
+            CSM = "Chartered Semiconductor Manufacturing (CSM)",
+            Toshiba = "Toshiba Corporation",
+            _ = _,
         }
     }
 
@@ -219,6 +244,7 @@ pub mod private {
 
     nvenum! {
         pub enum NV_GPU_VENDOR / VendorId {
+            NV_GPU_VENDOR_UNKNOWN / Unknown = 0,
             NV_GPU_VENDOR_ASUS / ASUS = 0x1043,
             NV_GPU_VENDOR_ELSA / Elsa = 0x1048,
             NV_GPU_VENDOR_LEADTEK / Leadtek = 0x107d,
@@ -238,5 +264,32 @@ pub mod private {
             NV_GPU_VENDOR_EVGA / EVGA = 0x3842,
             NV_GPU_VENDOR_COLORFUL / Colorful = 0x7377,
         }
+    }
+
+    nvenum_display! {
+        VendorId => {
+            ASUS = "ASUSTeK Computer Inc.",
+            Gigabyte = "Gigabyte Technology",
+            MSI = "Micro-Star International",
+            PNY_ = "PNY",
+            Galax = "Galax / KFA2",
+            _ = _,
+        }
+    }
+
+    nvapi! {
+        pub unsafe fn NvAPI_GetGPUIDFromPhysicalGPU(hPhysicalGpu: NvPhysicalGpuHandle, gpuid: *mut u32) -> NvAPI_Status;
+    }
+
+    nvapi! {
+        pub unsafe fn NvAPI_GPU_GetShortName(hPhysicalGpu: NvPhysicalGpuHandle, pName: *mut types::NvAPI_ShortString) -> NvAPI_Status;
+    }
+
+    nvapi! {
+        pub unsafe fn NvAPI_GPU_GetPartitionCount(hPhysicalGpu: NvPhysicalGpuHandle, pPartitionCount: *mut u32) -> NvAPI_Status;
+    }
+
+    nvapi! {
+        pub unsafe fn NvAPI_GetDriverModel(hPhysicalGpu: NvPhysicalGpuHandle, pDriverModel: *mut u32) -> NvAPI_Status;
     }
 }

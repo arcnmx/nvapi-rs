@@ -21,7 +21,7 @@ pub mod private {
 
     nvapi! {
         /// Pascal only
-        pub unsafe fn NvAPI_GPU_GetCurrentVoltage(pPhysicalGPU: NvPhysicalGpuHandle, pVoltageStatus: *mut NV_VOLTAGE_STATUS) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GPU_GetCurrentVoltage(hPhysicalGPU: NvPhysicalGpuHandle, pVoltageStatus: *mut NV_VOLTAGE_STATUS) -> NvAPI_Status;
     }
 
     nvstruct! {
@@ -39,12 +39,12 @@ pub mod private {
 
     nvapi! {
         /// Pascal only
-        pub unsafe fn NvAPI_GPU_GetCoreVoltageBoostPercent(pPhysicalGPU: NvPhysicalGpuHandle, pVoltboostPercent: *mut NV_VOLTAGE_BOOST_PERCENT) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GPU_GetCoreVoltageBoostPercent(hPhysicalGPU: NvPhysicalGpuHandle, pVoltboostPercent: *mut NV_VOLTAGE_BOOST_PERCENT) -> NvAPI_Status;
     }
 
     nvapi! {
         /// Pascal only
-        pub unsafe fn NvAPI_GPU_SetCoreVoltageBoostPercent(pPhysicalGPU: NvPhysicalGpuHandle, pVoltboostPercent: *const NV_VOLTAGE_BOOST_PERCENT) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GPU_SetCoreVoltageBoostPercent(hPhysicalGPU: NvPhysicalGpuHandle, pVoltboostPercent: *const NV_VOLTAGE_BOOST_PERCENT) -> NvAPI_Status;
     }
 
     nvstruct! {
@@ -94,7 +94,7 @@ pub mod private {
 
     nvapi! {
         /// Pascal only
-        pub unsafe fn NvAPI_GPU_GetVFPCurve(pPhysicalGPU: NvPhysicalGpuHandle, pVfpCurve: *mut NV_VFP_CURVE) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GPU_GetVFPCurve(hPhysicalGPU: NvPhysicalGpuHandle, pVfpCurve: *mut NV_VFP_CURVE) -> NvAPI_Status;
     }
 
     nvstruct! {
@@ -129,7 +129,7 @@ pub mod private {
     nvversion! { NV_GPU_POWER_INFO_VER = NV_GPU_POWER_INFO_VER_1 }
 
     nvapi! {
-        pub unsafe fn NvAPI_GPU_ClientPowerPoliciesGetInfo(pPhysicalGPU: NvPhysicalGpuHandle, pPowerInfo: *mut NV_GPU_POWER_INFO) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GPU_ClientPowerPoliciesGetInfo(hPhysicalGPU: NvPhysicalGpuHandle, pPowerInfo: *mut NV_GPU_POWER_INFO) -> NvAPI_Status;
     }
 
     nvstruct! {
@@ -155,11 +155,11 @@ pub mod private {
     nvversion! { NV_GPU_POWER_STATUS_VER = NV_GPU_POWER_STATUS_VER_1 }
 
     nvapi! {
-        pub unsafe fn NvAPI_GPU_ClientPowerPoliciesGetStatus(pPhysicalGPU: NvPhysicalGpuHandle, pPowerStatus: *mut NV_GPU_POWER_STATUS) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GPU_ClientPowerPoliciesGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pPowerStatus: *mut NV_GPU_POWER_STATUS) -> NvAPI_Status;
     }
 
     nvapi! {
-        pub unsafe fn NvAPI_GPU_ClientPowerPoliciesSetStatus(pPhysicalGPU: NvPhysicalGpuHandle, pPowerStatus: *const NV_GPU_POWER_STATUS) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GPU_ClientPowerPoliciesSetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pPowerStatus: *const NV_GPU_POWER_STATUS) -> NvAPI_Status;
     }
 
     nvstruct! {
@@ -185,6 +185,84 @@ pub mod private {
     nvversion! { NV_GPU_POWER_TOPO_VER = NV_GPU_POWER_TOPO_VER_1 }
 
     nvapi! {
-        pub unsafe fn NvAPI_GPU_ClientPowerTopologyGetStatus(pPhysicalGPU: NvPhysicalGpuHandle, pPowerTopo: *mut NV_GPU_POWER_TOPO) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GPU_ClientPowerTopologyGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pPowerTopo: *mut NV_GPU_POWER_TOPO) -> NvAPI_Status;
+    }
+
+    nvbits! {
+        pub enum NV_GPU_PERF_FLAGS / PerfFlags {
+            NV_GPU_PERF_FLAGS_POWER_LIMIT / POWER_LIMIT = 1,
+            NV_GPU_PERF_FLAGS_TEMPERATURE_LIMIT / TEMPERATURE_LIMIT = 2,
+            NV_GPU_PERF_FLAGS_VOLTAGE_LIMIT / VOLTAGE_LIMIT = 4,
+            /// Seen once with driver crash where flags = 0x0f
+            NV_GPU_PERF_FLAGS_UNKNOWN_8 / UNKNOWN_8 = 8,
+            NV_GPU_PERF_FLAGS_NO_LOAD_LIMIT / NO_LOAD_LIMIT = 16,
+            /// Never seen this
+            NV_GPU_PERF_FLAGS_UNKNOWN_32 / UNKNOWN_32 = 32,
+        }
+    }
+
+    nvenum_display! {
+        PerfFlags => {
+            POWER_LIMIT = "Power",
+            TEMPERATURE_LIMIT = "Temperature",
+            VOLTAGE_LIMIT = "Voltage",
+            UNKNOWN_8 = "Unknown8",
+            NO_LOAD_LIMIT = "No Load",
+            UNKNOWN_32 = "Unknown32",
+            _ = _,
+        }
+    }
+
+    nvstruct! {
+        pub struct NV_GPU_PERF_INFO_V1 {
+            pub version: u32,
+            pub maxUnknown: u32,
+            pub limitSupport: NV_GPU_PERF_FLAGS,
+            pub padding: [u32; 16],
+        }
+    }
+
+    pub type NV_GPU_PERF_INFO = NV_GPU_PERF_INFO_V1;
+
+    nvversion! { NV_GPU_PERF_INFO_VER_1(NV_GPU_PERF_INFO_V1 = 76, 1) }
+    nvversion! { NV_GPU_PERF_INFO_VER = NV_GPU_PERF_INFO_VER_1 }
+
+    nvapi! {
+        pub unsafe fn NvAPI_GPU_PerfPoliciesGetInfo(hPhysicalGPU: NvPhysicalGpuHandle, pPerfInfo: *mut NV_GPU_PERF_INFO) -> NvAPI_Status;
+    }
+
+    debug_array_impl! { [u32; 326] }
+
+    nvstruct! {
+        pub struct NV_GPU_PERF_STATUS_V1 {
+            pub version: u32,
+            pub flags: u32,
+            /// nanoseconds
+            pub timer: u64,
+            /// - 1 = power limit
+            /// - 2 = temp limit
+            /// - 4 = voltage limit
+            /// - 8 = only got with 15 in driver crash
+            /// - 16 = no-load limit
+            pub limits: NV_GPU_PERF_FLAGS,
+            pub zero0: u32,
+            /// - 1 on load
+            /// - 3 in low clocks
+            /// - 7 in idle
+            pub unknown: u32,
+            pub zero1: u32,
+            /// nanoseconds
+            pub timers: [u64; 3],
+            pub padding: Array<[u32; 326]>,
+        }
+    }
+
+    pub type NV_GPU_PERF_STATUS = NV_GPU_PERF_STATUS_V1;
+
+    nvversion! { NV_GPU_PERF_STATUS_VER_1(NV_GPU_PERF_STATUS_V1 = 0x550, 1) }
+    nvversion! { NV_GPU_PERF_STATUS_VER = NV_GPU_PERF_STATUS_VER_1 }
+
+    nvapi! {
+        pub unsafe fn NvAPI_GPU_PerfPoliciesGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pPerfStatus: *mut NV_GPU_PERF_STATUS) -> NvAPI_Status;
     }
 }

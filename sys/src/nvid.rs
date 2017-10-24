@@ -530,7 +530,7 @@ NvAPI_D3D1x_IFR_TransferRenderTarget = 0x9fbae4eb,
 
 NvAPI_GetPhysicalGPUFromDisplay = 0x1890e8da,
 NvAPI_GetPhysicalGPUFromGPUID = 0x5380ad1a,
-NvAPI_GetGPUIDfromPhysicalGPU = 0x6533ea3e,
+NvAPI_GetGPUIDFromPhysicalGPU = 0x6533ea3e,
 
 NvAPI_GetInfoFrameStatePvt = 0x7fc17574,
 NvAPI_GPU_GetMemoryInfo = 0x07f9b368,
@@ -618,8 +618,8 @@ NvAPI_GPU_GetClockBoostMask = 0x507b4b59,
 NvAPI_GPU_GetClockBoostTable = 0x23f1b133,
 NvAPI_GPU_SetClockBoostTable = 0x0733e009,
 NvAPI_GPU_GetVFPCurve = 0x21537ad4,
-Unknown_NvAPI_CurveGet = 0xe440b867, // NVAPI_ID_CURVE_GET
-Unknown_NvAPI_CurveSet = 0x39442cfb, // NVAPI_ID_CURVE_SET
+NvAPI_GPU_GetClockBoostLock = 0xe440b867, // unknown name, NVAPI_ID_CURVE_GET
+NvAPI_GPU_SetClockBoostLock = 0x39442cfb, // unknown name, NVAPI_ID_CURVE_SET
 NvAPI_GPU_GetCoreVoltageBoostPercent = 0x9df23ca1,
 NvAPI_GPU_SetCoreVoltageBoostPercent = 0xb9306d9b,
 

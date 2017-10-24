@@ -116,6 +116,88 @@ macro_rules! nvenum {
     };
 }
 
+macro_rules! nvbits {
+    (
+        $(#[$meta:meta])*
+        pub enum $enum:ident / $enum_name:ident {
+            $(
+                $(#[$($metai:tt)*])*
+                $symbol:ident / $name:ident = $value:expr,
+            )*
+        }
+    ) => {
+        $(#[$meta])*
+        pub type $enum = u32;
+        $(
+            $(#[$($metai)*])*
+            pub const $symbol: $enum = $value as _;
+        )*
+
+        bitflags! {
+            $(#[$meta])*
+            #[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+            pub struct $enum_name: $enum {
+            $(
+                $(#[$($metai)*])*
+                const $name = $value;
+            )*
+            }
+        }
+
+        impl Iterator for $enum_name {
+            type Item = Self;
+
+            fn next(&mut self) -> Option<Self::Item> {
+                $(
+                    if self.contains($enum_name::$name) {
+                        self.remove($enum_name::$name);
+                        Some($enum_name::$name)
+                    } else
+                 )*
+                { None }
+            }
+        }
+    };
+}
+
+macro_rules! nvenum_display {
+    ($enum:ident => _) => {
+        impl ::std::fmt::Display for $enum {
+            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+                ::std::fmt::Debug::fmt(self, f)
+            }
+        }
+    };
+    ($enum:ident => {
+        $(
+            $name:tt = $value:tt,
+        )*
+    }) => {
+        impl ::std::fmt::Display for $enum {
+            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+                match *self {
+                $(
+                    nvenum_display!(@q $enum $name) => nvenum_display!(@expr self f $value),
+                    //$enum::$name => nvenum_display!(@expr self f $value),
+                )*
+                }
+            }
+        }
+    };
+    (@q $enum:ident _) => {
+        _
+    };
+    (@q $enum:ident $name:ident) => {
+        $enum::$name
+    };
+    (@expr $this:tt $fmt:ident _) => {
+        ::std::fmt::Debug::fmt($this, $fmt)
+    };
+    (@expr $this:tt $fmt:ident $expr:expr) => {
+        write!($fmt, "{}", $expr)
+    };
+}
+
 macro_rules! nvapi {
     (
         $(#[$meta:meta])*

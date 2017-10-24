@@ -5,6 +5,8 @@
 extern crate winapi;
 #[cfg(all(windows, not(feature = "winapi3")))]
 extern crate kernel32;
+#[macro_use]
+extern crate bitflags;
 
 #[cfg(feature = "serde_derive")]
 #[macro_use]
