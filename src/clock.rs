@@ -3,9 +3,11 @@ use std::{iter, slice};
 use sys::gpu::{clock, power};
 use sys;
 use void::Void;
-use types::{Kilohertz, Kilohertz2, Kilohertz2Delta, Percentage, Percentage1000, Microvolts, CelsiusShifted, Range, RawConversion};
+use types::{Kilohertz, Kilohertz2, KilohertzDelta, Kilohertz2Delta, Percentage, Percentage1000, Microvolts, CelsiusShifted, Range, RawConversion};
 
 pub use sys::gpu::clock::PublicClockId as ClockDomain;
+pub use sys::gpu::clock::private::ClockLockMode;
+pub use sys::gpu::power::private::PerfFlags;
 
 impl RawConversion for clock::NV_GPU_CLOCK_FREQUENCIES {
     type Target = BTreeMap<ClockDomain, Kilohertz>;
@@ -34,14 +36,16 @@ impl RawConversion for clock::private::NV_USAGES_INFO {
     }
 }
 
-#[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub enum VfpMaskType {
     Graphics,
     Memory,
     Unknown,
 }
 
-#[derive(Debug, Clone)]
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct VfpMask {
     pub mask: [u32; 4],
     pub types: Vec<VfpMaskType>,
@@ -159,14 +163,15 @@ impl RawConversion for clock::private::NV_CLOCK_MASKS {
     }
 }
 
-#[derive(Debug, Clone)]
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct ClockTable {
     pub gpu_delta: Vec<(usize, Kilohertz2Delta)>,
-    pub mem_delta: Vec<(usize, Kilohertz2Delta)>,
+    pub mem_delta: Vec<(usize, KilohertzDelta)>,
 }
 
 impl RawConversion for clock::private::NV_CLOCK_TABLE_GPU_DELTA {
-    type Target = Kilohertz2Delta;
+    type Target = i32;
     type Error = sys::ArgumentRangeError;
 
     #[allow(non_snake_case)]
@@ -174,7 +179,7 @@ impl RawConversion for clock::private::NV_CLOCK_TABLE_GPU_DELTA {
         match *self {
             clock::private::NV_CLOCK_TABLE_GPU_DELTA {
                 a: 0, b: 0, c: 0, d: 0, e: 0, freqDeltaKHz, g: 0, h: 0, i: 0,
-            } => Ok(Kilohertz2Delta(freqDeltaKHz)),
+            } => Ok(freqDeltaKHz),
             _ => Err(sys::ArgumentRangeError),
         }
     }
@@ -191,19 +196,20 @@ impl RawConversion for clock::private::NV_CLOCK_TABLE {
             gpu_delta: VfpMaskIter::new(&self.mask)
                 .filter(|&i| i < self.gpuDeltas.len())
                 .map(|i| (i, &self.gpuDeltas.inner()[i]))
-                .map(|(i, delta)| delta.convert_raw().map(|delta| (i, delta)))
+                .map(|(i, delta)| delta.convert_raw().map(|delta| (i, delta.into())))
                 .collect::<Result<_, _>>()?,
             mem_delta: self.memFilled.iter().enumerate().filter_map(|(i, &filled)| match filled {
                 1 => Some(Ok(i)),
                 0 => None,
                 _ => Some(Err(sys::ArgumentRangeError)),
-            }).map(|i| i.map(|i| (self.gpuDeltas.len() + i, Kilohertz2Delta(self.memDeltas[i]))))
+            }).map(|i| i.map(|i| (self.gpuDeltas.len() + i, self.memDeltas[i].into())))
             .collect::<Result<_, _>>()?,
         })
     }
 }
 
-#[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct ClockRange {
     pub domain: ClockDomain,
     pub range: Range<Kilohertz2Delta>,
@@ -245,16 +251,27 @@ impl RawConversion for clock::private::NV_CLOCK_RANGES {
     }
 }
 
-#[derive(Debug, Copy, Clone)]
-pub struct VfpEntry {
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
+pub struct VfpEntry<K> {
     /// 1 for idle values / low pstates? only populated for memory clocks
     pub unknown: u32,
-    pub frequency: Kilohertz2,
+    pub frequency: K,
     pub voltage: Microvolts,
 }
 
+impl<T> VfpEntry<T> {
+    pub fn from_entry<K>(e: VfpEntry<K>) -> Self where T: From<K> {
+        VfpEntry {
+            unknown: e.unknown,
+            frequency: e.frequency.into(),
+            voltage: e.voltage,
+        }
+    }
+}
+
 impl RawConversion for power::private::NV_VFP_CURVE_GPU_ENTRY {
-    type Target = VfpEntry;
+    type Target = VfpEntry<u32>;
     type Error = sys::ArgumentRangeError;
 
     #[allow(non_snake_case)]
@@ -264,7 +281,7 @@ impl RawConversion for power::private::NV_VFP_CURVE_GPU_ENTRY {
                 a, freq_kHz, voltage_uV, d: 0, e: 0, f: 0, g: 0,
             } => Ok(VfpEntry {
                 unknown: a,
-                frequency: Kilohertz2(freq_kHz),
+                frequency: freq_kHz,
                 voltage: Microvolts(voltage_uV),
             }),
             _ => Err(sys::ArgumentRangeError),
@@ -272,10 +289,11 @@ impl RawConversion for power::private::NV_VFP_CURVE_GPU_ENTRY {
     }
 }
 
-#[derive(Debug, Clone)]
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct VfpCurve {
-    pub graphics: Vec<(usize, VfpEntry)>,
-    pub memory: Vec<(usize, VfpEntry)>,
+    pub graphics: Vec<(usize, VfpEntry<Kilohertz2>)>,
+    pub memory: Vec<(usize, VfpEntry<Kilohertz>)>,
 }
 
 impl RawConversion for power::private::NV_VFP_CURVE {
@@ -286,11 +304,11 @@ impl RawConversion for power::private::NV_VFP_CURVE {
         Ok(VfpCurve {
             graphics: VfpMaskIter::new(&self.mask)
                 .filter(|&i| i < self.gpuEntries.len())
-                .map(|i| self.gpuEntries[i].convert_raw().map(|e| (i, e)))
+                .map(|i| self.gpuEntries[i].convert_raw().map(|e| (i, VfpEntry::from_entry(e))))
                 .collect::<Result<_, _>>()?,
             memory: VfpMaskIter::new(&self.mask)
                 .filter(|&i| i >= self.gpuEntries.len())
-                .map(|i| self.memEntries[i - self.gpuEntries.len()].convert_raw().map(|e| (i, e)))
+                .map(|i| self.memEntries[i - self.gpuEntries.len()].convert_raw().map(|e| (i, VfpEntry::from_entry(e))))
                 .collect::<Result<_, _>>()?,
         })
     }
@@ -331,14 +349,16 @@ impl RawConversion for power::private::NV_VOLTAGE_BOOST_PERCENT_V1 {
     }
 }
 
-#[derive(Debug, Clone)]
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct PowerInfoEntry {
     pub pstate: ::pstate::PState,
     pub range: Range<Percentage1000>,
     pub default_limit: Percentage1000,
 }
 
-#[derive(Debug, Clone)]
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct PowerInfo {
     pub valid: bool,
     pub entries: Vec<PowerInfoEntry>,
@@ -427,5 +447,88 @@ impl RawConversion for power::private::NV_GPU_POWER_STATUS {
     #[allow(non_snake_case)]
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         self.entries[..self.count as usize].iter().map(RawConversion::convert_raw).collect()
+    }
+}
+
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
+pub struct ClockLockEntry {
+    pub mode: ClockLockMode,
+    pub voltage: Microvolts,
+}
+
+impl RawConversion for clock::private::NV_CLOCK_LOCK_ENTRY {
+    type Target = ClockLockEntry;
+    type Error = sys::ArgumentRangeError;
+
+    #[allow(non_snake_case)]
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        match *self {
+            clock::private::NV_CLOCK_LOCK_ENTRY {
+                id: _id, b: 0, mode, d: 0, voltage_uV, f: 0,
+            } => Ok(ClockLockEntry {
+                mode: ClockLockMode::from_raw(mode)?,
+                voltage: Microvolts(voltage_uV),
+            }),
+            _ => Err(sys::ArgumentRangeError),
+        }
+    }
+}
+
+impl RawConversion for clock::private::NV_CLOCK_LOCK {
+    type Target = BTreeMap<usize, ClockLockEntry>;
+    type Error = sys::ArgumentRangeError;
+
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        if self.flags != 0 {
+            Err(sys::ArgumentRangeError)
+        } else {
+            self.entries[..self.count as usize].iter().map(|v| v.convert_raw().map(|e| (v.id as usize, e))).collect()
+        }
+    }
+}
+
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
+pub struct PerfInfo {
+    pub max_unknown: u32,
+    pub limits: PerfFlags,
+}
+
+impl RawConversion for power::private::NV_GPU_PERF_INFO {
+    type Target = PerfInfo;
+    type Error = sys::ArgumentRangeError;
+
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        // TODO: check padding
+        Ok(PerfInfo {
+            max_unknown: self.maxUnknown,
+            limits: PerfFlags::from_bits(self.limitSupport).ok_or(sys::ArgumentRangeError)?,
+        })
+    }
+}
+
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
+pub struct PerfStatus {
+    pub unknown: u32,
+    pub limits: PerfFlags,
+}
+
+impl RawConversion for power::private::NV_GPU_PERF_STATUS {
+    type Target = PerfStatus;
+    type Error = sys::ArgumentRangeError;
+
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        // TODO: check padding
+        match *self {
+            power::private::NV_GPU_PERF_STATUS {
+                flags: 0, limits, zero0: 0, unknown, zero1: 0, ..
+            } => Ok(PerfStatus {
+                unknown: unknown,
+                limits: PerfFlags::from_bits(limits).ok_or(sys::ArgumentRangeError)?,
+            }),
+            _ => Err(sys::ArgumentRangeError),
+        }
     }
 }

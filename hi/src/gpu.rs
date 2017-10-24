@@ -9,10 +9,11 @@ use nvapi::{self,
 pub use nvapi::{
     PhysicalGpu,
     Vendor, SystemType, RamType, RamMaker, Foundry,
-    ClockFrequencies, ClockDomain, VoltageDomain, Utilizations,
+    ClockFrequencies, ClockDomain, VoltageDomain, UtilizationDomain, Utilizations, ClockLockMode, ClockLockEntry,
     CoolerType, CoolerController, CoolerControl, CoolerPolicy, CoolerTarget, CoolerLevel,
+    PerfInfo, PerfStatus,
     ThermalController, ThermalTarget,
-    MemoryInfo, PciIdentifiers,
+    MemoryInfo, PciIdentifiers, DriverModel,
     Percentage, Celsius,
     Range,
     Kibibytes, Microvolts, MicrovoltsDelta, Kilohertz, KilohertzDelta,
@@ -27,8 +28,10 @@ pub struct Gpu {
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct GpuInfo {
     pub name: String,
+    pub codename: String,
     pub bios_version: String,
-    pub vendor: nvapi::Result<Vendor>,
+    pub driver_model: DriverModel,
+    pub vendor: Vendor,
     pub pci: PciIdentifiers,
     pub memory: MemoryInfo,
     pub system_type: SystemType,
@@ -36,6 +39,7 @@ pub struct GpuInfo {
     pub ram_maker: RamMaker,
     pub ram_bus_width: u32,
     pub ram_bank_count: u32,
+    pub ram_partition_count: u32,
     pub foundry: Foundry,
     pub core_count: u32,
     pub shader_pipe_count: u32,
@@ -44,12 +48,14 @@ pub struct GpuInfo {
     pub boost_clocks: ClockFrequencies,
     pub sensors: Vec<SensorDesc>,
     pub coolers: Vec<CoolerDesc>,
+    pub perf: PerfInfo,
     pub sensor_limits: Vec<SensorLimit>,
     pub power_limits: Vec<PowerLimit>,
     pub pstate_limits: BTreeMap<PState, BTreeMap<ClockDomain, PStateLimit>>,
     // TODO: pstate base_voltages
     pub overvolt_limits: Vec<OvervoltLimit>,
     pub vfp_limits: BTreeMap<ClockDomain, VfpRange>,
+    pub vfp_locks: Vec<usize>,
 }
 
 #[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
@@ -73,13 +79,16 @@ impl From<ClockRange> for VfpRange {
 pub struct GpuStatus {
     pub pstate: PState,
     pub clocks: ClockFrequencies,
+    pub memory: MemoryInfo,
     pub voltage: nvapi::Result<Microvolts>,
     pub tachometer: nvapi::Result<u32>,
     pub utilization: Utilizations,
     pub power: Vec<Percentage>,
     pub sensors: Vec<(SensorDesc, Celsius)>,
     pub coolers: Vec<(CoolerDesc, CoolerStatus)>,
+    pub perf: PerfStatus,
     pub vfp: nvapi::Result<VfpTable>,
+    pub vfp_locks: BTreeMap<usize, Microvolts>,
 }
 
 #[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
@@ -92,6 +101,7 @@ pub struct GpuSettings {
     pub vfp: nvapi::Result<VfpDeltas>,
     pub pstate_deltas: BTreeMap<PState, BTreeMap<ClockDomain, KilohertzDelta>>,
     pub overvolt: Vec<MicrovoltsDelta>,
+    pub vfp_locks: BTreeMap<usize, ClockLockEntry>,
 }
 
 impl Gpu {
@@ -123,16 +133,19 @@ impl Gpu {
 
         Ok(GpuInfo {
             name: self.gpu.full_name()?,
+            codename: self.gpu.short_name()?,
             bios_version: self.gpu.vbios_version_string()?,
-            vendor: pci.vendor().map_err(From::from),
+            driver_model: self.gpu.driver_model()?,
+            vendor: allowable_result_fallback(pci.vendor().map_err(From::from), Vendor::Unknown)?,
             pci: pci,
             memory: self.gpu.memory_info()?,
             system_type: allowable_result_fallback(self.gpu.system_type(), SystemType::Unknown)?,
-            ram_type: allowable_result_fallback(self.gpu.ram_type(), RamType::None)?,
-            ram_maker: allowable_result_fallback(self.gpu.ram_maker(), RamMaker::None)?,
+            ram_type: allowable_result_fallback(self.gpu.ram_type(), RamType::Unknown)?,
+            ram_maker: allowable_result_fallback(self.gpu.ram_maker(), RamMaker::Unknown)?,
             ram_bus_width: allowable_result_fallback(self.gpu.ram_bus_width(), 0)?,
             ram_bank_count: allowable_result_fallback(self.gpu.ram_bank_count(), 0)?,
-            foundry: allowable_result_fallback(self.gpu.foundry(), Foundry::None)?,
+            ram_partition_count: allowable_result_fallback(self.gpu.ram_partition_count(), 0)?,
+            foundry: allowable_result_fallback(self.gpu.foundry(), Foundry::Unknown)?,
             core_count: self.gpu.core_count()?,
             shader_pipe_count: self.gpu.shader_pipe_count()?,
             shader_sub_pipe_count: self.gpu.shader_sub_pipe_count()?,
@@ -146,6 +159,7 @@ impl Gpu {
                 Ok(c) => c.into_iter().map(From::from).collect(),
                 Err(..) => Default::default(),
             },
+            perf: self.gpu.perf_info()?,
             sensor_limits: match allowable_result(self.gpu.thermal_limit_info())? {
                 Ok((_, l)) => l.into_iter().map(From::from).collect(),
                 Err(..) => Default::default(),
@@ -160,6 +174,10 @@ impl Gpu {
                 Ok(l) => l.into_iter().map(|v| (v.domain, v.into())).collect(),
                 Err(..) => Default::default(),
             },
+            vfp_locks: match allowable_result(self.gpu.vfp_locks())? {
+                Ok(v) => v.into_iter().map(|(id, _)| id).collect(),
+                Err(..) => Default::default(),
+            },
         })
     }
 
@@ -169,6 +187,7 @@ impl Gpu {
         Ok(GpuStatus {
             pstate: self.gpu.current_pstate()?,
             clocks: self.gpu.clock_frequencies(ClockFrequencyType::Current)?,
+            memory: self.gpu.memory_info()?,
             voltage: allowable_result(self.gpu.core_voltage())?,
             tachometer: allowable_result(self.gpu.tachometer())?,
             utilization: self.gpu.dynamic_pstates_info()?,
@@ -181,12 +200,21 @@ impl Gpu {
                 Ok(c) => c.into_iter().map(|c| (From::from(c), From::from(c))).collect(),
                 Err(..) => Default::default(),
             },
+            perf: self.gpu.perf_status()?,
             vfp: match mask {
                 Ok(mask) => match allowable_result(self.gpu.vfp_curve(mask.mask))? {
                     Ok(v) => Ok(v.into()),
                     Err(e) => Err(e),
                 },
                 Err(e) => Err(e),
+            },
+            vfp_locks: match allowable_result(self.gpu.vfp_locks())? {
+                Ok(l) => l.into_iter().filter_map(|(id, e)| if e.mode == ClockLockMode::Manual {
+                    Some((id, e.voltage))
+                } else {
+                    None
+                }).collect(),
+                Err(..) => Default::default(),
             },
         })
     }
@@ -220,7 +248,14 @@ impl Gpu {
                 },
                 Err(e) => Err(e),
             },
-            pstate_deltas: pstates.into_iter().filter(|p| p.editable).map(|p| (p.id, p.clocks.into_iter().map(|p| (p.domain(), p.frequency_delta().value)).collect())).collect(),
+            vfp_locks: match allowable_result(self.gpu.vfp_locks())? {
+                Ok(l) => l,
+                Err(..) => Default::default(),
+            },
+            pstate_deltas: pstates.into_iter().filter(|p| p.editable)
+                .map(|p| (p.id, p.clocks.into_iter().filter(|p| p.editable())
+                    .map(|p| (p.domain(), p.frequency_delta().value)).collect())
+                ).collect(),
             overvolt: ov.into_iter().filter(|v| v.editable).map(|v| v.voltage_delta.value).collect(),
         })
     }
@@ -254,6 +289,17 @@ impl Gpu {
 
     pub fn set_vfp<I: Iterator<Item=(usize, KilohertzDelta)>, M: Iterator<Item=(usize, KilohertzDelta)>>(&self, clock_deltas: I, mem_deltas: M) -> nvapi::Result<()> {
         self.gpu.set_vfp_table([0, 0, 0, 0], clock_deltas.map(|(i, d)| (i, d.into())), mem_deltas.map(|(i, d)| (i, d.into())))
+    }
+
+    pub fn set_vfp_lock(&self, voltage: Microvolts) -> nvapi::Result<()> {
+        self.gpu.set_vfp_locks(self.gpu.vfp_locks()?
+            .into_iter().max_by_key(|&(id, _)| id).into_iter()
+            .map(|(id, entry)| (id, Some(voltage)))
+        )
+    }
+
+    pub fn reset_vfp_lock(&self) -> nvapi::Result<()> {
+        self.gpu.set_vfp_locks(self.gpu.vfp_locks()?.into_iter().map(|(id, _)| (id, None)))
     }
 
     pub fn reset_vfp(&self) -> nvapi::Result<()> {
@@ -374,6 +420,7 @@ pub struct CoolerDesc {
     pub range: Range<Percentage>,
     pub default_policy: CoolerPolicy,
     pub target: CoolerTarget,
+    pub control: CoolerControl,
 }
 
 impl From<Cooler> for CoolerDesc {
@@ -384,6 +431,7 @@ impl From<Cooler> for CoolerDesc {
             range: cooler.default_level_range,
             default_policy: cooler.default_policy,
             target: cooler.target,
+            control: cooler.control,
         }
     }
 }
@@ -394,7 +442,6 @@ pub struct CoolerStatus {
     pub range: Range<Percentage>,
     pub level: Percentage,
     pub policy: CoolerPolicy,
-    pub control: CoolerControl,
     pub active: bool,
 }
 
@@ -404,7 +451,6 @@ impl From<Cooler> for CoolerStatus {
             range: cooler.current_level_range,
             level: cooler.current_level,
             policy: cooler.current_policy,
-            control: cooler.control,
             active: cooler.active,
         }
     }
@@ -417,8 +463,8 @@ pub struct VfpPoint {
     pub voltage: Microvolts,
 }
 
-impl From<VfpEntry> for VfpPoint {
-    fn from(v: VfpEntry) -> Self {
+impl<T> From<VfpEntry<T>> for VfpPoint where Kilohertz: From<T> {
+    fn from(v: VfpEntry<T>) -> Self {
         VfpPoint {
             frequency: v.frequency.into(),
             voltage: v.voltage,

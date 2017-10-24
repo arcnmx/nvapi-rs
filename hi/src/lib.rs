@@ -1,4 +1,4 @@
-extern crate nvapi;
+pub extern crate nvapi;
 
 #[cfg(feature = "serde_derive")]
 #[macro_use]
@@ -7,7 +7,11 @@ extern crate serde_derive;
 mod gpu;
 pub use gpu::*;
 
-pub use nvapi::{Status, Result, initialize, unload, driver_version, interface_version, error_message};
+pub use nvapi::{
+    Status, Result,
+    sys,
+    initialize, unload, driver_version, interface_version, error_message
+};
 
 pub fn allowable_result_fallback<T>(v: nvapi::Result<T>, fallback: T) -> nvapi::Result<T> {
     match v {

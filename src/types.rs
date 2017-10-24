@@ -1,5 +1,5 @@
 use std::ffi::CStr;
-use std::fmt;
+use std::{fmt, ops};
 use void::Void;
 use sys;
 
@@ -27,7 +27,7 @@ pub struct Celsius(pub i32);
 
 impl fmt::Display for Celsius {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{} C", self.0)
+        write!(f, "{}C", self.0)
     }
 }
 
@@ -44,7 +44,7 @@ pub struct CelsiusShifted(pub i32);
 
 impl fmt::Display for CelsiusShifted {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{} C", self.get())
+        write!(f, "{}C", self.get())
     }
 }
 
@@ -78,7 +78,12 @@ pub struct Microvolts(pub u32);
 
 impl fmt::Display for Microvolts {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{} mV", self.0 as f32 / 1000.0)
+        let value = self.0 as f32 / 1000.0;
+        if let Some(precision) = f.precision() {
+            write!(f, "{:.*} mV", precision, value)
+        } else {
+            write!(f, "{} mV", value)
+        }
     }
 }
 
@@ -94,7 +99,12 @@ pub struct MicrovoltsDelta(pub i32);
 
 impl fmt::Display for MicrovoltsDelta {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{} mV", self.0 as f32 / 1000.0)
+        let value = self.0 as f32 / 1000.0;
+        if let Some(precision) = f.precision() {
+            write!(f, "{:.*} mV", precision, value)
+        } else {
+            write!(f, "{} mV", value)
+        }
     }
 }
 
@@ -108,12 +118,23 @@ impl fmt::Debug for MicrovoltsDelta {
 #[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
 pub struct Kilohertz(pub u32);
 
+impl From<u32> for Kilohertz {
+    fn from(p: u32) -> Self {
+        Kilohertz(p)
+    }
+}
+
 impl fmt::Display for Kilohertz {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if self.0 < 1000 {
             write!(f, "{} kHz", self.0)
         } else {
-            write!(f, "{} MHz", self.0 as f32 / 1000.0)
+            let value = self.0 as f32 / 1000.0;
+            if let Some(precision) = f.precision() {
+                write!(f, "{:.*} MHz", precision, value)
+            } else {
+                write!(f, "{} MHz", value)
+            }
         }
     }
 }
@@ -121,6 +142,30 @@ impl fmt::Display for Kilohertz {
 impl fmt::Debug for Kilohertz {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         fmt::Display::fmt(self, f)
+    }
+}
+
+impl ops::Sub for Kilohertz {
+    type Output = KilohertzDelta;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        KilohertzDelta(self.0 as i32 - rhs.0 as i32)
+    }
+}
+
+impl ops::Sub<KilohertzDelta> for Kilohertz {
+    type Output = Kilohertz;
+
+    fn sub(self, rhs: KilohertzDelta) -> Self::Output {
+        Kilohertz((self.0 as i32 - rhs.0 as i32) as u32)
+    }
+}
+
+impl ops::Add<KilohertzDelta> for Kilohertz {
+    type Output = Kilohertz;
+
+    fn add(self, rhs: KilohertzDelta) -> Self::Output {
+        Kilohertz((self.0 as i32 + rhs.0 as i32) as u32)
     }
 }
 
@@ -146,13 +191,24 @@ impl From<Kilohertz> for Kilohertz2 {
     }
 }
 
+impl From<u32> for Kilohertz2 {
+    fn from(p: u32) -> Self {
+        Kilohertz2(p)
+    }
+}
+
 impl fmt::Display for Kilohertz2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let v = self.get();
         if v < 1000 {
             write!(f, "{} kHz", v)
         } else {
-            write!(f, "{} MHz", v as f32 / 1000.0)
+            let value = self.0 as f32 / 1000.0;
+            if let Some(precision) = f.precision() {
+                write!(f, "{:.*} MHz", precision, value)
+            } else {
+                write!(f, "{} MHz", value)
+            }
         }
     }
 }
@@ -167,12 +223,23 @@ impl fmt::Debug for Kilohertz2 {
 #[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
 pub struct KilohertzDelta(pub i32);
 
+impl From<i32> for KilohertzDelta {
+    fn from(p: i32) -> Self {
+        KilohertzDelta(p)
+    }
+}
+
 impl fmt::Display for KilohertzDelta {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if (self.0).abs() < 1000 {
             write!(f, "{} kHz", self.0)
         } else {
-            write!(f, "{} MHz", self.0 as f32 / 1000.0)
+            let value = self.0 as f32 / 1000.0;
+            if let Some(precision) = f.precision() {
+                write!(f, "{:.*} MHz", precision, value)
+            } else {
+                write!(f, "{} MHz", value)
+            }
         }
     }
 }
@@ -183,9 +250,47 @@ impl fmt::Debug for KilohertzDelta {
     }
 }
 
+impl ops::Add for KilohertzDelta {
+    type Output = KilohertzDelta;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        KilohertzDelta(self.0 + rhs.0)
+    }
+}
+
+impl ops::Sub for KilohertzDelta {
+    type Output = KilohertzDelta;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        KilohertzDelta(self.0 - rhs.0)
+    }
+}
+
+impl ops::Mul<i32> for KilohertzDelta {
+    type Output = KilohertzDelta;
+
+    fn mul(self, rhs: i32) -> Self::Output {
+        KilohertzDelta(self.0 * rhs)
+    }
+}
+
+impl ops::Div<i32> for KilohertzDelta {
+    type Output = KilohertzDelta;
+
+    fn div(self, rhs: i32) -> Self::Output {
+        KilohertzDelta(self.0 / rhs)
+    }
+}
+
 #[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
 pub struct Kilohertz2Delta(pub i32);
+
+impl From<i32> for Kilohertz2Delta {
+    fn from(p: i32) -> Self {
+        Kilohertz2Delta(p)
+    }
+}
 
 impl Kilohertz2Delta {
     pub fn get(&self) -> i32 {
@@ -211,7 +316,12 @@ impl fmt::Display for Kilohertz2Delta {
         if v.abs() < 1000 {
             write!(f, "{} kHz", v)
         } else {
-            write!(f, "{} MHz", v as f32 / 1000.0)
+            let value = self.0 as f32 / 1000.0;
+            if let Some(precision) = f.precision() {
+                write!(f, "{:.*} MHz", precision, value)
+            } else {
+                write!(f, "{} MHz", value)
+            }
         }
     }
 }
@@ -226,14 +336,32 @@ impl fmt::Debug for Kilohertz2Delta {
 #[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
 pub struct Kibibytes(pub u32);
 
+impl ops::Sub for Kibibytes {
+    type Output = Kibibytes;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        Kibibytes(self.0 - rhs.0)
+    }
+}
+
 impl fmt::Display for Kibibytes {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if self.0 < 1000 {
             write!(f, "{} KiB", self.0)
         } else if self.0 < 1000000 {
-            write!(f, "{} MiB", self.0 as f32 / 1024.0)
+            let value = self.0 as f32 / 1024.0;
+            if let Some(precision) = f.precision() {
+                write!(f, "{:.*} MiB", precision, value)
+            } else {
+                write!(f, "{} MiB", value)
+            }
         } else {
-            write!(f, "{} GiB", self.0 as f32 / 1048576.0)
+            let value = self.0 as f32 / 1048576.0;
+            if let Some(precision) = f.precision() {
+                write!(f, "{:.*} GiB", precision, value)
+            } else {
+                write!(f, "{} GiB", value)
+            }
         }
     }
 }
@@ -250,7 +378,7 @@ pub struct Percentage(pub u32);
 
 impl fmt::Display for Percentage {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{} %", self.0)
+        write!(f, "{}%", self.0)
     }
 }
 
@@ -275,7 +403,12 @@ pub struct Percentage1000(pub u32);
 
 impl fmt::Display for Percentage1000 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{} %", self.0 as f32 / 1000.0)
+        let value = self.0 as f32 / 1000.0;
+        if let Some(precision) = f.precision() {
+            write!(f, "{:.*}%", precision, value)
+        } else {
+            write!(f, "{}%", value)
+        }
     }
 }
 
