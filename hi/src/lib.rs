@@ -1,3 +1,5 @@
+#![doc(html_root_url = "http://arcnmx.github.io/nvapi-rs/")]
+
 pub extern crate nvapi;
 
 #[cfg(feature = "serde_derive")]
