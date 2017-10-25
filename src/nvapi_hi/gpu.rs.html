@@ -566,6 +566,7 @@
 <span id="521">521</span>
 <span id="522">522</span>
 <span id="523">523</span>
+<span id="524">524</span>
 </pre><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">BTreeMap</span>;
 <span class="kw">use</span> {<span class="ident">allowable_result</span>, <span class="ident">allowable_result_fallback</span>};
@@ -580,6 +581,7 @@
     <span class="ident">Vendor</span>, <span class="ident">SystemType</span>, <span class="ident">RamType</span>, <span class="ident">RamMaker</span>, <span class="ident">Foundry</span>,
     <span class="ident">ClockFrequencies</span>, <span class="ident">ClockDomain</span>, <span class="ident">VoltageDomain</span>, <span class="ident">UtilizationDomain</span>, <span class="ident">Utilizations</span>, <span class="ident">ClockLockMode</span>, <span class="ident">ClockLockEntry</span>,
     <span class="ident">CoolerType</span>, <span class="ident">CoolerController</span>, <span class="ident">CoolerControl</span>, <span class="ident">CoolerPolicy</span>, <span class="ident">CoolerTarget</span>, <span class="ident">CoolerLevel</span>,
+    <span class="ident">VoltageStatus</span>, <span class="ident">VoltageTable</span>,
     <span class="ident">PerfInfo</span>, <span class="ident">PerfStatus</span>,
     <span class="ident">ThermalController</span>, <span class="ident">ThermalTarget</span>,
     <span class="ident">MemoryInfo</span>, <span class="ident">PciIdentifiers</span>, <span class="ident">DriverModel</span>,
@@ -649,25 +651,28 @@
     <span class="kw">pub</span> <span class="ident">pstate</span>: <span class="ident">PState</span>,
     <span class="kw">pub</span> <span class="ident">clocks</span>: <span class="ident">ClockFrequencies</span>,
     <span class="kw">pub</span> <span class="ident">memory</span>: <span class="ident">MemoryInfo</span>,
-    <span class="kw">pub</span> <span class="ident">voltage</span>: <span class="ident">nvapi</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Microvolts</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">tachometer</span>: <span class="ident">nvapi</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">voltage</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Microvolts</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">voltage_domains</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">VoltageStatus</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">voltage_step</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">VoltageStatus</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">voltage_table</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">VoltageTable</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">tachometer</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">utilization</span>: <span class="ident">Utilizations</span>,
     <span class="kw">pub</span> <span class="ident">power</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Percentage</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">sensors</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">SensorDesc</span>, <span class="ident">Celsius</span>)<span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">coolers</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">CoolerDesc</span>, <span class="ident">CoolerStatus</span>)<span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">perf</span>: <span class="ident">PerfStatus</span>,
-    <span class="kw">pub</span> <span class="ident">vfp</span>: <span class="ident">nvapi</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">VfpTable</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">vfp</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">VfpTable</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">vfp_locks</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">Microvolts</span><span class="op">&gt;</span>,
 }
 
 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde_derive&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GpuSettings</span> {
-    <span class="kw">pub</span> <span class="ident">voltage_boost</span>: <span class="ident">nvapi</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Percentage</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">voltage_boost</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Percentage</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">sensor_limits</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Celsius</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">power_limits</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Percentage</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">coolers</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">CoolerDesc</span>, <span class="ident">CoolerStatus</span>)<span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">vfp</span>: <span class="ident">nvapi</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">VfpDeltas</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">vfp</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">VfpDeltas</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">pstate_deltas</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">PState</span>, <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">ClockDomain</span>, <span class="ident">KilohertzDelta</span><span class="op">&gt;&gt;</span>,
     <span class="kw">pub</span> <span class="ident">overvolt</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MicrovoltsDelta</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">vfp_locks</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">ClockLockEntry</span><span class="op">&gt;</span>,
@@ -757,8 +762,11 @@
             <span class="ident">pstate</span>: <span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">current_pstate</span>()<span class="question-mark">?</span>,
             <span class="ident">clocks</span>: <span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">clock_frequencies</span>(<span class="ident">ClockFrequencyType</span>::<span class="ident">Current</span>)<span class="question-mark">?</span>,
             <span class="ident">memory</span>: <span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">memory_info</span>()<span class="question-mark">?</span>,
-            <span class="ident">voltage</span>: <span class="ident">allowable_result</span>(<span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">core_voltage</span>())<span class="question-mark">?</span>,
-            <span class="ident">tachometer</span>: <span class="ident">allowable_result</span>(<span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">tachometer</span>())<span class="question-mark">?</span>,
+            <span class="ident">voltage</span>: <span class="ident">allowable_result</span>(<span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">core_voltage</span>())<span class="question-mark">?</span>.<span class="ident">ok</span>(),
+            <span class="ident">voltage_domains</span>: <span class="ident">allowable_result</span>(<span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">voltage_domains_status</span>())<span class="question-mark">?</span>.<span class="ident">ok</span>(),
+            <span class="ident">voltage_step</span>: <span class="ident">allowable_result</span>(<span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">voltage_step</span>())<span class="question-mark">?</span>.<span class="ident">ok</span>(),
+            <span class="ident">voltage_table</span>: <span class="ident">allowable_result</span>(<span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">voltage_table</span>())<span class="question-mark">?</span>.<span class="ident">ok</span>(),
+            <span class="ident">tachometer</span>: <span class="ident">allowable_result</span>(<span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">tachometer</span>())<span class="question-mark">?</span>.<span class="ident">ok</span>(),
             <span class="ident">utilization</span>: <span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">dynamic_pstates_info</span>()<span class="question-mark">?</span>,
             <span class="ident">power</span>: <span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">power_usage</span>()<span class="question-mark">?</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">From</span>::<span class="ident">from</span>).<span class="ident">collect</span>(),
             <span class="ident">sensors</span>: <span class="kw">match</span> <span class="ident">allowable_result</span>(<span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">thermal_settings</span>(<span class="prelude-val">None</span>))<span class="question-mark">?</span> {
@@ -771,11 +779,8 @@
             },
             <span class="ident">perf</span>: <span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">perf_status</span>()<span class="question-mark">?</span>,
             <span class="ident">vfp</span>: <span class="kw">match</span> <span class="ident">mask</span> {
-                <span class="prelude-val">Ok</span>(<span class="ident">mask</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">allowable_result</span>(<span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">vfp_curve</span>(<span class="ident">mask</span>.<span class="ident">mask</span>))<span class="question-mark">?</span> {
-                    <span class="prelude-val">Ok</span>(<span class="ident">v</span>) <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">v</span>.<span class="ident">into</span>()),
-                    <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>),
-                },
-                <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>),
+                <span class="prelude-val">Ok</span>(<span class="ident">mask</span>) <span class="op">=&gt;</span> <span class="ident">allowable_result</span>(<span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">vfp_curve</span>(<span class="ident">mask</span>.<span class="ident">mask</span>))<span class="question-mark">?</span>.<span class="ident">map</span>(<span class="ident">From</span>::<span class="ident">from</span>).<span class="ident">ok</span>(),
+                <span class="prelude-val">Err</span>(..) <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
             },
             <span class="ident">vfp_locks</span>: <span class="kw">match</span> <span class="ident">allowable_result</span>(<span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">vfp_locks</span>())<span class="question-mark">?</span> {
                 <span class="prelude-val">Ok</span>(<span class="ident">l</span>) <span class="op">=&gt;</span> <span class="ident">l</span>.<span class="ident">into_iter</span>().<span class="ident">filter_map</span>(<span class="op">|</span>(<span class="ident">id</span>, <span class="ident">e</span>)<span class="op">|</span> <span class="kw">if</span> <span class="ident">e</span>.<span class="ident">mode</span> <span class="op">==</span> <span class="ident">ClockLockMode</span>::<span class="ident">Manual</span> {
@@ -797,7 +802,7 @@
         };
 
         <span class="prelude-val">Ok</span>(<span class="ident">GpuSettings</span> {
-            <span class="ident">voltage_boost</span>: <span class="ident">allowable_result</span>(<span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">core_voltage_boost</span>())<span class="question-mark">?</span>,
+            <span class="ident">voltage_boost</span>: <span class="ident">allowable_result</span>(<span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">core_voltage_boost</span>())<span class="question-mark">?</span>.<span class="ident">ok</span>(),
             <span class="ident">sensor_limits</span>: <span class="kw">match</span> <span class="ident">allowable_result</span>(<span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">thermal_limit</span>())<span class="question-mark">?</span> {
                 <span class="prelude-val">Ok</span>(<span class="ident">l</span>) <span class="op">=&gt;</span> <span class="ident">l</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">l</span><span class="op">|</span> <span class="ident">l</span>.<span class="ident">value</span>.<span class="ident">into</span>()).<span class="ident">collect</span>(),
                 <span class="prelude-val">Err</span>(..) <span class="op">=&gt;</span> <span class="ident">Default</span>::<span class="ident">default</span>(),
@@ -811,11 +816,8 @@
                 <span class="prelude-val">Err</span>(..) <span class="op">=&gt;</span> <span class="ident">Default</span>::<span class="ident">default</span>(),
             },
             <span class="ident">vfp</span>: <span class="kw">match</span> <span class="ident">mask</span> {
-                <span class="prelude-val">Ok</span>(<span class="ident">mask</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">allowable_result</span>(<span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">vfp_table</span>(<span class="ident">mask</span>.<span class="ident">mask</span>))<span class="question-mark">?</span> {
-                    <span class="prelude-val">Ok</span>(<span class="ident">v</span>) <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">v</span>.<span class="ident">into</span>()),
-                    <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>),
-                },
-                <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>),
+                <span class="prelude-val">Ok</span>(<span class="ident">mask</span>) <span class="op">=&gt;</span> <span class="ident">allowable_result</span>(<span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">vfp_table</span>(<span class="ident">mask</span>.<span class="ident">mask</span>))<span class="question-mark">?</span>.<span class="ident">map</span>(<span class="ident">From</span>::<span class="ident">from</span>).<span class="ident">ok</span>(),
+                <span class="prelude-val">Err</span>(..) <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
             },
             <span class="ident">vfp_locks</span>: <span class="kw">match</span> <span class="ident">allowable_result</span>(<span class="self">self</span>.<span class="ident">gpu</span>.<span class="ident">vfp_locks</span>())<span class="question-mark">?</span> {
                 <span class="prelude-val">Ok</span>(<span class="ident">l</span>) <span class="op">=&gt;</span> <span class="ident">l</span>,

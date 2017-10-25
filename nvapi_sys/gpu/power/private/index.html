@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../../../src/nvapi_sys/gpu/power.rs.html#2-268' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../../../src/nvapi_sys/gpu/power.rs.html#2-327' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Undocumented API</p>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
@@ -132,6 +132,27 @@
                        <tr class=' module-item'>
                            <td><a class="struct" href="struct.NV_VOLTAGE_STATUS_V1.html"
                                   title='struct nvapi_sys::gpu::power::private::NV_VOLTAGE_STATUS_V1'>NV_VOLTAGE_STATUS_V1</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.NV_VOLT_STATUS_V1.html"
+                                  title='struct nvapi_sys::gpu::power::private::NV_VOLT_STATUS_V1'>NV_VOLT_STATUS_V1</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.NV_VOLT_TABLE_ENTRY.html"
+                                  title='struct nvapi_sys::gpu::power::private::NV_VOLT_TABLE_ENTRY'>NV_VOLT_TABLE_ENTRY</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.NV_VOLT_TABLE_V1.html"
+                                  title='struct nvapi_sys::gpu::power::private::NV_VOLT_TABLE_V1'>NV_VOLT_TABLE_V1</a></td>
                            <td class='docblock-short'>
                                 
                            </td>
@@ -297,6 +318,34 @@
                            <td class='docblock-short'>
                                 
                            </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_VOLT_STATUS_VER.html"
+                                  title='constant nvapi_sys::gpu::power::private::NV_VOLT_STATUS_VER'>NV_VOLT_STATUS_VER</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_VOLT_STATUS_VER_1.html"
+                                  title='constant nvapi_sys::gpu::power::private::NV_VOLT_STATUS_VER_1'>NV_VOLT_STATUS_VER_1</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_VOLT_TABLE_VER.html"
+                                  title='constant nvapi_sys::gpu::power::private::NV_VOLT_TABLE_VER'>NV_VOLT_TABLE_VER</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_VOLT_TABLE_VER_1.html"
+                                  title='constant nvapi_sys::gpu::power::private::NV_VOLT_TABLE_VER_1'>NV_VOLT_TABLE_VER_1</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
                        </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
 <table>
                        <tr class=' module-item'>
@@ -346,6 +395,27 @@
                                   title='fn nvapi_sys::gpu::power::private::NvAPI_GPU_GetVFPCurve'>NvAPI_GPU_GetVFPCurve</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
                                 <p>Pascal only</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.NvAPI_GPU_GetVoltageDomainsStatus.html"
+                                  title='fn nvapi_sys::gpu::power::private::NvAPI_GPU_GetVoltageDomainsStatus'>NvAPI_GPU_GetVoltageDomainsStatus</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                <p>Maxwell only</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.NvAPI_GPU_GetVoltageStep.html"
+                                  title='fn nvapi_sys::gpu::power::private::NvAPI_GPU_GetVoltageStep'>NvAPI_GPU_GetVoltageStep</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                <p>Maxwell only</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.NvAPI_GPU_GetVoltages.html"
+                                  title='fn nvapi_sys::gpu::power::private::NvAPI_GPU_GetVoltages'>NvAPI_GPU_GetVoltages</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                <p>Maxwell only</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -436,6 +506,20 @@
                        <tr class=' module-item'>
                            <td><a class="type" href="type.NV_VOLTAGE_STATUS.html"
                                   title='type nvapi_sys::gpu::power::private::NV_VOLTAGE_STATUS'>NV_VOLTAGE_STATUS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NV_VOLT_STATUS.html"
+                                  title='type nvapi_sys::gpu::power::private::NV_VOLT_STATUS'>NV_VOLT_STATUS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NV_VOLT_TABLE.html"
+                                  title='type nvapi_sys::gpu::power::private::NV_VOLT_TABLE'>NV_VOLT_TABLE</a></td>
                            <td class='docblock-short'>
                                 
                            </td>
