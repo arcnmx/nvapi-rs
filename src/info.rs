@@ -3,6 +3,7 @@ use void::ResultVoidExt;
 use types::RawConversion;
 
 pub fn driver_version() -> sys::Result<(u32, String)> {
+    trace!("driver_version()");
     let mut str = sys::types::short_string();
     let mut version = 0;
     unsafe {
@@ -12,6 +13,7 @@ pub fn driver_version() -> sys::Result<(u32, String)> {
 }
 
 pub fn interface_version() -> sys::Result<String> {
+    trace!("interface_version()");
     let mut str = sys::types::short_string();
     unsafe {
         sys::status_result(sys::nvapi::NvAPI_GetInterfaceVersionString(&mut str))
@@ -20,6 +22,7 @@ pub fn interface_version() -> sys::Result<String> {
 }
 
 pub fn error_message(status: sys::Status) -> sys::Result<String> {
+    trace!("error_message({:?})", status);
     let mut str = sys::types::short_string();
     unsafe {
         sys::status_result(sys::nvapi::NvAPI_GetErrorMessage(status.raw(), &mut str))
@@ -28,12 +31,14 @@ pub fn error_message(status: sys::Status) -> sys::Result<String> {
 }
 
 pub fn initialize() -> sys::Result<()> {
+    trace!("initialize()");
     unsafe {
         sys::status_result(sys::nvapi::NvAPI_Initialize())
     }
 }
 
 pub fn unload() -> sys::Result<()> {
+    trace!("unload()");
     unsafe {
         sys::status_result(sys::nvapi::NvAPI_Unload())
     }

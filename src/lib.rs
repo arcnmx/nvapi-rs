@@ -6,6 +6,8 @@ extern crate void;
 #[cfg(feature = "serde_derive")]
 #[macro_use]
 extern crate serde_derive;
+#[macro_use]
+extern crate log;
 
 mod types;
 mod pstate;

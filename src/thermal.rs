@@ -17,6 +17,7 @@ impl RawConversion for thermal::NV_GPU_THERMAL_SETTINGS_SENSOR {
     type Error = sys::ArgumentRangeError;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
         Ok(Sensor {
             controller: ThermalController::from_raw(self.controller)?,
             default_temperature_range: Range {
@@ -34,6 +35,7 @@ impl RawConversion for thermal::NV_GPU_THERMAL_SETTINGS {
     type Error = sys::ArgumentRangeError;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
         self.sensor[..self.count as usize].iter().map(RawConversion::convert_raw).collect()
     }
 }
@@ -52,6 +54,7 @@ impl RawConversion for thermal::private::NV_GPU_THERMAL_INFO_ENTRY {
     type Error = sys::ArgumentRangeError;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
         Ok(ThermalInfo {
             controller: ThermalController::from_raw(self.controller)?,
             unknown: self.unknown,
@@ -70,6 +73,7 @@ impl RawConversion for thermal::private::NV_GPU_THERMAL_INFO {
     type Error = sys::ArgumentRangeError;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
         self.entries[..self.count as usize].iter()
             .map(RawConversion::convert_raw)
             .collect::<Result<_, _>>()
@@ -89,6 +93,7 @@ impl RawConversion for thermal::private::NV_GPU_THERMAL_LIMIT_ENTRY {
     type Error = sys::ArgumentRangeError;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
         Ok(ThermalLimit {
             controller: ThermalController::from_raw(self.controller)?,
             value: CelsiusShifted(self.value as _),
@@ -102,6 +107,7 @@ impl RawConversion for thermal::private::NV_GPU_THERMAL_LIMIT {
     type Error = sys::ArgumentRangeError;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
         self.entries[..self.flags as usize].iter()
             .map(RawConversion::convert_raw)
             .collect::<Result<_, _>>()
@@ -129,6 +135,7 @@ impl RawConversion for cooler::private::NV_GPU_COOLER_SETTINGS_COOLER {
     type Error = sys::ArgumentRangeError;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
         Ok(Cooler {
             kind: CoolerType::from_raw(self.type_)?,
             controller: CoolerController::from_raw(self.controller)?,
@@ -155,6 +162,7 @@ impl RawConversion for cooler::private::NV_GPU_COOLER_SETTINGS {
     type Error = sys::ArgumentRangeError;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
         self.cooler[..self.count as usize].iter().map(RawConversion::convert_raw).collect()
     }
 }
@@ -170,6 +178,7 @@ impl RawConversion for cooler::private::NV_GPU_SETCOOLER_LEVEL_COOLER {
     type Error = sys::ArgumentRangeError;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
         Ok(CoolerLevel {
             level: Percentage::from_raw(self.currentLevel)?,
             policy: CoolerPolicy::from_raw(self.currentPolicy)?,
@@ -182,6 +191,7 @@ impl RawConversion for cooler::private::NV_GPU_SETCOOLER_LEVEL {
     type Error = sys::ArgumentRangeError;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
         self.cooler.iter().map(RawConversion::convert_raw).collect()
     }
 }
@@ -198,6 +208,7 @@ impl RawConversion for cooler::private::NV_GPU_COOLER_POLICY_LEVEL {
     type Error = sys::ArgumentRangeError;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
         Ok(CoolerPolicyLevel {
             level_id: self.levelId,
             current_level: self.currentLevel,
@@ -217,6 +228,7 @@ impl RawConversion for cooler::private::NV_GPU_COOLER_POLICY_TABLE {
     type Error = sys::ArgumentRangeError;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
         Ok(CoolerPolicyTable {
             policy: CoolerPolicy::from_raw(self.policy)?,
             levels: self.policyCoolerLevel.iter().map(RawConversion::convert_raw).collect::<Result<_, _>>()?,
