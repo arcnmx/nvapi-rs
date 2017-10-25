@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `sys/src/nvid.rs`.">
+    <meta name="description" content="Source to the Rust file `/home/travis/build/arcnmx/nvapi-rs/sys/src/nvid.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>nvid.rs.html -- source</title>
@@ -1212,7 +1212,7 @@
 
 <span class="ident">NvAPI_GetPhysicalGPUFromDisplay</span> <span class="op">=</span> <span class="number">0x1890e8da</span>,
 <span class="ident">NvAPI_GetPhysicalGPUFromGPUID</span> <span class="op">=</span> <span class="number">0x5380ad1a</span>,
-<span class="ident">NvAPI_GetGPUIDfromPhysicalGPU</span> <span class="op">=</span> <span class="number">0x6533ea3e</span>,
+<span class="ident">NvAPI_GetGPUIDFromPhysicalGPU</span> <span class="op">=</span> <span class="number">0x6533ea3e</span>,
 
 <span class="ident">NvAPI_GetInfoFrameStatePvt</span> <span class="op">=</span> <span class="number">0x7fc17574</span>,
 <span class="ident">NvAPI_GPU_GetMemoryInfo</span> <span class="op">=</span> <span class="number">0x07f9b368</span>,
@@ -1294,14 +1294,14 @@
 <span class="ident">NvAPI_GPU_ClientThermalPoliciesGetLimit</span> <span class="op">=</span> <span class="number">0xe9c425a1</span>,
 <span class="ident">NvAPI_GPU_ClientThermalPoliciesSetLimit</span> <span class="op">=</span> <span class="number">0x34c0b13d</span>,
 <span class="ident">NvAPI_GPU_GetCurrentVoltage</span> <span class="op">=</span> <span class="number">0x465f9bcf</span>,
-<span class="ident">NvAPI_GPU_GetVoltageStep</span> <span class="op">=</span> <span class="number">0x28766157</span>,
+<span class="ident">NvAPI_GPU_GetVoltageStep</span> <span class="op">=</span> <span class="number">0x28766157</span>, <span class="comment">// unsure of the name</span>
 <span class="ident">NvAPI_GPU_GetClockBoostRanges</span> <span class="op">=</span> <span class="number">0x64b43a6a</span>,
 <span class="ident">NvAPI_GPU_GetClockBoostMask</span> <span class="op">=</span> <span class="number">0x507b4b59</span>,
 <span class="ident">NvAPI_GPU_GetClockBoostTable</span> <span class="op">=</span> <span class="number">0x23f1b133</span>,
 <span class="ident">NvAPI_GPU_SetClockBoostTable</span> <span class="op">=</span> <span class="number">0x0733e009</span>,
 <span class="ident">NvAPI_GPU_GetVFPCurve</span> <span class="op">=</span> <span class="number">0x21537ad4</span>,
-<span class="ident">Unknown_NvAPI_CurveGet</span> <span class="op">=</span> <span class="number">0xe440b867</span>, <span class="comment">// NVAPI_ID_CURVE_GET</span>
-<span class="ident">Unknown_NvAPI_CurveSet</span> <span class="op">=</span> <span class="number">0x39442cfb</span>, <span class="comment">// NVAPI_ID_CURVE_SET</span>
+<span class="ident">NvAPI_GPU_GetClockBoostLock</span> <span class="op">=</span> <span class="number">0xe440b867</span>, <span class="comment">// unknown name, NVAPI_ID_CURVE_GET</span>
+<span class="ident">NvAPI_GPU_SetClockBoostLock</span> <span class="op">=</span> <span class="number">0x39442cfb</span>, <span class="comment">// unknown name, NVAPI_ID_CURVE_SET</span>
 <span class="ident">NvAPI_GPU_GetCoreVoltageBoostPercent</span> <span class="op">=</span> <span class="number">0x9df23ca1</span>,
 <span class="ident">NvAPI_GPU_SetCoreVoltageBoostPercent</span> <span class="op">=</span> <span class="number">0xb9306d9b</span>,
 

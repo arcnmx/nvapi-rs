@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/nvapi_sys/lib.rs.html#1-60' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/nvapi_sys/lib.rs.html#1-74' title='goto source code'>[src]</a></span></h1>
 <h2 id='reexports' class='section-header'><a href="#reexports">Reexports</a></h2>
 <table><tr><td><code>pub use nvid::<a class="enum" href="../nvapi_sys/nvid/enum.Api.html" title="enum nvapi_sys::nvid::Api">Api</a>;</code></td></tr><tr><td><code>pub use nvapi::<a class="fn" href="../nvapi_sys/nvapi/fn.nvapi_QueryInterface.html" title="fn nvapi_sys::nvapi::nvapi_QueryInterface">nvapi_QueryInterface</a>;</code></td></tr><tr><td><code>pub use <a class="mod" href="../nvapi_sys/types/index.html" title="mod nvapi_sys::types">types</a>::*;</code></td></tr><tr><td><code>pub use status::<a class="type" href="../nvapi_sys/status/type.NvAPI_Status.html" title="type nvapi_sys::status::NvAPI_Status">NvAPI_Status</a>;</code></td></tr><tr><td><code>pub use status::<a class="enum" href="../nvapi_sys/status/enum.Status.html" title="enum nvapi_sys::status::Status">Status</a>;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
@@ -115,7 +115,14 @@ correspond to indices, HDCs, display indexes or anything else.</p>
                            <td><a class="struct" href="struct.ArgumentRangeError.html"
                                   title='struct nvapi_sys::ArgumentRangeError'>ArgumentRangeError</a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Error type indicating a raw value is out of the range of known enum values.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.Array.html"
+                                  title='struct nvapi_sys::Array'>Array</a></td>
+                           <td class='docblock-short'>
+                                <p>Hacks a <code>Debug</code> impl onto large arrays.</p>
                            </td>
                        </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
 <table>
@@ -123,7 +130,7 @@ correspond to indices, HDCs, display indexes or anything else.</p>
                            <td><a class="fn" href="fn.status_result.html"
                                   title='fn nvapi_sys::status_result'>status_result</a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Treat <code>NVAPI_OK</code> as <code>Ok(())</code> and all else as an <code>Err(..)</code>.</p>
                            </td>
                        </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
 <table>
@@ -131,7 +138,7 @@ correspond to indices, HDCs, display indexes or anything else.</p>
                            <td><a class="type" href="type.Result.html"
                                   title='type nvapi_sys::Result'>Result</a></td>
                            <td class='docblock-short'>
-                                
+                                <p>The result of a fallible NVAPI call.</p>
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>

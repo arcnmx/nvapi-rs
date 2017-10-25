@@ -52,17 +52,16 @@
 <pre class='rust struct'><div class="docblock attributes">#[repr(C)]
 </div>pub struct NV_USAGES_INFO_V1 {
     pub version: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>,
-    pub count: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>,
+    pub flags: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>,
     pub usages: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">[</a><a class="struct" href="../../../../nvapi_sys/gpu/clock/private/struct.NV_USAGES_INFO_USAGE.html" title="struct nvapi_sys::gpu::clock::private::NV_USAGES_INFO_USAGE">NV_USAGES_INFO_USAGE</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">; 8]</a>,
 }</pre><h2 id='fields' class='fields small-section-header'>
                        Fields<a href='#fields' class='anchor'></a></h2><span id='structfield.version' class="structfield">
                            <span id='version.v' class='invisible'>
                            <code>version: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code>
-                           </span></span><span id='structfield.count' class="structfield">
-                           <span id='count.v' class='invisible'>
-                           <code>count: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code>
-                           </span></span><div class='docblock'><p>not sure if this is right, double-check</p>
-</div><span id='structfield.usages' class="structfield">
+                           </span></span><span id='structfield.flags' class="structfield">
+                           <span id='flags.v' class='invisible'>
+                           <code>flags: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code>
+                           </span></span><span id='structfield.usages' class="structfield">
                            <span id='usages.v' class='invisible'>
                            <code>usages: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">[</a><a class="struct" href="../../../../nvapi_sys/gpu/clock/private/struct.NV_USAGES_INFO_USAGE.html" title="struct nvapi_sys::gpu::clock::private::NV_USAGES_INFO_USAGE">NV_USAGES_INFO_USAGE</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">; 8]</a></code>
                            </span></span><div class='docblock'><p>(core_usage, memory_usage, video_engine_usage), probably indexed by NV_GPU_UTILIZATION_DOMAIN_ID</p>

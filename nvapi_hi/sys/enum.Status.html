@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Status` enum in crate `nvapi_hi`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Status">
+
+    <title>nvapi_hi::sys::Status - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc enum">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Enum Status</p><div class="block items"><ul><li><a href="#variants">Variants</a></li><li><a href="#methods">Methods</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='../index.html'>nvapi_hi</a>::<wbr><a href='index.html'>sys</a></p><script>window.sidebarCurrent = {name: 'Status', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Enum <a href='../index.html'>nvapi_hi</a>::<wbr><a href='index.html'>sys</a>::<wbr><a class="enum" href=''>Status</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#81-86' title='goto source code'>[src]</a></span></h1>
+<pre class='rust enum'><div class="docblock attributes">#[repr(i32)]
+</div>pub enum Status {
+    Ok,
+    Error,
+    LibraryNotFound,
+    NoImplementation,
+    ApiNotInitialized,
+    InvalidArgument,
+    NvidiaDeviceNotFound,
+    EndEnumeration,
+    InvalidHandle,
+    IncompatibleStructVersion,
+    HandleInvalidated,
+    OpenglContextNotCurrent,
+    InvalidPointer,
+    NoGlExpert,
+    InstrumentationDisabled,
+    NoGlNsight,
+    ExpectedLogicalGpuHandle,
+    ExpectedPhysicalGpuHandle,
+    ExpectedDisplayHandle,
+    InvalidCombination,
+    NotSupported,
+    PortidNotFound,
+    ExpectedUnattachedDisplayHandle,
+    InvalidPerfLevel,
+    DeviceBusy,
+    NvPersistFileNotFound,
+    PersistDataNotFound,
+    ExpectedTvDisplay,
+    ExpectedTvDisplayOnDconnector,
+    NoActiveSliTopology,
+    SliRenderingModeNotallowed,
+    ExpectedDigitalFlatPanel,
+    ArgumentExceedMaxSize,
+    DeviceSwitchingNotAllowed,
+    TestingClocksNotSupported,
+    UnknownUnderscanConfig,
+    TimeoutReconfiguringGpuTopo,
+    DataNotFound,
+    ExpectedAnalogDisplay,
+    NoVidlink,
+    RequiresReboot,
+    InvalidHybridMode,
+    MixedTargetTypes,
+    Syswow64NotSupported,
+    ImplicitSetGpuTopologyChangeNotAllowed,
+    RequestUserToCloseNonMigratableApps,
+    OutOfMemory,
+    WasStillDrawing,
+    FileNotFound,
+    TooManyUniqueStateObjects,
+    InvalidCall,
+    D3d101LibraryNotFound,
+    FunctionNotFound,
+    InvalidUserPrivilege,
+    ExpectedNonPrimaryDisplayHandle,
+    ExpectedComputeGpuHandle,
+    StereoNotInitialized,
+    StereoRegistryAccessFailed,
+    StereoRegistryProfileTypeNotSupported,
+    StereoRegistryValueNotSupported,
+    StereoNotEnabled,
+    StereoNotTurnedOn,
+    StereoInvalidDeviceInterface,
+    StereoParameterOutOfRange,
+    StereoFrustumAdjustModeNotSupported,
+    TopoNotPossible,
+    ModeChangeFailed,
+    D3d11LibraryNotFound,
+    InvalidAddress,
+    StringTooSmall,
+    MatchingDeviceNotFound,
+    DriverRunning,
+    DriverNotrunning,
+    ErrorDriverReloadRequired,
+    SetNotAllowed,
+    AdvancedDisplayTopologyRequired,
+    SettingNotFound,
+    SettingSizeTooLarge,
+    TooManySettingsInProfile,
+    ProfileNotFound,
+    ProfileNameInUse,
+    ProfileNameEmpty,
+    ExecutableNotFound,
+    ExecutableAlreadyInUse,
+    DatatypeMismatch,
+    ProfileRemoved,
+    UnregisteredResource,
+    IdOutOfRange,
+    DisplayconfigValidationFailed,
+    DpmstChanged,
+    InsufficientBuffer,
+    AccessDenied,
+    MosaicNotActive,
+    ShareResourceRelocated,
+    RequestUserToDisableDwm,
+    D3dDeviceLost,
+    InvalidConfiguration,
+    StereoHandshakeNotDone,
+    ExecutablePathIsAmbiguous,
+    DefaultStereoProfileIsNotDefined,
+    DefaultStereoProfileDoesNotExist,
+    ClusterAlreadyExists,
+    DpmstDisplayIdExpected,
+    InvalidDisplayId,
+    StreamIsOutOfSync,
+    IncompatibleAudioDriver,
+    ValueAlreadySet,
+    Timeout,
+    GpuWorkstationFeatureIncomplete,
+    StereoInitActivationNotDone,
+    SyncNotActive,
+    SyncMasterNotFound,
+    InvalidSyncTopology,
+    EcidSignAlgoUnsupported,
+    EcidKeyVerificationFailed,
+    FirmwareOutOfDate,
+    FirmwareRevisionNotSupported,
+    LicenseCallerAuthenticationFailed,
+    D3dDeviceNotRegistered,
+    ResourceNotAcquired,
+    TimingNotSupported,
+    HdcpEncryptionFailed,
+    PclkLimitationFailed,
+    NoConnectorFound,
+    HdcpDisabled,
+    ApiInUse,
+    NvidiaDisplayNotFound,
+    PrivSecViolation,
+    IncorrectVendor,
+    DisplayInUse,
+    UnsupportedConfigNonHdcpHmd,
+    MaxDisplayLimitReached,
+    InvalidDirectModeDisplay,
+    GpuInDebugMode,
+}</pre><div class='docblock'><p>NvAPI Status Values</p>
+
+<p>All NvAPI functions return one of these codes.</p>
+</div><h2 id='variants' class='variants small-section-header'>
+                   Variants<a href='#variants' class='anchor'></a></h2>
+<span id='variant.Ok' class='variant'><span id='Ok.v' class='invisible'><code>Ok</code></span></span><div class='docblock'><p>Success. Request is completed.</p>
+</div><span id='variant.Error' class='variant'><span id='Error.v' class='invisible'><code>Error</code></span></span><div class='docblock'><p>Generic error</p>
+</div><span id='variant.LibraryNotFound' class='variant'><span id='LibraryNotFound.v' class='invisible'><code>LibraryNotFound</code></span></span><div class='docblock'><p>NVAPI support library cannot be loaded.</p>
+</div><span id='variant.NoImplementation' class='variant'><span id='NoImplementation.v' class='invisible'><code>NoImplementation</code></span></span><div class='docblock'><p>not implemented in current driver installation</p>
+</div><span id='variant.ApiNotInitialized' class='variant'><span id='ApiNotInitialized.v' class='invisible'><code>ApiNotInitialized</code></span></span><div class='docblock'><p>NvAPI_Initialize has not been called (successfully)</p>
+</div><span id='variant.InvalidArgument' class='variant'><span id='InvalidArgument.v' class='invisible'><code>InvalidArgument</code></span></span><div class='docblock'><p>The argument/parameter value is not valid or NULL.</p>
+</div><span id='variant.NvidiaDeviceNotFound' class='variant'><span id='NvidiaDeviceNotFound.v' class='invisible'><code>NvidiaDeviceNotFound</code></span></span><div class='docblock'><p>No NVIDIA display driver, or NVIDIA GPU driving a display, was found.</p>
+</div><span id='variant.EndEnumeration' class='variant'><span id='EndEnumeration.v' class='invisible'><code>EndEnumeration</code></span></span><div class='docblock'><p>No more items to enumerate</p>
+</div><span id='variant.InvalidHandle' class='variant'><span id='InvalidHandle.v' class='invisible'><code>InvalidHandle</code></span></span><div class='docblock'><p>Invalid handle</p>
+</div><span id='variant.IncompatibleStructVersion' class='variant'><span id='IncompatibleStructVersion.v' class='invisible'><code>IncompatibleStructVersion</code></span></span><div class='docblock'><p>An argument&#39;s structure version is not supported</p>
+</div><span id='variant.HandleInvalidated' class='variant'><span id='HandleInvalidated.v' class='invisible'><code>HandleInvalidated</code></span></span><div class='docblock'><p>The handle is no longer valid (likely due to GPU or display re-configuration)</p>
+</div><span id='variant.OpenglContextNotCurrent' class='variant'><span id='OpenglContextNotCurrent.v' class='invisible'><code>OpenglContextNotCurrent</code></span></span><div class='docblock'><p>No NVIDIA OpenGL context is current (but needs to be)</p>
+</div><span id='variant.InvalidPointer' class='variant'><span id='InvalidPointer.v' class='invisible'><code>InvalidPointer</code></span></span><div class='docblock'><p>An invalid pointer, usually NULL, was passed as a parameter</p>
+</div><span id='variant.NoGlExpert' class='variant'><span id='NoGlExpert.v' class='invisible'><code>NoGlExpert</code></span></span><div class='docblock'><p>OpenGL Expert is not supported by the current drivers</p>
+</div><span id='variant.InstrumentationDisabled' class='variant'><span id='InstrumentationDisabled.v' class='invisible'><code>InstrumentationDisabled</code></span></span><div class='docblock'><p>OpenGL Expert is supported, but driver instrumentation is currently disabled</p>
+</div><span id='variant.NoGlNsight' class='variant'><span id='NoGlNsight.v' class='invisible'><code>NoGlNsight</code></span></span><div class='docblock'><p>OpenGL does not support Nsight</p>
+</div><span id='variant.ExpectedLogicalGpuHandle' class='variant'><span id='ExpectedLogicalGpuHandle.v' class='invisible'><code>ExpectedLogicalGpuHandle</code></span></span><div class='docblock'><p>Expected a logical GPU handle for one or more parameters</p>
+</div><span id='variant.ExpectedPhysicalGpuHandle' class='variant'><span id='ExpectedPhysicalGpuHandle.v' class='invisible'><code>ExpectedPhysicalGpuHandle</code></span></span><div class='docblock'><p>Expected a physical GPU handle for one or more parameters</p>
+</div><span id='variant.ExpectedDisplayHandle' class='variant'><span id='ExpectedDisplayHandle.v' class='invisible'><code>ExpectedDisplayHandle</code></span></span><div class='docblock'><p>Expected an NV display handle for one or more parameters</p>
+</div><span id='variant.InvalidCombination' class='variant'><span id='InvalidCombination.v' class='invisible'><code>InvalidCombination</code></span></span><div class='docblock'><p>The combination of parameters is not valid. </p>
+</div><span id='variant.NotSupported' class='variant'><span id='NotSupported.v' class='invisible'><code>NotSupported</code></span></span><div class='docblock'><p>Requested feature is not supported in the selected GPU</p>
+</div><span id='variant.PortidNotFound' class='variant'><span id='PortidNotFound.v' class='invisible'><code>PortidNotFound</code></span></span><div class='docblock'><p>No port ID was found for the I2C transaction</p>
+</div><span id='variant.ExpectedUnattachedDisplayHandle' class='variant'><span id='ExpectedUnattachedDisplayHandle.v' class='invisible'><code>ExpectedUnattachedDisplayHandle</code></span></span><div class='docblock'><p>Expected an unattached display handle as one of the input parameters.</p>
+</div><span id='variant.InvalidPerfLevel' class='variant'><span id='InvalidPerfLevel.v' class='invisible'><code>InvalidPerfLevel</code></span></span><div class='docblock'><p>Invalid perf level </p>
+</div><span id='variant.DeviceBusy' class='variant'><span id='DeviceBusy.v' class='invisible'><code>DeviceBusy</code></span></span><div class='docblock'><p>Device is busy; request not fulfilled</p>
+</div><span id='variant.NvPersistFileNotFound' class='variant'><span id='NvPersistFileNotFound.v' class='invisible'><code>NvPersistFileNotFound</code></span></span><div class='docblock'><p>NV persist file is not found</p>
+</div><span id='variant.PersistDataNotFound' class='variant'><span id='PersistDataNotFound.v' class='invisible'><code>PersistDataNotFound</code></span></span><div class='docblock'><p>NV persist data is not found</p>
+</div><span id='variant.ExpectedTvDisplay' class='variant'><span id='ExpectedTvDisplay.v' class='invisible'><code>ExpectedTvDisplay</code></span></span><div class='docblock'><p>Expected a TV output display</p>
+</div><span id='variant.ExpectedTvDisplayOnDconnector' class='variant'><span id='ExpectedTvDisplayOnDconnector.v' class='invisible'><code>ExpectedTvDisplayOnDconnector</code></span></span><div class='docblock'><p>Expected a TV output on the D Connector - HDTV_EIAJ4120.</p>
+</div><span id='variant.NoActiveSliTopology' class='variant'><span id='NoActiveSliTopology.v' class='invisible'><code>NoActiveSliTopology</code></span></span><div class='docblock'><p>SLI is not active on this device.</p>
+</div><span id='variant.SliRenderingModeNotallowed' class='variant'><span id='SliRenderingModeNotallowed.v' class='invisible'><code>SliRenderingModeNotallowed</code></span></span><div class='docblock'><p>Setup of SLI rendering mode is not possible right now.</p>
+</div><span id='variant.ExpectedDigitalFlatPanel' class='variant'><span id='ExpectedDigitalFlatPanel.v' class='invisible'><code>ExpectedDigitalFlatPanel</code></span></span><div class='docblock'><p>Expected a digital flat panel.</p>
+</div><span id='variant.ArgumentExceedMaxSize' class='variant'><span id='ArgumentExceedMaxSize.v' class='invisible'><code>ArgumentExceedMaxSize</code></span></span><div class='docblock'><p>Argument exceeds the expected size.</p>
+</div><span id='variant.DeviceSwitchingNotAllowed' class='variant'><span id='DeviceSwitchingNotAllowed.v' class='invisible'><code>DeviceSwitchingNotAllowed</code></span></span><div class='docblock'><p>Inhibit is ON due to one of the flags in NV_GPU_DISPLAY_CHANGE_INHIBIT or SLI active.</p>
+</div><span id='variant.TestingClocksNotSupported' class='variant'><span id='TestingClocksNotSupported.v' class='invisible'><code>TestingClocksNotSupported</code></span></span><div class='docblock'><p>Testing of clocks is not supported.</p>
+</div><span id='variant.UnknownUnderscanConfig' class='variant'><span id='UnknownUnderscanConfig.v' class='invisible'><code>UnknownUnderscanConfig</code></span></span><div class='docblock'><p>The specified underscan config is from an unknown source (e.g. INF)</p>
+</div><span id='variant.TimeoutReconfiguringGpuTopo' class='variant'><span id='TimeoutReconfiguringGpuTopo.v' class='invisible'><code>TimeoutReconfiguringGpuTopo</code></span></span><div class='docblock'><p>Timeout while reconfiguring GPUs</p>
+</div><span id='variant.DataNotFound' class='variant'><span id='DataNotFound.v' class='invisible'><code>DataNotFound</code></span></span><div class='docblock'><p>Requested data was not found</p>
+</div><span id='variant.ExpectedAnalogDisplay' class='variant'><span id='ExpectedAnalogDisplay.v' class='invisible'><code>ExpectedAnalogDisplay</code></span></span><div class='docblock'><p>Expected an analog display</p>
+</div><span id='variant.NoVidlink' class='variant'><span id='NoVidlink.v' class='invisible'><code>NoVidlink</code></span></span><div class='docblock'><p>No SLI video bridge is present</p>
+</div><span id='variant.RequiresReboot' class='variant'><span id='RequiresReboot.v' class='invisible'><code>RequiresReboot</code></span></span><div class='docblock'><p>NVAPI requires a reboot for the settings to take effect</p>
+</div><span id='variant.InvalidHybridMode' class='variant'><span id='InvalidHybridMode.v' class='invisible'><code>InvalidHybridMode</code></span></span><div class='docblock'><p>The function is not supported with the current Hybrid mode.</p>
+</div><span id='variant.MixedTargetTypes' class='variant'><span id='MixedTargetTypes.v' class='invisible'><code>MixedTargetTypes</code></span></span><div class='docblock'><p>The target types are not all the same</p>
+</div><span id='variant.Syswow64NotSupported' class='variant'><span id='Syswow64NotSupported.v' class='invisible'><code>Syswow64NotSupported</code></span></span><div class='docblock'><p>The function is not supported from 32-bit on a 64-bit system.</p>
+</div><span id='variant.ImplicitSetGpuTopologyChangeNotAllowed' class='variant'><span id='ImplicitSetGpuTopologyChangeNotAllowed.v' class='invisible'><code>ImplicitSetGpuTopologyChangeNotAllowed</code></span></span><div class='docblock'><p>There is no implicit GPU topology active. Use NVAPI_SetHybridMode to change topology.</p>
+</div><span id='variant.RequestUserToCloseNonMigratableApps' class='variant'><span id='RequestUserToCloseNonMigratableApps.v' class='invisible'><code>RequestUserToCloseNonMigratableApps</code></span></span><div class='docblock'><p>Prompt the user to close all non-migratable applications. </p>
+</div><span id='variant.OutOfMemory' class='variant'><span id='OutOfMemory.v' class='invisible'><code>OutOfMemory</code></span></span><div class='docblock'><p>Could not allocate sufficient memory to complete the call.</p>
+</div><span id='variant.WasStillDrawing' class='variant'><span id='WasStillDrawing.v' class='invisible'><code>WasStillDrawing</code></span></span><div class='docblock'><p>The previous operation that is transferring information to or from this surface is incomplete.</p>
+</div><span id='variant.FileNotFound' class='variant'><span id='FileNotFound.v' class='invisible'><code>FileNotFound</code></span></span><div class='docblock'><p>The file was not found.</p>
+</div><span id='variant.TooManyUniqueStateObjects' class='variant'><span id='TooManyUniqueStateObjects.v' class='invisible'><code>TooManyUniqueStateObjects</code></span></span><div class='docblock'><p>There are too many unique instances of a particular type of state object.</p>
+</div><span id='variant.InvalidCall' class='variant'><span id='InvalidCall.v' class='invisible'><code>InvalidCall</code></span></span><div class='docblock'><p>The method call is invalid. For example, a method&#39;s parameter may not be a valid pointer.</p>
+</div><span id='variant.D3d101LibraryNotFound' class='variant'><span id='D3d101LibraryNotFound.v' class='invisible'><code>D3d101LibraryNotFound</code></span></span><div class='docblock'><p>d3d10_1.dll cannot be loaded.</p>
+</div><span id='variant.FunctionNotFound' class='variant'><span id='FunctionNotFound.v' class='invisible'><code>FunctionNotFound</code></span></span><div class='docblock'><p>Couldn&#39;t find the function in the loaded DLL.</p>
+</div><span id='variant.InvalidUserPrivilege' class='variant'><span id='InvalidUserPrivilege.v' class='invisible'><code>InvalidUserPrivilege</code></span></span><div class='docblock'><p>Current User is not Admin.</p>
+</div><span id='variant.ExpectedNonPrimaryDisplayHandle' class='variant'><span id='ExpectedNonPrimaryDisplayHandle.v' class='invisible'><code>ExpectedNonPrimaryDisplayHandle</code></span></span><div class='docblock'><p>The handle corresponds to GDIPrimary.</p>
+</div><span id='variant.ExpectedComputeGpuHandle' class='variant'><span id='ExpectedComputeGpuHandle.v' class='invisible'><code>ExpectedComputeGpuHandle</code></span></span><div class='docblock'><p>Setting Physx GPU requires that the GPU is compute-capable.</p>
+</div><span id='variant.StereoNotInitialized' class='variant'><span id='StereoNotInitialized.v' class='invisible'><code>StereoNotInitialized</code></span></span><div class='docblock'><p>The Stereo part of NVAPI failed to initialize completely. Check if the stereo driver is installed.</p>
+</div><span id='variant.StereoRegistryAccessFailed' class='variant'><span id='StereoRegistryAccessFailed.v' class='invisible'><code>StereoRegistryAccessFailed</code></span></span><div class='docblock'><p>Access to stereo-related registry keys or values has failed.</p>
+</div><span id='variant.StereoRegistryProfileTypeNotSupported' class='variant'><span id='StereoRegistryProfileTypeNotSupported.v' class='invisible'><code>StereoRegistryProfileTypeNotSupported</code></span></span><div class='docblock'><p>The given registry profile type is not supported.</p>
+</div><span id='variant.StereoRegistryValueNotSupported' class='variant'><span id='StereoRegistryValueNotSupported.v' class='invisible'><code>StereoRegistryValueNotSupported</code></span></span><div class='docblock'><p>The given registry value is not supported.</p>
+</div><span id='variant.StereoNotEnabled' class='variant'><span id='StereoNotEnabled.v' class='invisible'><code>StereoNotEnabled</code></span></span><div class='docblock'><p>Stereo is not enabled and the function needed it to execute completely.</p>
+</div><span id='variant.StereoNotTurnedOn' class='variant'><span id='StereoNotTurnedOn.v' class='invisible'><code>StereoNotTurnedOn</code></span></span><div class='docblock'><p>Stereo is not turned on and the function needed it to execute completely.</p>
+</div><span id='variant.StereoInvalidDeviceInterface' class='variant'><span id='StereoInvalidDeviceInterface.v' class='invisible'><code>StereoInvalidDeviceInterface</code></span></span><div class='docblock'><p>Invalid device interface.</p>
+</div><span id='variant.StereoParameterOutOfRange' class='variant'><span id='StereoParameterOutOfRange.v' class='invisible'><code>StereoParameterOutOfRange</code></span></span><div class='docblock'><p>Separation percentage or JPEG image capture quality is out of [0-100] range.</p>
+</div><span id='variant.StereoFrustumAdjustModeNotSupported' class='variant'><span id='StereoFrustumAdjustModeNotSupported.v' class='invisible'><code>StereoFrustumAdjustModeNotSupported</code></span></span><div class='docblock'><p>The given frustum adjust mode is not supported.</p>
+</div><span id='variant.TopoNotPossible' class='variant'><span id='TopoNotPossible.v' class='invisible'><code>TopoNotPossible</code></span></span><div class='docblock'><p>The mosaic topology is not possible given the current state of the hardware.</p>
+</div><span id='variant.ModeChangeFailed' class='variant'><span id='ModeChangeFailed.v' class='invisible'><code>ModeChangeFailed</code></span></span><div class='docblock'><p>An attempt to do a display resolution mode change has failed. </p>
+</div><span id='variant.D3d11LibraryNotFound' class='variant'><span id='D3d11LibraryNotFound.v' class='invisible'><code>D3d11LibraryNotFound</code></span></span><div class='docblock'><p>d3d11.dll/d3d11_beta.dll cannot be loaded.</p>
+</div><span id='variant.InvalidAddress' class='variant'><span id='InvalidAddress.v' class='invisible'><code>InvalidAddress</code></span></span><div class='docblock'><p>Address is outside of valid range.</p>
+</div><span id='variant.StringTooSmall' class='variant'><span id='StringTooSmall.v' class='invisible'><code>StringTooSmall</code></span></span><div class='docblock'><p>The pre-allocated string is too small to hold the result.</p>
+</div><span id='variant.MatchingDeviceNotFound' class='variant'><span id='MatchingDeviceNotFound.v' class='invisible'><code>MatchingDeviceNotFound</code></span></span><div class='docblock'><p>The input does not match any of the available devices.</p>
+</div><span id='variant.DriverRunning' class='variant'><span id='DriverRunning.v' class='invisible'><code>DriverRunning</code></span></span><div class='docblock'><p>Driver is running.</p>
+</div><span id='variant.DriverNotrunning' class='variant'><span id='DriverNotrunning.v' class='invisible'><code>DriverNotrunning</code></span></span><div class='docblock'><p>Driver is not running.</p>
+</div><span id='variant.ErrorDriverReloadRequired' class='variant'><span id='ErrorDriverReloadRequired.v' class='invisible'><code>ErrorDriverReloadRequired</code></span></span><div class='docblock'><p>A driver reload is required to apply these settings.</p>
+</div><span id='variant.SetNotAllowed' class='variant'><span id='SetNotAllowed.v' class='invisible'><code>SetNotAllowed</code></span></span><div class='docblock'><p>Intended setting is not allowed.</p>
+</div><span id='variant.AdvancedDisplayTopologyRequired' class='variant'><span id='AdvancedDisplayTopologyRequired.v' class='invisible'><code>AdvancedDisplayTopologyRequired</code></span></span><div class='docblock'><p>Information can&#39;t be returned due to &quot;advanced display topology&quot;.</p>
+</div><span id='variant.SettingNotFound' class='variant'><span id='SettingNotFound.v' class='invisible'><code>SettingNotFound</code></span></span><div class='docblock'><p>Setting is not found.</p>
+</div><span id='variant.SettingSizeTooLarge' class='variant'><span id='SettingSizeTooLarge.v' class='invisible'><code>SettingSizeTooLarge</code></span></span><div class='docblock'><p>Setting size is too large.</p>
+</div><span id='variant.TooManySettingsInProfile' class='variant'><span id='TooManySettingsInProfile.v' class='invisible'><code>TooManySettingsInProfile</code></span></span><div class='docblock'><p>There are too many settings for a profile. </p>
+</div><span id='variant.ProfileNotFound' class='variant'><span id='ProfileNotFound.v' class='invisible'><code>ProfileNotFound</code></span></span><div class='docblock'><p>Profile is not found.</p>
+</div><span id='variant.ProfileNameInUse' class='variant'><span id='ProfileNameInUse.v' class='invisible'><code>ProfileNameInUse</code></span></span><div class='docblock'><p>Profile name is duplicated.</p>
+</div><span id='variant.ProfileNameEmpty' class='variant'><span id='ProfileNameEmpty.v' class='invisible'><code>ProfileNameEmpty</code></span></span><div class='docblock'><p>Profile name is empty.</p>
+</div><span id='variant.ExecutableNotFound' class='variant'><span id='ExecutableNotFound.v' class='invisible'><code>ExecutableNotFound</code></span></span><div class='docblock'><p>Application not found in the Profile.</p>
+</div><span id='variant.ExecutableAlreadyInUse' class='variant'><span id='ExecutableAlreadyInUse.v' class='invisible'><code>ExecutableAlreadyInUse</code></span></span><div class='docblock'><p>Application already exists in the other profile.</p>
+</div><span id='variant.DatatypeMismatch' class='variant'><span id='DatatypeMismatch.v' class='invisible'><code>DatatypeMismatch</code></span></span><div class='docblock'><p>Data Type mismatch </p>
+</div><span id='variant.ProfileRemoved' class='variant'><span id='ProfileRemoved.v' class='invisible'><code>ProfileRemoved</code></span></span><div class='docblock'><p>The profile passed as parameter has been removed and is no longer valid.</p>
+</div><span id='variant.UnregisteredResource' class='variant'><span id='UnregisteredResource.v' class='invisible'><code>UnregisteredResource</code></span></span><div class='docblock'><p>An unregistered resource was passed as a parameter. </p>
+</div><span id='variant.IdOutOfRange' class='variant'><span id='IdOutOfRange.v' class='invisible'><code>IdOutOfRange</code></span></span><div class='docblock'><p>The DisplayId corresponds to a display which is not within the normal outputId range.</p>
+</div><span id='variant.DisplayconfigValidationFailed' class='variant'><span id='DisplayconfigValidationFailed.v' class='invisible'><code>DisplayconfigValidationFailed</code></span></span><div class='docblock'><p>Display topology is not valid so the driver cannot do a mode set on this configuration.</p>
+</div><span id='variant.DpmstChanged' class='variant'><span id='DpmstChanged.v' class='invisible'><code>DpmstChanged</code></span></span><div class='docblock'><p>Display Port Multi-Stream topology has been changed.</p>
+</div><span id='variant.InsufficientBuffer' class='variant'><span id='InsufficientBuffer.v' class='invisible'><code>InsufficientBuffer</code></span></span><div class='docblock'><p>Input buffer is insufficient to hold the contents. </p>
+</div><span id='variant.AccessDenied' class='variant'><span id='AccessDenied.v' class='invisible'><code>AccessDenied</code></span></span><div class='docblock'><p>No access to the caller.</p>
+</div><span id='variant.MosaicNotActive' class='variant'><span id='MosaicNotActive.v' class='invisible'><code>MosaicNotActive</code></span></span><div class='docblock'><p>The requested action cannot be performed without Mosaic being enabled.</p>
+</div><span id='variant.ShareResourceRelocated' class='variant'><span id='ShareResourceRelocated.v' class='invisible'><code>ShareResourceRelocated</code></span></span><div class='docblock'><p>The surface is relocated away from video memory.</p>
+</div><span id='variant.RequestUserToDisableDwm' class='variant'><span id='RequestUserToDisableDwm.v' class='invisible'><code>RequestUserToDisableDwm</code></span></span><div class='docblock'><p>The user should disable DWM before calling NvAPI.</p>
+</div><span id='variant.D3dDeviceLost' class='variant'><span id='D3dDeviceLost.v' class='invisible'><code>D3dDeviceLost</code></span></span><div class='docblock'><p>D3D device status is D3DERR_DEVICELOST or D3DERR_DEVICENOTRESET - the user has to reset the device.</p>
+</div><span id='variant.InvalidConfiguration' class='variant'><span id='InvalidConfiguration.v' class='invisible'><code>InvalidConfiguration</code></span></span><div class='docblock'><p>The requested action cannot be performed in the current state.</p>
+</div><span id='variant.StereoHandshakeNotDone' class='variant'><span id='StereoHandshakeNotDone.v' class='invisible'><code>StereoHandshakeNotDone</code></span></span><div class='docblock'><p>Call failed as stereo handshake not completed.</p>
+</div><span id='variant.ExecutablePathIsAmbiguous' class='variant'><span id='ExecutablePathIsAmbiguous.v' class='invisible'><code>ExecutablePathIsAmbiguous</code></span></span><div class='docblock'><p>The path provided was too short to determine the correct NVDRS_APPLICATION</p>
+</div><span id='variant.DefaultStereoProfileIsNotDefined' class='variant'><span id='DefaultStereoProfileIsNotDefined.v' class='invisible'><code>DefaultStereoProfileIsNotDefined</code></span></span><div class='docblock'><p>Default stereo profile is not currently defined</p>
+</div><span id='variant.DefaultStereoProfileDoesNotExist' class='variant'><span id='DefaultStereoProfileDoesNotExist.v' class='invisible'><code>DefaultStereoProfileDoesNotExist</code></span></span><div class='docblock'><p>Default stereo profile does not exist</p>
+</div><span id='variant.ClusterAlreadyExists' class='variant'><span id='ClusterAlreadyExists.v' class='invisible'><code>ClusterAlreadyExists</code></span></span><div class='docblock'><p>A cluster is already defined with the given configuration.</p>
+</div><span id='variant.DpmstDisplayIdExpected' class='variant'><span id='DpmstDisplayIdExpected.v' class='invisible'><code>DpmstDisplayIdExpected</code></span></span><div class='docblock'><p>The input display id is not that of a multi stream enabled connector or a display device in a multi stream topology </p>
+</div><span id='variant.InvalidDisplayId' class='variant'><span id='InvalidDisplayId.v' class='invisible'><code>InvalidDisplayId</code></span></span><div class='docblock'><p>The input display id is not valid or the monitor associated to it does not support the current operation</p>
+</div><span id='variant.StreamIsOutOfSync' class='variant'><span id='StreamIsOutOfSync.v' class='invisible'><code>StreamIsOutOfSync</code></span></span><div class='docblock'><p>While playing secure audio stream, stream goes out of sync</p>
+</div><span id='variant.IncompatibleAudioDriver' class='variant'><span id='IncompatibleAudioDriver.v' class='invisible'><code>IncompatibleAudioDriver</code></span></span><div class='docblock'><p>Older audio driver version than required</p>
+</div><span id='variant.ValueAlreadySet' class='variant'><span id='ValueAlreadySet.v' class='invisible'><code>ValueAlreadySet</code></span></span><div class='docblock'><p>Value already set, setting again not allowed.</p>
+</div><span id='variant.Timeout' class='variant'><span id='Timeout.v' class='invisible'><code>Timeout</code></span></span><div class='docblock'><p>Requested operation timed out </p>
+</div><span id='variant.GpuWorkstationFeatureIncomplete' class='variant'><span id='GpuWorkstationFeatureIncomplete.v' class='invisible'><code>GpuWorkstationFeatureIncomplete</code></span></span><div class='docblock'><p>The requested workstation feature set has incomplete driver internal allocation resources</p>
+</div><span id='variant.StereoInitActivationNotDone' class='variant'><span id='StereoInitActivationNotDone.v' class='invisible'><code>StereoInitActivationNotDone</code></span></span><div class='docblock'><p>Call failed because InitActivation was not called.</p>
+</div><span id='variant.SyncNotActive' class='variant'><span id='SyncNotActive.v' class='invisible'><code>SyncNotActive</code></span></span><div class='docblock'><p>The requested action cannot be performed without Sync being enabled. </p>
+</div><span id='variant.SyncMasterNotFound' class='variant'><span id='SyncMasterNotFound.v' class='invisible'><code>SyncMasterNotFound</code></span></span><div class='docblock'><p>The requested action cannot be performed without Sync Master being enabled.</p>
+</div><span id='variant.InvalidSyncTopology' class='variant'><span id='InvalidSyncTopology.v' class='invisible'><code>InvalidSyncTopology</code></span></span><div class='docblock'><p>Invalid displays passed in the NV_GSYNC_DISPLAY pointer.</p>
+</div><span id='variant.EcidSignAlgoUnsupported' class='variant'><span id='EcidSignAlgoUnsupported.v' class='invisible'><code>EcidSignAlgoUnsupported</code></span></span><div class='docblock'><p>The specified signing algorithm is not supported.
+Either an incorrect value was entered or the current installed driver/hardware does not support the input value.</p>
+</div><span id='variant.EcidKeyVerificationFailed' class='variant'><span id='EcidKeyVerificationFailed.v' class='invisible'><code>EcidKeyVerificationFailed</code></span></span><div class='docblock'><p>The encrypted public key verification has failed.</p>
+</div><span id='variant.FirmwareOutOfDate' class='variant'><span id='FirmwareOutOfDate.v' class='invisible'><code>FirmwareOutOfDate</code></span></span><div class='docblock'><p>The device&#39;s firmware is out of date.</p>
+</div><span id='variant.FirmwareRevisionNotSupported' class='variant'><span id='FirmwareRevisionNotSupported.v' class='invisible'><code>FirmwareRevisionNotSupported</code></span></span><div class='docblock'><p>The device&#39;s firmware is not supported.</p>
+</div><span id='variant.LicenseCallerAuthenticationFailed' class='variant'><span id='LicenseCallerAuthenticationFailed.v' class='invisible'><code>LicenseCallerAuthenticationFailed</code></span></span><div class='docblock'><p>The caller is not authorized to modify the License.</p>
+</div><span id='variant.D3dDeviceNotRegistered' class='variant'><span id='D3dDeviceNotRegistered.v' class='invisible'><code>D3dDeviceNotRegistered</code></span></span><div class='docblock'><p>The user tried to use a deferred context without registering the device first    </p>
+</div><span id='variant.ResourceNotAcquired' class='variant'><span id='ResourceNotAcquired.v' class='invisible'><code>ResourceNotAcquired</code></span></span><div class='docblock'><p>Head or SourceId was not reserved for the VR Display before doing the Modeset.</p>
+</div><span id='variant.TimingNotSupported' class='variant'><span id='TimingNotSupported.v' class='invisible'><code>TimingNotSupported</code></span></span><div class='docblock'><p>Provided timing is not supported.</p>
+</div><span id='variant.HdcpEncryptionFailed' class='variant'><span id='HdcpEncryptionFailed.v' class='invisible'><code>HdcpEncryptionFailed</code></span></span><div class='docblock'><p>HDCP Encryption Failed for the device. Would be applicable when the device is HDCP Capable.</p>
+</div><span id='variant.PclkLimitationFailed' class='variant'><span id='PclkLimitationFailed.v' class='invisible'><code>PclkLimitationFailed</code></span></span><div class='docblock'><p>Provided mode is over sink device pclk limitation.</p>
+</div><span id='variant.NoConnectorFound' class='variant'><span id='NoConnectorFound.v' class='invisible'><code>NoConnectorFound</code></span></span><div class='docblock'><p>No connector on GPU found. </p>
+</div><span id='variant.HdcpDisabled' class='variant'><span id='HdcpDisabled.v' class='invisible'><code>HdcpDisabled</code></span></span><div class='docblock'><p>When a non-HDCP capable HMD is connected, we would inform user by this code.</p>
+</div><span id='variant.ApiInUse' class='variant'><span id='ApiInUse.v' class='invisible'><code>ApiInUse</code></span></span><div class='docblock'><p>Atleast an API is still being called</p>
+</div><span id='variant.NvidiaDisplayNotFound' class='variant'><span id='NvidiaDisplayNotFound.v' class='invisible'><code>NvidiaDisplayNotFound</code></span></span><div class='docblock'><p>No display found on Nvidia GPU(s).</p>
+</div><span id='variant.PrivSecViolation' class='variant'><span id='PrivSecViolation.v' class='invisible'><code>PrivSecViolation</code></span></span><div class='docblock'><p>Priv security violation, improper access to a secured register.</p>
+</div><span id='variant.IncorrectVendor' class='variant'><span id='IncorrectVendor.v' class='invisible'><code>IncorrectVendor</code></span></span><div class='docblock'><p>NVAPI cannot be called by this vendor</p>
+</div><span id='variant.DisplayInUse' class='variant'><span id='DisplayInUse.v' class='invisible'><code>DisplayInUse</code></span></span><div class='docblock'><p>DirectMode Display is already in use</p>
+</div><span id='variant.UnsupportedConfigNonHdcpHmd' class='variant'><span id='UnsupportedConfigNonHdcpHmd.v' class='invisible'><code>UnsupportedConfigNonHdcpHmd</code></span></span><div class='docblock'><p>The Config is having Non-NVidia GPU with Non-HDCP HMD connected</p>
+</div><span id='variant.MaxDisplayLimitReached' class='variant'><span id='MaxDisplayLimitReached.v' class='invisible'><code>MaxDisplayLimitReached</code></span></span><div class='docblock'><p>GPU&#39;s Max Display Limit has Reached</p>
+</div><span id='variant.InvalidDirectModeDisplay' class='variant'><span id='InvalidDirectModeDisplay.v' class='invisible'><code>InvalidDirectModeDisplay</code></span></span><div class='docblock'><p>DirectMode not Enabled on the Display</p>
+</div><span id='variant.GpuInDebugMode' class='variant'><span id='GpuInDebugMode.v' class='invisible'><code>GpuInDebugMode</code></span></span><div class='docblock'><p>GPU is in debug mode, OC is NOT allowed.</p>
+</div>
+                    <h2 id='methods' class='small-section-header'>
+                      Methods<a href='#methods' class='anchor'></a>
+                    </h2>
+                <h3 id='impl' class='impl'><span class='in-band'><code>impl <a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a></code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#88-109' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from_raw' class="method"><span id='from_raw.v' class='invisible'><code>fn <a href='#method.from_raw' class='fnname'>from_raw</a>(raw: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.i32.html">i32</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a>, <a class="struct" href="../../nvapi_hi/sys/struct.ArgumentRangeError.html" title="struct nvapi_hi::sys::ArgumentRangeError">ArgumentRangeError</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#89-96' title='goto source code'>[src]</a></span></h4>
+<h4 id='method.raw' class="method"><span id='raw.v' class='invisible'><code>fn <a href='#method.raw' class='fnname'>raw</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.i32.html">i32</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#98-100' title='goto source code'>[src]</a></span></h4>
+<h4 id='method.values' class="method"><span id='values.v' class='invisible'><code>fn <a href='#method.values' class='fnname'>values</a>() -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/iter/struct.Cloned.html" title="struct core::iter::Cloned">Cloned</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/core/slice/struct.Iter.html" title="struct core::slice::Iter">Iter</a>&lt;'static, <a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a>&gt;&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#102-108' title='goto source code'>[src]</a></span></h4>
+</div>
+            <h2 id='implementations' class='small-section-header'>
+              Trait Implementations<a href='#implementations' class='anchor'></a>
+            </h2>
+        <h3 id='impl-Copy' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html" title="trait core::marker::Copy">Copy</a> for <a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a></code><a href='#impl-Copy' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#79' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'></div><h3 id='impl-Debug' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a></code><a href='#impl-Debug' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#79' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">()</a>, <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Error.html" title="struct core::fmt::Error">Error</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#79' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Formats the value using the given formatter.</p>
+</div></div><h3 id='impl-Deserialize&lt;&#39;de&gt;' class='impl'><span class='in-band'><code>impl&lt;'de&gt; <a class="trait" href="https://docs.rs/serde/1.0.16/serde/de/trait.Deserialize.html" title="trait serde::de::Deserialize">Deserialize</a>&lt;'de&gt; for <a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a></code><a href='#impl-Deserialize&lt;&#39;de&gt;' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#78' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.deserialize' class="method"><span id='deserialize.v' class='invisible'><code>fn <a href='https://docs.rs/serde/1.0.16/serde/de/trait.Deserialize.html#tymethod.deserialize' class='fnname'>deserialize</a>&lt;__D&gt;(<br>&nbsp;&nbsp;&nbsp;&nbsp;__deserializer: __D<br>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a>, &lt;__D as <a class="trait" href="https://docs.rs/serde/1.0.16/serde/de/trait.Deserializer.html" title="trait serde::de::Deserializer">Deserializer</a>&lt;'de&gt;&gt;::<a class="type" href="https://docs.rs/serde/1.0.16/serde/de/trait.Deserializer.html#associatedtype.Error" title="type serde::de::Deserializer::Error">Error</a>&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;__D: <a class="trait" href="https://docs.rs/serde/1.0.16/serde/de/trait.Deserializer.html" title="trait serde::de::Deserializer">Deserializer</a>&lt;'de&gt;,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#78' title='goto source code'>[src]</a></span></h4>
+</div><h3 id='impl-Eq' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html" title="trait core::cmp::Eq">Eq</a> for <a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a></code><a href='#impl-Eq' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#79' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'></div><h3 id='impl-PartialEq&lt;Status&gt;' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html" title="trait core::cmp::PartialEq">PartialEq</a>&lt;<a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a>&gt; for <a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a></code><a href='#impl-PartialEq&lt;Status&gt;' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#79' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.eq' class="method"><span id='eq.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq' class='fnname'>eq</a>(&amp;self, __arg_0: &amp;<a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#79' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>This method tests for <code>self</code> and <code>other</code> values to be equal, and is used by <code>==</code>. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq">Read more</a></p>
+</div><h4 id='method.ne' class="method"><span id='ne.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.ne' class='fnname'>ne</a>(&amp;self, other: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Rhs) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/cmp.rs.html#121' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>This method tests for <code>!=</code>.</p>
+</div></div><h3 id='impl-Hash' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html" title="trait core::hash::Hash">Hash</a> for <a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a></code><a href='#impl-Hash' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#79' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.hash' class="method"><span id='hash.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html#tymethod.hash' class='fnname'>hash</a>&lt;__H&gt;(&amp;self, __arg_0: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;mut </a>__H) <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;__H: <a class="trait" href="https://doc.rust-lang.org/nightly/core/hash/trait.Hasher.html" title="trait core::hash::Hasher">Hasher</a>,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#79' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Feeds this value into the given [<code>Hasher</code>]. <a href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html#tymethod.hash">Read more</a></p>
+</div><h4 id='method.hash_slice' class="method"><span id='hash_slice.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html#method.hash_slice' class='fnname'>hash_slice</a>&lt;H&gt;(data: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">&amp;[Self]</a>, state: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;mut </a>H) <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;H: <a class="trait" href="https://doc.rust-lang.org/nightly/core/hash/trait.Hasher.html" title="trait core::hash::Hasher">Hasher</a>,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.3.0'>1.3.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/hash/mod.rs.html#202-208' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Feeds a slice of this type into the given [<code>Hasher</code>]. <a href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html#method.hash_slice">Read more</a></p>
+</div></div><h3 id='impl-Serialize' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://docs.rs/serde/1.0.16/serde/ser/trait.Serialize.html" title="trait serde::ser::Serialize">Serialize</a> for <a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a></code><a href='#impl-Serialize' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#78' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.serialize' class="method"><span id='serialize.v' class='invisible'><code>fn <a href='https://docs.rs/serde/1.0.16/serde/ser/trait.Serialize.html#tymethod.serialize' class='fnname'>serialize</a>&lt;__S&gt;(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;self, <br>&nbsp;&nbsp;&nbsp;&nbsp;__serializer: __S<br>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;&lt;__S as <a class="trait" href="https://docs.rs/serde/1.0.16/serde/ser/trait.Serializer.html" title="trait serde::ser::Serializer">Serializer</a>&gt;::<a class="type" href="https://docs.rs/serde/1.0.16/serde/ser/trait.Serializer.html#associatedtype.Ok" title="type serde::ser::Serializer::Ok">Ok</a>, &lt;__S as <a class="trait" href="https://docs.rs/serde/1.0.16/serde/ser/trait.Serializer.html" title="trait serde::ser::Serializer">Serializer</a>&gt;::<a class="type" href="https://docs.rs/serde/1.0.16/serde/ser/trait.Serializer.html#associatedtype.Error" title="type serde::ser::Serializer::Error">Error</a>&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;__S: <a class="trait" href="https://docs.rs/serde/1.0.16/serde/ser/trait.Serializer.html" title="trait serde::ser::Serializer">Serializer</a>,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#78' title='goto source code'>[src]</a></span></h4>
+</div><h3 id='impl-Into&lt;i32&gt;' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html" title="trait core::convert::Into">Into</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.i32.html">i32</a>&gt; for <a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a></code><a href='#impl-Into&lt;i32&gt;' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#111-115' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.into' class="method"><span id='into.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.Into.html#tymethod.into' class='fnname'>into</a>(self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.i32.html">i32</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#112-114' title='goto source code'>[src]</a></span></h4>
+</div><h3 id='impl-From&lt;ArgumentRangeError&gt;' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;<a class="struct" href="../../nvapi_hi/sys/struct.ArgumentRangeError.html" title="struct nvapi_hi::sys::ArgumentRangeError">ArgumentRangeError</a>&gt; for <a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a></code><a href='#impl-From&lt;ArgumentRangeError&gt;' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/lib.rs.html#70-74' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from' class="method"><span id='from.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(<a class="struct" href="../../nvapi_hi/sys/struct.ArgumentRangeError.html" title="struct nvapi_hi::sys::ArgumentRangeError">ArgumentRangeError</a>) -&gt; <a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/lib.rs.html#71-73' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Performs the conversion.</p>
+</div></div><h3 id='impl-PartialOrd&lt;Status&gt;' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html" title="trait core::cmp::PartialOrd">PartialOrd</a>&lt;<a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a>&gt; for <a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a></code><a href='#impl-PartialOrd&lt;Status&gt;' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#79' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.partial_cmp' class="method"><span id='partial_cmp.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#tymethod.partial_cmp' class='fnname'>partial_cmp</a>(&amp;self, __arg_0: &amp;<a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="enum" href="https://doc.rust-lang.org/nightly/core/cmp/enum.Ordering.html" title="enum core::cmp::Ordering">Ordering</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#79' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>This method returns an ordering between <code>self</code> and <code>other</code> values if one exists. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#tymethod.partial_cmp">Read more</a></p>
+</div><h4 id='method.lt' class="method"><span id='lt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.lt' class='fnname'>lt</a>(&amp;self, other: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Rhs) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/cmp.rs.html#644-649' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>This method tests less than (for <code>self</code> and <code>other</code>) and is used by the <code>&lt;</code> operator. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.lt">Read more</a></p>
+</div><h4 id='method.le' class="method"><span id='le.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.le' class='fnname'>le</a>(&amp;self, other: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Rhs) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/cmp.rs.html#666-671' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>This method tests less than or equal to (for <code>self</code> and <code>other</code>) and is used by the <code>&lt;=</code> operator. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.le">Read more</a></p>
+</div><h4 id='method.gt' class="method"><span id='gt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.gt' class='fnname'>gt</a>(&amp;self, other: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Rhs) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/cmp.rs.html#687-692' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>This method tests greater than (for <code>self</code> and <code>other</code>) and is used by the <code>&gt;</code> operator. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.gt">Read more</a></p>
+</div><h4 id='method.ge' class="method"><span id='ge.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.ge' class='fnname'>ge</a>(&amp;self, other: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Rhs) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/cmp.rs.html#709-714' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>This method tests greater than or equal to (for <code>self</code> and <code>other</code>) and is used by the <code>&gt;=</code> operator. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.ge">Read more</a></p>
+</div></div><h3 id='impl-Ord' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a> for <a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a></code><a href='#impl-Ord' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#79' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.cmp' class="method"><span id='cmp.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html#tymethod.cmp' class='fnname'>cmp</a>(&amp;self, __arg_0: &amp;<a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/cmp/enum.Ordering.html" title="enum core::cmp::Ordering">Ordering</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#79' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>This method returns an <code>Ordering</code> between <code>self</code> and <code>other</code>. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html#tymethod.cmp">Read more</a></p>
+</div><h4 id='method.max' class="method"><span id='max.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html#method.max' class='fnname'>max</a>(self, other: Self) -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.21.0'>1.21.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/cmp.rs.html#460-463' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Compares and returns the maximum of two values. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html#method.max">Read more</a></p>
+</div><h4 id='method.min' class="method"><span id='min.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html#method.min' class='fnname'>min</a>(self, other: Self) -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.21.0'>1.21.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/cmp.rs.html#476-479' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Compares and returns the minimum of two values. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html#method.min">Read more</a></p>
+</div></div><h3 id='impl-Clone' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> for <a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a></code><a href='#impl-Clone' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#79' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.clone' class="method"><span id='clone.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class="enum" href="../../nvapi_hi/sys/enum.Status.html" title="enum nvapi_hi::sys::Status">Status</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#79' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></p>
+</div><h4 id='method.clone_from' class="method"><span id='clone_from.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Self)</code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/clone.rs.html#112-114' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Performs copy-assignment from <code>source</code>. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from">Read more</a></p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "nvapi_hi";
+    </script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

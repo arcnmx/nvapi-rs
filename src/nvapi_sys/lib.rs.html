@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `sys/src/lib.rs`.">
+    <meta name="description" content="Source to the Rust file `/home/travis/build/arcnmx/nvapi-rs/sys/src/lib.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>lib.rs.html -- source</title>
@@ -105,16 +105,41 @@
 <span id="60">60</span>
 <span id="61">61</span>
 <span id="62">62</span>
+<span id="63">63</span>
+<span id="64">64</span>
+<span id="65">65</span>
+<span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
 </pre><pre class="rust ">
 <span class="attribute">#<span class="op">!</span>[<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>, <span class="ident">non_snake_case</span>)]</span>
+<span class="attribute">#<span class="op">!</span>[<span class="ident">doc</span>(<span class="ident">html_root_url</span> <span class="op">=</span> <span class="string">&quot;http://arcnmx.github.io/nvapi-rs/&quot;</span>)]</span>
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">windows</span>)]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">winapi</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">windows</span>, <span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;winapi3&quot;</span>)))]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">kernel32</span>;
+<span class="attribute">#[<span class="ident">macro_use</span>]</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">bitflags</span>;
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde_derive&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">macro_use</span>]</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">serde_derive</span>;
 
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="kw">mod</span> <span class="ident">macros</span>;
+
+<span class="attribute">#[<span class="ident">macro_use</span>]</span>
+<span class="kw">mod</span> <span class="ident">debug_array</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">debug_array</span>::<span class="ident">Array</span>;
 
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">nvid</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">nvapi</span>;
@@ -149,8 +174,10 @@
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">result</span>;
 
+<span class="doccomment">/// The result of a fallible NVAPI call.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">result</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">Status</span><span class="op">&gt;</span>;
 
+<span class="doccomment">/// Treat `NVAPI_OK` as `Ok(())` and all else as an `Err(..)`.</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">status_result</span>(<span class="ident">status</span>: <span class="ident">NvAPI_Status</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="kw">match</span> <span class="ident">status</span> {
         <span class="ident">status</span>::<span class="ident">NVAPI_OK</span> <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(()),
@@ -158,12 +185,13 @@
     }
 }
 
+<span class="doccomment">/// Error type indicating a raw value is out of the range of known enum values.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ArgumentRangeError</span>;
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ArgumentRangeError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Status</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(_: <span class="ident">ArgumentRangeError</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">Status</span>::<span class="ident">InvalidArgument</span>
+        <span class="ident">Status</span>::<span class="ident">ArgumentExceedMaxSize</span>
     }
 }
 

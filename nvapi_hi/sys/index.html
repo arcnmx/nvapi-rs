@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `sys` mod in crate `nvapi_hi`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, sys">
+
+    <title>nvapi_hi::sys - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc mod">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Module sys</p><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#constants">Constants</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'><a href='../index.html'>nvapi_hi</a></p><script>window.sidebarCurrent = {name: 'sys', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>nvapi_hi</a>::<wbr><a class="mod" href=''>sys</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../src/nvapi_sys/lib.rs.html#1-74' title='goto source code'>[src]</a></span></h1>
+<h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="dispcontrol/index.html"
+                                  title='mod nvapi_hi::sys::dispcontrol'>dispcontrol</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="driverapi/index.html"
+                                  title='mod nvapi_hi::sys::driverapi'>driverapi</a></td>
+                           <td class='docblock-short'>
+                                <p>The display driver APIs are used to retrieve information about the display driver.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="gpu/index.html"
+                                  title='mod nvapi_hi::sys::gpu'>gpu</a></td>
+                           <td class='docblock-short'>
+                                <p>The GPU APIs retrieve and control various attributes of the GPU, such as outputs, VBIOS revision, APG rate, frame buffer size, and thermal settings.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="handles/index.html"
+                                  title='mod nvapi_hi::sys::handles'>handles</a></td>
+                           <td class='docblock-short'>
+                                <p>NVAPI Handles - These handles are retrieved from various calls and passed in
+to others in NvAPI These are meant to be opaque types. Do not assume they
+correspond to indices, HDCs, display indexes or anything else.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="nvapi/index.html"
+                                  title='mod nvapi_hi::sys::nvapi'>nvapi</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="nvid/index.html"
+                                  title='mod nvapi_hi::sys::nvid'>nvid</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="status/index.html"
+                                  title='mod nvapi_hi::sys::status'>status</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="types/index.html"
+                                  title='mod nvapi_hi::sys::types'>types</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.ArgumentRangeError.html"
+                                  title='struct nvapi_hi::sys::ArgumentRangeError'>ArgumentRangeError</a></td>
+                           <td class='docblock-short'>
+                                <p>Error type indicating a raw value is out of the range of known enum values.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.Array.html"
+                                  title='struct nvapi_hi::sys::Array'>Array</a></td>
+                           <td class='docblock-short'>
+                                <p>Hacks a <code>Debug</code> impl onto large arrays.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.BoolU32.html"
+                                  title='struct nvapi_hi::sys::BoolU32'>BoolU32</a></td>
+                           <td class='docblock-short'>
+                                <p>A boolean containing reserved bits</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.NV_RECT.html"
+                                  title='struct nvapi_hi::sys::NV_RECT'>NV_RECT</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.NvGUID.html"
+                                  title='struct nvapi_hi::sys::NvGUID'>NvGUID</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.NvSBox.html"
+                                  title='struct nvapi_hi::sys::NvSBox'>NvSBox</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.Api.html"
+                                  title='enum nvapi_hi::sys::Api'>Api</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.Status.html"
+                                  title='enum nvapi_hi::sys::Status'>Status</a></td>
+                           <td class='docblock-short'>
+                                <p>NvAPI Status Values</p>
+                           </td>
+                       </tr></table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_ADVANCED_DISPLAY_HEADS.html"
+                                  title='constant nvapi_hi::sys::NVAPI_ADVANCED_DISPLAY_HEADS'>NVAPI_ADVANCED_DISPLAY_HEADS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_GENERIC_STRING_MAX.html"
+                                  title='constant nvapi_hi::sys::NVAPI_GENERIC_STRING_MAX'>NVAPI_GENERIC_STRING_MAX</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_LONG_STRING_MAX.html"
+                                  title='constant nvapi_hi::sys::NVAPI_LONG_STRING_MAX'>NVAPI_LONG_STRING_MAX</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_ACPI_IDS.html"
+                                  title='constant nvapi_hi::sys::NVAPI_MAX_ACPI_IDS'>NVAPI_MAX_ACPI_IDS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_AUDIO_DEVICES.html"
+                                  title='constant nvapi_hi::sys::NVAPI_MAX_AUDIO_DEVICES'>NVAPI_MAX_AUDIO_DEVICES</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_AVAILABLE_GPU_TOPOLOGIES.html"
+                                  title='constant nvapi_hi::sys::NVAPI_MAX_AVAILABLE_GPU_TOPOLOGIES'>NVAPI_MAX_AVAILABLE_GPU_TOPOLOGIES</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_AVAILABLE_SLI_GROUPS.html"
+                                  title='constant nvapi_hi::sys::NVAPI_MAX_AVAILABLE_SLI_GROUPS'>NVAPI_MAX_AVAILABLE_SLI_GROUPS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_DISPLAYS.html"
+                                  title='constant nvapi_hi::sys::NVAPI_MAX_DISPLAYS'>NVAPI_MAX_DISPLAYS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_DISPLAY_HEADS.html"
+                                  title='constant nvapi_hi::sys::NVAPI_MAX_DISPLAY_HEADS'>NVAPI_MAX_DISPLAY_HEADS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_GPU_PER_TOPOLOGY.html"
+                                  title='constant nvapi_hi::sys::NVAPI_MAX_GPU_PER_TOPOLOGY'>NVAPI_MAX_GPU_PER_TOPOLOGY</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_GPU_TOPOLOGIES.html"
+                                  title='constant nvapi_hi::sys::NVAPI_MAX_GPU_TOPOLOGIES'>NVAPI_MAX_GPU_TOPOLOGIES</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_HEADS_PER_GPU.html"
+                                  title='constant nvapi_hi::sys::NVAPI_MAX_HEADS_PER_GPU'>NVAPI_MAX_HEADS_PER_GPU</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_LOGICAL_GPUS.html"
+                                  title='constant nvapi_hi::sys::NVAPI_MAX_LOGICAL_GPUS'>NVAPI_MAX_LOGICAL_GPUS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_PHYSICAL_BRIDGES.html"
+                                  title='constant nvapi_hi::sys::NVAPI_MAX_PHYSICAL_BRIDGES'>NVAPI_MAX_PHYSICAL_BRIDGES</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_PHYSICAL_GPUS.html"
+                                  title='constant nvapi_hi::sys::NVAPI_MAX_PHYSICAL_GPUS'>NVAPI_MAX_PHYSICAL_GPUS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_VIEW_MODES.html"
+                                  title='constant nvapi_hi::sys::NVAPI_MAX_VIEW_MODES'>NVAPI_MAX_VIEW_MODES</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_PHYSICAL_GPUS.html"
+                                  title='constant nvapi_hi::sys::NVAPI_PHYSICAL_GPUS'>NVAPI_PHYSICAL_GPUS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_SHORT_STRING_MAX.html"
+                                  title='constant nvapi_hi::sys::NVAPI_SHORT_STRING_MAX'>NVAPI_SHORT_STRING_MAX</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_SYSTEM_HWBC_INVALID_ID.html"
+                                  title='constant nvapi_hi::sys::NVAPI_SYSTEM_HWBC_INVALID_ID'>NVAPI_SYSTEM_HWBC_INVALID_ID</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_SYSTEM_MAX_DISPLAYS.html"
+                                  title='constant nvapi_hi::sys::NVAPI_SYSTEM_MAX_DISPLAYS'>NVAPI_SYSTEM_MAX_DISPLAYS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_SYSTEM_MAX_HWBCS.html"
+                                  title='constant nvapi_hi::sys::NVAPI_SYSTEM_MAX_HWBCS'>NVAPI_SYSTEM_MAX_HWBCS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_FALSE.html"
+                                  title='constant nvapi_hi::sys::NV_FALSE'>NV_FALSE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_MAX_HEADS.html"
+                                  title='constant nvapi_hi::sys::NV_MAX_HEADS'>NV_MAX_HEADS</a></td>
+                           <td class='docblock-short'>
+                                <p>Maximum heads, each with <code>NVAPI_DESKTOP_RES</code> resolution</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_MAX_VID_PROFILES.html"
+                                  title='constant nvapi_hi::sys::NV_MAX_VID_PROFILES'>NV_MAX_VID_PROFILES</a></td>
+                           <td class='docblock-short'>
+                                <p>Maximum number of output video profiles supported</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_MAX_VID_STREAMS.html"
+                                  title='constant nvapi_hi::sys::NV_MAX_VID_STREAMS'>NV_MAX_VID_STREAMS</a></td>
+                           <td class='docblock-short'>
+                                <p>Maximum number of input video streams, each with a <code>NVAPI_VIDEO_SRC_INFO</code></p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_TRUE.html"
+                                  title='constant nvapi_hi::sys::NV_TRUE'>NV_TRUE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.GET_NVAPI_SIZE.html"
+                                  title='fn nvapi_hi::sys::GET_NVAPI_SIZE'>GET_NVAPI_SIZE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.GET_NVAPI_VERSION.html"
+                                  title='fn nvapi_hi::sys::GET_NVAPI_VERSION'>GET_NVAPI_VERSION</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.MAKE_NVAPI_VERSION.html"
+                                  title='fn nvapi_hi::sys::MAKE_NVAPI_VERSION'>MAKE_NVAPI_VERSION</a></td>
+                           <td class='docblock-short'>
+                                <p>NvAPI Version Definition</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.long_string.html"
+                                  title='fn nvapi_hi::sys::long_string'>long_string</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.nvapi_QueryInterface.html"
+                                  title='fn nvapi_hi::sys::nvapi_QueryInterface'>nvapi_QueryInterface</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.short_string.html"
+                                  title='fn nvapi_hi::sys::short_string'>short_string</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.status_result.html"
+                                  title='fn nvapi_hi::sys::status_result'>status_result</a></td>
+                           <td class='docblock-short'>
+                                <p>Treat <code>NVAPI_OK</code> as <code>Ok(())</code> and all else as an <code>Err(..)</code>.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.string.html"
+                                  title='fn nvapi_hi::sys::string'>string</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NvAPI_LongString.html"
+                                  title='type nvapi_hi::sys::NvAPI_LongString'>NvAPI_LongString</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NvAPI_ShortString.html"
+                                  title='type nvapi_hi::sys::NvAPI_ShortString'>NvAPI_ShortString</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NvAPI_Status.html"
+                                  title='type nvapi_hi::sys::NvAPI_Status'>NvAPI_Status</a></td>
+                           <td class='docblock-short'>
+                                <p>NvAPI Status Values</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NvAPI_String.html"
+                                  title='type nvapi_hi::sys::NvAPI_String'>NvAPI_String</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NvBool.html"
+                                  title='type nvapi_hi::sys::NvBool'>NvBool</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NvLUID.html"
+                                  title='type nvapi_hi::sys::NvLUID'>NvLUID</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.Result.html"
+                                  title='type nvapi_hi::sys::Result'>Result</a></td>
+                           <td class='docblock-short'>
+                                <p>The result of a fallible NVAPI call.</p>
+                           </td>
+                       </tr></table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "nvapi_hi";
+    </script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

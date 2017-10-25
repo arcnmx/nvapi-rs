@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Api` enum in crate `nvapi_hi`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Api">
+
+    <title>nvapi_hi::sys::nvid::Api - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc enum">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Enum Api</p><div class="block items"><ul><li><a href="#variants">Variants</a></li><li><a href="#methods">Methods</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='../../index.html'>nvapi_hi</a>::<wbr><a href='../index.html'>sys</a>::<wbr><a href='index.html'>nvid</a></p><script>window.sidebarCurrent = {name: 'Api', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Enum <a href='../../index.html'>nvapi_hi</a>::<wbr><a href='../index.html'>sys</a>::<wbr><a href='index.html'>nvid</a>::<wbr><a class="enum" href=''>Api</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../../src/nvapi_sys/nvid.rs.html#11-15' title='goto source code'>[src]</a></span></h1>
+<pre class='rust enum'><div class="docblock attributes">#[repr(u32)]
+</div>pub enum Api {
+    NvAPI_Initialize,
+    NvAPI_Unload,
+    NvAPI_GetErrorMessage,
+    NvAPI_GetInterfaceVersionString,
+    NvAPI_GetDisplayDriverVersion,
+    NvAPI_SYS_GetDriverAndBranchVersion,
+    NvAPI_EnumNvidiaDisplayHandle,
+    NvAPI_EnumNvidiaUnAttachedDisplayHandle,
+    NvAPI_EnumPhysicalGPUs,
+    NvAPI_EnumLogicalGPUs,
+    NvAPI_GetPhysicalGPUsFromDisplay,
+    NvAPI_GetPhysicalGPUFromUnAttachedDisplay,
+    NvAPI_CreateDisplayFromUnAttachedDisplay,
+    NvAPI_GetLogicalGPUFromDisplay,
+    NvAPI_GetLogicalGPUFromPhysicalGPU,
+    NvAPI_GetPhysicalGPUsFromLogicalGPU,
+    NvAPI_GetAssociatedNvidiaDisplayHandle,
+    NvAPI_DISP_GetAssociatedUnAttachedNvidiaDisplayHandle,
+    NvAPI_GetAssociatedNvidiaDisplayName,
+    NvAPI_GetUnAttachedAssociatedDisplayName,
+    NvAPI_EnableHWCursor,
+    NvAPI_DisableHWCursor,
+    NvAPI_GetVBlankCounter,
+    NvAPI_SetRefreshRateOverride,
+    NvAPI_GetAssociatedDisplayOutputId,
+    NvAPI_GetDisplayPortInfo,
+    NvAPI_SetDisplayPort,
+    NvAPI_GetHDMISupportInfo,
+    NvAPI_DISP_EnumHDMIStereoModes,
+    NvAPI_GetInfoFrame,
+    NvAPI_SetInfoFrame,
+    NvAPI_SetInfoFrameState,
+    NvAPI_GetInfoFrameState,
+    NvAPI_Disp_InfoFrameControl,
+    NvAPI_Disp_ColorControl,
+    NvAPI_DISP_GetVirtualModeData,
+    NvAPI_DISP_OverrideDisplayModeList,
+    NvAPI_GetDisplayDriverMemoryInfo,
+    NvAPI_GetDriverMemoryInfo,
+    NvAPI_GetDVCInfo,
+    NvAPI_SetDVCLevel,
+    NvAPI_GetDVCInfoEx,
+    NvAPI_SetDVCLevelEx,
+    NvAPI_GetHUEInfo,
+    NvAPI_SetHUEAngle,
+    NvAPI_GetImageSharpeningInfo,
+    NvAPI_SetImageSharpeningLevel,
+    NvAPI_D3D_GetCurrentSLIState,
+    NvAPI_D3D9_RegisterResource,
+    NvAPI_D3D9_UnregisterResource,
+    NvAPI_D3D9_AliasSurfaceAsTexture,
+    NvAPI_D3D9_StretchRectEx,
+    NvAPI_D3D9_ClearRT,
+    NvAPI_D3D_CreateQuery,
+    NvAPI_D3D_DestroyQuery,
+    NvAPI_D3D_Query_Begin,
+    NvAPI_D3D_Query_End,
+    NvAPI_D3D_Query_GetData,
+    NvAPI_D3D_Query_GetDataSize,
+    NvAPI_D3D_Query_GetType,
+    NvAPI_D3D_RegisterApp,
+    NvAPI_D3D9_CreatePathContextNV,
+    NvAPI_D3D9_DestroyPathContextNV,
+    NvAPI_D3D9_CreatePathNV,
+    NvAPI_D3D9_DeletePathNV,
+    NvAPI_D3D9_PathVerticesNV,
+    NvAPI_D3D9_PathParameterfNV,
+    NvAPI_D3D9_PathParameteriNV,
+    NvAPI_D3D9_PathMatrixNV,
+    NvAPI_D3D9_PathDepthNV,
+    NvAPI_D3D9_PathClearDepthNV,
+    NvAPI_D3D9_PathEnableDepthTestNV,
+    NvAPI_D3D9_PathEnableColorWriteNV,
+    NvAPI_D3D9_DrawPathNV,
+    NvAPI_D3D9_GetSurfaceHandle,
+    NvAPI_D3D9_GetOverlaySurfaceHandles,
+    NvAPI_D3D9_GetTextureHandle,
+    NvAPI_D3D9_GpuSyncGetHandleSize,
+    NvAPI_D3D9_GpuSyncInit,
+    NvAPI_D3D9_GpuSyncEnd,
+    NvAPI_D3D9_GpuSyncMapTexBuffer,
+    NvAPI_D3D9_GpuSyncMapSurfaceBuffer,
+    NvAPI_D3D9_GpuSyncMapVertexBuffer,
+    NvAPI_D3D9_GpuSyncMapIndexBuffer,
+    NvAPI_D3D9_SetPitchSurfaceCreation,
+    NvAPI_D3D9_GpuSyncAcquire,
+    NvAPI_D3D9_GpuSyncRelease,
+    NvAPI_D3D9_GetCurrentRenderTargetHandle,
+    NvAPI_D3D9_GetCurrentZBufferHandle,
+    NvAPI_D3D9_GetIndexBufferHandle,
+    NvAPI_D3D9_GetVertexBufferHandle,
+    NvAPI_D3D9_CreateTexture,
+    NvAPI_D3D9_AliasPrimaryAsTexture,
+    NvAPI_D3D9_PresentSurfaceToDesktop,
+    NvAPI_D3D9_CreateVideoBegin,
+    NvAPI_D3D9_CreateVideoEnd,
+    NvAPI_D3D9_CreateVideo,
+    NvAPI_D3D9_FreeVideo,
+    NvAPI_D3D9_PresentVideo,
+    NvAPI_D3D9_VideoSetStereoInfo,
+    NvAPI_D3D9_SetGamutData,
+    NvAPI_D3D9_SetSurfaceCreationLayout,
+    NvAPI_D3D9_GetVideoCapabilities,
+    NvAPI_D3D9_QueryVideoInfo,
+    NvAPI_D3D9_AliasPrimaryFromDevice,
+    NvAPI_D3D9_SetResourceHint,
+    NvAPI_D3D9_Lock,
+    NvAPI_D3D9_Unlock,
+    NvAPI_D3D9_GetVideoState,
+    NvAPI_D3D9_SetVideoState,
+    NvAPI_D3D9_EnumVideoFeatures,
+    NvAPI_D3D9_GetSLIInfo,
+    NvAPI_D3D9_SetSLIMode,
+    NvAPI_D3D9_QueryAAOverrideMode,
+    NvAPI_D3D9_VideoSurfaceEncryptionControl,
+    NvAPI_D3D9_DMA,
+    NvAPI_D3D9_EnableStereo,
+    NvAPI_D3D9_StretchRect,
+    NvAPI_D3D9_CreateRenderTarget,
+    NvAPI_D3D9_NVFBC_GetStatus,
+    NvAPI_D3D9_IFR_SetUpTargetBufferToSys,
+    NvAPI_D3D9_GPUBasedCPUSleep,
+    NvAPI_D3D9_IFR_TransferRenderTarget,
+    NvAPI_D3D9_IFR_SetUpTargetBufferToNV12BLVideoSurface,
+    NvAPI_D3D9_IFR_TransferRenderTargetToNV12BLVideoSurface,
+    NvAPI_D3D10_AliasPrimaryAsTexture,
+    NvAPI_D3D10_SetPrimaryFlipChainCallbacks,
+    NvAPI_D3D10_ProcessCallbacks,
+    NvAPI_D3D10_GetRenderedCursorAsBitmap,
+    NvAPI_D3D10_BeginShareResource,
+    NvAPI_D3D10_BeginShareResourceEx,
+    NvAPI_D3D10_EndShareResource,
+    NvAPI_D3D10_SetDepthBoundsTest,
+    NvAPI_D3D10_CreateDevice,
+    NvAPI_D3D10_CreateDeviceAndSwapChain,
+    NvAPI_D3D11_CreateDevice,
+    NvAPI_D3D11_CreateDeviceAndSwapChain,
+    NvAPI_D3D11_BeginShareResource,
+    NvAPI_D3D11_EndShareResource,
+    NvAPI_D3D11_SetDepthBoundsTest,
+    NvAPI_GPU_GetShaderPipeCount,
+    NvAPI_GPU_GetShaderSubPipeCount,
+    NvAPI_GPU_GetPartitionCount,
+    NvAPI_GPU_GetMemPartitionMask,
+    NvAPI_GPU_GetTPCMask,
+    NvAPI_GPU_GetSMMask,
+    NvAPI_GPU_GetTotalTPCCount,
+    NvAPI_GPU_GetTotalSMCount,
+    NvAPI_GPU_GetTotalSPCount,
+    NvAPI_GPU_GetGpuCoreCount,
+    NvAPI_GPU_GetAllOutputs,
+    NvAPI_GPU_GetConnectedOutputs,
+    NvAPI_GPU_GetConnectedSLIOutputs,
+    NvAPI_GPU_GetConnectedDisplayIds,
+    NvAPI_GPU_GetAllDisplayIds,
+    NvAPI_GPU_GetConnectedOutputsWithLidState,
+    NvAPI_GPU_GetConnectedSLIOutputsWithLidState,
+    NvAPI_GPU_GetSystemType,
+    NvAPI_GPU_GetActiveOutputs,
+    NvAPI_GPU_GetEDID,
+    NvAPI_GPU_SetEDID,
+    NvAPI_GPU_GetOutputType,
+    NvAPI_GPU_GetDeviceDisplayMode,
+    NvAPI_GPU_GetFlatPanelInfo,
+    NvAPI_GPU_ValidateOutputCombination,
+    NvAPI_GPU_GetConnectorInfo,
+    NvAPI_GPU_GetFullName,
+    NvAPI_GPU_GetPCIIdentifiers,
+    NvAPI_GPU_GetGPUType,
+    NvAPI_GPU_GetBusType,
+    NvAPI_GPU_GetBusId,
+    NvAPI_GPU_GetBusSlotId,
+    NvAPI_GPU_GetIRQ,
+    NvAPI_GPU_GetVbiosRevision,
+    NvAPI_GPU_GetVbiosOEMRevision,
+    NvAPI_GPU_GetVbiosVersionString,
+    NvAPI_GPU_GetAGPAperture,
+    NvAPI_GPU_GetCurrentAGPRate,
+    NvAPI_GPU_GetCurrentPCIEDownstreamWidth,
+    NvAPI_GPU_GetPhysicalFrameBufferSize,
+    NvAPI_GPU_GetVirtualFrameBufferSize,
+    NvAPI_GPU_GetQuadroStatus,
+    NvAPI_GPU_GetBoardInfo,
+    NvAPI_GPU_GetRamType,
+    NvAPI_GPU_GetFBWidthAndLocation,
+    NvAPI_GPU_GetAllClockFrequencies,
+    NvAPI_GPU_GetPerfClocks,
+    NvAPI_GPU_SetPerfClocks,
+    NvAPI_GPU_GetCoolerSettings,
+    NvAPI_GPU_SetCoolerLevels,
+    NvAPI_GPU_RestoreCoolerSettings,
+    NvAPI_GPU_GetCoolerPolicyTable,
+    NvAPI_GPU_SetCoolerPolicyTable,
+    NvAPI_GPU_RestoreCoolerPolicyTable,
+    NvAPI_GPU_GetPstatesInfo,
+    NvAPI_GPU_GetPstatesInfoEx,
+    NvAPI_GPU_SetPstatesInfo,
+    NvAPI_GPU_GetPstates20,
+    NvAPI_GPU_SetPstates20,
+    NvAPI_GPU_GetCurrentPstate,
+    NvAPI_GPU_GetPstateClientLimits,
+    NvAPI_GPU_SetPstateClientLimits,
+    NvAPI_GPU_EnableOverclockedPstates,
+    NvAPI_GPU_EnableDynamicPstates,
+    NvAPI_GPU_GetDynamicPstatesInfoEx,
+    NvAPI_GPU_GetVoltages,
+    NvAPI_GPU_GetThermalSettings,
+    NvAPI_GPU_SetDitherControl,
+    NvAPI_GPU_GetDitherControl,
+    NvAPI_GPU_GetColorSpaceConversion,
+    NvAPI_GPU_SetColorSpaceConversion,
+    NvAPI_GetTVOutputInfo,
+    NvAPI_GetTVEncoderControls,
+    NvAPI_SetTVEncoderControls,
+    NvAPI_GetTVOutputBorderColor,
+    NvAPI_SetTVOutputBorderColor,
+    NvAPI_GetDisplayPosition,
+    NvAPI_SetDisplayPosition,
+    NvAPI_GetValidGpuTopologies,
+    NvAPI_GetInvalidGpuTopologies,
+    NvAPI_SetGpuTopologies,
+    NvAPI_GPU_GetPerGpuTopologyStatus,
+    NvAPI_SYS_GetChipSetTopologyStatus,
+    NvAPI_GPU_Get_DisplayPort_DongleInfo,
+    NvAPI_I2CRead,
+    NvAPI_I2CWrite,
+    NvAPI_I2CWriteEx,
+    NvAPI_I2CReadEx,
+    NvAPI_GPU_GetPowerMizerInfo,
+    NvAPI_GPU_SetPowerMizerInfo,
+    NvAPI_GPU_GetVoltageDomainsStatus,
+    NvAPI_GPU_ClientPowerTopologyGetInfo,
+    NvAPI_GPU_ClientPowerTopologyGetStatus,
+    NvAPI_GPU_ClientPowerPoliciesGetInfo,
+    NvAPI_GPU_ClientPowerPoliciesGetStatus,
+    NvAPI_GPU_ClientPowerPoliciesSetStatus,
+    NvAPI_GPU_WorkstationFeatureSetup,
+    NvAPI_SYS_GetChipSetInfo,
+    NvAPI_SYS_GetLidAndDockInfo,
+    NvAPI_OGL_ExpertModeSet,
+    NvAPI_OGL_ExpertModeGet,
+    NvAPI_OGL_ExpertModeDefaultsSet,
+    NvAPI_OGL_ExpertModeDefaultsGet,
+    NvAPI_SetDisplaySettings,
+    NvAPI_GetDisplaySettings,
+    NvAPI_GetTiming,
+    NvAPI_DISP_GetMonitorCapabilities,
+    NvAPI_EnumCustomDisplay,
+    NvAPI_TryCustomDisplay,
+    NvAPI_RevertCustomDisplayTrial,
+    NvAPI_DeleteCustomDisplay,
+    NvAPI_SaveCustomDisplay,
+    NvAPI_QueryUnderscanCap,
+    NvAPI_EnumUnderscanConfig,
+    NvAPI_DeleteUnderscanConfig,
+    NvAPI_SetUnderscanConfig,
+    NvAPI_GetDisplayFeatureConfig,
+    NvAPI_SetDisplayFeatureConfig,
+    NvAPI_GetDisplayFeatureConfigDefaults,
+    NvAPI_SetView,
+    NvAPI_GetView,
+    NvAPI_SetViewEx,
+    NvAPI_GetViewEx,
+    NvAPI_GetSupportedViews,
+    NvAPI_GetHDCPLinkParameters,
+    NvAPI_Disp_DpAuxChannelControl,
+    NvAPI_SetHybridMode,
+    NvAPI_GetHybridMode,
+    NvAPI_Coproc_GetCoprocStatus,
+    NvAPI_Coproc_SetCoprocInfoFlagsEx,
+    NvAPI_Coproc_GetCoprocInfoFlagsEx,
+    NvAPI_Coproc_NotifyCoprocPowerState,
+    NvAPI_Coproc_GetApplicationCoprocInfo,
+    NvAPI_GetVideoState,
+    NvAPI_SetVideoState,
+    NvAPI_SetFrameRateNotify,
+    NvAPI_SetPVExtName,
+    NvAPI_GetPVExtName,
+    NvAPI_SetPVExtProfile,
+    NvAPI_GetPVExtProfile,
+    NvAPI_VideoSetStereoInfo,
+    NvAPI_VideoGetStereoInfo,
+    NvAPI_Mosaic_GetSupportedTopoInfo,
+    NvAPI_Mosaic_GetTopoGroup,
+    NvAPI_Mosaic_GetOverlapLimits,
+    NvAPI_Mosaic_SetCurrentTopo,
+    NvAPI_Mosaic_GetCurrentTopo,
+    NvAPI_Mosaic_EnableCurrentTopo,
+    NvAPI_Mosaic_SetGridTopology,
+    NvAPI_Mosaic_GetMosaicCapabilities,
+    NvAPI_Mosaic_GetDisplayCapabilities,
+    NvAPI_Mosaic_EnumGridTopologies,
+    NvAPI_Mosaic_GetDisplayViewportsByResolution,
+    NvAPI_Mosaic_GetMosaicViewports,
+    NvAPI_Mosaic_SetDisplayGrids,
+    NvAPI_Mosaic_ValidateDisplayGridsWithSLI,
+    NvAPI_Mosaic_ValidateDisplayGrids,
+    NvAPI_Mosaic_EnumDisplayModes,
+    NvAPI_Mosaic_ChooseGpuTopologies,
+    NvAPI_Mosaic_EnumDisplayGrids,
+    NvAPI_GetSupportedMosaicTopologies,
+    NvAPI_GetCurrentMosaicTopology,
+    NvAPI_SetCurrentMosaicTopology,
+    NvAPI_EnableCurrentMosaicTopology,
+    NvAPI_QueryNonMigratableApps,
+    NvAPI_GPU_QueryActiveApps,
+    NvAPI_Hybrid_QueryUnblockedNonMigratableApps,
+    NvAPI_Hybrid_QueryBlockedMigratableApps,
+    NvAPI_Hybrid_SetAppMigrationState,
+    NvAPI_Hybrid_IsAppMigrationStateChangeable,
+    NvAPI_GPU_GPIOQueryLegalPins,
+    NvAPI_GPU_GPIOReadFromPin,
+    NvAPI_GPU_GPIOWriteToPin,
+    NvAPI_GPU_GetHDCPSupportStatus,
+    NvAPI_SetTopologyFocusDisplayAndView,
+    NvAPI_Stereo_CreateConfigurationProfileRegistryKey,
+    NvAPI_Stereo_DeleteConfigurationProfileRegistryKey,
+    NvAPI_Stereo_SetConfigurationProfileValue,
+    NvAPI_Stereo_DeleteConfigurationProfileValue,
+    NvAPI_Stereo_Enable,
+    NvAPI_Stereo_Disable,
+    NvAPI_Stereo_IsEnabled,
+    NvAPI_Stereo_GetStereoCaps,
+    NvAPI_Stereo_GetStereoSupport,
+    NvAPI_Stereo_CreateHandleFromIUnknown,
+    NvAPI_Stereo_DestroyHandle,
+    NvAPI_Stereo_Activate,
+    NvAPI_Stereo_Deactivate,
+    NvAPI_Stereo_IsActivated,
+    NvAPI_Stereo_GetSeparation,
+    NvAPI_Stereo_SetSeparation,
+    NvAPI_Stereo_DecreaseSeparation,
+    NvAPI_Stereo_IncreaseSeparation,
+    NvAPI_Stereo_GetConvergence,
+    NvAPI_Stereo_SetConvergence,
+    NvAPI_Stereo_DecreaseConvergence,
+    NvAPI_Stereo_IncreaseConvergence,
+    NvAPI_Stereo_GetFrustumAdjustMode,
+    NvAPI_Stereo_SetFrustumAdjustMode,
+    NvAPI_Stereo_CaptureJpegImage,
+    NvAPI_Stereo_CapturePngImage,
+    NvAPI_Stereo_ReverseStereoBlitControl,
+    NvAPI_Stereo_SetNotificationMessage,
+    NvAPI_Stereo_SetActiveEye,
+    NvAPI_Stereo_SetDriverMode,
+    NvAPI_Stereo_GetEyeSeparation,
+    NvAPI_Stereo_IsWindowedModeSupported,
+    NvAPI_Stereo_AppHandShake,
+    NvAPI_Stereo_HandShake_Trigger_Activation,
+    NvAPI_Stereo_HandShake_Message_Control,
+    NvAPI_Stereo_SetSurfaceCreationMode,
+    NvAPI_Stereo_GetSurfaceCreationMode,
+    NvAPI_Stereo_Debug_WasLastDrawStereoized,
+    NvAPI_Stereo_ForceToScreenDepth,
+    NvAPI_Stereo_SetVertexShaderConstantF,
+    NvAPI_Stereo_SetVertexShaderConstantB,
+    NvAPI_Stereo_SetVertexShaderConstantI,
+    NvAPI_Stereo_GetVertexShaderConstantF,
+    NvAPI_Stereo_GetVertexShaderConstantB,
+    NvAPI_Stereo_GetVertexShaderConstantI,
+    NvAPI_Stereo_SetPixelShaderConstantF,
+    NvAPI_Stereo_SetPixelShaderConstantB,
+    NvAPI_Stereo_SetPixelShaderConstantI,
+    NvAPI_Stereo_GetPixelShaderConstantF,
+    NvAPI_Stereo_GetPixelShaderConstantB,
+    NvAPI_Stereo_GetPixelShaderConstantI,
+    NvAPI_Stereo_SetDefaultProfile,
+    NvAPI_Stereo_GetDefaultProfile,
+    NvAPI_Stereo_Is3DCursorSupported,
+    NvAPI_Stereo_GetCursorSeparation,
+    NvAPI_Stereo_SetCursorSeparation,
+    NvAPI_VIO_GetCapabilities,
+    NvAPI_VIO_Open,
+    NvAPI_VIO_Close,
+    NvAPI_VIO_Status,
+    NvAPI_VIO_SyncFormatDetect,
+    NvAPI_VIO_GetConfig,
+    NvAPI_VIO_SetConfig,
+    NvAPI_VIO_SetCSC,
+    NvAPI_VIO_GetCSC,
+    NvAPI_VIO_SetGamma,
+    NvAPI_VIO_GetGamma,
+    NvAPI_VIO_SetSyncDelay,
+    NvAPI_VIO_GetSyncDelay,
+    NvAPI_VIO_GetPCIInfo,
+    NvAPI_VIO_IsRunning,
+    NvAPI_VIO_Start,
+    NvAPI_VIO_Stop,
+    NvAPI_VIO_IsFrameLockModeCompatible,
+    NvAPI_VIO_EnumDevices,
+    NvAPI_VIO_QueryTopology,
+    NvAPI_VIO_EnumSignalFormats,
+    NvAPI_VIO_EnumDataFormats,
+    NvAPI_GPU_GetTachReading,
+    NvAPI_3D_GetProperty,
+    NvAPI_3D_SetProperty,
+    NvAPI_3D_GetPropertyRange,
+    NvAPI_GPS_GetPowerSteeringStatus,
+    NvAPI_GPS_SetPowerSteeringStatus,
+    NvAPI_GPS_SetVPStateCap,
+    NvAPI_GPS_GetVPStateCap,
+    NvAPI_GPS_GetThermalLimit,
+    NvAPI_GPS_SetThermalLimit,
+    NvAPI_GPS_GetPerfSensors,
+    NvAPI_SYS_GetDisplayIdFromGpuAndOutputId,
+    NvAPI_SYS_GetGpuAndOutputIdFromDisplayId,
+    NvAPI_DISP_GetDisplayIdByDisplayName,
+    NvAPI_DISP_GetGDIPrimaryDisplayId,
+    NvAPI_DISP_GetDisplayConfig,
+    NvAPI_DISP_SetDisplayConfig,
+    NvAPI_GPU_GetPixelClockRange,
+    NvAPI_GPU_SetPixelClockRange,
+    NvAPI_GPU_GetECCStatusInfo,
+    NvAPI_GPU_GetECCErrorInfo,
+    NvAPI_GPU_ResetECCErrorInfo,
+    NvAPI_GPU_GetECCConfigurationInfo,
+    NvAPI_GPU_SetECCConfiguration,
+    NvAPI_D3D1x_CreateSwapChain,
+    NvAPI_D3D9_CreateSwapChain,
+    NvAPI_D3D_SetFPSIndicatorState,
+    NvAPI_D3D9_Present,
+    NvAPI_D3D9_QueryFrameCount,
+    NvAPI_D3D9_ResetFrameCount,
+    NvAPI_D3D9_QueryMaxSwapGroup,
+    NvAPI_D3D9_QuerySwapGroup,
+    NvAPI_D3D9_JoinSwapGroup,
+    NvAPI_D3D9_BindSwapBarrier,
+    NvAPI_D3D1x_Present,
+    NvAPI_D3D1x_QueryFrameCount,
+    NvAPI_D3D1x_ResetFrameCount,
+    NvAPI_D3D1x_QueryMaxSwapGroup,
+    NvAPI_D3D1x_QuerySwapGroup,
+    NvAPI_D3D1x_JoinSwapGroup,
+    NvAPI_D3D1x_BindSwapBarrier,
+    NvAPI_SYS_VenturaGetState,
+    NvAPI_SYS_VenturaSetState,
+    NvAPI_SYS_VenturaGetCoolingBudget,
+    NvAPI_SYS_VenturaSetCoolingBudget,
+    NvAPI_SYS_VenturaGetPowerReading,
+    NvAPI_DISP_GetDisplayBlankingState,
+    NvAPI_DISP_SetDisplayBlankingState,
+    NvAPI_DRS_CreateSession,
+    NvAPI_DRS_DestroySession,
+    NvAPI_DRS_LoadSettings,
+    NvAPI_DRS_SaveSettings,
+    NvAPI_DRS_LoadSettingsFromFile,
+    NvAPI_DRS_SaveSettingsToFile,
+    NvAPI_DRS_CreateProfile,
+    NvAPI_DRS_DeleteProfile,
+    NvAPI_DRS_SetCurrentGlobalProfile,
+    NvAPI_DRS_GetCurrentGlobalProfile,
+    NvAPI_DRS_GetProfileInfo,
+    NvAPI_DRS_SetProfileInfo,
+    NvAPI_DRS_FindProfileByName,
+    NvAPI_DRS_EnumProfiles,
+    NvAPI_DRS_GetNumProfiles,
+    NvAPI_DRS_CreateApplication,
+    NvAPI_DRS_DeleteApplicationEx,
+    NvAPI_DRS_DeleteApplication,
+    NvAPI_DRS_GetApplicationInfo,
+    NvAPI_DRS_EnumApplications,
+    NvAPI_DRS_FindApplicationByName,
+    NvAPI_DRS_SetSetting,
+    NvAPI_DRS_GetSetting,
+    NvAPI_DRS_EnumSettings,
+    NvAPI_DRS_EnumAvailableSettingIds,
+    NvAPI_DRS_EnumAvailableSettingValues,
+    NvAPI_DRS_GetSettingIdFromName,
+    NvAPI_DRS_GetSettingNameFromId,
+    NvAPI_DRS_DeleteProfileSetting,
+    NvAPI_DRS_RestoreAllDefaults,
+    NvAPI_DRS_RestoreProfileDefault,
+    NvAPI_DRS_RestoreProfileDefaultSetting,
+    NvAPI_DRS_GetBaseProfile,
+    NvAPI_Event_RegisterCallback,
+    NvAPI_Event_UnregisterCallback,
+    NvAPI_GPU_GetCurrentThermalLevel,
+    NvAPI_GPU_GetCurrentFanSpeedLevel,
+    NvAPI_GPU_SetScanoutIntensity,
+    NvAPI_GPU_SetScanoutWarping,
+    NvAPI_GPU_GetScanoutConfiguration,
+    NvAPI_DISP_SetHCloneTopology,
+    NvAPI_DISP_GetHCloneTopology,
+    NvAPI_DISP_ValidateHCloneTopology,
+    NvAPI_GPU_GetPerfDecreaseInfo,
+    NvAPI_GPU_QueryIlluminationSupport,
+    NvAPI_GPU_GetIllumination,
+    NvAPI_GPU_SetIllumination,
+    NvAPI_D3D1x_IFR_SetUpTargetBufferToSys,
+    NvAPI_D3D1x_IFR_TransferRenderTarget,
+    NvAPI_GetPhysicalGPUFromDisplay,
+    NvAPI_GetPhysicalGPUFromGPUID,
+    NvAPI_GetGPUIDFromPhysicalGPU,
+    NvAPI_GetInfoFrameStatePvt,
+    NvAPI_GPU_GetMemoryInfo,
+    NvAPI_LoadMicrocode,
+    NvAPI_GetLoadedMicrocodePrograms,
+    NvAPI_GetDisplayDriverBuildTitle,
+    NvAPI_GetDisplayDriverCompileType,
+    NvAPI_GetDisplayDriverSecurityLevel,
+    NvAPI_AccessDisplayDriverRegistry,
+    NvAPI_GetDisplayDriverRegistryPath,
+    NvAPI_GetUnAttachedDisplayDriverRegistryPath,
+    NvAPI_GPU_GetRawFuseData,
+    NvAPI_GPU_GetFoundry,
+    NvAPI_GPU_GetVPECount,
+    NvAPI_GPU_GetTargetID,
+    NvAPI_GPU_GetShortName,
+    NvAPI_GPU_GetVbiosMxmVersion,
+    NvAPI_GPU_GetVbiosImage,
+    NvAPI_GPU_GetMXMBlock,
+    NvAPI_GPU_SetCurrentPCIEWidth,
+    NvAPI_GPU_SetCurrentPCIESpeed,
+    NvAPI_GPU_GetPCIEInfo,
+    NvAPI_GPU_ClearPCIELinkErrorInfo,
+    NvAPI_GPU_ClearPCIELinkAERInfo,
+    NvAPI_GPU_GetFrameBufferCalibrationLockFailures,
+    NvAPI_GPU_SetDisplayUnderflowMode,
+    NvAPI_GPU_GetDisplayUnderflowStatus,
+    NvAPI_GPU_GetBarInfo,
+    NvAPI_GPU_GetPSFloorSweepStatus,
+    NvAPI_GPU_GetVSFloorSweepStatus,
+    NvAPI_GPU_GetSerialNumber,
+    NvAPI_GPU_GetManufacturingInfo,
+    NvAPI_GPU_GetRamConfigStrap,
+    NvAPI_GPU_GetRamBusWidth,
+    NvAPI_GPU_GetRamBankCount,
+    NvAPI_GPU_GetArchInfo,
+    NvAPI_GPU_GetExtendedMinorRevision,
+    NvAPI_GPU_GetSampleType,
+    NvAPI_GPU_GetHardwareQualType,
+    NvAPI_GPU_GetAllClocks,
+    NvAPI_GPU_SetClocks,
+    NvAPI_GPU_SetPerfHybridMode,
+    NvAPI_GPU_GetPerfHybridMode,
+    NvAPI_GPU_GetHybridControllerInfo,
+    NvAPI_RestartDisplayDriver,
+    NvAPI_GPU_GetAllGpusOnSameBoard,
+    NvAPI_SetTopologyDisplayGPU,
+    NvAPI_GetTopologyDisplayGPU,
+    NvAPI_SYS_GetSliApprovalCookie,
+    NvAPI_CreateUnAttachedDisplayFromDisplay,
+    NvAPI_GetDriverModel,
+    NvAPI_GPU_CudaEnumComputeCapableGpus,
+    NvAPI_GPU_PhysxSetState,
+    NvAPI_GPU_PhysxQueryRecommendedState,
+    NvAPI_GPU_GetDeepIdleState,
+    NvAPI_GPU_SetDeepIdleState,
+    NvAPI_GetScalingCaps,
+    NvAPI_GPU_GetThermalTable,
+    NvAPI_SYS_SetPostOutput,
+    NvAPI_GPU_PerfPoliciesGetInfo,
+    NvAPI_GPU_PerfPoliciesGetStatus,
+    NvAPI_GPU_ClientThermalPoliciesGetInfo,
+    NvAPI_GPU_ClientThermalPoliciesGetLimit,
+    NvAPI_GPU_ClientThermalPoliciesSetLimit,
+    NvAPI_GPU_GetCurrentVoltage,
+    NvAPI_GPU_GetVoltageStep,
+    NvAPI_GPU_GetClockBoostRanges,
+    NvAPI_GPU_GetClockBoostMask,
+    NvAPI_GPU_GetClockBoostTable,
+    NvAPI_GPU_SetClockBoostTable,
+    NvAPI_GPU_GetVFPCurve,
+    NvAPI_GPU_GetClockBoostLock,
+    NvAPI_GPU_SetClockBoostLock,
+    NvAPI_GPU_GetCoreVoltageBoostPercent,
+    NvAPI_GPU_SetCoreVoltageBoostPercent,
+    NvAPI_GPU_GetUsages,
+    NvAPI_GPU_GetRamMaker,
+    NvAPI_D3D_GetObjectHandleForResource,
+}</pre><h2 id='variants' class='variants small-section-header'>
+                   Variants<a href='#variants' class='anchor'></a></h2>
+<span id='variant.NvAPI_Initialize' class='variant'><span id='NvAPI_Initialize.v' class='invisible'><code>NvAPI_Initialize</code></span></span><span id='variant.NvAPI_Unload' class='variant'><span id='NvAPI_Unload.v' class='invisible'><code>NvAPI_Unload</code></span></span><span id='variant.NvAPI_GetErrorMessage' class='variant'><span id='NvAPI_GetErrorMessage.v' class='invisible'><code>NvAPI_GetErrorMessage</code></span></span><span id='variant.NvAPI_GetInterfaceVersionString' class='variant'><span id='NvAPI_GetInterfaceVersionString.v' class='invisible'><code>NvAPI_GetInterfaceVersionString</code></span></span><span id='variant.NvAPI_GetDisplayDriverVersion' class='variant'><span id='NvAPI_GetDisplayDriverVersion.v' class='invisible'><code>NvAPI_GetDisplayDriverVersion</code></span></span><span id='variant.NvAPI_SYS_GetDriverAndBranchVersion' class='variant'><span id='NvAPI_SYS_GetDriverAndBranchVersion.v' class='invisible'><code>NvAPI_SYS_GetDriverAndBranchVersion</code></span></span><span id='variant.NvAPI_EnumNvidiaDisplayHandle' class='variant'><span id='NvAPI_EnumNvidiaDisplayHandle.v' class='invisible'><code>NvAPI_EnumNvidiaDisplayHandle</code></span></span><span id='variant.NvAPI_EnumNvidiaUnAttachedDisplayHandle' class='variant'><span id='NvAPI_EnumNvidiaUnAttachedDisplayHandle.v' class='invisible'><code>NvAPI_EnumNvidiaUnAttachedDisplayHandle</code></span></span><span id='variant.NvAPI_EnumPhysicalGPUs' class='variant'><span id='NvAPI_EnumPhysicalGPUs.v' class='invisible'><code>NvAPI_EnumPhysicalGPUs</code></span></span><span id='variant.NvAPI_EnumLogicalGPUs' class='variant'><span id='NvAPI_EnumLogicalGPUs.v' class='invisible'><code>NvAPI_EnumLogicalGPUs</code></span></span><span id='variant.NvAPI_GetPhysicalGPUsFromDisplay' class='variant'><span id='NvAPI_GetPhysicalGPUsFromDisplay.v' class='invisible'><code>NvAPI_GetPhysicalGPUsFromDisplay</code></span></span><span id='variant.NvAPI_GetPhysicalGPUFromUnAttachedDisplay' class='variant'><span id='NvAPI_GetPhysicalGPUFromUnAttachedDisplay.v' class='invisible'><code>NvAPI_GetPhysicalGPUFromUnAttachedDisplay</code></span></span><span id='variant.NvAPI_CreateDisplayFromUnAttachedDisplay' class='variant'><span id='NvAPI_CreateDisplayFromUnAttachedDisplay.v' class='invisible'><code>NvAPI_CreateDisplayFromUnAttachedDisplay</code></span></span><span id='variant.NvAPI_GetLogicalGPUFromDisplay' class='variant'><span id='NvAPI_GetLogicalGPUFromDisplay.v' class='invisible'><code>NvAPI_GetLogicalGPUFromDisplay</code></span></span><span id='variant.NvAPI_GetLogicalGPUFromPhysicalGPU' class='variant'><span id='NvAPI_GetLogicalGPUFromPhysicalGPU.v' class='invisible'><code>NvAPI_GetLogicalGPUFromPhysicalGPU</code></span></span><span id='variant.NvAPI_GetPhysicalGPUsFromLogicalGPU' class='variant'><span id='NvAPI_GetPhysicalGPUsFromLogicalGPU.v' class='invisible'><code>NvAPI_GetPhysicalGPUsFromLogicalGPU</code></span></span><span id='variant.NvAPI_GetAssociatedNvidiaDisplayHandle' class='variant'><span id='NvAPI_GetAssociatedNvidiaDisplayHandle.v' class='invisible'><code>NvAPI_GetAssociatedNvidiaDisplayHandle</code></span></span><span id='variant.NvAPI_DISP_GetAssociatedUnAttachedNvidiaDisplayHandle' class='variant'><span id='NvAPI_DISP_GetAssociatedUnAttachedNvidiaDisplayHandle.v' class='invisible'><code>NvAPI_DISP_GetAssociatedUnAttachedNvidiaDisplayHandle</code></span></span><span id='variant.NvAPI_GetAssociatedNvidiaDisplayName' class='variant'><span id='NvAPI_GetAssociatedNvidiaDisplayName.v' class='invisible'><code>NvAPI_GetAssociatedNvidiaDisplayName</code></span></span><span id='variant.NvAPI_GetUnAttachedAssociatedDisplayName' class='variant'><span id='NvAPI_GetUnAttachedAssociatedDisplayName.v' class='invisible'><code>NvAPI_GetUnAttachedAssociatedDisplayName</code></span></span><span id='variant.NvAPI_EnableHWCursor' class='variant'><span id='NvAPI_EnableHWCursor.v' class='invisible'><code>NvAPI_EnableHWCursor</code></span></span><span id='variant.NvAPI_DisableHWCursor' class='variant'><span id='NvAPI_DisableHWCursor.v' class='invisible'><code>NvAPI_DisableHWCursor</code></span></span><span id='variant.NvAPI_GetVBlankCounter' class='variant'><span id='NvAPI_GetVBlankCounter.v' class='invisible'><code>NvAPI_GetVBlankCounter</code></span></span><span id='variant.NvAPI_SetRefreshRateOverride' class='variant'><span id='NvAPI_SetRefreshRateOverride.v' class='invisible'><code>NvAPI_SetRefreshRateOverride</code></span></span><span id='variant.NvAPI_GetAssociatedDisplayOutputId' class='variant'><span id='NvAPI_GetAssociatedDisplayOutputId.v' class='invisible'><code>NvAPI_GetAssociatedDisplayOutputId</code></span></span><span id='variant.NvAPI_GetDisplayPortInfo' class='variant'><span id='NvAPI_GetDisplayPortInfo.v' class='invisible'><code>NvAPI_GetDisplayPortInfo</code></span></span><span id='variant.NvAPI_SetDisplayPort' class='variant'><span id='NvAPI_SetDisplayPort.v' class='invisible'><code>NvAPI_SetDisplayPort</code></span></span><span id='variant.NvAPI_GetHDMISupportInfo' class='variant'><span id='NvAPI_GetHDMISupportInfo.v' class='invisible'><code>NvAPI_GetHDMISupportInfo</code></span></span><span id='variant.NvAPI_DISP_EnumHDMIStereoModes' class='variant'><span id='NvAPI_DISP_EnumHDMIStereoModes.v' class='invisible'><code>NvAPI_DISP_EnumHDMIStereoModes</code></span></span><span id='variant.NvAPI_GetInfoFrame' class='variant'><span id='NvAPI_GetInfoFrame.v' class='invisible'><code>NvAPI_GetInfoFrame</code></span></span><span id='variant.NvAPI_SetInfoFrame' class='variant'><span id='NvAPI_SetInfoFrame.v' class='invisible'><code>NvAPI_SetInfoFrame</code></span></span><span id='variant.NvAPI_SetInfoFrameState' class='variant'><span id='NvAPI_SetInfoFrameState.v' class='invisible'><code>NvAPI_SetInfoFrameState</code></span></span><span id='variant.NvAPI_GetInfoFrameState' class='variant'><span id='NvAPI_GetInfoFrameState.v' class='invisible'><code>NvAPI_GetInfoFrameState</code></span></span><span id='variant.NvAPI_Disp_InfoFrameControl' class='variant'><span id='NvAPI_Disp_InfoFrameControl.v' class='invisible'><code>NvAPI_Disp_InfoFrameControl</code></span></span><span id='variant.NvAPI_Disp_ColorControl' class='variant'><span id='NvAPI_Disp_ColorControl.v' class='invisible'><code>NvAPI_Disp_ColorControl</code></span></span><span id='variant.NvAPI_DISP_GetVirtualModeData' class='variant'><span id='NvAPI_DISP_GetVirtualModeData.v' class='invisible'><code>NvAPI_DISP_GetVirtualModeData</code></span></span><span id='variant.NvAPI_DISP_OverrideDisplayModeList' class='variant'><span id='NvAPI_DISP_OverrideDisplayModeList.v' class='invisible'><code>NvAPI_DISP_OverrideDisplayModeList</code></span></span><span id='variant.NvAPI_GetDisplayDriverMemoryInfo' class='variant'><span id='NvAPI_GetDisplayDriverMemoryInfo.v' class='invisible'><code>NvAPI_GetDisplayDriverMemoryInfo</code></span></span><span id='variant.NvAPI_GetDriverMemoryInfo' class='variant'><span id='NvAPI_GetDriverMemoryInfo.v' class='invisible'><code>NvAPI_GetDriverMemoryInfo</code></span></span><span id='variant.NvAPI_GetDVCInfo' class='variant'><span id='NvAPI_GetDVCInfo.v' class='invisible'><code>NvAPI_GetDVCInfo</code></span></span><span id='variant.NvAPI_SetDVCLevel' class='variant'><span id='NvAPI_SetDVCLevel.v' class='invisible'><code>NvAPI_SetDVCLevel</code></span></span><span id='variant.NvAPI_GetDVCInfoEx' class='variant'><span id='NvAPI_GetDVCInfoEx.v' class='invisible'><code>NvAPI_GetDVCInfoEx</code></span></span><span id='variant.NvAPI_SetDVCLevelEx' class='variant'><span id='NvAPI_SetDVCLevelEx.v' class='invisible'><code>NvAPI_SetDVCLevelEx</code></span></span><span id='variant.NvAPI_GetHUEInfo' class='variant'><span id='NvAPI_GetHUEInfo.v' class='invisible'><code>NvAPI_GetHUEInfo</code></span></span><span id='variant.NvAPI_SetHUEAngle' class='variant'><span id='NvAPI_SetHUEAngle.v' class='invisible'><code>NvAPI_SetHUEAngle</code></span></span><span id='variant.NvAPI_GetImageSharpeningInfo' class='variant'><span id='NvAPI_GetImageSharpeningInfo.v' class='invisible'><code>NvAPI_GetImageSharpeningInfo</code></span></span><span id='variant.NvAPI_SetImageSharpeningLevel' class='variant'><span id='NvAPI_SetImageSharpeningLevel.v' class='invisible'><code>NvAPI_SetImageSharpeningLevel</code></span></span><span id='variant.NvAPI_D3D_GetCurrentSLIState' class='variant'><span id='NvAPI_D3D_GetCurrentSLIState.v' class='invisible'><code>NvAPI_D3D_GetCurrentSLIState</code></span></span><span id='variant.NvAPI_D3D9_RegisterResource' class='variant'><span id='NvAPI_D3D9_RegisterResource.v' class='invisible'><code>NvAPI_D3D9_RegisterResource</code></span></span><span id='variant.NvAPI_D3D9_UnregisterResource' class='variant'><span id='NvAPI_D3D9_UnregisterResource.v' class='invisible'><code>NvAPI_D3D9_UnregisterResource</code></span></span><span id='variant.NvAPI_D3D9_AliasSurfaceAsTexture' class='variant'><span id='NvAPI_D3D9_AliasSurfaceAsTexture.v' class='invisible'><code>NvAPI_D3D9_AliasSurfaceAsTexture</code></span></span><span id='variant.NvAPI_D3D9_StretchRectEx' class='variant'><span id='NvAPI_D3D9_StretchRectEx.v' class='invisible'><code>NvAPI_D3D9_StretchRectEx</code></span></span><span id='variant.NvAPI_D3D9_ClearRT' class='variant'><span id='NvAPI_D3D9_ClearRT.v' class='invisible'><code>NvAPI_D3D9_ClearRT</code></span></span><span id='variant.NvAPI_D3D_CreateQuery' class='variant'><span id='NvAPI_D3D_CreateQuery.v' class='invisible'><code>NvAPI_D3D_CreateQuery</code></span></span><span id='variant.NvAPI_D3D_DestroyQuery' class='variant'><span id='NvAPI_D3D_DestroyQuery.v' class='invisible'><code>NvAPI_D3D_DestroyQuery</code></span></span><span id='variant.NvAPI_D3D_Query_Begin' class='variant'><span id='NvAPI_D3D_Query_Begin.v' class='invisible'><code>NvAPI_D3D_Query_Begin</code></span></span><span id='variant.NvAPI_D3D_Query_End' class='variant'><span id='NvAPI_D3D_Query_End.v' class='invisible'><code>NvAPI_D3D_Query_End</code></span></span><span id='variant.NvAPI_D3D_Query_GetData' class='variant'><span id='NvAPI_D3D_Query_GetData.v' class='invisible'><code>NvAPI_D3D_Query_GetData</code></span></span><span id='variant.NvAPI_D3D_Query_GetDataSize' class='variant'><span id='NvAPI_D3D_Query_GetDataSize.v' class='invisible'><code>NvAPI_D3D_Query_GetDataSize</code></span></span><span id='variant.NvAPI_D3D_Query_GetType' class='variant'><span id='NvAPI_D3D_Query_GetType.v' class='invisible'><code>NvAPI_D3D_Query_GetType</code></span></span><span id='variant.NvAPI_D3D_RegisterApp' class='variant'><span id='NvAPI_D3D_RegisterApp.v' class='invisible'><code>NvAPI_D3D_RegisterApp</code></span></span><span id='variant.NvAPI_D3D9_CreatePathContextNV' class='variant'><span id='NvAPI_D3D9_CreatePathContextNV.v' class='invisible'><code>NvAPI_D3D9_CreatePathContextNV</code></span></span><span id='variant.NvAPI_D3D9_DestroyPathContextNV' class='variant'><span id='NvAPI_D3D9_DestroyPathContextNV.v' class='invisible'><code>NvAPI_D3D9_DestroyPathContextNV</code></span></span><span id='variant.NvAPI_D3D9_CreatePathNV' class='variant'><span id='NvAPI_D3D9_CreatePathNV.v' class='invisible'><code>NvAPI_D3D9_CreatePathNV</code></span></span><span id='variant.NvAPI_D3D9_DeletePathNV' class='variant'><span id='NvAPI_D3D9_DeletePathNV.v' class='invisible'><code>NvAPI_D3D9_DeletePathNV</code></span></span><span id='variant.NvAPI_D3D9_PathVerticesNV' class='variant'><span id='NvAPI_D3D9_PathVerticesNV.v' class='invisible'><code>NvAPI_D3D9_PathVerticesNV</code></span></span><span id='variant.NvAPI_D3D9_PathParameterfNV' class='variant'><span id='NvAPI_D3D9_PathParameterfNV.v' class='invisible'><code>NvAPI_D3D9_PathParameterfNV</code></span></span><span id='variant.NvAPI_D3D9_PathParameteriNV' class='variant'><span id='NvAPI_D3D9_PathParameteriNV.v' class='invisible'><code>NvAPI_D3D9_PathParameteriNV</code></span></span><span id='variant.NvAPI_D3D9_PathMatrixNV' class='variant'><span id='NvAPI_D3D9_PathMatrixNV.v' class='invisible'><code>NvAPI_D3D9_PathMatrixNV</code></span></span><span id='variant.NvAPI_D3D9_PathDepthNV' class='variant'><span id='NvAPI_D3D9_PathDepthNV.v' class='invisible'><code>NvAPI_D3D9_PathDepthNV</code></span></span><span id='variant.NvAPI_D3D9_PathClearDepthNV' class='variant'><span id='NvAPI_D3D9_PathClearDepthNV.v' class='invisible'><code>NvAPI_D3D9_PathClearDepthNV</code></span></span><span id='variant.NvAPI_D3D9_PathEnableDepthTestNV' class='variant'><span id='NvAPI_D3D9_PathEnableDepthTestNV.v' class='invisible'><code>NvAPI_D3D9_PathEnableDepthTestNV</code></span></span><span id='variant.NvAPI_D3D9_PathEnableColorWriteNV' class='variant'><span id='NvAPI_D3D9_PathEnableColorWriteNV.v' class='invisible'><code>NvAPI_D3D9_PathEnableColorWriteNV</code></span></span><span id='variant.NvAPI_D3D9_DrawPathNV' class='variant'><span id='NvAPI_D3D9_DrawPathNV.v' class='invisible'><code>NvAPI_D3D9_DrawPathNV</code></span></span><span id='variant.NvAPI_D3D9_GetSurfaceHandle' class='variant'><span id='NvAPI_D3D9_GetSurfaceHandle.v' class='invisible'><code>NvAPI_D3D9_GetSurfaceHandle</code></span></span><span id='variant.NvAPI_D3D9_GetOverlaySurfaceHandles' class='variant'><span id='NvAPI_D3D9_GetOverlaySurfaceHandles.v' class='invisible'><code>NvAPI_D3D9_GetOverlaySurfaceHandles</code></span></span><span id='variant.NvAPI_D3D9_GetTextureHandle' class='variant'><span id='NvAPI_D3D9_GetTextureHandle.v' class='invisible'><code>NvAPI_D3D9_GetTextureHandle</code></span></span><span id='variant.NvAPI_D3D9_GpuSyncGetHandleSize' class='variant'><span id='NvAPI_D3D9_GpuSyncGetHandleSize.v' class='invisible'><code>NvAPI_D3D9_GpuSyncGetHandleSize</code></span></span><span id='variant.NvAPI_D3D9_GpuSyncInit' class='variant'><span id='NvAPI_D3D9_GpuSyncInit.v' class='invisible'><code>NvAPI_D3D9_GpuSyncInit</code></span></span><span id='variant.NvAPI_D3D9_GpuSyncEnd' class='variant'><span id='NvAPI_D3D9_GpuSyncEnd.v' class='invisible'><code>NvAPI_D3D9_GpuSyncEnd</code></span></span><span id='variant.NvAPI_D3D9_GpuSyncMapTexBuffer' class='variant'><span id='NvAPI_D3D9_GpuSyncMapTexBuffer.v' class='invisible'><code>NvAPI_D3D9_GpuSyncMapTexBuffer</code></span></span><span id='variant.NvAPI_D3D9_GpuSyncMapSurfaceBuffer' class='variant'><span id='NvAPI_D3D9_GpuSyncMapSurfaceBuffer.v' class='invisible'><code>NvAPI_D3D9_GpuSyncMapSurfaceBuffer</code></span></span><span id='variant.NvAPI_D3D9_GpuSyncMapVertexBuffer' class='variant'><span id='NvAPI_D3D9_GpuSyncMapVertexBuffer.v' class='invisible'><code>NvAPI_D3D9_GpuSyncMapVertexBuffer</code></span></span><span id='variant.NvAPI_D3D9_GpuSyncMapIndexBuffer' class='variant'><span id='NvAPI_D3D9_GpuSyncMapIndexBuffer.v' class='invisible'><code>NvAPI_D3D9_GpuSyncMapIndexBuffer</code></span></span><span id='variant.NvAPI_D3D9_SetPitchSurfaceCreation' class='variant'><span id='NvAPI_D3D9_SetPitchSurfaceCreation.v' class='invisible'><code>NvAPI_D3D9_SetPitchSurfaceCreation</code></span></span><span id='variant.NvAPI_D3D9_GpuSyncAcquire' class='variant'><span id='NvAPI_D3D9_GpuSyncAcquire.v' class='invisible'><code>NvAPI_D3D9_GpuSyncAcquire</code></span></span><span id='variant.NvAPI_D3D9_GpuSyncRelease' class='variant'><span id='NvAPI_D3D9_GpuSyncRelease.v' class='invisible'><code>NvAPI_D3D9_GpuSyncRelease</code></span></span><span id='variant.NvAPI_D3D9_GetCurrentRenderTargetHandle' class='variant'><span id='NvAPI_D3D9_GetCurrentRenderTargetHandle.v' class='invisible'><code>NvAPI_D3D9_GetCurrentRenderTargetHandle</code></span></span><span id='variant.NvAPI_D3D9_GetCurrentZBufferHandle' class='variant'><span id='NvAPI_D3D9_GetCurrentZBufferHandle.v' class='invisible'><code>NvAPI_D3D9_GetCurrentZBufferHandle</code></span></span><span id='variant.NvAPI_D3D9_GetIndexBufferHandle' class='variant'><span id='NvAPI_D3D9_GetIndexBufferHandle.v' class='invisible'><code>NvAPI_D3D9_GetIndexBufferHandle</code></span></span><span id='variant.NvAPI_D3D9_GetVertexBufferHandle' class='variant'><span id='NvAPI_D3D9_GetVertexBufferHandle.v' class='invisible'><code>NvAPI_D3D9_GetVertexBufferHandle</code></span></span><span id='variant.NvAPI_D3D9_CreateTexture' class='variant'><span id='NvAPI_D3D9_CreateTexture.v' class='invisible'><code>NvAPI_D3D9_CreateTexture</code></span></span><span id='variant.NvAPI_D3D9_AliasPrimaryAsTexture' class='variant'><span id='NvAPI_D3D9_AliasPrimaryAsTexture.v' class='invisible'><code>NvAPI_D3D9_AliasPrimaryAsTexture</code></span></span><span id='variant.NvAPI_D3D9_PresentSurfaceToDesktop' class='variant'><span id='NvAPI_D3D9_PresentSurfaceToDesktop.v' class='invisible'><code>NvAPI_D3D9_PresentSurfaceToDesktop</code></span></span><span id='variant.NvAPI_D3D9_CreateVideoBegin' class='variant'><span id='NvAPI_D3D9_CreateVideoBegin.v' class='invisible'><code>NvAPI_D3D9_CreateVideoBegin</code></span></span><span id='variant.NvAPI_D3D9_CreateVideoEnd' class='variant'><span id='NvAPI_D3D9_CreateVideoEnd.v' class='invisible'><code>NvAPI_D3D9_CreateVideoEnd</code></span></span><span id='variant.NvAPI_D3D9_CreateVideo' class='variant'><span id='NvAPI_D3D9_CreateVideo.v' class='invisible'><code>NvAPI_D3D9_CreateVideo</code></span></span><span id='variant.NvAPI_D3D9_FreeVideo' class='variant'><span id='NvAPI_D3D9_FreeVideo.v' class='invisible'><code>NvAPI_D3D9_FreeVideo</code></span></span><span id='variant.NvAPI_D3D9_PresentVideo' class='variant'><span id='NvAPI_D3D9_PresentVideo.v' class='invisible'><code>NvAPI_D3D9_PresentVideo</code></span></span><span id='variant.NvAPI_D3D9_VideoSetStereoInfo' class='variant'><span id='NvAPI_D3D9_VideoSetStereoInfo.v' class='invisible'><code>NvAPI_D3D9_VideoSetStereoInfo</code></span></span><span id='variant.NvAPI_D3D9_SetGamutData' class='variant'><span id='NvAPI_D3D9_SetGamutData.v' class='invisible'><code>NvAPI_D3D9_SetGamutData</code></span></span><span id='variant.NvAPI_D3D9_SetSurfaceCreationLayout' class='variant'><span id='NvAPI_D3D9_SetSurfaceCreationLayout.v' class='invisible'><code>NvAPI_D3D9_SetSurfaceCreationLayout</code></span></span><span id='variant.NvAPI_D3D9_GetVideoCapabilities' class='variant'><span id='NvAPI_D3D9_GetVideoCapabilities.v' class='invisible'><code>NvAPI_D3D9_GetVideoCapabilities</code></span></span><span id='variant.NvAPI_D3D9_QueryVideoInfo' class='variant'><span id='NvAPI_D3D9_QueryVideoInfo.v' class='invisible'><code>NvAPI_D3D9_QueryVideoInfo</code></span></span><span id='variant.NvAPI_D3D9_AliasPrimaryFromDevice' class='variant'><span id='NvAPI_D3D9_AliasPrimaryFromDevice.v' class='invisible'><code>NvAPI_D3D9_AliasPrimaryFromDevice</code></span></span><span id='variant.NvAPI_D3D9_SetResourceHint' class='variant'><span id='NvAPI_D3D9_SetResourceHint.v' class='invisible'><code>NvAPI_D3D9_SetResourceHint</code></span></span><span id='variant.NvAPI_D3D9_Lock' class='variant'><span id='NvAPI_D3D9_Lock.v' class='invisible'><code>NvAPI_D3D9_Lock</code></span></span><span id='variant.NvAPI_D3D9_Unlock' class='variant'><span id='NvAPI_D3D9_Unlock.v' class='invisible'><code>NvAPI_D3D9_Unlock</code></span></span><span id='variant.NvAPI_D3D9_GetVideoState' class='variant'><span id='NvAPI_D3D9_GetVideoState.v' class='invisible'><code>NvAPI_D3D9_GetVideoState</code></span></span><span id='variant.NvAPI_D3D9_SetVideoState' class='variant'><span id='NvAPI_D3D9_SetVideoState.v' class='invisible'><code>NvAPI_D3D9_SetVideoState</code></span></span><span id='variant.NvAPI_D3D9_EnumVideoFeatures' class='variant'><span id='NvAPI_D3D9_EnumVideoFeatures.v' class='invisible'><code>NvAPI_D3D9_EnumVideoFeatures</code></span></span><span id='variant.NvAPI_D3D9_GetSLIInfo' class='variant'><span id='NvAPI_D3D9_GetSLIInfo.v' class='invisible'><code>NvAPI_D3D9_GetSLIInfo</code></span></span><span id='variant.NvAPI_D3D9_SetSLIMode' class='variant'><span id='NvAPI_D3D9_SetSLIMode.v' class='invisible'><code>NvAPI_D3D9_SetSLIMode</code></span></span><span id='variant.NvAPI_D3D9_QueryAAOverrideMode' class='variant'><span id='NvAPI_D3D9_QueryAAOverrideMode.v' class='invisible'><code>NvAPI_D3D9_QueryAAOverrideMode</code></span></span><span id='variant.NvAPI_D3D9_VideoSurfaceEncryptionControl' class='variant'><span id='NvAPI_D3D9_VideoSurfaceEncryptionControl.v' class='invisible'><code>NvAPI_D3D9_VideoSurfaceEncryptionControl</code></span></span><span id='variant.NvAPI_D3D9_DMA' class='variant'><span id='NvAPI_D3D9_DMA.v' class='invisible'><code>NvAPI_D3D9_DMA</code></span></span><span id='variant.NvAPI_D3D9_EnableStereo' class='variant'><span id='NvAPI_D3D9_EnableStereo.v' class='invisible'><code>NvAPI_D3D9_EnableStereo</code></span></span><span id='variant.NvAPI_D3D9_StretchRect' class='variant'><span id='NvAPI_D3D9_StretchRect.v' class='invisible'><code>NvAPI_D3D9_StretchRect</code></span></span><span id='variant.NvAPI_D3D9_CreateRenderTarget' class='variant'><span id='NvAPI_D3D9_CreateRenderTarget.v' class='invisible'><code>NvAPI_D3D9_CreateRenderTarget</code></span></span><span id='variant.NvAPI_D3D9_NVFBC_GetStatus' class='variant'><span id='NvAPI_D3D9_NVFBC_GetStatus.v' class='invisible'><code>NvAPI_D3D9_NVFBC_GetStatus</code></span></span><span id='variant.NvAPI_D3D9_IFR_SetUpTargetBufferToSys' class='variant'><span id='NvAPI_D3D9_IFR_SetUpTargetBufferToSys.v' class='invisible'><code>NvAPI_D3D9_IFR_SetUpTargetBufferToSys</code></span></span><span id='variant.NvAPI_D3D9_GPUBasedCPUSleep' class='variant'><span id='NvAPI_D3D9_GPUBasedCPUSleep.v' class='invisible'><code>NvAPI_D3D9_GPUBasedCPUSleep</code></span></span><span id='variant.NvAPI_D3D9_IFR_TransferRenderTarget' class='variant'><span id='NvAPI_D3D9_IFR_TransferRenderTarget.v' class='invisible'><code>NvAPI_D3D9_IFR_TransferRenderTarget</code></span></span><span id='variant.NvAPI_D3D9_IFR_SetUpTargetBufferToNV12BLVideoSurface' class='variant'><span id='NvAPI_D3D9_IFR_SetUpTargetBufferToNV12BLVideoSurface.v' class='invisible'><code>NvAPI_D3D9_IFR_SetUpTargetBufferToNV12BLVideoSurface</code></span></span><span id='variant.NvAPI_D3D9_IFR_TransferRenderTargetToNV12BLVideoSurface' class='variant'><span id='NvAPI_D3D9_IFR_TransferRenderTargetToNV12BLVideoSurface.v' class='invisible'><code>NvAPI_D3D9_IFR_TransferRenderTargetToNV12BLVideoSurface</code></span></span><span id='variant.NvAPI_D3D10_AliasPrimaryAsTexture' class='variant'><span id='NvAPI_D3D10_AliasPrimaryAsTexture.v' class='invisible'><code>NvAPI_D3D10_AliasPrimaryAsTexture</code></span></span><span id='variant.NvAPI_D3D10_SetPrimaryFlipChainCallbacks' class='variant'><span id='NvAPI_D3D10_SetPrimaryFlipChainCallbacks.v' class='invisible'><code>NvAPI_D3D10_SetPrimaryFlipChainCallbacks</code></span></span><span id='variant.NvAPI_D3D10_ProcessCallbacks' class='variant'><span id='NvAPI_D3D10_ProcessCallbacks.v' class='invisible'><code>NvAPI_D3D10_ProcessCallbacks</code></span></span><span id='variant.NvAPI_D3D10_GetRenderedCursorAsBitmap' class='variant'><span id='NvAPI_D3D10_GetRenderedCursorAsBitmap.v' class='invisible'><code>NvAPI_D3D10_GetRenderedCursorAsBitmap</code></span></span><span id='variant.NvAPI_D3D10_BeginShareResource' class='variant'><span id='NvAPI_D3D10_BeginShareResource.v' class='invisible'><code>NvAPI_D3D10_BeginShareResource</code></span></span><span id='variant.NvAPI_D3D10_BeginShareResourceEx' class='variant'><span id='NvAPI_D3D10_BeginShareResourceEx.v' class='invisible'><code>NvAPI_D3D10_BeginShareResourceEx</code></span></span><span id='variant.NvAPI_D3D10_EndShareResource' class='variant'><span id='NvAPI_D3D10_EndShareResource.v' class='invisible'><code>NvAPI_D3D10_EndShareResource</code></span></span><span id='variant.NvAPI_D3D10_SetDepthBoundsTest' class='variant'><span id='NvAPI_D3D10_SetDepthBoundsTest.v' class='invisible'><code>NvAPI_D3D10_SetDepthBoundsTest</code></span></span><span id='variant.NvAPI_D3D10_CreateDevice' class='variant'><span id='NvAPI_D3D10_CreateDevice.v' class='invisible'><code>NvAPI_D3D10_CreateDevice</code></span></span><span id='variant.NvAPI_D3D10_CreateDeviceAndSwapChain' class='variant'><span id='NvAPI_D3D10_CreateDeviceAndSwapChain.v' class='invisible'><code>NvAPI_D3D10_CreateDeviceAndSwapChain</code></span></span><span id='variant.NvAPI_D3D11_CreateDevice' class='variant'><span id='NvAPI_D3D11_CreateDevice.v' class='invisible'><code>NvAPI_D3D11_CreateDevice</code></span></span><span id='variant.NvAPI_D3D11_CreateDeviceAndSwapChain' class='variant'><span id='NvAPI_D3D11_CreateDeviceAndSwapChain.v' class='invisible'><code>NvAPI_D3D11_CreateDeviceAndSwapChain</code></span></span><span id='variant.NvAPI_D3D11_BeginShareResource' class='variant'><span id='NvAPI_D3D11_BeginShareResource.v' class='invisible'><code>NvAPI_D3D11_BeginShareResource</code></span></span><span id='variant.NvAPI_D3D11_EndShareResource' class='variant'><span id='NvAPI_D3D11_EndShareResource.v' class='invisible'><code>NvAPI_D3D11_EndShareResource</code></span></span><span id='variant.NvAPI_D3D11_SetDepthBoundsTest' class='variant'><span id='NvAPI_D3D11_SetDepthBoundsTest.v' class='invisible'><code>NvAPI_D3D11_SetDepthBoundsTest</code></span></span><span id='variant.NvAPI_GPU_GetShaderPipeCount' class='variant'><span id='NvAPI_GPU_GetShaderPipeCount.v' class='invisible'><code>NvAPI_GPU_GetShaderPipeCount</code></span></span><span id='variant.NvAPI_GPU_GetShaderSubPipeCount' class='variant'><span id='NvAPI_GPU_GetShaderSubPipeCount.v' class='invisible'><code>NvAPI_GPU_GetShaderSubPipeCount</code></span></span><span id='variant.NvAPI_GPU_GetPartitionCount' class='variant'><span id='NvAPI_GPU_GetPartitionCount.v' class='invisible'><code>NvAPI_GPU_GetPartitionCount</code></span></span><span id='variant.NvAPI_GPU_GetMemPartitionMask' class='variant'><span id='NvAPI_GPU_GetMemPartitionMask.v' class='invisible'><code>NvAPI_GPU_GetMemPartitionMask</code></span></span><span id='variant.NvAPI_GPU_GetTPCMask' class='variant'><span id='NvAPI_GPU_GetTPCMask.v' class='invisible'><code>NvAPI_GPU_GetTPCMask</code></span></span><span id='variant.NvAPI_GPU_GetSMMask' class='variant'><span id='NvAPI_GPU_GetSMMask.v' class='invisible'><code>NvAPI_GPU_GetSMMask</code></span></span><span id='variant.NvAPI_GPU_GetTotalTPCCount' class='variant'><span id='NvAPI_GPU_GetTotalTPCCount.v' class='invisible'><code>NvAPI_GPU_GetTotalTPCCount</code></span></span><span id='variant.NvAPI_GPU_GetTotalSMCount' class='variant'><span id='NvAPI_GPU_GetTotalSMCount.v' class='invisible'><code>NvAPI_GPU_GetTotalSMCount</code></span></span><span id='variant.NvAPI_GPU_GetTotalSPCount' class='variant'><span id='NvAPI_GPU_GetTotalSPCount.v' class='invisible'><code>NvAPI_GPU_GetTotalSPCount</code></span></span><span id='variant.NvAPI_GPU_GetGpuCoreCount' class='variant'><span id='NvAPI_GPU_GetGpuCoreCount.v' class='invisible'><code>NvAPI_GPU_GetGpuCoreCount</code></span></span><span id='variant.NvAPI_GPU_GetAllOutputs' class='variant'><span id='NvAPI_GPU_GetAllOutputs.v' class='invisible'><code>NvAPI_GPU_GetAllOutputs</code></span></span><span id='variant.NvAPI_GPU_GetConnectedOutputs' class='variant'><span id='NvAPI_GPU_GetConnectedOutputs.v' class='invisible'><code>NvAPI_GPU_GetConnectedOutputs</code></span></span><span id='variant.NvAPI_GPU_GetConnectedSLIOutputs' class='variant'><span id='NvAPI_GPU_GetConnectedSLIOutputs.v' class='invisible'><code>NvAPI_GPU_GetConnectedSLIOutputs</code></span></span><span id='variant.NvAPI_GPU_GetConnectedDisplayIds' class='variant'><span id='NvAPI_GPU_GetConnectedDisplayIds.v' class='invisible'><code>NvAPI_GPU_GetConnectedDisplayIds</code></span></span><span id='variant.NvAPI_GPU_GetAllDisplayIds' class='variant'><span id='NvAPI_GPU_GetAllDisplayIds.v' class='invisible'><code>NvAPI_GPU_GetAllDisplayIds</code></span></span><span id='variant.NvAPI_GPU_GetConnectedOutputsWithLidState' class='variant'><span id='NvAPI_GPU_GetConnectedOutputsWithLidState.v' class='invisible'><code>NvAPI_GPU_GetConnectedOutputsWithLidState</code></span></span><span id='variant.NvAPI_GPU_GetConnectedSLIOutputsWithLidState' class='variant'><span id='NvAPI_GPU_GetConnectedSLIOutputsWithLidState.v' class='invisible'><code>NvAPI_GPU_GetConnectedSLIOutputsWithLidState</code></span></span><span id='variant.NvAPI_GPU_GetSystemType' class='variant'><span id='NvAPI_GPU_GetSystemType.v' class='invisible'><code>NvAPI_GPU_GetSystemType</code></span></span><span id='variant.NvAPI_GPU_GetActiveOutputs' class='variant'><span id='NvAPI_GPU_GetActiveOutputs.v' class='invisible'><code>NvAPI_GPU_GetActiveOutputs</code></span></span><span id='variant.NvAPI_GPU_GetEDID' class='variant'><span id='NvAPI_GPU_GetEDID.v' class='invisible'><code>NvAPI_GPU_GetEDID</code></span></span><span id='variant.NvAPI_GPU_SetEDID' class='variant'><span id='NvAPI_GPU_SetEDID.v' class='invisible'><code>NvAPI_GPU_SetEDID</code></span></span><span id='variant.NvAPI_GPU_GetOutputType' class='variant'><span id='NvAPI_GPU_GetOutputType.v' class='invisible'><code>NvAPI_GPU_GetOutputType</code></span></span><span id='variant.NvAPI_GPU_GetDeviceDisplayMode' class='variant'><span id='NvAPI_GPU_GetDeviceDisplayMode.v' class='invisible'><code>NvAPI_GPU_GetDeviceDisplayMode</code></span></span><span id='variant.NvAPI_GPU_GetFlatPanelInfo' class='variant'><span id='NvAPI_GPU_GetFlatPanelInfo.v' class='invisible'><code>NvAPI_GPU_GetFlatPanelInfo</code></span></span><span id='variant.NvAPI_GPU_ValidateOutputCombination' class='variant'><span id='NvAPI_GPU_ValidateOutputCombination.v' class='invisible'><code>NvAPI_GPU_ValidateOutputCombination</code></span></span><span id='variant.NvAPI_GPU_GetConnectorInfo' class='variant'><span id='NvAPI_GPU_GetConnectorInfo.v' class='invisible'><code>NvAPI_GPU_GetConnectorInfo</code></span></span><span id='variant.NvAPI_GPU_GetFullName' class='variant'><span id='NvAPI_GPU_GetFullName.v' class='invisible'><code>NvAPI_GPU_GetFullName</code></span></span><span id='variant.NvAPI_GPU_GetPCIIdentifiers' class='variant'><span id='NvAPI_GPU_GetPCIIdentifiers.v' class='invisible'><code>NvAPI_GPU_GetPCIIdentifiers</code></span></span><span id='variant.NvAPI_GPU_GetGPUType' class='variant'><span id='NvAPI_GPU_GetGPUType.v' class='invisible'><code>NvAPI_GPU_GetGPUType</code></span></span><span id='variant.NvAPI_GPU_GetBusType' class='variant'><span id='NvAPI_GPU_GetBusType.v' class='invisible'><code>NvAPI_GPU_GetBusType</code></span></span><span id='variant.NvAPI_GPU_GetBusId' class='variant'><span id='NvAPI_GPU_GetBusId.v' class='invisible'><code>NvAPI_GPU_GetBusId</code></span></span><span id='variant.NvAPI_GPU_GetBusSlotId' class='variant'><span id='NvAPI_GPU_GetBusSlotId.v' class='invisible'><code>NvAPI_GPU_GetBusSlotId</code></span></span><span id='variant.NvAPI_GPU_GetIRQ' class='variant'><span id='NvAPI_GPU_GetIRQ.v' class='invisible'><code>NvAPI_GPU_GetIRQ</code></span></span><span id='variant.NvAPI_GPU_GetVbiosRevision' class='variant'><span id='NvAPI_GPU_GetVbiosRevision.v' class='invisible'><code>NvAPI_GPU_GetVbiosRevision</code></span></span><span id='variant.NvAPI_GPU_GetVbiosOEMRevision' class='variant'><span id='NvAPI_GPU_GetVbiosOEMRevision.v' class='invisible'><code>NvAPI_GPU_GetVbiosOEMRevision</code></span></span><span id='variant.NvAPI_GPU_GetVbiosVersionString' class='variant'><span id='NvAPI_GPU_GetVbiosVersionString.v' class='invisible'><code>NvAPI_GPU_GetVbiosVersionString</code></span></span><span id='variant.NvAPI_GPU_GetAGPAperture' class='variant'><span id='NvAPI_GPU_GetAGPAperture.v' class='invisible'><code>NvAPI_GPU_GetAGPAperture</code></span></span><span id='variant.NvAPI_GPU_GetCurrentAGPRate' class='variant'><span id='NvAPI_GPU_GetCurrentAGPRate.v' class='invisible'><code>NvAPI_GPU_GetCurrentAGPRate</code></span></span><span id='variant.NvAPI_GPU_GetCurrentPCIEDownstreamWidth' class='variant'><span id='NvAPI_GPU_GetCurrentPCIEDownstreamWidth.v' class='invisible'><code>NvAPI_GPU_GetCurrentPCIEDownstreamWidth</code></span></span><span id='variant.NvAPI_GPU_GetPhysicalFrameBufferSize' class='variant'><span id='NvAPI_GPU_GetPhysicalFrameBufferSize.v' class='invisible'><code>NvAPI_GPU_GetPhysicalFrameBufferSize</code></span></span><span id='variant.NvAPI_GPU_GetVirtualFrameBufferSize' class='variant'><span id='NvAPI_GPU_GetVirtualFrameBufferSize.v' class='invisible'><code>NvAPI_GPU_GetVirtualFrameBufferSize</code></span></span><span id='variant.NvAPI_GPU_GetQuadroStatus' class='variant'><span id='NvAPI_GPU_GetQuadroStatus.v' class='invisible'><code>NvAPI_GPU_GetQuadroStatus</code></span></span><span id='variant.NvAPI_GPU_GetBoardInfo' class='variant'><span id='NvAPI_GPU_GetBoardInfo.v' class='invisible'><code>NvAPI_GPU_GetBoardInfo</code></span></span><span id='variant.NvAPI_GPU_GetRamType' class='variant'><span id='NvAPI_GPU_GetRamType.v' class='invisible'><code>NvAPI_GPU_GetRamType</code></span></span><span id='variant.NvAPI_GPU_GetFBWidthAndLocation' class='variant'><span id='NvAPI_GPU_GetFBWidthAndLocation.v' class='invisible'><code>NvAPI_GPU_GetFBWidthAndLocation</code></span></span><span id='variant.NvAPI_GPU_GetAllClockFrequencies' class='variant'><span id='NvAPI_GPU_GetAllClockFrequencies.v' class='invisible'><code>NvAPI_GPU_GetAllClockFrequencies</code></span></span><span id='variant.NvAPI_GPU_GetPerfClocks' class='variant'><span id='NvAPI_GPU_GetPerfClocks.v' class='invisible'><code>NvAPI_GPU_GetPerfClocks</code></span></span><span id='variant.NvAPI_GPU_SetPerfClocks' class='variant'><span id='NvAPI_GPU_SetPerfClocks.v' class='invisible'><code>NvAPI_GPU_SetPerfClocks</code></span></span><span id='variant.NvAPI_GPU_GetCoolerSettings' class='variant'><span id='NvAPI_GPU_GetCoolerSettings.v' class='invisible'><code>NvAPI_GPU_GetCoolerSettings</code></span></span><span id='variant.NvAPI_GPU_SetCoolerLevels' class='variant'><span id='NvAPI_GPU_SetCoolerLevels.v' class='invisible'><code>NvAPI_GPU_SetCoolerLevels</code></span></span><span id='variant.NvAPI_GPU_RestoreCoolerSettings' class='variant'><span id='NvAPI_GPU_RestoreCoolerSettings.v' class='invisible'><code>NvAPI_GPU_RestoreCoolerSettings</code></span></span><span id='variant.NvAPI_GPU_GetCoolerPolicyTable' class='variant'><span id='NvAPI_GPU_GetCoolerPolicyTable.v' class='invisible'><code>NvAPI_GPU_GetCoolerPolicyTable</code></span></span><span id='variant.NvAPI_GPU_SetCoolerPolicyTable' class='variant'><span id='NvAPI_GPU_SetCoolerPolicyTable.v' class='invisible'><code>NvAPI_GPU_SetCoolerPolicyTable</code></span></span><span id='variant.NvAPI_GPU_RestoreCoolerPolicyTable' class='variant'><span id='NvAPI_GPU_RestoreCoolerPolicyTable.v' class='invisible'><code>NvAPI_GPU_RestoreCoolerPolicyTable</code></span></span><span id='variant.NvAPI_GPU_GetPstatesInfo' class='variant'><span id='NvAPI_GPU_GetPstatesInfo.v' class='invisible'><code>NvAPI_GPU_GetPstatesInfo</code></span></span><span id='variant.NvAPI_GPU_GetPstatesInfoEx' class='variant'><span id='NvAPI_GPU_GetPstatesInfoEx.v' class='invisible'><code>NvAPI_GPU_GetPstatesInfoEx</code></span></span><span id='variant.NvAPI_GPU_SetPstatesInfo' class='variant'><span id='NvAPI_GPU_SetPstatesInfo.v' class='invisible'><code>NvAPI_GPU_SetPstatesInfo</code></span></span><span id='variant.NvAPI_GPU_GetPstates20' class='variant'><span id='NvAPI_GPU_GetPstates20.v' class='invisible'><code>NvAPI_GPU_GetPstates20</code></span></span><span id='variant.NvAPI_GPU_SetPstates20' class='variant'><span id='NvAPI_GPU_SetPstates20.v' class='invisible'><code>NvAPI_GPU_SetPstates20</code></span></span><span id='variant.NvAPI_GPU_GetCurrentPstate' class='variant'><span id='NvAPI_GPU_GetCurrentPstate.v' class='invisible'><code>NvAPI_GPU_GetCurrentPstate</code></span></span><span id='variant.NvAPI_GPU_GetPstateClientLimits' class='variant'><span id='NvAPI_GPU_GetPstateClientLimits.v' class='invisible'><code>NvAPI_GPU_GetPstateClientLimits</code></span></span><span id='variant.NvAPI_GPU_SetPstateClientLimits' class='variant'><span id='NvAPI_GPU_SetPstateClientLimits.v' class='invisible'><code>NvAPI_GPU_SetPstateClientLimits</code></span></span><span id='variant.NvAPI_GPU_EnableOverclockedPstates' class='variant'><span id='NvAPI_GPU_EnableOverclockedPstates.v' class='invisible'><code>NvAPI_GPU_EnableOverclockedPstates</code></span></span><span id='variant.NvAPI_GPU_EnableDynamicPstates' class='variant'><span id='NvAPI_GPU_EnableDynamicPstates.v' class='invisible'><code>NvAPI_GPU_EnableDynamicPstates</code></span></span><span id='variant.NvAPI_GPU_GetDynamicPstatesInfoEx' class='variant'><span id='NvAPI_GPU_GetDynamicPstatesInfoEx.v' class='invisible'><code>NvAPI_GPU_GetDynamicPstatesInfoEx</code></span></span><span id='variant.NvAPI_GPU_GetVoltages' class='variant'><span id='NvAPI_GPU_GetVoltages.v' class='invisible'><code>NvAPI_GPU_GetVoltages</code></span></span><span id='variant.NvAPI_GPU_GetThermalSettings' class='variant'><span id='NvAPI_GPU_GetThermalSettings.v' class='invisible'><code>NvAPI_GPU_GetThermalSettings</code></span></span><span id='variant.NvAPI_GPU_SetDitherControl' class='variant'><span id='NvAPI_GPU_SetDitherControl.v' class='invisible'><code>NvAPI_GPU_SetDitherControl</code></span></span><span id='variant.NvAPI_GPU_GetDitherControl' class='variant'><span id='NvAPI_GPU_GetDitherControl.v' class='invisible'><code>NvAPI_GPU_GetDitherControl</code></span></span><span id='variant.NvAPI_GPU_GetColorSpaceConversion' class='variant'><span id='NvAPI_GPU_GetColorSpaceConversion.v' class='invisible'><code>NvAPI_GPU_GetColorSpaceConversion</code></span></span><span id='variant.NvAPI_GPU_SetColorSpaceConversion' class='variant'><span id='NvAPI_GPU_SetColorSpaceConversion.v' class='invisible'><code>NvAPI_GPU_SetColorSpaceConversion</code></span></span><span id='variant.NvAPI_GetTVOutputInfo' class='variant'><span id='NvAPI_GetTVOutputInfo.v' class='invisible'><code>NvAPI_GetTVOutputInfo</code></span></span><span id='variant.NvAPI_GetTVEncoderControls' class='variant'><span id='NvAPI_GetTVEncoderControls.v' class='invisible'><code>NvAPI_GetTVEncoderControls</code></span></span><span id='variant.NvAPI_SetTVEncoderControls' class='variant'><span id='NvAPI_SetTVEncoderControls.v' class='invisible'><code>NvAPI_SetTVEncoderControls</code></span></span><span id='variant.NvAPI_GetTVOutputBorderColor' class='variant'><span id='NvAPI_GetTVOutputBorderColor.v' class='invisible'><code>NvAPI_GetTVOutputBorderColor</code></span></span><span id='variant.NvAPI_SetTVOutputBorderColor' class='variant'><span id='NvAPI_SetTVOutputBorderColor.v' class='invisible'><code>NvAPI_SetTVOutputBorderColor</code></span></span><span id='variant.NvAPI_GetDisplayPosition' class='variant'><span id='NvAPI_GetDisplayPosition.v' class='invisible'><code>NvAPI_GetDisplayPosition</code></span></span><span id='variant.NvAPI_SetDisplayPosition' class='variant'><span id='NvAPI_SetDisplayPosition.v' class='invisible'><code>NvAPI_SetDisplayPosition</code></span></span><span id='variant.NvAPI_GetValidGpuTopologies' class='variant'><span id='NvAPI_GetValidGpuTopologies.v' class='invisible'><code>NvAPI_GetValidGpuTopologies</code></span></span><span id='variant.NvAPI_GetInvalidGpuTopologies' class='variant'><span id='NvAPI_GetInvalidGpuTopologies.v' class='invisible'><code>NvAPI_GetInvalidGpuTopologies</code></span></span><span id='variant.NvAPI_SetGpuTopologies' class='variant'><span id='NvAPI_SetGpuTopologies.v' class='invisible'><code>NvAPI_SetGpuTopologies</code></span></span><span id='variant.NvAPI_GPU_GetPerGpuTopologyStatus' class='variant'><span id='NvAPI_GPU_GetPerGpuTopologyStatus.v' class='invisible'><code>NvAPI_GPU_GetPerGpuTopologyStatus</code></span></span><span id='variant.NvAPI_SYS_GetChipSetTopologyStatus' class='variant'><span id='NvAPI_SYS_GetChipSetTopologyStatus.v' class='invisible'><code>NvAPI_SYS_GetChipSetTopologyStatus</code></span></span><span id='variant.NvAPI_GPU_Get_DisplayPort_DongleInfo' class='variant'><span id='NvAPI_GPU_Get_DisplayPort_DongleInfo.v' class='invisible'><code>NvAPI_GPU_Get_DisplayPort_DongleInfo</code></span></span><span id='variant.NvAPI_I2CRead' class='variant'><span id='NvAPI_I2CRead.v' class='invisible'><code>NvAPI_I2CRead</code></span></span><span id='variant.NvAPI_I2CWrite' class='variant'><span id='NvAPI_I2CWrite.v' class='invisible'><code>NvAPI_I2CWrite</code></span></span><span id='variant.NvAPI_I2CWriteEx' class='variant'><span id='NvAPI_I2CWriteEx.v' class='invisible'><code>NvAPI_I2CWriteEx</code></span></span><span id='variant.NvAPI_I2CReadEx' class='variant'><span id='NvAPI_I2CReadEx.v' class='invisible'><code>NvAPI_I2CReadEx</code></span></span><span id='variant.NvAPI_GPU_GetPowerMizerInfo' class='variant'><span id='NvAPI_GPU_GetPowerMizerInfo.v' class='invisible'><code>NvAPI_GPU_GetPowerMizerInfo</code></span></span><span id='variant.NvAPI_GPU_SetPowerMizerInfo' class='variant'><span id='NvAPI_GPU_SetPowerMizerInfo.v' class='invisible'><code>NvAPI_GPU_SetPowerMizerInfo</code></span></span><span id='variant.NvAPI_GPU_GetVoltageDomainsStatus' class='variant'><span id='NvAPI_GPU_GetVoltageDomainsStatus.v' class='invisible'><code>NvAPI_GPU_GetVoltageDomainsStatus</code></span></span><span id='variant.NvAPI_GPU_ClientPowerTopologyGetInfo' class='variant'><span id='NvAPI_GPU_ClientPowerTopologyGetInfo.v' class='invisible'><code>NvAPI_GPU_ClientPowerTopologyGetInfo</code></span></span><span id='variant.NvAPI_GPU_ClientPowerTopologyGetStatus' class='variant'><span id='NvAPI_GPU_ClientPowerTopologyGetStatus.v' class='invisible'><code>NvAPI_GPU_ClientPowerTopologyGetStatus</code></span></span><span id='variant.NvAPI_GPU_ClientPowerPoliciesGetInfo' class='variant'><span id='NvAPI_GPU_ClientPowerPoliciesGetInfo.v' class='invisible'><code>NvAPI_GPU_ClientPowerPoliciesGetInfo</code></span></span><span id='variant.NvAPI_GPU_ClientPowerPoliciesGetStatus' class='variant'><span id='NvAPI_GPU_ClientPowerPoliciesGetStatus.v' class='invisible'><code>NvAPI_GPU_ClientPowerPoliciesGetStatus</code></span></span><span id='variant.NvAPI_GPU_ClientPowerPoliciesSetStatus' class='variant'><span id='NvAPI_GPU_ClientPowerPoliciesSetStatus.v' class='invisible'><code>NvAPI_GPU_ClientPowerPoliciesSetStatus</code></span></span><span id='variant.NvAPI_GPU_WorkstationFeatureSetup' class='variant'><span id='NvAPI_GPU_WorkstationFeatureSetup.v' class='invisible'><code>NvAPI_GPU_WorkstationFeatureSetup</code></span></span><span id='variant.NvAPI_SYS_GetChipSetInfo' class='variant'><span id='NvAPI_SYS_GetChipSetInfo.v' class='invisible'><code>NvAPI_SYS_GetChipSetInfo</code></span></span><span id='variant.NvAPI_SYS_GetLidAndDockInfo' class='variant'><span id='NvAPI_SYS_GetLidAndDockInfo.v' class='invisible'><code>NvAPI_SYS_GetLidAndDockInfo</code></span></span><span id='variant.NvAPI_OGL_ExpertModeSet' class='variant'><span id='NvAPI_OGL_ExpertModeSet.v' class='invisible'><code>NvAPI_OGL_ExpertModeSet</code></span></span><span id='variant.NvAPI_OGL_ExpertModeGet' class='variant'><span id='NvAPI_OGL_ExpertModeGet.v' class='invisible'><code>NvAPI_OGL_ExpertModeGet</code></span></span><span id='variant.NvAPI_OGL_ExpertModeDefaultsSet' class='variant'><span id='NvAPI_OGL_ExpertModeDefaultsSet.v' class='invisible'><code>NvAPI_OGL_ExpertModeDefaultsSet</code></span></span><span id='variant.NvAPI_OGL_ExpertModeDefaultsGet' class='variant'><span id='NvAPI_OGL_ExpertModeDefaultsGet.v' class='invisible'><code>NvAPI_OGL_ExpertModeDefaultsGet</code></span></span><span id='variant.NvAPI_SetDisplaySettings' class='variant'><span id='NvAPI_SetDisplaySettings.v' class='invisible'><code>NvAPI_SetDisplaySettings</code></span></span><span id='variant.NvAPI_GetDisplaySettings' class='variant'><span id='NvAPI_GetDisplaySettings.v' class='invisible'><code>NvAPI_GetDisplaySettings</code></span></span><span id='variant.NvAPI_GetTiming' class='variant'><span id='NvAPI_GetTiming.v' class='invisible'><code>NvAPI_GetTiming</code></span></span><span id='variant.NvAPI_DISP_GetMonitorCapabilities' class='variant'><span id='NvAPI_DISP_GetMonitorCapabilities.v' class='invisible'><code>NvAPI_DISP_GetMonitorCapabilities</code></span></span><span id='variant.NvAPI_EnumCustomDisplay' class='variant'><span id='NvAPI_EnumCustomDisplay.v' class='invisible'><code>NvAPI_EnumCustomDisplay</code></span></span><span id='variant.NvAPI_TryCustomDisplay' class='variant'><span id='NvAPI_TryCustomDisplay.v' class='invisible'><code>NvAPI_TryCustomDisplay</code></span></span><span id='variant.NvAPI_RevertCustomDisplayTrial' class='variant'><span id='NvAPI_RevertCustomDisplayTrial.v' class='invisible'><code>NvAPI_RevertCustomDisplayTrial</code></span></span><span id='variant.NvAPI_DeleteCustomDisplay' class='variant'><span id='NvAPI_DeleteCustomDisplay.v' class='invisible'><code>NvAPI_DeleteCustomDisplay</code></span></span><span id='variant.NvAPI_SaveCustomDisplay' class='variant'><span id='NvAPI_SaveCustomDisplay.v' class='invisible'><code>NvAPI_SaveCustomDisplay</code></span></span><span id='variant.NvAPI_QueryUnderscanCap' class='variant'><span id='NvAPI_QueryUnderscanCap.v' class='invisible'><code>NvAPI_QueryUnderscanCap</code></span></span><span id='variant.NvAPI_EnumUnderscanConfig' class='variant'><span id='NvAPI_EnumUnderscanConfig.v' class='invisible'><code>NvAPI_EnumUnderscanConfig</code></span></span><span id='variant.NvAPI_DeleteUnderscanConfig' class='variant'><span id='NvAPI_DeleteUnderscanConfig.v' class='invisible'><code>NvAPI_DeleteUnderscanConfig</code></span></span><span id='variant.NvAPI_SetUnderscanConfig' class='variant'><span id='NvAPI_SetUnderscanConfig.v' class='invisible'><code>NvAPI_SetUnderscanConfig</code></span></span><span id='variant.NvAPI_GetDisplayFeatureConfig' class='variant'><span id='NvAPI_GetDisplayFeatureConfig.v' class='invisible'><code>NvAPI_GetDisplayFeatureConfig</code></span></span><span id='variant.NvAPI_SetDisplayFeatureConfig' class='variant'><span id='NvAPI_SetDisplayFeatureConfig.v' class='invisible'><code>NvAPI_SetDisplayFeatureConfig</code></span></span><span id='variant.NvAPI_GetDisplayFeatureConfigDefaults' class='variant'><span id='NvAPI_GetDisplayFeatureConfigDefaults.v' class='invisible'><code>NvAPI_GetDisplayFeatureConfigDefaults</code></span></span><span id='variant.NvAPI_SetView' class='variant'><span id='NvAPI_SetView.v' class='invisible'><code>NvAPI_SetView</code></span></span><span id='variant.NvAPI_GetView' class='variant'><span id='NvAPI_GetView.v' class='invisible'><code>NvAPI_GetView</code></span></span><span id='variant.NvAPI_SetViewEx' class='variant'><span id='NvAPI_SetViewEx.v' class='invisible'><code>NvAPI_SetViewEx</code></span></span><span id='variant.NvAPI_GetViewEx' class='variant'><span id='NvAPI_GetViewEx.v' class='invisible'><code>NvAPI_GetViewEx</code></span></span><span id='variant.NvAPI_GetSupportedViews' class='variant'><span id='NvAPI_GetSupportedViews.v' class='invisible'><code>NvAPI_GetSupportedViews</code></span></span><span id='variant.NvAPI_GetHDCPLinkParameters' class='variant'><span id='NvAPI_GetHDCPLinkParameters.v' class='invisible'><code>NvAPI_GetHDCPLinkParameters</code></span></span><span id='variant.NvAPI_Disp_DpAuxChannelControl' class='variant'><span id='NvAPI_Disp_DpAuxChannelControl.v' class='invisible'><code>NvAPI_Disp_DpAuxChannelControl</code></span></span><span id='variant.NvAPI_SetHybridMode' class='variant'><span id='NvAPI_SetHybridMode.v' class='invisible'><code>NvAPI_SetHybridMode</code></span></span><span id='variant.NvAPI_GetHybridMode' class='variant'><span id='NvAPI_GetHybridMode.v' class='invisible'><code>NvAPI_GetHybridMode</code></span></span><span id='variant.NvAPI_Coproc_GetCoprocStatus' class='variant'><span id='NvAPI_Coproc_GetCoprocStatus.v' class='invisible'><code>NvAPI_Coproc_GetCoprocStatus</code></span></span><span id='variant.NvAPI_Coproc_SetCoprocInfoFlagsEx' class='variant'><span id='NvAPI_Coproc_SetCoprocInfoFlagsEx.v' class='invisible'><code>NvAPI_Coproc_SetCoprocInfoFlagsEx</code></span></span><span id='variant.NvAPI_Coproc_GetCoprocInfoFlagsEx' class='variant'><span id='NvAPI_Coproc_GetCoprocInfoFlagsEx.v' class='invisible'><code>NvAPI_Coproc_GetCoprocInfoFlagsEx</code></span></span><span id='variant.NvAPI_Coproc_NotifyCoprocPowerState' class='variant'><span id='NvAPI_Coproc_NotifyCoprocPowerState.v' class='invisible'><code>NvAPI_Coproc_NotifyCoprocPowerState</code></span></span><span id='variant.NvAPI_Coproc_GetApplicationCoprocInfo' class='variant'><span id='NvAPI_Coproc_GetApplicationCoprocInfo.v' class='invisible'><code>NvAPI_Coproc_GetApplicationCoprocInfo</code></span></span><span id='variant.NvAPI_GetVideoState' class='variant'><span id='NvAPI_GetVideoState.v' class='invisible'><code>NvAPI_GetVideoState</code></span></span><span id='variant.NvAPI_SetVideoState' class='variant'><span id='NvAPI_SetVideoState.v' class='invisible'><code>NvAPI_SetVideoState</code></span></span><span id='variant.NvAPI_SetFrameRateNotify' class='variant'><span id='NvAPI_SetFrameRateNotify.v' class='invisible'><code>NvAPI_SetFrameRateNotify</code></span></span><span id='variant.NvAPI_SetPVExtName' class='variant'><span id='NvAPI_SetPVExtName.v' class='invisible'><code>NvAPI_SetPVExtName</code></span></span><span id='variant.NvAPI_GetPVExtName' class='variant'><span id='NvAPI_GetPVExtName.v' class='invisible'><code>NvAPI_GetPVExtName</code></span></span><span id='variant.NvAPI_SetPVExtProfile' class='variant'><span id='NvAPI_SetPVExtProfile.v' class='invisible'><code>NvAPI_SetPVExtProfile</code></span></span><span id='variant.NvAPI_GetPVExtProfile' class='variant'><span id='NvAPI_GetPVExtProfile.v' class='invisible'><code>NvAPI_GetPVExtProfile</code></span></span><span id='variant.NvAPI_VideoSetStereoInfo' class='variant'><span id='NvAPI_VideoSetStereoInfo.v' class='invisible'><code>NvAPI_VideoSetStereoInfo</code></span></span><span id='variant.NvAPI_VideoGetStereoInfo' class='variant'><span id='NvAPI_VideoGetStereoInfo.v' class='invisible'><code>NvAPI_VideoGetStereoInfo</code></span></span><span id='variant.NvAPI_Mosaic_GetSupportedTopoInfo' class='variant'><span id='NvAPI_Mosaic_GetSupportedTopoInfo.v' class='invisible'><code>NvAPI_Mosaic_GetSupportedTopoInfo</code></span></span><span id='variant.NvAPI_Mosaic_GetTopoGroup' class='variant'><span id='NvAPI_Mosaic_GetTopoGroup.v' class='invisible'><code>NvAPI_Mosaic_GetTopoGroup</code></span></span><span id='variant.NvAPI_Mosaic_GetOverlapLimits' class='variant'><span id='NvAPI_Mosaic_GetOverlapLimits.v' class='invisible'><code>NvAPI_Mosaic_GetOverlapLimits</code></span></span><span id='variant.NvAPI_Mosaic_SetCurrentTopo' class='variant'><span id='NvAPI_Mosaic_SetCurrentTopo.v' class='invisible'><code>NvAPI_Mosaic_SetCurrentTopo</code></span></span><span id='variant.NvAPI_Mosaic_GetCurrentTopo' class='variant'><span id='NvAPI_Mosaic_GetCurrentTopo.v' class='invisible'><code>NvAPI_Mosaic_GetCurrentTopo</code></span></span><span id='variant.NvAPI_Mosaic_EnableCurrentTopo' class='variant'><span id='NvAPI_Mosaic_EnableCurrentTopo.v' class='invisible'><code>NvAPI_Mosaic_EnableCurrentTopo</code></span></span><span id='variant.NvAPI_Mosaic_SetGridTopology' class='variant'><span id='NvAPI_Mosaic_SetGridTopology.v' class='invisible'><code>NvAPI_Mosaic_SetGridTopology</code></span></span><span id='variant.NvAPI_Mosaic_GetMosaicCapabilities' class='variant'><span id='NvAPI_Mosaic_GetMosaicCapabilities.v' class='invisible'><code>NvAPI_Mosaic_GetMosaicCapabilities</code></span></span><span id='variant.NvAPI_Mosaic_GetDisplayCapabilities' class='variant'><span id='NvAPI_Mosaic_GetDisplayCapabilities.v' class='invisible'><code>NvAPI_Mosaic_GetDisplayCapabilities</code></span></span><span id='variant.NvAPI_Mosaic_EnumGridTopologies' class='variant'><span id='NvAPI_Mosaic_EnumGridTopologies.v' class='invisible'><code>NvAPI_Mosaic_EnumGridTopologies</code></span></span><span id='variant.NvAPI_Mosaic_GetDisplayViewportsByResolution' class='variant'><span id='NvAPI_Mosaic_GetDisplayViewportsByResolution.v' class='invisible'><code>NvAPI_Mosaic_GetDisplayViewportsByResolution</code></span></span><span id='variant.NvAPI_Mosaic_GetMosaicViewports' class='variant'><span id='NvAPI_Mosaic_GetMosaicViewports.v' class='invisible'><code>NvAPI_Mosaic_GetMosaicViewports</code></span></span><span id='variant.NvAPI_Mosaic_SetDisplayGrids' class='variant'><span id='NvAPI_Mosaic_SetDisplayGrids.v' class='invisible'><code>NvAPI_Mosaic_SetDisplayGrids</code></span></span><span id='variant.NvAPI_Mosaic_ValidateDisplayGridsWithSLI' class='variant'><span id='NvAPI_Mosaic_ValidateDisplayGridsWithSLI.v' class='invisible'><code>NvAPI_Mosaic_ValidateDisplayGridsWithSLI</code></span></span><span id='variant.NvAPI_Mosaic_ValidateDisplayGrids' class='variant'><span id='NvAPI_Mosaic_ValidateDisplayGrids.v' class='invisible'><code>NvAPI_Mosaic_ValidateDisplayGrids</code></span></span><span id='variant.NvAPI_Mosaic_EnumDisplayModes' class='variant'><span id='NvAPI_Mosaic_EnumDisplayModes.v' class='invisible'><code>NvAPI_Mosaic_EnumDisplayModes</code></span></span><span id='variant.NvAPI_Mosaic_ChooseGpuTopologies' class='variant'><span id='NvAPI_Mosaic_ChooseGpuTopologies.v' class='invisible'><code>NvAPI_Mosaic_ChooseGpuTopologies</code></span></span><span id='variant.NvAPI_Mosaic_EnumDisplayGrids' class='variant'><span id='NvAPI_Mosaic_EnumDisplayGrids.v' class='invisible'><code>NvAPI_Mosaic_EnumDisplayGrids</code></span></span><span id='variant.NvAPI_GetSupportedMosaicTopologies' class='variant'><span id='NvAPI_GetSupportedMosaicTopologies.v' class='invisible'><code>NvAPI_GetSupportedMosaicTopologies</code></span></span><span id='variant.NvAPI_GetCurrentMosaicTopology' class='variant'><span id='NvAPI_GetCurrentMosaicTopology.v' class='invisible'><code>NvAPI_GetCurrentMosaicTopology</code></span></span><span id='variant.NvAPI_SetCurrentMosaicTopology' class='variant'><span id='NvAPI_SetCurrentMosaicTopology.v' class='invisible'><code>NvAPI_SetCurrentMosaicTopology</code></span></span><span id='variant.NvAPI_EnableCurrentMosaicTopology' class='variant'><span id='NvAPI_EnableCurrentMosaicTopology.v' class='invisible'><code>NvAPI_EnableCurrentMosaicTopology</code></span></span><span id='variant.NvAPI_QueryNonMigratableApps' class='variant'><span id='NvAPI_QueryNonMigratableApps.v' class='invisible'><code>NvAPI_QueryNonMigratableApps</code></span></span><span id='variant.NvAPI_GPU_QueryActiveApps' class='variant'><span id='NvAPI_GPU_QueryActiveApps.v' class='invisible'><code>NvAPI_GPU_QueryActiveApps</code></span></span><span id='variant.NvAPI_Hybrid_QueryUnblockedNonMigratableApps' class='variant'><span id='NvAPI_Hybrid_QueryUnblockedNonMigratableApps.v' class='invisible'><code>NvAPI_Hybrid_QueryUnblockedNonMigratableApps</code></span></span><span id='variant.NvAPI_Hybrid_QueryBlockedMigratableApps' class='variant'><span id='NvAPI_Hybrid_QueryBlockedMigratableApps.v' class='invisible'><code>NvAPI_Hybrid_QueryBlockedMigratableApps</code></span></span><span id='variant.NvAPI_Hybrid_SetAppMigrationState' class='variant'><span id='NvAPI_Hybrid_SetAppMigrationState.v' class='invisible'><code>NvAPI_Hybrid_SetAppMigrationState</code></span></span><span id='variant.NvAPI_Hybrid_IsAppMigrationStateChangeable' class='variant'><span id='NvAPI_Hybrid_IsAppMigrationStateChangeable.v' class='invisible'><code>NvAPI_Hybrid_IsAppMigrationStateChangeable</code></span></span><span id='variant.NvAPI_GPU_GPIOQueryLegalPins' class='variant'><span id='NvAPI_GPU_GPIOQueryLegalPins.v' class='invisible'><code>NvAPI_GPU_GPIOQueryLegalPins</code></span></span><span id='variant.NvAPI_GPU_GPIOReadFromPin' class='variant'><span id='NvAPI_GPU_GPIOReadFromPin.v' class='invisible'><code>NvAPI_GPU_GPIOReadFromPin</code></span></span><span id='variant.NvAPI_GPU_GPIOWriteToPin' class='variant'><span id='NvAPI_GPU_GPIOWriteToPin.v' class='invisible'><code>NvAPI_GPU_GPIOWriteToPin</code></span></span><span id='variant.NvAPI_GPU_GetHDCPSupportStatus' class='variant'><span id='NvAPI_GPU_GetHDCPSupportStatus.v' class='invisible'><code>NvAPI_GPU_GetHDCPSupportStatus</code></span></span><span id='variant.NvAPI_SetTopologyFocusDisplayAndView' class='variant'><span id='NvAPI_SetTopologyFocusDisplayAndView.v' class='invisible'><code>NvAPI_SetTopologyFocusDisplayAndView</code></span></span><span id='variant.NvAPI_Stereo_CreateConfigurationProfileRegistryKey' class='variant'><span id='NvAPI_Stereo_CreateConfigurationProfileRegistryKey.v' class='invisible'><code>NvAPI_Stereo_CreateConfigurationProfileRegistryKey</code></span></span><span id='variant.NvAPI_Stereo_DeleteConfigurationProfileRegistryKey' class='variant'><span id='NvAPI_Stereo_DeleteConfigurationProfileRegistryKey.v' class='invisible'><code>NvAPI_Stereo_DeleteConfigurationProfileRegistryKey</code></span></span><span id='variant.NvAPI_Stereo_SetConfigurationProfileValue' class='variant'><span id='NvAPI_Stereo_SetConfigurationProfileValue.v' class='invisible'><code>NvAPI_Stereo_SetConfigurationProfileValue</code></span></span><span id='variant.NvAPI_Stereo_DeleteConfigurationProfileValue' class='variant'><span id='NvAPI_Stereo_DeleteConfigurationProfileValue.v' class='invisible'><code>NvAPI_Stereo_DeleteConfigurationProfileValue</code></span></span><span id='variant.NvAPI_Stereo_Enable' class='variant'><span id='NvAPI_Stereo_Enable.v' class='invisible'><code>NvAPI_Stereo_Enable</code></span></span><span id='variant.NvAPI_Stereo_Disable' class='variant'><span id='NvAPI_Stereo_Disable.v' class='invisible'><code>NvAPI_Stereo_Disable</code></span></span><span id='variant.NvAPI_Stereo_IsEnabled' class='variant'><span id='NvAPI_Stereo_IsEnabled.v' class='invisible'><code>NvAPI_Stereo_IsEnabled</code></span></span><span id='variant.NvAPI_Stereo_GetStereoCaps' class='variant'><span id='NvAPI_Stereo_GetStereoCaps.v' class='invisible'><code>NvAPI_Stereo_GetStereoCaps</code></span></span><span id='variant.NvAPI_Stereo_GetStereoSupport' class='variant'><span id='NvAPI_Stereo_GetStereoSupport.v' class='invisible'><code>NvAPI_Stereo_GetStereoSupport</code></span></span><span id='variant.NvAPI_Stereo_CreateHandleFromIUnknown' class='variant'><span id='NvAPI_Stereo_CreateHandleFromIUnknown.v' class='invisible'><code>NvAPI_Stereo_CreateHandleFromIUnknown</code></span></span><span id='variant.NvAPI_Stereo_DestroyHandle' class='variant'><span id='NvAPI_Stereo_DestroyHandle.v' class='invisible'><code>NvAPI_Stereo_DestroyHandle</code></span></span><span id='variant.NvAPI_Stereo_Activate' class='variant'><span id='NvAPI_Stereo_Activate.v' class='invisible'><code>NvAPI_Stereo_Activate</code></span></span><span id='variant.NvAPI_Stereo_Deactivate' class='variant'><span id='NvAPI_Stereo_Deactivate.v' class='invisible'><code>NvAPI_Stereo_Deactivate</code></span></span><span id='variant.NvAPI_Stereo_IsActivated' class='variant'><span id='NvAPI_Stereo_IsActivated.v' class='invisible'><code>NvAPI_Stereo_IsActivated</code></span></span><span id='variant.NvAPI_Stereo_GetSeparation' class='variant'><span id='NvAPI_Stereo_GetSeparation.v' class='invisible'><code>NvAPI_Stereo_GetSeparation</code></span></span><span id='variant.NvAPI_Stereo_SetSeparation' class='variant'><span id='NvAPI_Stereo_SetSeparation.v' class='invisible'><code>NvAPI_Stereo_SetSeparation</code></span></span><span id='variant.NvAPI_Stereo_DecreaseSeparation' class='variant'><span id='NvAPI_Stereo_DecreaseSeparation.v' class='invisible'><code>NvAPI_Stereo_DecreaseSeparation</code></span></span><span id='variant.NvAPI_Stereo_IncreaseSeparation' class='variant'><span id='NvAPI_Stereo_IncreaseSeparation.v' class='invisible'><code>NvAPI_Stereo_IncreaseSeparation</code></span></span><span id='variant.NvAPI_Stereo_GetConvergence' class='variant'><span id='NvAPI_Stereo_GetConvergence.v' class='invisible'><code>NvAPI_Stereo_GetConvergence</code></span></span><span id='variant.NvAPI_Stereo_SetConvergence' class='variant'><span id='NvAPI_Stereo_SetConvergence.v' class='invisible'><code>NvAPI_Stereo_SetConvergence</code></span></span><span id='variant.NvAPI_Stereo_DecreaseConvergence' class='variant'><span id='NvAPI_Stereo_DecreaseConvergence.v' class='invisible'><code>NvAPI_Stereo_DecreaseConvergence</code></span></span><span id='variant.NvAPI_Stereo_IncreaseConvergence' class='variant'><span id='NvAPI_Stereo_IncreaseConvergence.v' class='invisible'><code>NvAPI_Stereo_IncreaseConvergence</code></span></span><span id='variant.NvAPI_Stereo_GetFrustumAdjustMode' class='variant'><span id='NvAPI_Stereo_GetFrustumAdjustMode.v' class='invisible'><code>NvAPI_Stereo_GetFrustumAdjustMode</code></span></span><span id='variant.NvAPI_Stereo_SetFrustumAdjustMode' class='variant'><span id='NvAPI_Stereo_SetFrustumAdjustMode.v' class='invisible'><code>NvAPI_Stereo_SetFrustumAdjustMode</code></span></span><span id='variant.NvAPI_Stereo_CaptureJpegImage' class='variant'><span id='NvAPI_Stereo_CaptureJpegImage.v' class='invisible'><code>NvAPI_Stereo_CaptureJpegImage</code></span></span><span id='variant.NvAPI_Stereo_CapturePngImage' class='variant'><span id='NvAPI_Stereo_CapturePngImage.v' class='invisible'><code>NvAPI_Stereo_CapturePngImage</code></span></span><span id='variant.NvAPI_Stereo_ReverseStereoBlitControl' class='variant'><span id='NvAPI_Stereo_ReverseStereoBlitControl.v' class='invisible'><code>NvAPI_Stereo_ReverseStereoBlitControl</code></span></span><span id='variant.NvAPI_Stereo_SetNotificationMessage' class='variant'><span id='NvAPI_Stereo_SetNotificationMessage.v' class='invisible'><code>NvAPI_Stereo_SetNotificationMessage</code></span></span><span id='variant.NvAPI_Stereo_SetActiveEye' class='variant'><span id='NvAPI_Stereo_SetActiveEye.v' class='invisible'><code>NvAPI_Stereo_SetActiveEye</code></span></span><span id='variant.NvAPI_Stereo_SetDriverMode' class='variant'><span id='NvAPI_Stereo_SetDriverMode.v' class='invisible'><code>NvAPI_Stereo_SetDriverMode</code></span></span><span id='variant.NvAPI_Stereo_GetEyeSeparation' class='variant'><span id='NvAPI_Stereo_GetEyeSeparation.v' class='invisible'><code>NvAPI_Stereo_GetEyeSeparation</code></span></span><span id='variant.NvAPI_Stereo_IsWindowedModeSupported' class='variant'><span id='NvAPI_Stereo_IsWindowedModeSupported.v' class='invisible'><code>NvAPI_Stereo_IsWindowedModeSupported</code></span></span><span id='variant.NvAPI_Stereo_AppHandShake' class='variant'><span id='NvAPI_Stereo_AppHandShake.v' class='invisible'><code>NvAPI_Stereo_AppHandShake</code></span></span><span id='variant.NvAPI_Stereo_HandShake_Trigger_Activation' class='variant'><span id='NvAPI_Stereo_HandShake_Trigger_Activation.v' class='invisible'><code>NvAPI_Stereo_HandShake_Trigger_Activation</code></span></span><span id='variant.NvAPI_Stereo_HandShake_Message_Control' class='variant'><span id='NvAPI_Stereo_HandShake_Message_Control.v' class='invisible'><code>NvAPI_Stereo_HandShake_Message_Control</code></span></span><span id='variant.NvAPI_Stereo_SetSurfaceCreationMode' class='variant'><span id='NvAPI_Stereo_SetSurfaceCreationMode.v' class='invisible'><code>NvAPI_Stereo_SetSurfaceCreationMode</code></span></span><span id='variant.NvAPI_Stereo_GetSurfaceCreationMode' class='variant'><span id='NvAPI_Stereo_GetSurfaceCreationMode.v' class='invisible'><code>NvAPI_Stereo_GetSurfaceCreationMode</code></span></span><span id='variant.NvAPI_Stereo_Debug_WasLastDrawStereoized' class='variant'><span id='NvAPI_Stereo_Debug_WasLastDrawStereoized.v' class='invisible'><code>NvAPI_Stereo_Debug_WasLastDrawStereoized</code></span></span><span id='variant.NvAPI_Stereo_ForceToScreenDepth' class='variant'><span id='NvAPI_Stereo_ForceToScreenDepth.v' class='invisible'><code>NvAPI_Stereo_ForceToScreenDepth</code></span></span><span id='variant.NvAPI_Stereo_SetVertexShaderConstantF' class='variant'><span id='NvAPI_Stereo_SetVertexShaderConstantF.v' class='invisible'><code>NvAPI_Stereo_SetVertexShaderConstantF</code></span></span><span id='variant.NvAPI_Stereo_SetVertexShaderConstantB' class='variant'><span id='NvAPI_Stereo_SetVertexShaderConstantB.v' class='invisible'><code>NvAPI_Stereo_SetVertexShaderConstantB</code></span></span><span id='variant.NvAPI_Stereo_SetVertexShaderConstantI' class='variant'><span id='NvAPI_Stereo_SetVertexShaderConstantI.v' class='invisible'><code>NvAPI_Stereo_SetVertexShaderConstantI</code></span></span><span id='variant.NvAPI_Stereo_GetVertexShaderConstantF' class='variant'><span id='NvAPI_Stereo_GetVertexShaderConstantF.v' class='invisible'><code>NvAPI_Stereo_GetVertexShaderConstantF</code></span></span><span id='variant.NvAPI_Stereo_GetVertexShaderConstantB' class='variant'><span id='NvAPI_Stereo_GetVertexShaderConstantB.v' class='invisible'><code>NvAPI_Stereo_GetVertexShaderConstantB</code></span></span><span id='variant.NvAPI_Stereo_GetVertexShaderConstantI' class='variant'><span id='NvAPI_Stereo_GetVertexShaderConstantI.v' class='invisible'><code>NvAPI_Stereo_GetVertexShaderConstantI</code></span></span><span id='variant.NvAPI_Stereo_SetPixelShaderConstantF' class='variant'><span id='NvAPI_Stereo_SetPixelShaderConstantF.v' class='invisible'><code>NvAPI_Stereo_SetPixelShaderConstantF</code></span></span><span id='variant.NvAPI_Stereo_SetPixelShaderConstantB' class='variant'><span id='NvAPI_Stereo_SetPixelShaderConstantB.v' class='invisible'><code>NvAPI_Stereo_SetPixelShaderConstantB</code></span></span><span id='variant.NvAPI_Stereo_SetPixelShaderConstantI' class='variant'><span id='NvAPI_Stereo_SetPixelShaderConstantI.v' class='invisible'><code>NvAPI_Stereo_SetPixelShaderConstantI</code></span></span><span id='variant.NvAPI_Stereo_GetPixelShaderConstantF' class='variant'><span id='NvAPI_Stereo_GetPixelShaderConstantF.v' class='invisible'><code>NvAPI_Stereo_GetPixelShaderConstantF</code></span></span><span id='variant.NvAPI_Stereo_GetPixelShaderConstantB' class='variant'><span id='NvAPI_Stereo_GetPixelShaderConstantB.v' class='invisible'><code>NvAPI_Stereo_GetPixelShaderConstantB</code></span></span><span id='variant.NvAPI_Stereo_GetPixelShaderConstantI' class='variant'><span id='NvAPI_Stereo_GetPixelShaderConstantI.v' class='invisible'><code>NvAPI_Stereo_GetPixelShaderConstantI</code></span></span><span id='variant.NvAPI_Stereo_SetDefaultProfile' class='variant'><span id='NvAPI_Stereo_SetDefaultProfile.v' class='invisible'><code>NvAPI_Stereo_SetDefaultProfile</code></span></span><span id='variant.NvAPI_Stereo_GetDefaultProfile' class='variant'><span id='NvAPI_Stereo_GetDefaultProfile.v' class='invisible'><code>NvAPI_Stereo_GetDefaultProfile</code></span></span><span id='variant.NvAPI_Stereo_Is3DCursorSupported' class='variant'><span id='NvAPI_Stereo_Is3DCursorSupported.v' class='invisible'><code>NvAPI_Stereo_Is3DCursorSupported</code></span></span><span id='variant.NvAPI_Stereo_GetCursorSeparation' class='variant'><span id='NvAPI_Stereo_GetCursorSeparation.v' class='invisible'><code>NvAPI_Stereo_GetCursorSeparation</code></span></span><span id='variant.NvAPI_Stereo_SetCursorSeparation' class='variant'><span id='NvAPI_Stereo_SetCursorSeparation.v' class='invisible'><code>NvAPI_Stereo_SetCursorSeparation</code></span></span><span id='variant.NvAPI_VIO_GetCapabilities' class='variant'><span id='NvAPI_VIO_GetCapabilities.v' class='invisible'><code>NvAPI_VIO_GetCapabilities</code></span></span><span id='variant.NvAPI_VIO_Open' class='variant'><span id='NvAPI_VIO_Open.v' class='invisible'><code>NvAPI_VIO_Open</code></span></span><span id='variant.NvAPI_VIO_Close' class='variant'><span id='NvAPI_VIO_Close.v' class='invisible'><code>NvAPI_VIO_Close</code></span></span><span id='variant.NvAPI_VIO_Status' class='variant'><span id='NvAPI_VIO_Status.v' class='invisible'><code>NvAPI_VIO_Status</code></span></span><span id='variant.NvAPI_VIO_SyncFormatDetect' class='variant'><span id='NvAPI_VIO_SyncFormatDetect.v' class='invisible'><code>NvAPI_VIO_SyncFormatDetect</code></span></span><span id='variant.NvAPI_VIO_GetConfig' class='variant'><span id='NvAPI_VIO_GetConfig.v' class='invisible'><code>NvAPI_VIO_GetConfig</code></span></span><span id='variant.NvAPI_VIO_SetConfig' class='variant'><span id='NvAPI_VIO_SetConfig.v' class='invisible'><code>NvAPI_VIO_SetConfig</code></span></span><span id='variant.NvAPI_VIO_SetCSC' class='variant'><span id='NvAPI_VIO_SetCSC.v' class='invisible'><code>NvAPI_VIO_SetCSC</code></span></span><span id='variant.NvAPI_VIO_GetCSC' class='variant'><span id='NvAPI_VIO_GetCSC.v' class='invisible'><code>NvAPI_VIO_GetCSC</code></span></span><span id='variant.NvAPI_VIO_SetGamma' class='variant'><span id='NvAPI_VIO_SetGamma.v' class='invisible'><code>NvAPI_VIO_SetGamma</code></span></span><span id='variant.NvAPI_VIO_GetGamma' class='variant'><span id='NvAPI_VIO_GetGamma.v' class='invisible'><code>NvAPI_VIO_GetGamma</code></span></span><span id='variant.NvAPI_VIO_SetSyncDelay' class='variant'><span id='NvAPI_VIO_SetSyncDelay.v' class='invisible'><code>NvAPI_VIO_SetSyncDelay</code></span></span><span id='variant.NvAPI_VIO_GetSyncDelay' class='variant'><span id='NvAPI_VIO_GetSyncDelay.v' class='invisible'><code>NvAPI_VIO_GetSyncDelay</code></span></span><span id='variant.NvAPI_VIO_GetPCIInfo' class='variant'><span id='NvAPI_VIO_GetPCIInfo.v' class='invisible'><code>NvAPI_VIO_GetPCIInfo</code></span></span><span id='variant.NvAPI_VIO_IsRunning' class='variant'><span id='NvAPI_VIO_IsRunning.v' class='invisible'><code>NvAPI_VIO_IsRunning</code></span></span><span id='variant.NvAPI_VIO_Start' class='variant'><span id='NvAPI_VIO_Start.v' class='invisible'><code>NvAPI_VIO_Start</code></span></span><span id='variant.NvAPI_VIO_Stop' class='variant'><span id='NvAPI_VIO_Stop.v' class='invisible'><code>NvAPI_VIO_Stop</code></span></span><span id='variant.NvAPI_VIO_IsFrameLockModeCompatible' class='variant'><span id='NvAPI_VIO_IsFrameLockModeCompatible.v' class='invisible'><code>NvAPI_VIO_IsFrameLockModeCompatible</code></span></span><span id='variant.NvAPI_VIO_EnumDevices' class='variant'><span id='NvAPI_VIO_EnumDevices.v' class='invisible'><code>NvAPI_VIO_EnumDevices</code></span></span><span id='variant.NvAPI_VIO_QueryTopology' class='variant'><span id='NvAPI_VIO_QueryTopology.v' class='invisible'><code>NvAPI_VIO_QueryTopology</code></span></span><span id='variant.NvAPI_VIO_EnumSignalFormats' class='variant'><span id='NvAPI_VIO_EnumSignalFormats.v' class='invisible'><code>NvAPI_VIO_EnumSignalFormats</code></span></span><span id='variant.NvAPI_VIO_EnumDataFormats' class='variant'><span id='NvAPI_VIO_EnumDataFormats.v' class='invisible'><code>NvAPI_VIO_EnumDataFormats</code></span></span><span id='variant.NvAPI_GPU_GetTachReading' class='variant'><span id='NvAPI_GPU_GetTachReading.v' class='invisible'><code>NvAPI_GPU_GetTachReading</code></span></span><span id='variant.NvAPI_3D_GetProperty' class='variant'><span id='NvAPI_3D_GetProperty.v' class='invisible'><code>NvAPI_3D_GetProperty</code></span></span><span id='variant.NvAPI_3D_SetProperty' class='variant'><span id='NvAPI_3D_SetProperty.v' class='invisible'><code>NvAPI_3D_SetProperty</code></span></span><span id='variant.NvAPI_3D_GetPropertyRange' class='variant'><span id='NvAPI_3D_GetPropertyRange.v' class='invisible'><code>NvAPI_3D_GetPropertyRange</code></span></span><span id='variant.NvAPI_GPS_GetPowerSteeringStatus' class='variant'><span id='NvAPI_GPS_GetPowerSteeringStatus.v' class='invisible'><code>NvAPI_GPS_GetPowerSteeringStatus</code></span></span><span id='variant.NvAPI_GPS_SetPowerSteeringStatus' class='variant'><span id='NvAPI_GPS_SetPowerSteeringStatus.v' class='invisible'><code>NvAPI_GPS_SetPowerSteeringStatus</code></span></span><span id='variant.NvAPI_GPS_SetVPStateCap' class='variant'><span id='NvAPI_GPS_SetVPStateCap.v' class='invisible'><code>NvAPI_GPS_SetVPStateCap</code></span></span><span id='variant.NvAPI_GPS_GetVPStateCap' class='variant'><span id='NvAPI_GPS_GetVPStateCap.v' class='invisible'><code>NvAPI_GPS_GetVPStateCap</code></span></span><span id='variant.NvAPI_GPS_GetThermalLimit' class='variant'><span id='NvAPI_GPS_GetThermalLimit.v' class='invisible'><code>NvAPI_GPS_GetThermalLimit</code></span></span><span id='variant.NvAPI_GPS_SetThermalLimit' class='variant'><span id='NvAPI_GPS_SetThermalLimit.v' class='invisible'><code>NvAPI_GPS_SetThermalLimit</code></span></span><span id='variant.NvAPI_GPS_GetPerfSensors' class='variant'><span id='NvAPI_GPS_GetPerfSensors.v' class='invisible'><code>NvAPI_GPS_GetPerfSensors</code></span></span><span id='variant.NvAPI_SYS_GetDisplayIdFromGpuAndOutputId' class='variant'><span id='NvAPI_SYS_GetDisplayIdFromGpuAndOutputId.v' class='invisible'><code>NvAPI_SYS_GetDisplayIdFromGpuAndOutputId</code></span></span><span id='variant.NvAPI_SYS_GetGpuAndOutputIdFromDisplayId' class='variant'><span id='NvAPI_SYS_GetGpuAndOutputIdFromDisplayId.v' class='invisible'><code>NvAPI_SYS_GetGpuAndOutputIdFromDisplayId</code></span></span><span id='variant.NvAPI_DISP_GetDisplayIdByDisplayName' class='variant'><span id='NvAPI_DISP_GetDisplayIdByDisplayName.v' class='invisible'><code>NvAPI_DISP_GetDisplayIdByDisplayName</code></span></span><span id='variant.NvAPI_DISP_GetGDIPrimaryDisplayId' class='variant'><span id='NvAPI_DISP_GetGDIPrimaryDisplayId.v' class='invisible'><code>NvAPI_DISP_GetGDIPrimaryDisplayId</code></span></span><span id='variant.NvAPI_DISP_GetDisplayConfig' class='variant'><span id='NvAPI_DISP_GetDisplayConfig.v' class='invisible'><code>NvAPI_DISP_GetDisplayConfig</code></span></span><span id='variant.NvAPI_DISP_SetDisplayConfig' class='variant'><span id='NvAPI_DISP_SetDisplayConfig.v' class='invisible'><code>NvAPI_DISP_SetDisplayConfig</code></span></span><span id='variant.NvAPI_GPU_GetPixelClockRange' class='variant'><span id='NvAPI_GPU_GetPixelClockRange.v' class='invisible'><code>NvAPI_GPU_GetPixelClockRange</code></span></span><span id='variant.NvAPI_GPU_SetPixelClockRange' class='variant'><span id='NvAPI_GPU_SetPixelClockRange.v' class='invisible'><code>NvAPI_GPU_SetPixelClockRange</code></span></span><span id='variant.NvAPI_GPU_GetECCStatusInfo' class='variant'><span id='NvAPI_GPU_GetECCStatusInfo.v' class='invisible'><code>NvAPI_GPU_GetECCStatusInfo</code></span></span><span id='variant.NvAPI_GPU_GetECCErrorInfo' class='variant'><span id='NvAPI_GPU_GetECCErrorInfo.v' class='invisible'><code>NvAPI_GPU_GetECCErrorInfo</code></span></span><span id='variant.NvAPI_GPU_ResetECCErrorInfo' class='variant'><span id='NvAPI_GPU_ResetECCErrorInfo.v' class='invisible'><code>NvAPI_GPU_ResetECCErrorInfo</code></span></span><span id='variant.NvAPI_GPU_GetECCConfigurationInfo' class='variant'><span id='NvAPI_GPU_GetECCConfigurationInfo.v' class='invisible'><code>NvAPI_GPU_GetECCConfigurationInfo</code></span></span><span id='variant.NvAPI_GPU_SetECCConfiguration' class='variant'><span id='NvAPI_GPU_SetECCConfiguration.v' class='invisible'><code>NvAPI_GPU_SetECCConfiguration</code></span></span><span id='variant.NvAPI_D3D1x_CreateSwapChain' class='variant'><span id='NvAPI_D3D1x_CreateSwapChain.v' class='invisible'><code>NvAPI_D3D1x_CreateSwapChain</code></span></span><span id='variant.NvAPI_D3D9_CreateSwapChain' class='variant'><span id='NvAPI_D3D9_CreateSwapChain.v' class='invisible'><code>NvAPI_D3D9_CreateSwapChain</code></span></span><span id='variant.NvAPI_D3D_SetFPSIndicatorState' class='variant'><span id='NvAPI_D3D_SetFPSIndicatorState.v' class='invisible'><code>NvAPI_D3D_SetFPSIndicatorState</code></span></span><span id='variant.NvAPI_D3D9_Present' class='variant'><span id='NvAPI_D3D9_Present.v' class='invisible'><code>NvAPI_D3D9_Present</code></span></span><span id='variant.NvAPI_D3D9_QueryFrameCount' class='variant'><span id='NvAPI_D3D9_QueryFrameCount.v' class='invisible'><code>NvAPI_D3D9_QueryFrameCount</code></span></span><span id='variant.NvAPI_D3D9_ResetFrameCount' class='variant'><span id='NvAPI_D3D9_ResetFrameCount.v' class='invisible'><code>NvAPI_D3D9_ResetFrameCount</code></span></span><span id='variant.NvAPI_D3D9_QueryMaxSwapGroup' class='variant'><span id='NvAPI_D3D9_QueryMaxSwapGroup.v' class='invisible'><code>NvAPI_D3D9_QueryMaxSwapGroup</code></span></span><span id='variant.NvAPI_D3D9_QuerySwapGroup' class='variant'><span id='NvAPI_D3D9_QuerySwapGroup.v' class='invisible'><code>NvAPI_D3D9_QuerySwapGroup</code></span></span><span id='variant.NvAPI_D3D9_JoinSwapGroup' class='variant'><span id='NvAPI_D3D9_JoinSwapGroup.v' class='invisible'><code>NvAPI_D3D9_JoinSwapGroup</code></span></span><span id='variant.NvAPI_D3D9_BindSwapBarrier' class='variant'><span id='NvAPI_D3D9_BindSwapBarrier.v' class='invisible'><code>NvAPI_D3D9_BindSwapBarrier</code></span></span><span id='variant.NvAPI_D3D1x_Present' class='variant'><span id='NvAPI_D3D1x_Present.v' class='invisible'><code>NvAPI_D3D1x_Present</code></span></span><span id='variant.NvAPI_D3D1x_QueryFrameCount' class='variant'><span id='NvAPI_D3D1x_QueryFrameCount.v' class='invisible'><code>NvAPI_D3D1x_QueryFrameCount</code></span></span><span id='variant.NvAPI_D3D1x_ResetFrameCount' class='variant'><span id='NvAPI_D3D1x_ResetFrameCount.v' class='invisible'><code>NvAPI_D3D1x_ResetFrameCount</code></span></span><span id='variant.NvAPI_D3D1x_QueryMaxSwapGroup' class='variant'><span id='NvAPI_D3D1x_QueryMaxSwapGroup.v' class='invisible'><code>NvAPI_D3D1x_QueryMaxSwapGroup</code></span></span><span id='variant.NvAPI_D3D1x_QuerySwapGroup' class='variant'><span id='NvAPI_D3D1x_QuerySwapGroup.v' class='invisible'><code>NvAPI_D3D1x_QuerySwapGroup</code></span></span><span id='variant.NvAPI_D3D1x_JoinSwapGroup' class='variant'><span id='NvAPI_D3D1x_JoinSwapGroup.v' class='invisible'><code>NvAPI_D3D1x_JoinSwapGroup</code></span></span><span id='variant.NvAPI_D3D1x_BindSwapBarrier' class='variant'><span id='NvAPI_D3D1x_BindSwapBarrier.v' class='invisible'><code>NvAPI_D3D1x_BindSwapBarrier</code></span></span><span id='variant.NvAPI_SYS_VenturaGetState' class='variant'><span id='NvAPI_SYS_VenturaGetState.v' class='invisible'><code>NvAPI_SYS_VenturaGetState</code></span></span><span id='variant.NvAPI_SYS_VenturaSetState' class='variant'><span id='NvAPI_SYS_VenturaSetState.v' class='invisible'><code>NvAPI_SYS_VenturaSetState</code></span></span><span id='variant.NvAPI_SYS_VenturaGetCoolingBudget' class='variant'><span id='NvAPI_SYS_VenturaGetCoolingBudget.v' class='invisible'><code>NvAPI_SYS_VenturaGetCoolingBudget</code></span></span><span id='variant.NvAPI_SYS_VenturaSetCoolingBudget' class='variant'><span id='NvAPI_SYS_VenturaSetCoolingBudget.v' class='invisible'><code>NvAPI_SYS_VenturaSetCoolingBudget</code></span></span><span id='variant.NvAPI_SYS_VenturaGetPowerReading' class='variant'><span id='NvAPI_SYS_VenturaGetPowerReading.v' class='invisible'><code>NvAPI_SYS_VenturaGetPowerReading</code></span></span><span id='variant.NvAPI_DISP_GetDisplayBlankingState' class='variant'><span id='NvAPI_DISP_GetDisplayBlankingState.v' class='invisible'><code>NvAPI_DISP_GetDisplayBlankingState</code></span></span><span id='variant.NvAPI_DISP_SetDisplayBlankingState' class='variant'><span id='NvAPI_DISP_SetDisplayBlankingState.v' class='invisible'><code>NvAPI_DISP_SetDisplayBlankingState</code></span></span><span id='variant.NvAPI_DRS_CreateSession' class='variant'><span id='NvAPI_DRS_CreateSession.v' class='invisible'><code>NvAPI_DRS_CreateSession</code></span></span><span id='variant.NvAPI_DRS_DestroySession' class='variant'><span id='NvAPI_DRS_DestroySession.v' class='invisible'><code>NvAPI_DRS_DestroySession</code></span></span><span id='variant.NvAPI_DRS_LoadSettings' class='variant'><span id='NvAPI_DRS_LoadSettings.v' class='invisible'><code>NvAPI_DRS_LoadSettings</code></span></span><span id='variant.NvAPI_DRS_SaveSettings' class='variant'><span id='NvAPI_DRS_SaveSettings.v' class='invisible'><code>NvAPI_DRS_SaveSettings</code></span></span><span id='variant.NvAPI_DRS_LoadSettingsFromFile' class='variant'><span id='NvAPI_DRS_LoadSettingsFromFile.v' class='invisible'><code>NvAPI_DRS_LoadSettingsFromFile</code></span></span><span id='variant.NvAPI_DRS_SaveSettingsToFile' class='variant'><span id='NvAPI_DRS_SaveSettingsToFile.v' class='invisible'><code>NvAPI_DRS_SaveSettingsToFile</code></span></span><span id='variant.NvAPI_DRS_CreateProfile' class='variant'><span id='NvAPI_DRS_CreateProfile.v' class='invisible'><code>NvAPI_DRS_CreateProfile</code></span></span><span id='variant.NvAPI_DRS_DeleteProfile' class='variant'><span id='NvAPI_DRS_DeleteProfile.v' class='invisible'><code>NvAPI_DRS_DeleteProfile</code></span></span><span id='variant.NvAPI_DRS_SetCurrentGlobalProfile' class='variant'><span id='NvAPI_DRS_SetCurrentGlobalProfile.v' class='invisible'><code>NvAPI_DRS_SetCurrentGlobalProfile</code></span></span><span id='variant.NvAPI_DRS_GetCurrentGlobalProfile' class='variant'><span id='NvAPI_DRS_GetCurrentGlobalProfile.v' class='invisible'><code>NvAPI_DRS_GetCurrentGlobalProfile</code></span></span><span id='variant.NvAPI_DRS_GetProfileInfo' class='variant'><span id='NvAPI_DRS_GetProfileInfo.v' class='invisible'><code>NvAPI_DRS_GetProfileInfo</code></span></span><span id='variant.NvAPI_DRS_SetProfileInfo' class='variant'><span id='NvAPI_DRS_SetProfileInfo.v' class='invisible'><code>NvAPI_DRS_SetProfileInfo</code></span></span><span id='variant.NvAPI_DRS_FindProfileByName' class='variant'><span id='NvAPI_DRS_FindProfileByName.v' class='invisible'><code>NvAPI_DRS_FindProfileByName</code></span></span><span id='variant.NvAPI_DRS_EnumProfiles' class='variant'><span id='NvAPI_DRS_EnumProfiles.v' class='invisible'><code>NvAPI_DRS_EnumProfiles</code></span></span><span id='variant.NvAPI_DRS_GetNumProfiles' class='variant'><span id='NvAPI_DRS_GetNumProfiles.v' class='invisible'><code>NvAPI_DRS_GetNumProfiles</code></span></span><span id='variant.NvAPI_DRS_CreateApplication' class='variant'><span id='NvAPI_DRS_CreateApplication.v' class='invisible'><code>NvAPI_DRS_CreateApplication</code></span></span><span id='variant.NvAPI_DRS_DeleteApplicationEx' class='variant'><span id='NvAPI_DRS_DeleteApplicationEx.v' class='invisible'><code>NvAPI_DRS_DeleteApplicationEx</code></span></span><span id='variant.NvAPI_DRS_DeleteApplication' class='variant'><span id='NvAPI_DRS_DeleteApplication.v' class='invisible'><code>NvAPI_DRS_DeleteApplication</code></span></span><span id='variant.NvAPI_DRS_GetApplicationInfo' class='variant'><span id='NvAPI_DRS_GetApplicationInfo.v' class='invisible'><code>NvAPI_DRS_GetApplicationInfo</code></span></span><span id='variant.NvAPI_DRS_EnumApplications' class='variant'><span id='NvAPI_DRS_EnumApplications.v' class='invisible'><code>NvAPI_DRS_EnumApplications</code></span></span><span id='variant.NvAPI_DRS_FindApplicationByName' class='variant'><span id='NvAPI_DRS_FindApplicationByName.v' class='invisible'><code>NvAPI_DRS_FindApplicationByName</code></span></span><span id='variant.NvAPI_DRS_SetSetting' class='variant'><span id='NvAPI_DRS_SetSetting.v' class='invisible'><code>NvAPI_DRS_SetSetting</code></span></span><span id='variant.NvAPI_DRS_GetSetting' class='variant'><span id='NvAPI_DRS_GetSetting.v' class='invisible'><code>NvAPI_DRS_GetSetting</code></span></span><span id='variant.NvAPI_DRS_EnumSettings' class='variant'><span id='NvAPI_DRS_EnumSettings.v' class='invisible'><code>NvAPI_DRS_EnumSettings</code></span></span><span id='variant.NvAPI_DRS_EnumAvailableSettingIds' class='variant'><span id='NvAPI_DRS_EnumAvailableSettingIds.v' class='invisible'><code>NvAPI_DRS_EnumAvailableSettingIds</code></span></span><span id='variant.NvAPI_DRS_EnumAvailableSettingValues' class='variant'><span id='NvAPI_DRS_EnumAvailableSettingValues.v' class='invisible'><code>NvAPI_DRS_EnumAvailableSettingValues</code></span></span><span id='variant.NvAPI_DRS_GetSettingIdFromName' class='variant'><span id='NvAPI_DRS_GetSettingIdFromName.v' class='invisible'><code>NvAPI_DRS_GetSettingIdFromName</code></span></span><span id='variant.NvAPI_DRS_GetSettingNameFromId' class='variant'><span id='NvAPI_DRS_GetSettingNameFromId.v' class='invisible'><code>NvAPI_DRS_GetSettingNameFromId</code></span></span><span id='variant.NvAPI_DRS_DeleteProfileSetting' class='variant'><span id='NvAPI_DRS_DeleteProfileSetting.v' class='invisible'><code>NvAPI_DRS_DeleteProfileSetting</code></span></span><span id='variant.NvAPI_DRS_RestoreAllDefaults' class='variant'><span id='NvAPI_DRS_RestoreAllDefaults.v' class='invisible'><code>NvAPI_DRS_RestoreAllDefaults</code></span></span><span id='variant.NvAPI_DRS_RestoreProfileDefault' class='variant'><span id='NvAPI_DRS_RestoreProfileDefault.v' class='invisible'><code>NvAPI_DRS_RestoreProfileDefault</code></span></span><span id='variant.NvAPI_DRS_RestoreProfileDefaultSetting' class='variant'><span id='NvAPI_DRS_RestoreProfileDefaultSetting.v' class='invisible'><code>NvAPI_DRS_RestoreProfileDefaultSetting</code></span></span><span id='variant.NvAPI_DRS_GetBaseProfile' class='variant'><span id='NvAPI_DRS_GetBaseProfile.v' class='invisible'><code>NvAPI_DRS_GetBaseProfile</code></span></span><span id='variant.NvAPI_Event_RegisterCallback' class='variant'><span id='NvAPI_Event_RegisterCallback.v' class='invisible'><code>NvAPI_Event_RegisterCallback</code></span></span><span id='variant.NvAPI_Event_UnregisterCallback' class='variant'><span id='NvAPI_Event_UnregisterCallback.v' class='invisible'><code>NvAPI_Event_UnregisterCallback</code></span></span><span id='variant.NvAPI_GPU_GetCurrentThermalLevel' class='variant'><span id='NvAPI_GPU_GetCurrentThermalLevel.v' class='invisible'><code>NvAPI_GPU_GetCurrentThermalLevel</code></span></span><span id='variant.NvAPI_GPU_GetCurrentFanSpeedLevel' class='variant'><span id='NvAPI_GPU_GetCurrentFanSpeedLevel.v' class='invisible'><code>NvAPI_GPU_GetCurrentFanSpeedLevel</code></span></span><span id='variant.NvAPI_GPU_SetScanoutIntensity' class='variant'><span id='NvAPI_GPU_SetScanoutIntensity.v' class='invisible'><code>NvAPI_GPU_SetScanoutIntensity</code></span></span><span id='variant.NvAPI_GPU_SetScanoutWarping' class='variant'><span id='NvAPI_GPU_SetScanoutWarping.v' class='invisible'><code>NvAPI_GPU_SetScanoutWarping</code></span></span><span id='variant.NvAPI_GPU_GetScanoutConfiguration' class='variant'><span id='NvAPI_GPU_GetScanoutConfiguration.v' class='invisible'><code>NvAPI_GPU_GetScanoutConfiguration</code></span></span><span id='variant.NvAPI_DISP_SetHCloneTopology' class='variant'><span id='NvAPI_DISP_SetHCloneTopology.v' class='invisible'><code>NvAPI_DISP_SetHCloneTopology</code></span></span><span id='variant.NvAPI_DISP_GetHCloneTopology' class='variant'><span id='NvAPI_DISP_GetHCloneTopology.v' class='invisible'><code>NvAPI_DISP_GetHCloneTopology</code></span></span><span id='variant.NvAPI_DISP_ValidateHCloneTopology' class='variant'><span id='NvAPI_DISP_ValidateHCloneTopology.v' class='invisible'><code>NvAPI_DISP_ValidateHCloneTopology</code></span></span><span id='variant.NvAPI_GPU_GetPerfDecreaseInfo' class='variant'><span id='NvAPI_GPU_GetPerfDecreaseInfo.v' class='invisible'><code>NvAPI_GPU_GetPerfDecreaseInfo</code></span></span><span id='variant.NvAPI_GPU_QueryIlluminationSupport' class='variant'><span id='NvAPI_GPU_QueryIlluminationSupport.v' class='invisible'><code>NvAPI_GPU_QueryIlluminationSupport</code></span></span><span id='variant.NvAPI_GPU_GetIllumination' class='variant'><span id='NvAPI_GPU_GetIllumination.v' class='invisible'><code>NvAPI_GPU_GetIllumination</code></span></span><span id='variant.NvAPI_GPU_SetIllumination' class='variant'><span id='NvAPI_GPU_SetIllumination.v' class='invisible'><code>NvAPI_GPU_SetIllumination</code></span></span><span id='variant.NvAPI_D3D1x_IFR_SetUpTargetBufferToSys' class='variant'><span id='NvAPI_D3D1x_IFR_SetUpTargetBufferToSys.v' class='invisible'><code>NvAPI_D3D1x_IFR_SetUpTargetBufferToSys</code></span></span><span id='variant.NvAPI_D3D1x_IFR_TransferRenderTarget' class='variant'><span id='NvAPI_D3D1x_IFR_TransferRenderTarget.v' class='invisible'><code>NvAPI_D3D1x_IFR_TransferRenderTarget</code></span></span><span id='variant.NvAPI_GetPhysicalGPUFromDisplay' class='variant'><span id='NvAPI_GetPhysicalGPUFromDisplay.v' class='invisible'><code>NvAPI_GetPhysicalGPUFromDisplay</code></span></span><span id='variant.NvAPI_GetPhysicalGPUFromGPUID' class='variant'><span id='NvAPI_GetPhysicalGPUFromGPUID.v' class='invisible'><code>NvAPI_GetPhysicalGPUFromGPUID</code></span></span><span id='variant.NvAPI_GetGPUIDFromPhysicalGPU' class='variant'><span id='NvAPI_GetGPUIDFromPhysicalGPU.v' class='invisible'><code>NvAPI_GetGPUIDFromPhysicalGPU</code></span></span><span id='variant.NvAPI_GetInfoFrameStatePvt' class='variant'><span id='NvAPI_GetInfoFrameStatePvt.v' class='invisible'><code>NvAPI_GetInfoFrameStatePvt</code></span></span><span id='variant.NvAPI_GPU_GetMemoryInfo' class='variant'><span id='NvAPI_GPU_GetMemoryInfo.v' class='invisible'><code>NvAPI_GPU_GetMemoryInfo</code></span></span><span id='variant.NvAPI_LoadMicrocode' class='variant'><span id='NvAPI_LoadMicrocode.v' class='invisible'><code>NvAPI_LoadMicrocode</code></span></span><span id='variant.NvAPI_GetLoadedMicrocodePrograms' class='variant'><span id='NvAPI_GetLoadedMicrocodePrograms.v' class='invisible'><code>NvAPI_GetLoadedMicrocodePrograms</code></span></span><span id='variant.NvAPI_GetDisplayDriverBuildTitle' class='variant'><span id='NvAPI_GetDisplayDriverBuildTitle.v' class='invisible'><code>NvAPI_GetDisplayDriverBuildTitle</code></span></span><span id='variant.NvAPI_GetDisplayDriverCompileType' class='variant'><span id='NvAPI_GetDisplayDriverCompileType.v' class='invisible'><code>NvAPI_GetDisplayDriverCompileType</code></span></span><span id='variant.NvAPI_GetDisplayDriverSecurityLevel' class='variant'><span id='NvAPI_GetDisplayDriverSecurityLevel.v' class='invisible'><code>NvAPI_GetDisplayDriverSecurityLevel</code></span></span><span id='variant.NvAPI_AccessDisplayDriverRegistry' class='variant'><span id='NvAPI_AccessDisplayDriverRegistry.v' class='invisible'><code>NvAPI_AccessDisplayDriverRegistry</code></span></span><span id='variant.NvAPI_GetDisplayDriverRegistryPath' class='variant'><span id='NvAPI_GetDisplayDriverRegistryPath.v' class='invisible'><code>NvAPI_GetDisplayDriverRegistryPath</code></span></span><span id='variant.NvAPI_GetUnAttachedDisplayDriverRegistryPath' class='variant'><span id='NvAPI_GetUnAttachedDisplayDriverRegistryPath.v' class='invisible'><code>NvAPI_GetUnAttachedDisplayDriverRegistryPath</code></span></span><span id='variant.NvAPI_GPU_GetRawFuseData' class='variant'><span id='NvAPI_GPU_GetRawFuseData.v' class='invisible'><code>NvAPI_GPU_GetRawFuseData</code></span></span><span id='variant.NvAPI_GPU_GetFoundry' class='variant'><span id='NvAPI_GPU_GetFoundry.v' class='invisible'><code>NvAPI_GPU_GetFoundry</code></span></span><span id='variant.NvAPI_GPU_GetVPECount' class='variant'><span id='NvAPI_GPU_GetVPECount.v' class='invisible'><code>NvAPI_GPU_GetVPECount</code></span></span><span id='variant.NvAPI_GPU_GetTargetID' class='variant'><span id='NvAPI_GPU_GetTargetID.v' class='invisible'><code>NvAPI_GPU_GetTargetID</code></span></span><span id='variant.NvAPI_GPU_GetShortName' class='variant'><span id='NvAPI_GPU_GetShortName.v' class='invisible'><code>NvAPI_GPU_GetShortName</code></span></span><span id='variant.NvAPI_GPU_GetVbiosMxmVersion' class='variant'><span id='NvAPI_GPU_GetVbiosMxmVersion.v' class='invisible'><code>NvAPI_GPU_GetVbiosMxmVersion</code></span></span><span id='variant.NvAPI_GPU_GetVbiosImage' class='variant'><span id='NvAPI_GPU_GetVbiosImage.v' class='invisible'><code>NvAPI_GPU_GetVbiosImage</code></span></span><span id='variant.NvAPI_GPU_GetMXMBlock' class='variant'><span id='NvAPI_GPU_GetMXMBlock.v' class='invisible'><code>NvAPI_GPU_GetMXMBlock</code></span></span><span id='variant.NvAPI_GPU_SetCurrentPCIEWidth' class='variant'><span id='NvAPI_GPU_SetCurrentPCIEWidth.v' class='invisible'><code>NvAPI_GPU_SetCurrentPCIEWidth</code></span></span><span id='variant.NvAPI_GPU_SetCurrentPCIESpeed' class='variant'><span id='NvAPI_GPU_SetCurrentPCIESpeed.v' class='invisible'><code>NvAPI_GPU_SetCurrentPCIESpeed</code></span></span><span id='variant.NvAPI_GPU_GetPCIEInfo' class='variant'><span id='NvAPI_GPU_GetPCIEInfo.v' class='invisible'><code>NvAPI_GPU_GetPCIEInfo</code></span></span><span id='variant.NvAPI_GPU_ClearPCIELinkErrorInfo' class='variant'><span id='NvAPI_GPU_ClearPCIELinkErrorInfo.v' class='invisible'><code>NvAPI_GPU_ClearPCIELinkErrorInfo</code></span></span><span id='variant.NvAPI_GPU_ClearPCIELinkAERInfo' class='variant'><span id='NvAPI_GPU_ClearPCIELinkAERInfo.v' class='invisible'><code>NvAPI_GPU_ClearPCIELinkAERInfo</code></span></span><span id='variant.NvAPI_GPU_GetFrameBufferCalibrationLockFailures' class='variant'><span id='NvAPI_GPU_GetFrameBufferCalibrationLockFailures.v' class='invisible'><code>NvAPI_GPU_GetFrameBufferCalibrationLockFailures</code></span></span><span id='variant.NvAPI_GPU_SetDisplayUnderflowMode' class='variant'><span id='NvAPI_GPU_SetDisplayUnderflowMode.v' class='invisible'><code>NvAPI_GPU_SetDisplayUnderflowMode</code></span></span><span id='variant.NvAPI_GPU_GetDisplayUnderflowStatus' class='variant'><span id='NvAPI_GPU_GetDisplayUnderflowStatus.v' class='invisible'><code>NvAPI_GPU_GetDisplayUnderflowStatus</code></span></span><span id='variant.NvAPI_GPU_GetBarInfo' class='variant'><span id='NvAPI_GPU_GetBarInfo.v' class='invisible'><code>NvAPI_GPU_GetBarInfo</code></span></span><span id='variant.NvAPI_GPU_GetPSFloorSweepStatus' class='variant'><span id='NvAPI_GPU_GetPSFloorSweepStatus.v' class='invisible'><code>NvAPI_GPU_GetPSFloorSweepStatus</code></span></span><span id='variant.NvAPI_GPU_GetVSFloorSweepStatus' class='variant'><span id='NvAPI_GPU_GetVSFloorSweepStatus.v' class='invisible'><code>NvAPI_GPU_GetVSFloorSweepStatus</code></span></span><span id='variant.NvAPI_GPU_GetSerialNumber' class='variant'><span id='NvAPI_GPU_GetSerialNumber.v' class='invisible'><code>NvAPI_GPU_GetSerialNumber</code></span></span><span id='variant.NvAPI_GPU_GetManufacturingInfo' class='variant'><span id='NvAPI_GPU_GetManufacturingInfo.v' class='invisible'><code>NvAPI_GPU_GetManufacturingInfo</code></span></span><span id='variant.NvAPI_GPU_GetRamConfigStrap' class='variant'><span id='NvAPI_GPU_GetRamConfigStrap.v' class='invisible'><code>NvAPI_GPU_GetRamConfigStrap</code></span></span><span id='variant.NvAPI_GPU_GetRamBusWidth' class='variant'><span id='NvAPI_GPU_GetRamBusWidth.v' class='invisible'><code>NvAPI_GPU_GetRamBusWidth</code></span></span><span id='variant.NvAPI_GPU_GetRamBankCount' class='variant'><span id='NvAPI_GPU_GetRamBankCount.v' class='invisible'><code>NvAPI_GPU_GetRamBankCount</code></span></span><span id='variant.NvAPI_GPU_GetArchInfo' class='variant'><span id='NvAPI_GPU_GetArchInfo.v' class='invisible'><code>NvAPI_GPU_GetArchInfo</code></span></span><span id='variant.NvAPI_GPU_GetExtendedMinorRevision' class='variant'><span id='NvAPI_GPU_GetExtendedMinorRevision.v' class='invisible'><code>NvAPI_GPU_GetExtendedMinorRevision</code></span></span><span id='variant.NvAPI_GPU_GetSampleType' class='variant'><span id='NvAPI_GPU_GetSampleType.v' class='invisible'><code>NvAPI_GPU_GetSampleType</code></span></span><span id='variant.NvAPI_GPU_GetHardwareQualType' class='variant'><span id='NvAPI_GPU_GetHardwareQualType.v' class='invisible'><code>NvAPI_GPU_GetHardwareQualType</code></span></span><span id='variant.NvAPI_GPU_GetAllClocks' class='variant'><span id='NvAPI_GPU_GetAllClocks.v' class='invisible'><code>NvAPI_GPU_GetAllClocks</code></span></span><span id='variant.NvAPI_GPU_SetClocks' class='variant'><span id='NvAPI_GPU_SetClocks.v' class='invisible'><code>NvAPI_GPU_SetClocks</code></span></span><span id='variant.NvAPI_GPU_SetPerfHybridMode' class='variant'><span id='NvAPI_GPU_SetPerfHybridMode.v' class='invisible'><code>NvAPI_GPU_SetPerfHybridMode</code></span></span><span id='variant.NvAPI_GPU_GetPerfHybridMode' class='variant'><span id='NvAPI_GPU_GetPerfHybridMode.v' class='invisible'><code>NvAPI_GPU_GetPerfHybridMode</code></span></span><span id='variant.NvAPI_GPU_GetHybridControllerInfo' class='variant'><span id='NvAPI_GPU_GetHybridControllerInfo.v' class='invisible'><code>NvAPI_GPU_GetHybridControllerInfo</code></span></span><span id='variant.NvAPI_RestartDisplayDriver' class='variant'><span id='NvAPI_RestartDisplayDriver.v' class='invisible'><code>NvAPI_RestartDisplayDriver</code></span></span><span id='variant.NvAPI_GPU_GetAllGpusOnSameBoard' class='variant'><span id='NvAPI_GPU_GetAllGpusOnSameBoard.v' class='invisible'><code>NvAPI_GPU_GetAllGpusOnSameBoard</code></span></span><span id='variant.NvAPI_SetTopologyDisplayGPU' class='variant'><span id='NvAPI_SetTopologyDisplayGPU.v' class='invisible'><code>NvAPI_SetTopologyDisplayGPU</code></span></span><span id='variant.NvAPI_GetTopologyDisplayGPU' class='variant'><span id='NvAPI_GetTopologyDisplayGPU.v' class='invisible'><code>NvAPI_GetTopologyDisplayGPU</code></span></span><span id='variant.NvAPI_SYS_GetSliApprovalCookie' class='variant'><span id='NvAPI_SYS_GetSliApprovalCookie.v' class='invisible'><code>NvAPI_SYS_GetSliApprovalCookie</code></span></span><span id='variant.NvAPI_CreateUnAttachedDisplayFromDisplay' class='variant'><span id='NvAPI_CreateUnAttachedDisplayFromDisplay.v' class='invisible'><code>NvAPI_CreateUnAttachedDisplayFromDisplay</code></span></span><span id='variant.NvAPI_GetDriverModel' class='variant'><span id='NvAPI_GetDriverModel.v' class='invisible'><code>NvAPI_GetDriverModel</code></span></span><span id='variant.NvAPI_GPU_CudaEnumComputeCapableGpus' class='variant'><span id='NvAPI_GPU_CudaEnumComputeCapableGpus.v' class='invisible'><code>NvAPI_GPU_CudaEnumComputeCapableGpus</code></span></span><span id='variant.NvAPI_GPU_PhysxSetState' class='variant'><span id='NvAPI_GPU_PhysxSetState.v' class='invisible'><code>NvAPI_GPU_PhysxSetState</code></span></span><span id='variant.NvAPI_GPU_PhysxQueryRecommendedState' class='variant'><span id='NvAPI_GPU_PhysxQueryRecommendedState.v' class='invisible'><code>NvAPI_GPU_PhysxQueryRecommendedState</code></span></span><span id='variant.NvAPI_GPU_GetDeepIdleState' class='variant'><span id='NvAPI_GPU_GetDeepIdleState.v' class='invisible'><code>NvAPI_GPU_GetDeepIdleState</code></span></span><span id='variant.NvAPI_GPU_SetDeepIdleState' class='variant'><span id='NvAPI_GPU_SetDeepIdleState.v' class='invisible'><code>NvAPI_GPU_SetDeepIdleState</code></span></span><span id='variant.NvAPI_GetScalingCaps' class='variant'><span id='NvAPI_GetScalingCaps.v' class='invisible'><code>NvAPI_GetScalingCaps</code></span></span><span id='variant.NvAPI_GPU_GetThermalTable' class='variant'><span id='NvAPI_GPU_GetThermalTable.v' class='invisible'><code>NvAPI_GPU_GetThermalTable</code></span></span><span id='variant.NvAPI_SYS_SetPostOutput' class='variant'><span id='NvAPI_SYS_SetPostOutput.v' class='invisible'><code>NvAPI_SYS_SetPostOutput</code></span></span><span id='variant.NvAPI_GPU_PerfPoliciesGetInfo' class='variant'><span id='NvAPI_GPU_PerfPoliciesGetInfo.v' class='invisible'><code>NvAPI_GPU_PerfPoliciesGetInfo</code></span></span><span id='variant.NvAPI_GPU_PerfPoliciesGetStatus' class='variant'><span id='NvAPI_GPU_PerfPoliciesGetStatus.v' class='invisible'><code>NvAPI_GPU_PerfPoliciesGetStatus</code></span></span><span id='variant.NvAPI_GPU_ClientThermalPoliciesGetInfo' class='variant'><span id='NvAPI_GPU_ClientThermalPoliciesGetInfo.v' class='invisible'><code>NvAPI_GPU_ClientThermalPoliciesGetInfo</code></span></span><span id='variant.NvAPI_GPU_ClientThermalPoliciesGetLimit' class='variant'><span id='NvAPI_GPU_ClientThermalPoliciesGetLimit.v' class='invisible'><code>NvAPI_GPU_ClientThermalPoliciesGetLimit</code></span></span><span id='variant.NvAPI_GPU_ClientThermalPoliciesSetLimit' class='variant'><span id='NvAPI_GPU_ClientThermalPoliciesSetLimit.v' class='invisible'><code>NvAPI_GPU_ClientThermalPoliciesSetLimit</code></span></span><span id='variant.NvAPI_GPU_GetCurrentVoltage' class='variant'><span id='NvAPI_GPU_GetCurrentVoltage.v' class='invisible'><code>NvAPI_GPU_GetCurrentVoltage</code></span></span><span id='variant.NvAPI_GPU_GetVoltageStep' class='variant'><span id='NvAPI_GPU_GetVoltageStep.v' class='invisible'><code>NvAPI_GPU_GetVoltageStep</code></span></span><span id='variant.NvAPI_GPU_GetClockBoostRanges' class='variant'><span id='NvAPI_GPU_GetClockBoostRanges.v' class='invisible'><code>NvAPI_GPU_GetClockBoostRanges</code></span></span><span id='variant.NvAPI_GPU_GetClockBoostMask' class='variant'><span id='NvAPI_GPU_GetClockBoostMask.v' class='invisible'><code>NvAPI_GPU_GetClockBoostMask</code></span></span><span id='variant.NvAPI_GPU_GetClockBoostTable' class='variant'><span id='NvAPI_GPU_GetClockBoostTable.v' class='invisible'><code>NvAPI_GPU_GetClockBoostTable</code></span></span><span id='variant.NvAPI_GPU_SetClockBoostTable' class='variant'><span id='NvAPI_GPU_SetClockBoostTable.v' class='invisible'><code>NvAPI_GPU_SetClockBoostTable</code></span></span><span id='variant.NvAPI_GPU_GetVFPCurve' class='variant'><span id='NvAPI_GPU_GetVFPCurve.v' class='invisible'><code>NvAPI_GPU_GetVFPCurve</code></span></span><span id='variant.NvAPI_GPU_GetClockBoostLock' class='variant'><span id='NvAPI_GPU_GetClockBoostLock.v' class='invisible'><code>NvAPI_GPU_GetClockBoostLock</code></span></span><span id='variant.NvAPI_GPU_SetClockBoostLock' class='variant'><span id='NvAPI_GPU_SetClockBoostLock.v' class='invisible'><code>NvAPI_GPU_SetClockBoostLock</code></span></span><span id='variant.NvAPI_GPU_GetCoreVoltageBoostPercent' class='variant'><span id='NvAPI_GPU_GetCoreVoltageBoostPercent.v' class='invisible'><code>NvAPI_GPU_GetCoreVoltageBoostPercent</code></span></span><span id='variant.NvAPI_GPU_SetCoreVoltageBoostPercent' class='variant'><span id='NvAPI_GPU_SetCoreVoltageBoostPercent.v' class='invisible'><code>NvAPI_GPU_SetCoreVoltageBoostPercent</code></span></span><span id='variant.NvAPI_GPU_GetUsages' class='variant'><span id='NvAPI_GPU_GetUsages.v' class='invisible'><code>NvAPI_GPU_GetUsages</code></span></span><span id='variant.NvAPI_GPU_GetRamMaker' class='variant'><span id='NvAPI_GPU_GetRamMaker.v' class='invisible'><code>NvAPI_GPU_GetRamMaker</code></span></span><span id='variant.NvAPI_D3D_GetObjectHandleForResource' class='variant'><span id='NvAPI_D3D_GetObjectHandleForResource.v' class='invisible'><code>NvAPI_D3D_GetObjectHandleForResource</code></span></span>
+                    <h2 id='methods' class='small-section-header'>
+                      Methods<a href='#methods' class='anchor'></a>
+                    </h2>
+                <h3 id='impl' class='impl'><span class='in-band'><code>impl <a class="enum" href="../../../nvapi_hi/sys/enum.Api.html" title="enum nvapi_hi::sys::Api">Api</a></code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/nvapi_sys/nvid.rs.html#17-30' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from_id' class="method"><span id='from_id.v' class='invisible'><code>fn <a href='#method.from_id' class='fnname'>from_id</a>(id: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="enum" href="../../../nvapi_hi/sys/enum.Api.html" title="enum nvapi_hi::sys::Api">Api</a>, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">()</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/nvapi_sys/nvid.rs.html#18-25' title='goto source code'>[src]</a></span></h4>
+<h4 id='method.id' class="method"><span id='id.v' class='invisible'><code>fn <a href='#method.id' class='fnname'>id</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/nvapi_sys/nvid.rs.html#27-29' title='goto source code'>[src]</a></span></h4>
+</div>
+            <h2 id='implementations' class='small-section-header'>
+              Trait Implementations<a href='#implementations' class='anchor'></a>
+            </h2>
+        <h3 id='impl-Copy' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html" title="trait core::marker::Copy">Copy</a> for <a class="enum" href="../../../nvapi_hi/sys/enum.Api.html" title="enum nvapi_hi::sys::Api">Api</a></code><a href='#impl-Copy' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/nvapi_sys/nvid.rs.html#10' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'></div><h3 id='impl-Debug' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="enum" href="../../../nvapi_hi/sys/enum.Api.html" title="enum nvapi_hi::sys::Api">Api</a></code><a href='#impl-Debug' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/nvapi_sys/nvid.rs.html#10' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">()</a>, <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Error.html" title="struct core::fmt::Error">Error</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/nvapi_sys/nvid.rs.html#10' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Formats the value using the given formatter.</p>
+</div></div><h3 id='impl-Eq' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html" title="trait core::cmp::Eq">Eq</a> for <a class="enum" href="../../../nvapi_hi/sys/enum.Api.html" title="enum nvapi_hi::sys::Api">Api</a></code><a href='#impl-Eq' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/nvapi_sys/nvid.rs.html#10' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'></div><h3 id='impl-PartialEq&lt;Api&gt;' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html" title="trait core::cmp::PartialEq">PartialEq</a>&lt;<a class="enum" href="../../../nvapi_hi/sys/enum.Api.html" title="enum nvapi_hi::sys::Api">Api</a>&gt; for <a class="enum" href="../../../nvapi_hi/sys/enum.Api.html" title="enum nvapi_hi::sys::Api">Api</a></code><a href='#impl-PartialEq&lt;Api&gt;' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/nvapi_sys/nvid.rs.html#10' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.eq' class="method"><span id='eq.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq' class='fnname'>eq</a>(&amp;self, __arg_0: &amp;<a class="enum" href="../../../nvapi_hi/sys/enum.Api.html" title="enum nvapi_hi::sys::Api">Api</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/nvapi_sys/nvid.rs.html#10' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>This method tests for <code>self</code> and <code>other</code> values to be equal, and is used by <code>==</code>. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq">Read more</a></p>
+</div><h4 id='method.ne' class="method"><span id='ne.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.ne' class='fnname'>ne</a>(&amp;self, other: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Rhs) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/cmp.rs.html#121' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>This method tests for <code>!=</code>.</p>
+</div></div><h3 id='impl-Hash' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html" title="trait core::hash::Hash">Hash</a> for <a class="enum" href="../../../nvapi_hi/sys/enum.Api.html" title="enum nvapi_hi::sys::Api">Api</a></code><a href='#impl-Hash' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/nvapi_sys/nvid.rs.html#10' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.hash' class="method"><span id='hash.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html#tymethod.hash' class='fnname'>hash</a>&lt;__H&gt;(&amp;self, __arg_0: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;mut </a>__H) <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;__H: <a class="trait" href="https://doc.rust-lang.org/nightly/core/hash/trait.Hasher.html" title="trait core::hash::Hasher">Hasher</a>,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/nvapi_sys/nvid.rs.html#10' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Feeds this value into the given [<code>Hasher</code>]. <a href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html#tymethod.hash">Read more</a></p>
+</div><h4 id='method.hash_slice' class="method"><span id='hash_slice.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html#method.hash_slice' class='fnname'>hash_slice</a>&lt;H&gt;(data: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">&amp;[Self]</a>, state: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;mut </a>H) <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;H: <a class="trait" href="https://doc.rust-lang.org/nightly/core/hash/trait.Hasher.html" title="trait core::hash::Hasher">Hasher</a>,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.3.0'>1.3.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/hash/mod.rs.html#202-208' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Feeds a slice of this type into the given [<code>Hasher</code>]. <a href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html#method.hash_slice">Read more</a></p>
+</div></div><h3 id='impl-PartialOrd&lt;Api&gt;' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html" title="trait core::cmp::PartialOrd">PartialOrd</a>&lt;<a class="enum" href="../../../nvapi_hi/sys/enum.Api.html" title="enum nvapi_hi::sys::Api">Api</a>&gt; for <a class="enum" href="../../../nvapi_hi/sys/enum.Api.html" title="enum nvapi_hi::sys::Api">Api</a></code><a href='#impl-PartialOrd&lt;Api&gt;' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/nvapi_sys/nvid.rs.html#10' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.partial_cmp' class="method"><span id='partial_cmp.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#tymethod.partial_cmp' class='fnname'>partial_cmp</a>(&amp;self, __arg_0: &amp;<a class="enum" href="../../../nvapi_hi/sys/enum.Api.html" title="enum nvapi_hi::sys::Api">Api</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="enum" href="https://doc.rust-lang.org/nightly/core/cmp/enum.Ordering.html" title="enum core::cmp::Ordering">Ordering</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/nvapi_sys/nvid.rs.html#10' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>This method returns an ordering between <code>self</code> and <code>other</code> values if one exists. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#tymethod.partial_cmp">Read more</a></p>
+</div><h4 id='method.lt' class="method"><span id='lt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.lt' class='fnname'>lt</a>(&amp;self, other: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Rhs) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/cmp.rs.html#644-649' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>This method tests less than (for <code>self</code> and <code>other</code>) and is used by the <code>&lt;</code> operator. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.lt">Read more</a></p>
+</div><h4 id='method.le' class="method"><span id='le.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.le' class='fnname'>le</a>(&amp;self, other: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Rhs) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/cmp.rs.html#666-671' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>This method tests less than or equal to (for <code>self</code> and <code>other</code>) and is used by the <code>&lt;=</code> operator. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.le">Read more</a></p>
+</div><h4 id='method.gt' class="method"><span id='gt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.gt' class='fnname'>gt</a>(&amp;self, other: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Rhs) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/cmp.rs.html#687-692' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>This method tests greater than (for <code>self</code> and <code>other</code>) and is used by the <code>&gt;</code> operator. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.gt">Read more</a></p>
+</div><h4 id='method.ge' class="method"><span id='ge.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.ge' class='fnname'>ge</a>(&amp;self, other: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Rhs) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/cmp.rs.html#709-714' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>This method tests greater than or equal to (for <code>self</code> and <code>other</code>) and is used by the <code>&gt;=</code> operator. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.ge">Read more</a></p>
+</div></div><h3 id='impl-Ord' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html" title="trait core::cmp::Ord">Ord</a> for <a class="enum" href="../../../nvapi_hi/sys/enum.Api.html" title="enum nvapi_hi::sys::Api">Api</a></code><a href='#impl-Ord' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/nvapi_sys/nvid.rs.html#10' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.cmp' class="method"><span id='cmp.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html#tymethod.cmp' class='fnname'>cmp</a>(&amp;self, __arg_0: &amp;<a class="enum" href="../../../nvapi_hi/sys/enum.Api.html" title="enum nvapi_hi::sys::Api">Api</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/cmp/enum.Ordering.html" title="enum core::cmp::Ordering">Ordering</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/nvapi_sys/nvid.rs.html#10' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>This method returns an <code>Ordering</code> between <code>self</code> and <code>other</code>. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html#tymethod.cmp">Read more</a></p>
+</div><h4 id='method.max' class="method"><span id='max.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html#method.max' class='fnname'>max</a>(self, other: Self) -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.21.0'>1.21.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/cmp.rs.html#460-463' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Compares and returns the maximum of two values. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html#method.max">Read more</a></p>
+</div><h4 id='method.min' class="method"><span id='min.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html#method.min' class='fnname'>min</a>(self, other: Self) -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.21.0'>1.21.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/cmp.rs.html#476-479' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Compares and returns the minimum of two values. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html#method.min">Read more</a></p>
+</div></div><h3 id='impl-Clone' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> for <a class="enum" href="../../../nvapi_hi/sys/enum.Api.html" title="enum nvapi_hi::sys::Api">Api</a></code><a href='#impl-Clone' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/nvapi_sys/nvid.rs.html#10' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.clone' class="method"><span id='clone.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class="enum" href="../../../nvapi_hi/sys/enum.Api.html" title="enum nvapi_hi::sys::Api">Api</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/nvapi_sys/nvid.rs.html#10' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></p>
+</div><h4 id='method.clone_from' class="method"><span id='clone_from.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Self)</code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/clone.rs.html#112-114' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Performs copy-assignment from <code>source</code>. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from">Read more</a></p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../../";
+        window.currentCrate = "nvapi_hi";
+    </script>
+    <script src="../../../main.js"></script>
+    <script defer src="../../../search-index.js"></script>
+</body>
+</html>

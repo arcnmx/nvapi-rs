@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `private` mod in crate `nvapi_hi`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, private">
+
+    <title>nvapi_hi::sys::gpu::private - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc mod">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Module private</p><div class="block items"><ul><li><a href="#enums">Enums</a></li><li><a href="#constants">Constants</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'><a href='../../../index.html'>nvapi_hi</a>::<wbr><a href='../../index.html'>sys</a>::<wbr><a href='../index.html'>gpu</a></p><script>window.sidebarCurrent = {name: 'private', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Module <a href='../../../index.html'>nvapi_hi</a>::<wbr><a href='../../index.html'>sys</a>::<wbr><a href='../index.html'>gpu</a>::<wbr><a class="mod" href=''>private</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../../../src/nvapi_sys/gpu/mod.rs.html#125-295' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>Undocumented API</p>
+</div><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.Foundry.html"
+                                  title='enum nvapi_hi::sys::gpu::private::Foundry'>Foundry</a></td>
+                           <td class='docblock-short'>
+                                <p>Undocumented function NvAPI_GPU_GetFoundry()</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.RamMaker.html"
+                                  title='enum nvapi_hi::sys::gpu::private::RamMaker'>RamMaker</a></td>
+                           <td class='docblock-short'>
+                                <p>Undocumented function NvAPI_GPU_GetRamMaker()</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.RamType.html"
+                                  title='enum nvapi_hi::sys::gpu::private::RamType'>RamType</a></td>
+                           <td class='docblock-short'>
+                                <p>Undocumented function NvAPI_GPU_GetRamType()</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.VendorId.html"
+                                  title='enum nvapi_hi::sys::gpu::private::VendorId'>VendorId</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NVAPI_MAX_PROCESSES.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NVAPI_MAX_PROCESSES'>NVAPI_MAX_PROCESSES</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_FOUNDRY_CSM.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_FOUNDRY_CSM'>NV_GPU_FOUNDRY_CSM</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_FOUNDRY_IBM.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_FOUNDRY_IBM'>NV_GPU_FOUNDRY_IBM</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_FOUNDRY_SMIC.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_FOUNDRY_SMIC'>NV_GPU_FOUNDRY_SMIC</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_FOUNDRY_TOSHIBA.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_FOUNDRY_TOSHIBA'>NV_GPU_FOUNDRY_TOSHIBA</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_FOUNDRY_TSMC.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_FOUNDRY_TSMC'>NV_GPU_FOUNDRY_TSMC</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_FOUNDRY_UMC.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_FOUNDRY_UMC'>NV_GPU_FOUNDRY_UMC</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_FOUNDRY_UNKNOWN.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_FOUNDRY_UNKNOWN'>NV_GPU_FOUNDRY_UNKNOWN</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_RAM_DDR1.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_RAM_DDR1'>NV_GPU_RAM_DDR1</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_RAM_DDR2.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_RAM_DDR2'>NV_GPU_RAM_DDR2</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_RAM_DDR3.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_RAM_DDR3'>NV_GPU_RAM_DDR3</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_RAM_GDDR2.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_RAM_GDDR2'>NV_GPU_RAM_GDDR2</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_RAM_GDDR3.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_RAM_GDDR3'>NV_GPU_RAM_GDDR3</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_RAM_GDDR4.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_RAM_GDDR4'>NV_GPU_RAM_GDDR4</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_RAM_GDDR5.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_RAM_GDDR5'>NV_GPU_RAM_GDDR5</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_RAM_GDDR5X.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_RAM_GDDR5X'>NV_GPU_RAM_GDDR5X</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_RAM_LPDDR2.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_RAM_LPDDR2'>NV_GPU_RAM_LPDDR2</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_RAM_MAKER_ELITE.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_RAM_MAKER_ELITE'>NV_GPU_RAM_MAKER_ELITE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_RAM_MAKER_ELPIDA.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_RAM_MAKER_ELPIDA'>NV_GPU_RAM_MAKER_ELPIDA</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_RAM_MAKER_ETRON.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_RAM_MAKER_ETRON'>NV_GPU_RAM_MAKER_ETRON</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_RAM_MAKER_HYNIX.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_RAM_MAKER_HYNIX'>NV_GPU_RAM_MAKER_HYNIX</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_RAM_MAKER_MICRON.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_RAM_MAKER_MICRON'>NV_GPU_RAM_MAKER_MICRON</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_RAM_MAKER_MOSEL.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_RAM_MAKER_MOSEL'>NV_GPU_RAM_MAKER_MOSEL</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_RAM_MAKER_NANYA.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_RAM_MAKER_NANYA'>NV_GPU_RAM_MAKER_NANYA</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_RAM_MAKER_QIMONDA.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_RAM_MAKER_QIMONDA'>NV_GPU_RAM_MAKER_QIMONDA</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_RAM_MAKER_SAMSUNG.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_RAM_MAKER_SAMSUNG'>NV_GPU_RAM_MAKER_SAMSUNG</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_RAM_MAKER_UNKNOWN.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_RAM_MAKER_UNKNOWN'>NV_GPU_RAM_MAKER_UNKNOWN</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_RAM_MAKER_WINBOND.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_RAM_MAKER_WINBOND'>NV_GPU_RAM_MAKER_WINBOND</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_RAM_SDRAM.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_RAM_SDRAM'>NV_GPU_RAM_SDRAM</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_RAM_UNKNOWN.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_RAM_UNKNOWN'>NV_GPU_RAM_UNKNOWN</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_VENDOR_ASUS.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_VENDOR_ASUS'>NV_GPU_VENDOR_ASUS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_VENDOR_BFG.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_VENDOR_BFG'>NV_GPU_VENDOR_BFG</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_VENDOR_CLUB3D.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_VENDOR_CLUB3D'>NV_GPU_VENDOR_CLUB3D</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_VENDOR_COLORFUL.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_VENDOR_COLORFUL'>NV_GPU_VENDOR_COLORFUL</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_VENDOR_ELSA.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_VENDOR_ELSA'>NV_GPU_VENDOR_ELSA</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_VENDOR_EVGA.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_VENDOR_EVGA'>NV_GPU_VENDOR_EVGA</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_VENDOR_GAINWARD.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_VENDOR_GAINWARD'>NV_GPU_VENDOR_GAINWARD</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_VENDOR_GALAX.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_VENDOR_GALAX'>NV_GPU_VENDOR_GALAX</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_VENDOR_GIGABYTE.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_VENDOR_GIGABYTE'>NV_GPU_VENDOR_GIGABYTE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_VENDOR_LEADTEK.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_VENDOR_LEADTEK'>NV_GPU_VENDOR_LEADTEK</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_VENDOR_MSI.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_VENDOR_MSI'>NV_GPU_VENDOR_MSI</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_VENDOR_NVIDIA.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_VENDOR_NVIDIA'>NV_GPU_VENDOR_NVIDIA</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_VENDOR_PALIT.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_VENDOR_PALIT'>NV_GPU_VENDOR_PALIT</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_VENDOR_PNY.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_VENDOR_PNY'>NV_GPU_VENDOR_PNY</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_VENDOR_PNY_.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_VENDOR_PNY_'>NV_GPU_VENDOR_PNY_</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_VENDOR_POV.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_VENDOR_POV'>NV_GPU_VENDOR_POV</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_VENDOR_UNKNOWN.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_VENDOR_UNKNOWN'>NV_GPU_VENDOR_UNKNOWN</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_VENDOR_XFX.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_VENDOR_XFX'>NV_GPU_VENDOR_XFX</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_VENDOR_ZOTAC.html"
+                                  title='constant nvapi_hi::sys::gpu::private::NV_GPU_VENDOR_ZOTAC'>NV_GPU_VENDOR_ZOTAC</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.NvAPI_GPU_GetFBWidthAndLocation.html"
+                                  title='fn nvapi_hi::sys::gpu::private::NvAPI_GPU_GetFBWidthAndLocation'>NvAPI_GPU_GetFBWidthAndLocation</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.NvAPI_GPU_GetFoundry.html"
+                                  title='fn nvapi_hi::sys::gpu::private::NvAPI_GPU_GetFoundry'>NvAPI_GPU_GetFoundry</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                <p>Undocumented function.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.NvAPI_GPU_GetPartitionCount.html"
+                                  title='fn nvapi_hi::sys::gpu::private::NvAPI_GPU_GetPartitionCount'>NvAPI_GPU_GetPartitionCount</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.NvAPI_GPU_GetRamBankCount.html"
+                                  title='fn nvapi_hi::sys::gpu::private::NvAPI_GPU_GetRamBankCount'>NvAPI_GPU_GetRamBankCount</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                <p>Undocumented function.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.NvAPI_GPU_GetRamBusWidth.html"
+                                  title='fn nvapi_hi::sys::gpu::private::NvAPI_GPU_GetRamBusWidth'>NvAPI_GPU_GetRamBusWidth</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                <p>Undocumented function.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.NvAPI_GPU_GetRamMaker.html"
+                                  title='fn nvapi_hi::sys::gpu::private::NvAPI_GPU_GetRamMaker'>NvAPI_GPU_GetRamMaker</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                <p>Undocumented function.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.NvAPI_GPU_GetRamType.html"
+                                  title='fn nvapi_hi::sys::gpu::private::NvAPI_GPU_GetRamType'>NvAPI_GPU_GetRamType</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                <p>Undocumented function.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.NvAPI_GPU_GetShaderPipeCount.html"
+                                  title='fn nvapi_hi::sys::gpu::private::NvAPI_GPU_GetShaderPipeCount'>NvAPI_GPU_GetShaderPipeCount</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.NvAPI_GPU_GetShortName.html"
+                                  title='fn nvapi_hi::sys::gpu::private::NvAPI_GPU_GetShortName'>NvAPI_GPU_GetShortName</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.NvAPI_GetDriverModel.html"
+                                  title='fn nvapi_hi::sys::gpu::private::NvAPI_GetDriverModel'>NvAPI_GetDriverModel</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.NvAPI_GetGPUIDFromPhysicalGPU.html"
+                                  title='fn nvapi_hi::sys::gpu::private::NvAPI_GetGPUIDFromPhysicalGPU'>NvAPI_GetGPUIDFromPhysicalGPU</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.GPU_GetFoundryFn.html"
+                                  title='type nvapi_hi::sys::gpu::private::GPU_GetFoundryFn'>GPU_GetFoundryFn</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.GPU_GetRamBankCountFn.html"
+                                  title='type nvapi_hi::sys::gpu::private::GPU_GetRamBankCountFn'>GPU_GetRamBankCountFn</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.GPU_GetRamBusWidthFn.html"
+                                  title='type nvapi_hi::sys::gpu::private::GPU_GetRamBusWidthFn'>GPU_GetRamBusWidthFn</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.GPU_GetRamMakerFn.html"
+                                  title='type nvapi_hi::sys::gpu::private::GPU_GetRamMakerFn'>GPU_GetRamMakerFn</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.GPU_GetRamTypeFn.html"
+                                  title='type nvapi_hi::sys::gpu::private::GPU_GetRamTypeFn'>GPU_GetRamTypeFn</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.GPU_GetShaderPipeCountFn.html"
+                                  title='type nvapi_hi::sys::gpu::private::GPU_GetShaderPipeCountFn'>GPU_GetShaderPipeCountFn</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NV_GPU_FOUNDRY.html"
+                                  title='type nvapi_hi::sys::gpu::private::NV_GPU_FOUNDRY'>NV_GPU_FOUNDRY</a></td>
+                           <td class='docblock-short'>
+                                <p>Undocumented function NvAPI_GPU_GetFoundry()</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NV_GPU_RAM_MAKER.html"
+                                  title='type nvapi_hi::sys::gpu::private::NV_GPU_RAM_MAKER'>NV_GPU_RAM_MAKER</a></td>
+                           <td class='docblock-short'>
+                                <p>Undocumented function NvAPI_GPU_GetRamMaker()</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NV_GPU_RAM_TYPE.html"
+                                  title='type nvapi_hi::sys::gpu::private::NV_GPU_RAM_TYPE'>NV_GPU_RAM_TYPE</a></td>
+                           <td class='docblock-short'>
+                                <p>Undocumented function NvAPI_GPU_GetRamType()</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NV_GPU_VENDOR.html"
+                                  title='type nvapi_hi::sys::gpu::private::NV_GPU_VENDOR'>NV_GPU_VENDOR</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../../../";
+        window.currentCrate = "nvapi_hi";
+    </script>
+    <script src="../../../../main.js"></script>
+    <script defer src="../../../../search-index.js"></script>
+</body>
+</html>

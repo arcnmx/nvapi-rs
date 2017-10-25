@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `sys/src/gpu/cooler.rs`.">
+    <meta name="description" content="Source to the Rust file `/home/travis/build/arcnmx/nvapi-rs/sys/src/gpu/cooler.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>cooler.rs.html -- source</title>
@@ -294,6 +294,47 @@
 <span id="249">249</span>
 <span id="250">250</span>
 <span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
 </pre><pre class="rust ">
 <span class="kw">use</span> <span class="ident">status</span>::<span class="ident">NvAPI_Status</span>;
 <span class="kw">use</span> <span class="ident">handles</span>::<span class="ident">NvPhysicalGpuHandle</span>;
@@ -324,12 +365,20 @@
         }
     }
 
+    <span class="macro">nvenum_display</span><span class="macro">!</span> {
+        <span class="ident">CoolerType</span> <span class="op">=&gt;</span> _
+    }
+
     <span class="macro">nvenum</span><span class="macro">!</span> {
         <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">NV_COOLER_CONTROLLER</span> <span class="op">/</span> <span class="ident">CoolerController</span> {
             <span class="ident">NVAPI_COOLER_CONTROLLER_NONE</span> <span class="op">/</span> <span class="prelude-val">None</span> <span class="op">=</span> <span class="number">0</span>,
             <span class="ident">NVAPI_COOLER_CONTROLLER_ADI</span> <span class="op">/</span> <span class="ident">ADI</span> <span class="op">=</span> <span class="number">1</span>,
             <span class="ident">NVAPI_COOLER_CONTROLLER_INTERNAL</span> <span class="op">/</span> <span class="ident">Internal</span> <span class="op">=</span> <span class="number">2</span>,
         }
+    }
+
+    <span class="macro">nvenum_display</span><span class="macro">!</span> {
+        <span class="ident">CoolerController</span> <span class="op">=&gt;</span> _
     }
 
     <span class="macro">nvenum</span><span class="macro">!</span> {
@@ -344,8 +393,20 @@
             <span class="doccomment">/// Cooler level adjusted at continuous thermal levels.</span>
             <span class="ident">NVAPI_COOLER_POLICY_TEMPERATURE_CONTINUOUS</span> <span class="op">/</span> <span class="ident">TemperatureContinuous</span> <span class="op">=</span> <span class="number">8</span>,
             <span class="doccomment">/// Hybrid of performance and temperature levels.</span>
-            <span class="ident">NVAPI_COOLER_POLICY_HYBRID</span> <span class="op">/</span> <span class="ident">Hybrid</span> <span class="op">=</span> <span class="number">9</span>,
-            <span class="comment">// TODO: Default = 32 ??</span>
+            <span class="ident">NVAPI_COOLER_POLICY_HYBRID</span> <span class="op">/</span> <span class="ident">Hybrid</span> <span class="op">=</span> <span class="number">9</span>, <span class="comment">// are you sure this isn&#39;t just a bitmask?</span>
+            <span class="doccomment">/// Fan turns off at idle, default of MSI Gaming X</span>
+            <span class="ident">NVAPI_COOLER_POLICY_SILENT</span> <span class="op">/</span> <span class="ident">Silent</span> <span class="op">=</span> <span class="number">16</span>,
+            <span class="doccomment">/// Apparently a default of some GPUs</span>
+            <span class="ident">NVAPI_COOLER_POLICY_UNKNOWN_32</span> <span class="op">/</span> <span class="ident">Unknown32</span> <span class="op">=</span> <span class="number">32</span>,
+        }
+    }
+
+    <span class="macro">nvenum_display</span><span class="macro">!</span> {
+        <span class="ident">CoolerPolicy</span> <span class="op">=&gt;</span> {
+            <span class="ident">TemperatureDiscrete</span> <span class="op">=</span> <span class="string">&quot;Discrete Thermal&quot;</span>,
+            <span class="ident">TemperatureContinuous</span> <span class="op">=</span> <span class="string">&quot;Continuous Thermal&quot;</span>,
+            <span class="ident">Silent</span> <span class="op">=</span> <span class="string">&quot;Silent&quot;</span>,
+            _ <span class="op">=</span> _,
         }
     }
 
@@ -360,6 +421,14 @@
         }
     }
 
+    <span class="macro">nvenum_display</span><span class="macro">!</span> {
+        <span class="ident">CoolerTarget</span> <span class="op">=&gt;</span> {
+            <span class="ident">GPU</span> <span class="op">=</span> <span class="string">&quot;Core&quot;</span>,
+            <span class="ident">PowerSupply</span> <span class="op">=</span> <span class="string">&quot;VRM&quot;</span>,
+            _ <span class="op">=</span> _,
+        }
+    }
+
     <span class="macro">nvenum</span><span class="macro">!</span> {
         <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">NV_COOLER_CONTROL</span> <span class="op">/</span> <span class="ident">CoolerControl</span> {
             <span class="ident">NVAPI_COOLER_CONTROL_NONE</span> <span class="op">/</span> <span class="prelude-val">None</span> <span class="op">=</span> <span class="number">0</span>,
@@ -370,10 +439,23 @@
         }
     }
 
+    <span class="macro">nvenum_display</span><span class="macro">!</span> {
+        <span class="ident">CoolerControl</span> <span class="op">=&gt;</span> _
+    }
+
     <span class="macro">nvenum</span><span class="macro">!</span> {
         <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">NV_COOLER_ACTIVITY_LEVEL</span> <span class="op">/</span> <span class="ident">CoolerActivityLevel</span> {
             <span class="ident">NVAPI_INACTIVE</span> <span class="op">/</span> <span class="ident">Inactive</span> <span class="op">=</span> <span class="number">0</span>,
             <span class="ident">NVAPI_ACTIVE</span> <span class="op">/</span> <span class="ident">Active</span> <span class="op">=</span> <span class="number">1</span>,
+        }
+    }
+
+    <span class="kw">impl</span> <span class="ident">CoolerActivityLevel</span> {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+            <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
+                <span class="ident">CoolerActivityLevel</span>::<span class="ident">Active</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                <span class="ident">CoolerActivityLevel</span>::<span class="ident">Inactive</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+            }
         }
     }
 
@@ -475,7 +557,7 @@
     }
 
     <span class="macro">nvapi</span><span class="macro">!</span> {
-        <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">GPU_RestoreCoolerSettingsFn</span> <span class="op">=</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span>(<span class="ident">hPhysicalGPU</span>: <span class="ident">NvPhysicalGpuHandle</span>, <span class="ident">coolerIndex</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u32</span>, <span class="ident">coolerCount</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="ident">NvAPI_Status</span>;
+        <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">GPU_RestoreCoolerSettingsFn</span> <span class="op">=</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span>(<span class="ident">hPhysicalGPU</span>: <span class="ident">NvPhysicalGpuHandle</span>, <span class="ident">coolerIndex</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u32</span>, <span class="ident">coolerCount</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="ident">NvAPI_Status</span>;
 
         <span class="doccomment">/// Undocumented function.</span>
         <span class="doccomment">/// Restore the modified cooler settings to NVIDIA defaults.</span>
@@ -535,7 +617,7 @@
     }
 
     <span class="macro">nvapi</span><span class="macro">!</span> {
-        <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">GPU_RestoreCoolerPolicyTableFn</span> <span class="op">=</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span>(<span class="ident">hPhysicalGPU</span>: <span class="ident">NvPhysicalGpuHandle</span>, <span class="ident">coolerIndex</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u32</span>, <span class="ident">coolerCount</span>: <span class="ident">u32</span>, <span class="ident">policy</span>: <span class="ident">NV_COOLER_POLICY</span>) <span class="op">-&gt;</span> <span class="ident">NvAPI_Status</span>;
+        <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">GPU_RestoreCoolerPolicyTableFn</span> <span class="op">=</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span>(<span class="ident">hPhysicalGPU</span>: <span class="ident">NvPhysicalGpuHandle</span>, <span class="ident">coolerIndex</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u32</span>, <span class="ident">coolerCount</span>: <span class="ident">u32</span>, <span class="ident">policy</span>: <span class="ident">NV_COOLER_POLICY</span>) <span class="op">-&gt;</span> <span class="ident">NvAPI_Status</span>;
 
         <span class="doccomment">/// Undocumented function.</span>
         <span class="doccomment">/// Restores the perf table policy levels to the defaults.</span>

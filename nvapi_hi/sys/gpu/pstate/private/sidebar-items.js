@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["NvAPI_GPU_SetPstates20","Undocumented private API"]],"type":[["GPU_SetPstates20Fn",""]]});
