@@ -12,6 +12,10 @@ impl<T> Array<T> {
     pub fn inner_mut(&mut self) -> &mut T {
         &mut self.0
     }
+
+    pub fn into_inner(self) -> T {
+        self.0
+    }
 }
 
 impl<T> ops::Deref for Array<T> {

@@ -11,6 +11,7 @@ pub use nvapi::{
     Vendor, SystemType, RamType, RamMaker, Foundry,
     ClockFrequencies, ClockDomain, VoltageDomain, UtilizationDomain, Utilizations, ClockLockMode, ClockLockEntry,
     CoolerType, CoolerController, CoolerControl, CoolerPolicy, CoolerTarget, CoolerLevel,
+    VoltageStatus, VoltageTable,
     PerfInfo, PerfStatus,
     ThermalController, ThermalTarget,
     MemoryInfo, PciIdentifiers, DriverModel,
@@ -80,25 +81,28 @@ pub struct GpuStatus {
     pub pstate: PState,
     pub clocks: ClockFrequencies,
     pub memory: MemoryInfo,
-    pub voltage: nvapi::Result<Microvolts>,
-    pub tachometer: nvapi::Result<u32>,
+    pub voltage: Option<Microvolts>,
+    pub voltage_domains: Option<VoltageStatus>,
+    pub voltage_step: Option<VoltageStatus>,
+    pub voltage_table: Option<VoltageTable>,
+    pub tachometer: Option<u32>,
     pub utilization: Utilizations,
     pub power: Vec<Percentage>,
     pub sensors: Vec<(SensorDesc, Celsius)>,
     pub coolers: Vec<(CoolerDesc, CoolerStatus)>,
     pub perf: PerfStatus,
-    pub vfp: nvapi::Result<VfpTable>,
+    pub vfp: Option<VfpTable>,
     pub vfp_locks: BTreeMap<usize, Microvolts>,
 }
 
 #[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct GpuSettings {
-    pub voltage_boost: nvapi::Result<Percentage>,
+    pub voltage_boost: Option<Percentage>,
     pub sensor_limits: Vec<Celsius>,
     pub power_limits: Vec<Percentage>,
     pub coolers: Vec<(CoolerDesc, CoolerStatus)>,
-    pub vfp: nvapi::Result<VfpDeltas>,
+    pub vfp: Option<VfpDeltas>,
     pub pstate_deltas: BTreeMap<PState, BTreeMap<ClockDomain, KilohertzDelta>>,
     pub overvolt: Vec<MicrovoltsDelta>,
     pub vfp_locks: BTreeMap<usize, ClockLockEntry>,
@@ -188,8 +192,11 @@ impl Gpu {
             pstate: self.gpu.current_pstate()?,
             clocks: self.gpu.clock_frequencies(ClockFrequencyType::Current)?,
             memory: self.gpu.memory_info()?,
-            voltage: allowable_result(self.gpu.core_voltage())?,
-            tachometer: allowable_result(self.gpu.tachometer())?,
+            voltage: allowable_result(self.gpu.core_voltage())?.ok(),
+            voltage_domains: allowable_result(self.gpu.voltage_domains_status())?.ok(),
+            voltage_step: allowable_result(self.gpu.voltage_step())?.ok(),
+            voltage_table: allowable_result(self.gpu.voltage_table())?.ok(),
+            tachometer: allowable_result(self.gpu.tachometer())?.ok(),
             utilization: self.gpu.dynamic_pstates_info()?,
             power: self.gpu.power_usage()?.into_iter().map(From::from).collect(),
             sensors: match allowable_result(self.gpu.thermal_settings(None))? {
@@ -202,11 +209,8 @@ impl Gpu {
             },
             perf: self.gpu.perf_status()?,
             vfp: match mask {
-                Ok(mask) => match allowable_result(self.gpu.vfp_curve(mask.mask))? {
-                    Ok(v) => Ok(v.into()),
-                    Err(e) => Err(e),
-                },
-                Err(e) => Err(e),
+                Ok(mask) => allowable_result(self.gpu.vfp_curve(mask.mask))?.map(From::from).ok(),
+                Err(..) => None,
             },
             vfp_locks: match allowable_result(self.gpu.vfp_locks())? {
                 Ok(l) => l.into_iter().filter_map(|(id, e)| if e.mode == ClockLockMode::Manual {
@@ -228,7 +232,7 @@ impl Gpu {
         };
 
         Ok(GpuSettings {
-            voltage_boost: allowable_result(self.gpu.core_voltage_boost())?,
+            voltage_boost: allowable_result(self.gpu.core_voltage_boost())?.ok(),
             sensor_limits: match allowable_result(self.gpu.thermal_limit())? {
                 Ok(l) => l.into_iter().map(|l| l.value.into()).collect(),
                 Err(..) => Default::default(),
@@ -242,11 +246,8 @@ impl Gpu {
                 Err(..) => Default::default(),
             },
             vfp: match mask {
-                Ok(mask) => match allowable_result(self.gpu.vfp_table(mask.mask))? {
-                    Ok(v) => Ok(v.into()),
-                    Err(e) => Err(e),
-                },
-                Err(e) => Err(e),
+                Ok(mask) => allowable_result(self.gpu.vfp_table(mask.mask))?.map(From::from).ok(),
+                Err(..) => None,
             },
             vfp_locks: match allowable_result(self.gpu.vfp_locks())? {
                 Ok(l) => l,

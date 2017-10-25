@@ -265,4 +265,63 @@ pub mod private {
     nvapi! {
         pub unsafe fn NvAPI_GPU_PerfPoliciesGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pPerfStatus: *mut NV_GPU_PERF_STATUS) -> NvAPI_Status;
     }
+
+    nvstruct! {
+        pub struct NV_VOLT_STATUS_V1 {
+            pub version: u32,
+            pub flags: u32,
+            /// unsure
+            pub count: u32,
+            pub unknown: u32,
+            pub value_uV: u32,
+            pub buf1: [u32; 30],
+        }
+    }
+
+    pub type NV_VOLT_STATUS = NV_VOLT_STATUS_V1;
+
+    nvversion! { NV_VOLT_STATUS_VER_1(NV_VOLT_STATUS_V1 = 140, 1) }
+    nvversion! { NV_VOLT_STATUS_VER = NV_VOLT_STATUS_VER_1 }
+
+    nvapi! {
+        /// Maxwell only
+        pub unsafe fn NvAPI_GPU_GetVoltageDomainsStatus(hPhysicalGPU: NvPhysicalGpuHandle, pPerfStatus: *mut NV_VOLT_STATUS) -> NvAPI_Status;
+    }
+
+    nvapi! {
+        /// Maxwell only
+        pub unsafe fn NvAPI_GPU_GetVoltageStep(hPhysicalGPU: NvPhysicalGpuHandle, pPerfStatus: *mut NV_VOLT_STATUS) -> NvAPI_Status;
+    }
+
+    nvstruct! {
+        pub struct NV_VOLT_TABLE_ENTRY {
+            pub voltage_uV: u32,
+            pub unknown: u32,
+        }
+    }
+
+    debug_array_impl! { [NV_VOLT_TABLE_ENTRY; 128] }
+    debug_array_impl! { [u32; 3888] }
+
+    nvstruct! {
+        pub struct NV_VOLT_TABLE_V1 {
+            pub version: u32,
+            pub flags: u32,
+            /// 1
+            pub filled: u32,
+            pub entries: Array<[NV_VOLT_TABLE_ENTRY; 128]>,
+            /// empty tables?
+            pub buf1: Array<[u32; 3888]>,
+        }
+    }
+
+    pub type NV_VOLT_TABLE = NV_VOLT_TABLE_V1;
+
+    nvversion! { NV_VOLT_TABLE_VER_1(NV_VOLT_TABLE_V1 = 0x40cc, 1) }
+    nvversion! { NV_VOLT_TABLE_VER = NV_VOLT_TABLE_VER_1 }
+
+    nvapi! {
+        /// Maxwell only
+        pub unsafe fn NvAPI_GPU_GetVoltages(hPhysicalGPU: NvPhysicalGpuHandle, pPerfStatus: *mut NV_VOLT_TABLE) -> NvAPI_Status;
+    }
 }

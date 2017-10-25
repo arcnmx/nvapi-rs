@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 use std::{iter, slice};
 use sys::gpu::{clock, power};
 use sys;
-use void::Void;
+use void::{Void, ResultVoidExt};
 use types::{Kilohertz, Kilohertz2, KilohertzDelta, Kilohertz2Delta, Percentage, Percentage1000, Microvolts, CelsiusShifted, Range, RawConversion};
 
 pub use sys::gpu::clock::PublicClockId as ClockDomain;
@@ -552,5 +552,71 @@ impl RawConversion for power::private::NV_GPU_PERF_STATUS {
             }),
             _ => Err(sys::ArgumentRangeError),
         }
+    }
+}
+
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
+pub struct VoltageEntry {
+    pub unknown: u32,
+    pub voltage: Microvolts,
+}
+
+impl RawConversion for power::private::NV_VOLT_TABLE_ENTRY {
+    type Target = VoltageEntry;
+    type Error = Void;
+
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
+        Ok(VoltageEntry {
+            unknown: self.unknown,
+            voltage: Microvolts(self.voltage_uV),
+        })
+    }
+}
+
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
+pub struct VoltageTable {
+    pub flags: u32,
+    pub entries: Vec<VoltageEntry>,
+}
+
+impl RawConversion for power::private::NV_VOLT_TABLE {
+    type Target = VoltageTable;
+    type Error = sys::ArgumentRangeError;
+
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
+        Ok(VoltageTable {
+            flags: self.flags,
+            entries: self.entries.iter().map(RawConversion::convert_raw).collect::<Result<_, _>>().void_unwrap(),
+        })
+    }
+}
+
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
+pub struct VoltageStatus {
+    pub flags: u32,
+    pub unknown0: u32,
+    pub voltage: Microvolts,
+    pub count: u32,
+    pub unknown1: [u32; 30],
+}
+
+impl RawConversion for power::private::NV_VOLT_STATUS {
+    type Target = VoltageStatus;
+    type Error = sys::ArgumentRangeError;
+
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
+        Ok(VoltageStatus {
+            flags: self.flags,
+            count: self.count,
+            unknown0: self.unknown,
+            voltage: Microvolts(self.value_uV),
+            unknown1: self.buf1,
+        })
     }
 }

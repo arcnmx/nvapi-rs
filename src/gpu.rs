@@ -538,6 +538,33 @@ impl PhysicalGpu {
         sys::status_result(unsafe { power::private::NvAPI_GPU_PerfPoliciesGetStatus(self.0, &mut data) })
             .and_then(|_| data.convert_raw().map_err(From::from))
     }
+
+    pub fn voltage_domains_status(&self) -> sys::Result<<power::private::NV_VOLT_STATUS as RawConversion>::Target> {
+        trace!("gpu.voltage_domains_status()");
+        let mut data = power::private::NV_VOLT_STATUS::zeroed();
+        data.version = power::private::NV_VOLT_STATUS_VER;
+
+        sys::status_result(unsafe { power::private::NvAPI_GPU_GetVoltageDomainsStatus(self.0, &mut data) })
+            .and_then(|_| data.convert_raw().map_err(From::from))
+    }
+
+    pub fn voltage_step(&self) -> sys::Result<<power::private::NV_VOLT_STATUS as RawConversion>::Target> {
+        trace!("gpu.voltage_step()");
+        let mut data = power::private::NV_VOLT_STATUS::zeroed();
+        data.version = power::private::NV_VOLT_STATUS_VER;
+
+        sys::status_result(unsafe { power::private::NvAPI_GPU_GetVoltageStep(self.0, &mut data) })
+            .and_then(|_| data.convert_raw().map_err(From::from))
+    }
+
+    pub fn voltage_table(&self) -> sys::Result<<power::private::NV_VOLT_TABLE as RawConversion>::Target> {
+        trace!("gpu.voltage_table()");
+        let mut data = power::private::NV_VOLT_TABLE::zeroed();
+        data.version = power::private::NV_VOLT_TABLE_VER;
+
+        sys::status_result(unsafe { power::private::NvAPI_GPU_GetVoltages(self.0, &mut data) })
+            .and_then(|_| data.convert_raw().map_err(From::from))
+    }
 }
 
 #[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
