@@ -206,7 +206,7 @@ pub mod private {
     nvenum_display! {
         PerfFlags => {
             POWER_LIMIT = "Power",
-            TEMPERATURE_LIMIT = "Temperature",
+            THERMAL_LIMIT = "Temperature",
             VOLTAGE_REL_LIMIT = "Reliability Voltage",
             VOLTAGE_OP_LIMIT = "Operating Voltage",
             NO_LOAD_LIMIT = "No Load",
