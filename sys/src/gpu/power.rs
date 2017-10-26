@@ -191,10 +191,12 @@ pub mod private {
     nvbits! {
         pub enum NV_GPU_PERF_FLAGS / PerfFlags {
             NV_GPU_PERF_FLAGS_POWER_LIMIT / POWER_LIMIT = 1,
-            NV_GPU_PERF_FLAGS_TEMPERATURE_LIMIT / TEMPERATURE_LIMIT = 2,
-            NV_GPU_PERF_FLAGS_VOLTAGE_LIMIT / VOLTAGE_LIMIT = 4,
-            /// Seen once with driver crash where flags = 0x0f
-            NV_GPU_PERF_FLAGS_UNKNOWN_8 / UNKNOWN_8 = 8,
+            NV_GPU_PERF_FLAGS_THERMAL_LIMIT / THERMAL_LIMIT = 2,
+            /// Reliability voltage
+            NV_GPU_PERF_FLAGS_VOLTAGE_REL_LIMIT / VOLTAGE_REL_LIMIT = 4,
+            /// Operating voltage
+            NV_GPU_PERF_FLAGS_VOLTAGE_OP_LIMIT / VOLTAGE_OP_LIMIT = 8,
+            /// GPU utilization
             NV_GPU_PERF_FLAGS_NO_LOAD_LIMIT / NO_LOAD_LIMIT = 16,
             /// Never seen this
             NV_GPU_PERF_FLAGS_UNKNOWN_32 / UNKNOWN_32 = 32,
@@ -205,8 +207,8 @@ pub mod private {
         PerfFlags => {
             POWER_LIMIT = "Power",
             TEMPERATURE_LIMIT = "Temperature",
-            VOLTAGE_LIMIT = "Voltage",
-            UNKNOWN_8 = "Unknown8",
+            VOLTAGE_REL_LIMIT = "Reliability Voltage",
+            VOLTAGE_OP_LIMIT = "Operating Voltage",
             NO_LOAD_LIMIT = "No Load",
             UNKNOWN_32 = "Unknown32",
             _ = _,
@@ -285,12 +287,12 @@ pub mod private {
 
     nvapi! {
         /// Maxwell only
-        pub unsafe fn NvAPI_GPU_GetVoltageDomainsStatus(hPhysicalGPU: NvPhysicalGpuHandle, pPerfStatus: *mut NV_VOLT_STATUS) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GPU_GetVoltageDomainsStatus(hPhysicalGPU: NvPhysicalGpuHandle, pVoltStatus: *mut NV_VOLT_STATUS) -> NvAPI_Status;
     }
 
     nvapi! {
         /// Maxwell only
-        pub unsafe fn NvAPI_GPU_GetVoltageStep(hPhysicalGPU: NvPhysicalGpuHandle, pPerfStatus: *mut NV_VOLT_STATUS) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GPU_GetVoltageStep(hPhysicalGPU: NvPhysicalGpuHandle, pVoltStep: *mut NV_VOLT_STATUS) -> NvAPI_Status;
     }
 
     nvstruct! {
@@ -322,6 +324,6 @@ pub mod private {
 
     nvapi! {
         /// Maxwell only
-        pub unsafe fn NvAPI_GPU_GetVoltages(hPhysicalGPU: NvPhysicalGpuHandle, pPerfStatus: *mut NV_VOLT_TABLE) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GPU_GetVoltages(hPhysicalGPU: NvPhysicalGpuHandle, pVolts: *mut NV_VOLT_TABLE) -> NvAPI_Status;
     }
 }
