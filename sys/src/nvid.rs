@@ -4,12 +4,14 @@ use std::mem;
 
 macro_rules! nvapis {
     ($(
+        $(#[$($meta:meta)*])*
         $name:ident = $id:expr,
     )*) => {
         #[repr(u32)]
         #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
         pub enum Api {
         $(
+            $(#[$($meta)*])*
             $name = $id,
         )*
         }
@@ -632,5 +634,20 @@ NvAPI_GPU_GetRamMaker = 0x42aea16a,
 // source: nvapi.lib
 
 NvAPI_D3D_GetObjectHandleForResource = 0xfceac864,
+
+// source: gpu-z
+
+/// `Unknown(*mut { version = 0x00030038, count, .. })`
+Unknown_1629A173 = 0x1629a173,
+/// `Unknown(hDisplayHandle, *mut hGpu)` maybe?
+Unknown_F1D2777B = 0xf1d2777b,
+/// `Unknown(hGpu, *mut u32, *mut u32)`
+Unknown_8EFC0978 = 0x8efc0978,
+/// `Unknown(hGpu, *mut { version = 0x00010008, value })` seen `value = 0x703`
+Unknown_B7BCF50D = 0xb7bcf50d,
+/// `Unknown(*mut { version = 0x0002000c, count, ... })` might be handles?
+Unknown_36E39E6B = 0x36e39e6b,
+/// `GPU_GetRasterOperators(hGpu, *mut u32)`
+Unknown_GetROPCount = 0xfdc129fa,
 
 }
