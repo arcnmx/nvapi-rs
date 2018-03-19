@@ -40,6 +40,10 @@ pub mod driverapi;
 /// The GPU APIs retrieve and control various attributes of the GPU, such as outputs, VBIOS revision, APG rate, frame buffer size, and thermal settings.
 pub mod gpu;
 
+/// I2C API - Provides ability to read or write data using I2C protocol.
+/// These APIs allow I2C access only to DDC monitors
+pub mod i2c;
+
 #[cfg(windows)]
 pub mod dx;
 
