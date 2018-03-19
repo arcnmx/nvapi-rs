@@ -1,5 +1,8 @@
 use std::os::raw::c_char;
 use std::mem::size_of;
+use std::ffi::CStr;
+use std::{fmt, ops};
+use debug_array::Slice;
 
 pub type NvBool = u8;
 
@@ -7,6 +10,7 @@ pub const NV_TRUE: NvBool = 1;
 pub const NV_FALSE: NvBool = 0;
 
 /// A boolean containing reserved bits
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Debug)]
 pub struct BoolU32(pub u32);
 
@@ -82,20 +86,99 @@ pub const NVAPI_SYSTEM_MAX_HWBCS: usize = 128;
 pub const NVAPI_SYSTEM_HWBC_INVALID_ID: usize = 0xffffffff;
 pub const NVAPI_MAX_AUDIO_DEVICES: usize = 16;
 
-pub type NvAPI_String = [c_char; NVAPI_GENERIC_STRING_MAX];
-pub type NvAPI_LongString = [c_char; NVAPI_LONG_STRING_MAX];
-pub type NvAPI_ShortString = [c_char; NVAPI_SHORT_STRING_MAX];
+pub type NvAPI_String = NvString<[u8; NVAPI_GENERIC_STRING_MAX]>;
+pub type NvAPI_LongString = NvString<[u8; NVAPI_LONG_STRING_MAX]>;
+pub type NvAPI_ShortString = NvString<[u8; NVAPI_SHORT_STRING_MAX]>;
+
+#[test]
+fn validate_c_char_size() {
+    assert_eq!(size_of::<c_char>() == size_of::<u8>())
+}
 
 pub fn short_string() -> NvAPI_ShortString {
-    [0; NVAPI_SHORT_STRING_MAX]
+    Default::default()
 }
 
 pub fn long_string() -> NvAPI_LongString {
-    [0; NVAPI_LONG_STRING_MAX]
+    Default::default()
 }
 
 pub fn string() -> NvAPI_String {
-    [0; NVAPI_GENERIC_STRING_MAX]
+    Default::default()
+}
+
+debug_array_impl! { [u8; NVAPI_GENERIC_STRING_MAX] }
+debug_array_impl! { [u8; NVAPI_LONG_STRING_MAX] }
+debug_array_impl! { [u8; NVAPI_SHORT_STRING_MAX] }
+
+#[derive(Copy, Clone)]
+pub struct NvString<T>(T);
+
+impl<T> NvString<T> {
+    pub fn inner(&self) -> &T {
+        &self.0
+    }
+
+    pub fn inner_mut(&mut self) -> &mut T {
+        &mut self.0
+    }
+
+    pub fn into_inner(self) -> T {
+        self.0
+    }
+}
+
+impl<T> ops::Deref for NvString<T> {
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl<T> ops::DerefMut for NvString<T> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+
+impl<T: Slice> Default for NvString<T> {
+    fn default() -> Self {
+        NvString(Slice::default())
+    }
+}
+
+impl<T: Slice<Item=u8>> NvString<T> {
+    pub fn c_str(&self) -> Option<&CStr> {
+        let v = self.as_slice();
+        v.iter().enumerate().find(|&(_, &v)| v == 0)
+            .map(|(i, _)| i)
+            .and_then(|i| CStr::from_bytes_with_nul(&v[..i + 1]).ok())
+    }
+
+    pub fn to_str(&self) -> Option<&str> {
+        self.c_str().and_then(|c| c.to_str().ok())
+    }
+}
+
+impl<T: Slice<Item=u8>> fmt::Debug for NvString<T> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        if let Some(str) = self.c_str() {
+            fmt::Debug::fmt(str, f)
+        } else {
+            write!(f, "<Invalid NvString>")
+        }
+    }
+}
+
+impl<T: Slice<Item=u8>> fmt::Display for NvString<T> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        if let Some(str) = self.c_str() {
+            write!(f, "{}", str.to_string_lossy())
+        } else {
+            write!(f, "")
+        }
+    }
 }
 
 /// NvAPI Version Definition

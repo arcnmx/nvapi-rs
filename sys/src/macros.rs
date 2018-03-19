@@ -44,6 +44,7 @@ macro_rules! nvstruct {
     ) => {
         $(#[$meta])*
         #[repr(C)]
+        #[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
         #[derive(Copy, Clone, Debug)]
         pub struct $name {
             $($tt)*
@@ -214,17 +215,42 @@ macro_rules! nvapi {
         }
     };
     (
-        pub type $name:ident = extern "C" fn($($arg:ident: $arg_ty:ty),*) -> $ret:ty;
+        pub type $name:ident = extern "C" fn($($argtt:tt)*) -> $ret:ty;
 
         $(#[$meta:meta])*
         pub unsafe fn $fn:ident;
     ) => {
-        pub type $name = extern "C" fn($($arg: $arg_ty),*) -> $ret;
+        //pub type $name = extern "C" fn($($arg: $arg_ty),*) -> $ret;
 
         nvapi! {
             $(#[$meta])*
-            pub unsafe fn $fn($($arg: $arg_ty),*) -> $ret;
+            pub unsafe fn $fn($($argtt)*) -> $ret;
         }
+
+        nvapi! { @rpc $name = ($($argtt)*,) () }
+
+        impl $crate::NvapiFn for $name {
+            type Func = extern "C" fn($($argtt)*) -> $ret;
+        }
+    };
+    (@rpc $name:ident = ($(,)*) ($(($arg:ident: $ty:ty))*)) => {
+        #[repr(C)]
+        #[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+        #[derive(Copy, Clone, Debug)]
+        pub struct $name {
+            $(
+                pub $arg: $ty,
+            )*
+        }
+    };
+    (@rpc $name:ident = ($arg:ident: *const $ty:ty, $($att:tt)*) ($($ftt:tt)*)) => {
+        nvapi! { @rpc $name = ($arg: $ty, $($att)*) ($($ftt)*) }
+    };
+    (@rpc $name:ident = ($arg:ident: *mut $ty:ty, $($att:tt)*) ($($ftt:tt)*)) => {
+        nvapi! { @rpc $name = ($arg: $ty, $($att)*) ($($ftt)*) }
+    };
+    (@rpc $name:ident = ($arg:ident: $ty:ty, $($att:tt)*) ($($ftt:tt)*)) => {
+        nvapi! { @rpc $name = ($($att)*) ($($ftt)* ($arg: $ty)) }
     };
 }
 

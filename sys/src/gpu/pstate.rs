@@ -168,9 +168,11 @@ nvstruct! {
 }
 
 #[repr(C)]
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Debug)]
 pub struct NV_GPU_PSTATE20_CLOCK_ENTRY_DATA(NV_GPU_PSTATE20_CLOCK_ENTRY_RANGE);
 
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Debug)]
 pub enum NV_GPU_PSTATE20_CLOCK_ENTRY_DATA_VALUE {
     Single(NV_GPU_PSTATE20_CLOCK_ENTRY_SINGLE),

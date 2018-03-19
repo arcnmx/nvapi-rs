@@ -73,7 +73,7 @@ pub mod private {
         }
     }*/
 
-    debug_array_impl! { [NV_VFP_CURVE_GPU_ENTRY; 80] }
+    debug_array_impl! { [NV_VFP_CURVE_GPU_ENTRY; 80] @nodefault }
     debug_array_impl! { [u32; 1064] }
 
     nvstruct! {
@@ -302,7 +302,7 @@ pub mod private {
         }
     }
 
-    debug_array_impl! { [NV_VOLT_TABLE_ENTRY; 128] }
+    debug_array_impl! { [NV_VOLT_TABLE_ENTRY; 128] @nodefault }
     debug_array_impl! { [u32; 3888] }
 
     nvstruct! {

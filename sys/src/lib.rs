@@ -11,6 +11,8 @@ extern crate bitflags;
 #[cfg(feature = "serde_derive")]
 #[macro_use]
 extern crate serde_derive;
+#[cfg(feature = "serde")]
+extern crate serde;
 
 #[macro_use]
 mod macros;
@@ -71,6 +73,10 @@ impl From<ArgumentRangeError> for Status {
     fn from(_: ArgumentRangeError) -> Self {
         Status::ArgumentExceedMaxSize
     }
+}
+
+pub trait NvapiFn {
+    type Func;
 }
 
 // TODO: NvAPI_SYS_GetChipSetInfo

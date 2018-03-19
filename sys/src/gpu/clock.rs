@@ -179,7 +179,7 @@ pub mod private {
         }
     }
 
-    debug_array_impl! { [NV_CLOCK_TABLE_GPU_DELTA; 80] }
+    debug_array_impl! { [NV_CLOCK_TABLE_GPU_DELTA; 80] @nodefault }
     debug_array_impl! { [u32; 1529] }
 
     nvstruct! {
@@ -262,7 +262,7 @@ pub mod private {
         }
     }
 
-    debug_array_impl! { [NV_CLOCK_MASKS_CLOCK; 80 + 23] }
+    debug_array_impl! { [NV_CLOCK_MASKS_CLOCK; 80 + 23] @nodefault }
     debug_array_impl! { [u32; 916] }
 
     nvstruct! {
