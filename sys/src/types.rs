@@ -16,7 +16,7 @@ impl BoolU32 {
     }
 
     pub fn set(&mut self, value: bool) {
-        self.0 = self.0 & 0xffffffe | if value { 1 } else { 0 }
+        self.0 = self.0 & 0xffffffe | if value { NV_TRUE } else { NV_FALSE } as u32
     }
 }
 
