@@ -22,6 +22,14 @@ impl I2c {
         }
     }
 
+    pub fn set_display_mask(&mut self, display_mask: u32) {
+        self.display_mask = display_mask;
+    }
+
+    pub fn set_address(&mut self, address: u8) {
+        self.address = address;
+    }
+
     pub fn set_port(&mut self, port: Option<u8>, port_is_ddc: bool) {
         self.port = port;
         self.port_is_ddc = port_is_ddc;
