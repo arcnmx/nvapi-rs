@@ -566,13 +566,13 @@ impl PhysicalGpu {
             .and_then(|_| data.convert_raw().map_err(From::from))
     }
 
-    pub fn i2c_read(&self, display_mask: u32, port: Option<u8>, port_is_ddc: bool, address: u8, register: &[u8], bytes: &mut [u8], speed: i2c::I2cSpeed) -> sys::Result<()> {
+    pub fn i2c_read(&self, display_mask: u32, port: Option<u8>, port_is_ddc: bool, address: u8, register: &[u8], bytes: &mut [u8], speed: i2c::I2cSpeed) -> sys::Result<usize> {
         trace!("i2c_read({}, {:?}, {:?}, 0x{:02x}, {:?}, {:?})", display_mask, port, port_is_ddc, address, register, speed);
         let mut data = i2c::NV_I2C_INFO::zeroed();
         data.version = i2c::NV_I2C_INFO_VER;
         data.displayMask = display_mask;
         data.bIsDDCPort = if port_is_ddc { sys::NV_TRUE } else { sys::NV_FALSE } as _;
-        data.i2cDevAddress = address;
+        data.i2cDevAddress = address << 1;
         data.pbI2cRegAddress = if register.is_empty() { ptr::null_mut() } else { register.as_ptr() as *mut _ };
         data.regAddrSize = register.len() as _;
         data.pbData = bytes.as_mut_ptr();
@@ -585,7 +585,7 @@ impl PhysicalGpu {
         }
 
         sys::status_result(unsafe { i2c::NvAPI_I2CRead(self.0, &mut data) })
-            .map(drop)
+            .map(|_| data.cbSize as usize) // TODO: not actually sure if this ever changes?
     }
 
     pub fn i2c_write(&self, display_mask: u32, port: Option<u8>, port_is_ddc: bool, address: u8, register: &[u8], bytes: &[u8], speed: i2c::I2cSpeed) -> sys::Result<()> {
@@ -594,7 +594,7 @@ impl PhysicalGpu {
         data.version = i2c::NV_I2C_INFO_VER;
         data.displayMask = display_mask;
         data.bIsDDCPort = if port_is_ddc { sys::NV_TRUE } else { sys::NV_FALSE } as _;
-        data.i2cDevAddress = address;
+        data.i2cDevAddress = address << 1;
         data.pbI2cRegAddress = if register.is_empty() { ptr::null_mut() } else { register.as_ptr() as *mut _ };
         data.regAddrSize = register.len() as _;
         data.pbData = bytes.as_ptr() as *mut _;
