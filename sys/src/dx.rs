@@ -1,7 +1,4 @@
-#[cfg(feature = "winapi3")]
 use winapi::um::unknwnbase::IUnknown;
-#[cfg(not(feature = "winapi3"))]
-use winapi::unknwnbase::IUnknown;
 
 use status::NvAPI_Status;
 

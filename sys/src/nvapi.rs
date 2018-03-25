@@ -26,10 +26,7 @@ pub fn nvapi_QueryInterface(id: u32) -> ::Result<usize> {
 
 #[cfg(windows)]
 pub fn nvapi_QueryInterface(id: u32) -> ::Result<usize> {
-    #[cfg(feature = "winapi3")]
     use winapi::um::libloaderapi::{GetProcAddress, LoadLibraryA};
-    #[cfg(not(feature = "winapi3"))]
-    use kernel32::{GetProcAddress, LoadLibraryA};
     use std::mem;
     use std::os::raw::c_char;
 
