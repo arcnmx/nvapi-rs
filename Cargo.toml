@@ -1,6 +1,6 @@
 [package]
 name = "nvapi"
-version = "0.0.3"
+version = "0.0.4"
 authors = ["arcnmx"]
 
 description = "NVIDIA NVAPI bindings"
@@ -12,7 +12,7 @@ readme = "README.md"
 license = "MIT"
 
 [dependencies]
-nvapi-sys = { version = "0.0.3", path = "sys", default-features = false }
+nvapi-sys = { version = "^0.0.4", path = "sys", default-features = false }
 serde = { version = "^1.0.0", optional = true }
 serde_derive = { version = "^1.0.0", optional = true }
 i2c = { version = "^0.1.0", optional = true }

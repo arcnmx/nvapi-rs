@@ -1,6 +1,6 @@
 [package]
 name = "nvapi-hi"
-version = "0.0.3"
+version = "0.0.4"
 authors = ["arcnmx"]
 
 description = "NVIDIA NVAPI high level bindings"
@@ -12,7 +12,7 @@ readme = "../README.md"
 license = "MIT"
 
 [dependencies]
-nvapi = { version = "^0.0.3", path = "../", default-features = false }
+nvapi = { version = "~0.0.4", path = "../", default-features = false }
 serde = { version = "^1.0.0", optional = true }
 serde_derive = { version = "^1.0.0", optional = true }
 
