@@ -10,7 +10,7 @@ use pstate::PState;
 #[derive(Debug)]
 pub struct PhysicalGpu(sys::handles::NvPhysicalGpuHandle);
 
-pub use sys::gpu::{SystemType};
+pub use sys::gpu::{SystemType, PerformanceDecreaseReason};
 pub use sys::gpu::private::{RamType, RamMaker, Foundry, VendorId as Vendor};
 pub use sys::gpu::clock::ClockFrequencyType;
 pub use sys::gpu::display::{ConnectedIdsFlags, DisplayIdsFlags, MonitorConnectorType};
@@ -565,6 +565,15 @@ impl PhysicalGpu {
 
         sys::status_result(unsafe { power::private::NvAPI_GPU_GetVoltages(self.0, &mut data) })
             .and_then(|_| data.convert_raw().map_err(From::from))
+    }
+
+    pub fn performance_decrease(&self) -> sys::Result<PerformanceDecreaseReason> {
+        trace!("gpu.performance_decrease()");
+
+        let mut data = gpu::NV_GPU_PERF_DECREASE_NONE;
+
+        sys::status_result(unsafe { gpu::NvAPI_GPU_GetPerfDecreaseInfo(self.0, &mut data) })
+            .map(|_| PerformanceDecreaseReason::from_bits_truncate(data))
     }
 
     pub fn display_ids_all(&self) -> sys::Result<Vec<<display::NV_GPU_DISPLAYIDS as RawConversion>::Target>> {

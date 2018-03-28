@@ -123,6 +123,26 @@ nvapi! {
     pub unsafe fn NvAPI_GPU_GetGpuCoreCount;
 }
 
+nvbits! {
+    /// Bit masks for knowing the exact reason for performance decrease
+    ///
+    /// Used in `NvAPI_GPU_GetPerfDecreaseInfo`
+    pub enum NVAPI_GPU_PERF_DECREASE / PerformanceDecreaseReason {
+        NV_GPU_PERF_DECREASE_NONE / NONE = 0x00,
+        NV_GPU_PERF_DECREASE_REASON_THERMAL_PROTECTION / THERMAL_PROTECTION = 0x01,
+        NV_GPU_PERF_DECREASE_REASON_POWER_CONTROL / POWER_CONTROL = 0x02,
+        NV_GPU_PERF_DECREASE_REASON_AC_BATT / AC_BATTERY = 0x04,
+        NV_GPU_PERF_DECREASE_REASON_API_TRIGGERED / API_TRIGGERED = 0x08,
+        NV_GPU_PERF_DECREASE_REASON_INSUFFICIENT_POWER / INSUFFICIENT_POWER = 0x10,
+        NV_GPU_PERF_DECREASE_REASON_UNKNOWN / UNKNOWN = 0x00,
+    }
+}
+
+nvapi! {
+    /// This function retrieves reasons for the current performance decrease.
+    pub unsafe fn NvAPI_GPU_GetPerfDecreaseInfo(hPhysicalGpu: NvPhysicalGpuHandle, pPerfDecrInfo: *mut NVAPI_GPU_PERF_DECREASE) -> NvAPI_Status;
+}
+
 /// Undocumented API
 pub mod private {
     use status::NvAPI_Status;
