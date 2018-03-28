@@ -97,6 +97,16 @@ impl PhysicalGpu {
         }
     }
 
+    pub fn board_number(&self) -> sys::Result<[u8; 0x10]> {
+        trace!("gpu.board_number()");
+        let mut data = gpu::NV_BOARD_INFO::zeroed();
+        data.version = gpu::NV_BOARD_INFO_VER;
+        unsafe {
+            sys::status_result(gpu::NvAPI_GPU_GetBoardInfo(self.0, &mut data))
+                .map(|_| data.BoardNum)
+        }
+    }
+
     pub fn system_type(&self) -> sys::Result<SystemType> {
         trace!("gpu.system_type()");
         let mut ty = gpu::NV_SYSTEM_TYPE_UNKNOWN;

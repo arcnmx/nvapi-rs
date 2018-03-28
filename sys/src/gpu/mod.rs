@@ -123,6 +123,25 @@ nvapi! {
     pub unsafe fn NvAPI_GPU_GetGpuCoreCount;
 }
 
+nvstruct! {
+    pub struct NV_BOARD_INFO_V1 {
+        /// structure version
+        pub version: u32,
+        /// Board Serial Number
+        pub BoardNum: [u8; 16],
+    }
+}
+
+nvversion! { NV_BOARD_INFO_VER1(NV_BOARD_INFO_V1 = 4+16, 1) }
+nvversion! { NV_BOARD_INFO_VER = NV_BOARD_INFO_VER1 }
+
+pub type NV_BOARD_INFO = NV_BOARD_INFO_V1;
+
+nvapi! {
+    /// This API Retrieves the Board information (a unique GPU Board Serial Number) stored in the InfoROM.
+    pub unsafe fn NvAPI_GPU_GetBoardInfo(hPhysicalGpu: NvPhysicalGpuHandle, pBoardInfo: *mut NV_BOARD_INFO) -> NvAPI_Status;
+}
+
 nvbits! {
     /// Bit masks for knowing the exact reason for performance decrease
     ///
