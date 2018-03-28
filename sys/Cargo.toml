@@ -1,6 +1,6 @@
 [package]
 name = "nvapi-sys"
-version = "0.0.4"
+version = "0.1.0"
 authors = ["arcnmx"]
 
 description = "NVIDIA NVAPI FFI bindings"
