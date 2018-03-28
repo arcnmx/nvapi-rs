@@ -765,9 +765,9 @@ impl fmt::Debug for DriverModel {
 #[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DisplayId {
-    connector: MonitorConnectorType,
-    display_id: u32,
-    flags: DisplayIdsFlags,
+    pub connector: MonitorConnectorType,
+    pub display_id: u32,
+    pub flags: DisplayIdsFlags,
 }
 
 impl RawConversion for display::NV_GPU_DISPLAYIDS {
