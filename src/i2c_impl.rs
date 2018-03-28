@@ -1,8 +1,9 @@
 use std::cmp;
+use std::borrow::Borrow;
 use {i2c, sys, PhysicalGpu};
 
-pub struct I2c {
-    inner: PhysicalGpu,
+pub struct I2c<G = PhysicalGpu> {
+    inner: G,
     display_mask: u32,
     port: Option<u8>,
     port_is_ddc: bool,
@@ -10,8 +11,8 @@ pub struct I2c {
     speed: sys::i2c::I2cSpeed,
 }
 
-impl I2c {
-    pub fn new(gpu: PhysicalGpu, display_mask: u32) -> Self {
+impl<G> I2c<G> {
+    pub fn new(gpu: G, display_mask: u32) -> Self {
         I2c {
             inner: gpu,
             display_mask: display_mask,
@@ -38,10 +39,12 @@ impl I2c {
     pub fn set_speed(&mut self, speed: sys::i2c::I2cSpeed) {
         self.speed = speed;
     }
+}
 
+impl<G: Borrow<PhysicalGpu>> I2c<G> {
     pub fn nvapi_read(&self, register: &[u8], bytes: &mut [u8]) -> sys::Result<usize> {
         // TODO: use i2c_read_ex if port_is_ddc is false? docs say it must be true here
-        self.inner.i2c_read(
+        self.inner.borrow().i2c_read(
             self.display_mask,
             self.port, self.port_is_ddc,
             self.address,
@@ -52,7 +55,7 @@ impl I2c {
 
     pub fn nvapi_write(&self, register: &[u8], bytes: &[u8]) -> sys::Result<()> {
         // TODO: use i2c_write_ex if port_is_ddc is false? docs say it must be true here
-        self.inner.i2c_write(
+        self.inner.borrow().i2c_write(
             self.display_mask,
             self.port, self.port_is_ddc,
             self.address,
@@ -62,11 +65,11 @@ impl I2c {
     }
 }
 
-impl i2c::Master for I2c {
+impl<G> i2c::Master for I2c<G> {
     type Error = sys::Status;
 }
 
-impl i2c::Address for I2c {
+impl<G> i2c::Address for I2c<G> {
     fn set_slave_address(&mut self, addr: u16, tenbit: bool) -> sys::Result<()> {
         if tenbit {
             Err(sys::Status::InvalidArgument)
@@ -77,7 +80,7 @@ impl i2c::Address for I2c {
     }
 }
 
-impl i2c::ReadWrite for I2c {
+impl<G: Borrow<PhysicalGpu>> i2c::ReadWrite for I2c<G> {
     fn i2c_read(&mut self, value: &mut [u8]) -> Result<usize, Self::Error> {
         self.nvapi_read(&[], value)
     }
@@ -87,7 +90,7 @@ impl i2c::ReadWrite for I2c {
     }
 }
 
-impl i2c::Smbus for I2c {
+impl<G: Borrow<PhysicalGpu>> i2c::Smbus for I2c<G> {
     fn smbus_write_quick(&mut self, value: bool) -> Result<(), Self::Error> {
         if value {
             self.nvapi_read(&[], &mut []).map(drop)
@@ -145,7 +148,7 @@ impl i2c::Smbus for I2c {
     }
 }
 
-impl i2c::BlockTransfer for I2c {
+impl<G: Borrow<PhysicalGpu>> i2c::BlockTransfer for I2c<G> {
     fn i2c_read_block_data(&mut self, command: u8, value: &mut [u8]) -> Result<usize, Self::Error> {
         // TODO: nvapi docs say with register set, value cannot be longer than 16 bytes??
         self.nvapi_read(&[command], value)
