@@ -1,6 +1,6 @@
 use std::{ptr, fmt};
 use void::{Void, ResultVoidExt};
-use sys::gpu::{self, pstate, clock, power, cooler, thermal};
+use sys::gpu::{self, pstate, clock, power, cooler, thermal, display};
 use sys::{self, driverapi, i2c};
 use types::{Kibibytes, KilohertzDelta, Kilohertz2Delta, Microvolts, Percentage, Percentage1000, RawConversion};
 use thermal::CoolerLevel;
@@ -13,6 +13,7 @@ pub struct PhysicalGpu(sys::handles::NvPhysicalGpuHandle);
 pub use sys::gpu::{SystemType};
 pub use sys::gpu::private::{RamType, RamMaker, Foundry, VendorId as Vendor};
 pub use sys::gpu::clock::ClockFrequencyType;
+pub use sys::gpu::display::{ConnectedIdsFlags, DisplayIdsFlags, MonitorConnectorType};
 pub type ClockFrequencies = <sys::gpu::clock::NV_GPU_CLOCK_FREQUENCIES as RawConversion>::Target;
 pub type Utilizations = <pstate::NV_GPU_DYNAMIC_PSTATES_INFO_EX as RawConversion>::Target;
 
@@ -566,6 +567,32 @@ impl PhysicalGpu {
             .and_then(|_| data.convert_raw().map_err(From::from))
     }
 
+    pub fn display_ids_all(&self) -> sys::Result<Vec<<display::NV_GPU_DISPLAYIDS as RawConversion>::Target>> {
+        trace!("gpu.display_ids_all()");
+        let mut count = 0;
+        sys::status_result(unsafe { display::NvAPI_GPU_GetAllDisplayIds(self.0, ptr::null_mut(), &mut count) })?;
+
+        let mut data = display::NV_GPU_DISPLAYIDS::zeroed();
+        data.version = display::NV_GPU_DISPLAYIDS_VER;
+        let mut data = vec![data; count as usize];
+
+        sys::status_result(unsafe { display::NvAPI_GPU_GetAllDisplayIds(self.0, data.as_mut_ptr(), &mut count) })
+            .and_then(|_| data.into_iter().map(|v| v.convert_raw().map_err(From::from)).collect())
+    }
+
+    pub fn display_ids_connected(&self, flags: ConnectedIdsFlags) -> sys::Result<Vec<<display::NV_GPU_DISPLAYIDS as RawConversion>::Target>> {
+        trace!("gpu.display_ids_connected({:?})", flags);
+        let mut count = 0;
+        sys::status_result(unsafe { display::NvAPI_GPU_GetConnectedDisplayIds(self.0, ptr::null_mut(), &mut count, flags.bits()) })?;
+
+        let mut data = display::NV_GPU_DISPLAYIDS::zeroed();
+        data.version = display::NV_GPU_DISPLAYIDS_VER;
+        let mut data = vec![data; count as usize];
+
+        sys::status_result(unsafe { display::NvAPI_GPU_GetConnectedDisplayIds(self.0, data.as_mut_ptr(), &mut count, flags.bits()) })
+            .and_then(|_| data.into_iter().map(|v| v.convert_raw().map_err(From::from)).collect())
+    }
+
     pub fn i2c_read(&self, display_mask: u32, port: Option<u8>, port_is_ddc: bool, address: u8, register: &[u8], bytes: &mut [u8], speed: i2c::I2cSpeed) -> sys::Result<usize> {
         trace!("i2c_read({}, {:?}, {:?}, 0x{:02x}, {:?}, {:?})", display_mask, port, port_is_ddc, address, register, speed);
         let mut data = i2c::NV_I2C_INFO::zeroed();
@@ -721,5 +748,26 @@ impl fmt::Display for DriverModel {
 impl fmt::Debug for DriverModel {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{} ({:08x})", self, self.value)
+    }
+}
+
+#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct DisplayId {
+    connector: MonitorConnectorType,
+    display_id: u32,
+    flags: DisplayIdsFlags,
+}
+
+impl RawConversion for display::NV_GPU_DISPLAYIDS {
+    type Target = DisplayId;
+    type Error = sys::ArgumentRangeError;
+
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        Ok(DisplayId {
+            connector: MonitorConnectorType::from_raw(self.connectorType)?,
+            display_id: self.displayId,
+            flags: DisplayIdsFlags::from_bits_truncate(self.flags),
+        })
     }
 }

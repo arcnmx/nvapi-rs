@@ -32,6 +32,8 @@ pub mod thermal;
 
 pub mod power;
 
+pub mod display;
+
 nvapi! {
     pub type EnumPhysicalGPUsFn = extern "C" fn(nvGPUHandle: *mut [NvPhysicalGpuHandle; types::NVAPI_MAX_PHYSICAL_GPUS], pGpuCount: *mut u32) -> NvAPI_Status;
 
