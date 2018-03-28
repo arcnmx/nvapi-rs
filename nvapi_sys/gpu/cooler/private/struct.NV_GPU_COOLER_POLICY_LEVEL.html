@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'>Struct NV_GPU_COOLER_POLICY_LEVEL</p><div class="block items"><ul><li><a href="#fields">Fields</a></li><li><a href="#methods">Methods</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='../../../index.html'>nvapi_sys</a>::<wbr><a href='../../index.html'>gpu</a>::<wbr><a href='../index.html'>cooler</a>::<wbr><a href='index.html'>private</a></p><script>window.sidebarCurrent = {name: 'NV_GPU_COOLER_POLICY_LEVEL', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct NV_GPU_COOLER_POLICY_LEVEL</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#fields">Fields</a><div class="sidebar-links"><a href="#structfield.levelId">levelId</a><a href="#structfield.currentLevel">currentLevel</a><a href="#structfield.defaultLevel">defaultLevel</a></div><a class="sidebar-title" href="#methods">Methods</a><div class="sidebar-links"><a href="#method.zeroed">zeroed</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Copy">Copy</a><a href="#impl-Clone">Clone</a><a href="#impl-Debug">Debug</a></div></div><p class='location'><a href='../../../index.html'>nvapi_sys</a>::<wbr><a href='../../index.html'>gpu</a>::<wbr><a href='../index.html'>cooler</a>::<wbr><a href='index.html'>private</a></p><script>window.sidebarCurrent = {name: 'NV_GPU_COOLER_POLICY_LEVEL', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -55,16 +56,19 @@
     pub currentLevel: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>,
     pub defaultLevel: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>,
 }</pre><h2 id='fields' class='fields small-section-header'>
-                       Fields<a href='#fields' class='anchor'></a></h2><span id='structfield.levelId' class="structfield">
-                           <span id='levelId.v' class='invisible'>
+                       Fields<a href='#fields' class='anchor'></a></h2><span id="structfield.levelId" class="structfield small-section-header">
+                           <a href="#structfield.levelId" class="anchor field"></a>
+                           <span id="levelId.v" class='invisible'>
                            <code>levelId: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code>
                            </span></span><div class='docblock'><p>level indicator for a policy</p>
-</div><span id='structfield.currentLevel' class="structfield">
-                           <span id='currentLevel.v' class='invisible'>
+</div><span id="structfield.currentLevel" class="structfield small-section-header">
+                           <a href="#structfield.currentLevel" class="anchor field"></a>
+                           <span id="currentLevel.v" class='invisible'>
                            <code>currentLevel: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code>
                            </span></span><div class='docblock'><p>new cooler level for the selected policy level indicator.</p>
-</div><span id='structfield.defaultLevel' class="structfield">
-                           <span id='defaultLevel.v' class='invisible'>
+</div><span id="structfield.defaultLevel" class="structfield small-section-header">
+                           <a href="#structfield.defaultLevel" class="anchor field"></a>
+                           <span id="defaultLevel.v" class='invisible'>
                            <code>defaultLevel: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code>
                            </span></span><div class='docblock'><p>default cooler level for the selected policy level indicator.</p>
 </div>
@@ -72,7 +76,7 @@
                       Methods<a href='#methods' class='anchor'></a>
                     </h2>
                 <h3 id='impl' class='impl'><span class='in-band'><code>impl <a class="struct" href="../../../../nvapi_sys/gpu/cooler/private/struct.NV_GPU_COOLER_POLICY_LEVEL.html" title="struct nvapi_sys::gpu::cooler::private::NV_GPU_COOLER_POLICY_LEVEL">NV_GPU_COOLER_POLICY_LEVEL</a></code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../../src/nvapi_sys/macros.rs.html#52-56' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.zeroed' class="method"><span id='zeroed.v' class='invisible'><code>fn <a href='#method.zeroed' class='fnname'>zeroed</a>() -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../../src/nvapi_sys/macros.rs.html#53-55' title='goto source code'>[src]</a></span></h4>
+<div class='impl-items'><h4 id='method.zeroed' class="method"><span id='zeroed.v' class='invisible'><code>pub fn <a href='#method.zeroed' class='fnname'>zeroed</a>() -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../../src/nvapi_sys/macros.rs.html#53-55' title='goto source code'>[src]</a></span></h4>
 </div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -85,7 +89,7 @@
 <div class='docblock'><p>Performs copy-assignment from <code>source</code>. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from">Read more</a></p>
 </div></div><h3 id='impl-Debug' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../../../../nvapi_sys/gpu/cooler/private/struct.NV_GPU_COOLER_POLICY_LEVEL.html" title="struct nvapi_sys::gpu::cooler::private::NV_GPU_COOLER_POLICY_LEVEL">NV_GPU_COOLER_POLICY_LEVEL</a></code><a href='#impl-Debug' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../../src/nvapi_sys/macros.rs.html#47' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../../src/nvapi_sys/macros.rs.html#47' title='goto source code'>[src]</a></span></h4>
-<div class='docblock'><p>Formats the value using the given formatter.</p>
+<div class='docblock'><p>Formats the value using the given formatter. <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt">Read more</a></p>
 </div></div></section>
     <section id='search' class="content hidden"></section>
 
@@ -103,13 +107,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

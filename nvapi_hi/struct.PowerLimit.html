@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'>Struct PowerLimit</p><div class="block items"><ul><li><a href="#fields">Fields</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='index.html'>nvapi_hi</a></p><script>window.sidebarCurrent = {name: 'PowerLimit', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct PowerLimit</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#fields">Fields</a><div class="sidebar-links"><a href="#structfield.range">range</a><a href="#structfield.default">default</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Debug">Debug</a><a href="#impl-Clone">Clone</a><a href="#impl-PartialOrd">PartialOrd</a><a href="#impl-Ord">Ord</a><a href="#impl-PartialEq">PartialEq</a><a href="#impl-Eq">Eq</a><a href="#impl-Hash">Hash</a><a href="#impl-From%3CPowerInfoEntry%3E">From&lt;PowerInfoEntry&gt;</a></div></div><p class='location'><a href='index.html'>nvapi_hi</a></p><script>window.sidebarCurrent = {name: 'PowerLimit', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -53,11 +54,13 @@
     pub range: <a class="struct" href="../nvapi_hi/struct.Range.html" title="struct nvapi_hi::Range">Range</a>&lt;<a class="struct" href="../nvapi_hi/struct.Percentage.html" title="struct nvapi_hi::Percentage">Percentage</a>&gt;,
     pub default: <a class="struct" href="../nvapi_hi/struct.Percentage.html" title="struct nvapi_hi::Percentage">Percentage</a>,
 }</pre><h2 id='fields' class='fields small-section-header'>
-                       Fields<a href='#fields' class='anchor'></a></h2><span id='structfield.range' class="structfield">
-                           <span id='range.v' class='invisible'>
+                       Fields<a href='#fields' class='anchor'></a></h2><span id="structfield.range" class="structfield small-section-header">
+                           <a href="#structfield.range" class="anchor field"></a>
+                           <span id="range.v" class='invisible'>
                            <code>range: <a class="struct" href="../nvapi_hi/struct.Range.html" title="struct nvapi_hi::Range">Range</a>&lt;<a class="struct" href="../nvapi_hi/struct.Percentage.html" title="struct nvapi_hi::Percentage">Percentage</a>&gt;</code>
-                           </span></span><span id='structfield.default' class="structfield">
-                           <span id='default.v' class='invisible'>
+                           </span></span><span id="structfield.default" class="structfield small-section-header">
+                           <a href="#structfield.default" class="anchor field"></a>
+                           <span id="default.v" class='invisible'>
                            <code>default: <a class="struct" href="../nvapi_hi/struct.Percentage.html" title="struct nvapi_hi::Percentage">Percentage</a></code>
                            </span></span>
             <h2 id='implementations' class='small-section-header'>
@@ -65,7 +68,7 @@
             </h2>
         <h3 id='impl-Debug' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../nvapi_hi/struct.PowerLimit.html" title="struct nvapi_hi::PowerLimit">PowerLimit</a></code><a href='#impl-Debug' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/nvapi_hi/gpu.rs.html#365' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/nvapi_hi/gpu.rs.html#365' title='goto source code'>[src]</a></span></h4>
-<div class='docblock'><p>Formats the value using the given formatter.</p>
+<div class='docblock'><p>Formats the value using the given formatter. <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt">Read more</a></p>
 </div></div><h3 id='impl-Clone' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> for <a class="struct" href="../nvapi_hi/struct.PowerLimit.html" title="struct nvapi_hi::PowerLimit">PowerLimit</a></code><a href='#impl-Clone' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/nvapi_hi/gpu.rs.html#365' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.clone' class="method"><span id='clone.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class="struct" href="../nvapi_hi/struct.PowerLimit.html" title="struct nvapi_hi::PowerLimit">PowerLimit</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/nvapi_hi/gpu.rs.html#365' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></p>
@@ -100,7 +103,7 @@
 <div class='docblock'><p>Feeds this value into the given [<code>Hasher</code>]. <a href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html#tymethod.hash">Read more</a></p>
 </div><h4 id='method.hash_slice' class="method"><span id='hash_slice.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html#method.hash_slice' class='fnname'>hash_slice</a>&lt;H&gt;(data: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">&amp;[Self]</a>, state: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;mut </a>H) <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;H: <a class="trait" href="https://doc.rust-lang.org/nightly/core/hash/trait.Hasher.html" title="trait core::hash::Hasher">Hasher</a>,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.3.0'>1.3.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/hash/mod.rs.html#202-208' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Feeds a slice of this type into the given [<code>Hasher</code>]. <a href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html#method.hash_slice">Read more</a></p>
-</div></div><h3 id='impl-From&lt;PowerInfoEntry&gt;' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;<a class="struct" href="../nvapi/clock/struct.PowerInfoEntry.html" title="struct nvapi::clock::PowerInfoEntry">PowerInfoEntry</a>&gt; for <a class="struct" href="../nvapi_hi/struct.PowerLimit.html" title="struct nvapi_hi::PowerLimit">PowerLimit</a></code><a href='#impl-From&lt;PowerInfoEntry&gt;' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/nvapi_hi/gpu.rs.html#371-378' title='goto source code'>[src]</a></span></h3>
+</div></div><h3 id='impl-From%3CPowerInfoEntry%3E' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;<a class="struct" href="../nvapi/clock/struct.PowerInfoEntry.html" title="struct nvapi::clock::PowerInfoEntry">PowerInfoEntry</a>&gt; for <a class="struct" href="../nvapi_hi/struct.PowerLimit.html" title="struct nvapi_hi::PowerLimit">PowerLimit</a></code><a href='#impl-From%3CPowerInfoEntry%3E' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/nvapi_hi/gpu.rs.html#371-378' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.from' class="method"><span id='from.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(info: <a class="struct" href="../nvapi/clock/struct.PowerInfoEntry.html" title="struct nvapi::clock::PowerInfoEntry">PowerInfoEntry</a>) -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/nvapi_hi/gpu.rs.html#372-377' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Performs the conversion.</p>
 </div></div></section>
@@ -120,13 +123,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

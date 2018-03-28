@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'>Module private</p><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#constants">Constants</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'><a href='../../../index.html'>nvapi_sys</a>::<wbr><a href='../../index.html'>gpu</a>::<wbr><a href='../index.html'>power</a></p><script>window.sidebarCurrent = {name: 'private', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+        <p class='location'>Module private</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#constants">Constants</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'><a href='../../../index.html'>nvapi_sys</a>::<wbr><a href='../../index.html'>gpu</a>::<wbr><a href='../index.html'>power</a></p><script>window.sidebarCurrent = {name: 'private', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -48,7 +49,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../../../src/nvapi_sys/gpu/power.rs.html#2-327' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../../../src/nvapi_sys/gpu/power.rs.html#2-329' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Undocumented API</p>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
@@ -169,7 +170,7 @@
                            <td><a class="constant" href="constant.NV_GPU_PERF_FLAGS_NO_LOAD_LIMIT.html"
                                   title='constant nvapi_sys::gpu::power::private::NV_GPU_PERF_FLAGS_NO_LOAD_LIMIT'>NV_GPU_PERF_FLAGS_NO_LOAD_LIMIT</a></td>
                            <td class='docblock-short'>
-                                
+                                <p>GPU utilization</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -180,17 +181,10 @@
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class="constant" href="constant.NV_GPU_PERF_FLAGS_TEMPERATURE_LIMIT.html"
-                                  title='constant nvapi_sys::gpu::power::private::NV_GPU_PERF_FLAGS_TEMPERATURE_LIMIT'>NV_GPU_PERF_FLAGS_TEMPERATURE_LIMIT</a></td>
+                           <td><a class="constant" href="constant.NV_GPU_PERF_FLAGS_THERMAL_LIMIT.html"
+                                  title='constant nvapi_sys::gpu::power::private::NV_GPU_PERF_FLAGS_THERMAL_LIMIT'>NV_GPU_PERF_FLAGS_THERMAL_LIMIT</a></td>
                            <td class='docblock-short'>
                                 
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="constant" href="constant.NV_GPU_PERF_FLAGS_UNKNOWN_8.html"
-                                  title='constant nvapi_sys::gpu::power::private::NV_GPU_PERF_FLAGS_UNKNOWN_8'>NV_GPU_PERF_FLAGS_UNKNOWN_8</a></td>
-                           <td class='docblock-short'>
-                                <p>Seen once with driver crash where flags = 0x0f</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -201,10 +195,17 @@
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class="constant" href="constant.NV_GPU_PERF_FLAGS_VOLTAGE_LIMIT.html"
-                                  title='constant nvapi_sys::gpu::power::private::NV_GPU_PERF_FLAGS_VOLTAGE_LIMIT'>NV_GPU_PERF_FLAGS_VOLTAGE_LIMIT</a></td>
+                           <td><a class="constant" href="constant.NV_GPU_PERF_FLAGS_VOLTAGE_OP_LIMIT.html"
+                                  title='constant nvapi_sys::gpu::power::private::NV_GPU_PERF_FLAGS_VOLTAGE_OP_LIMIT'>NV_GPU_PERF_FLAGS_VOLTAGE_OP_LIMIT</a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Operating voltage</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_PERF_FLAGS_VOLTAGE_REL_LIMIT.html"
+                                  title='constant nvapi_sys::gpu::power::private::NV_GPU_PERF_FLAGS_VOLTAGE_REL_LIMIT'>NV_GPU_PERF_FLAGS_VOLTAGE_REL_LIMIT</a></td>
+                           <td class='docblock-short'>
+                                <p>Reliability voltage</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -540,13 +541,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

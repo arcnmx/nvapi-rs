@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -679,19 +680,38 @@
 <span id="634">634</span>
 <span id="635">635</span>
 <span id="636">636</span>
+<span id="637">637</span>
+<span id="638">638</span>
+<span id="639">639</span>
+<span id="640">640</span>
+<span id="641">641</span>
+<span id="642">642</span>
+<span id="643">643</span>
+<span id="644">644</span>
+<span id="645">645</span>
+<span id="646">646</span>
+<span id="647">647</span>
+<span id="648">648</span>
+<span id="649">649</span>
+<span id="650">650</span>
+<span id="651">651</span>
+<span id="652">652</span>
+<span id="653">653</span>
 </pre><pre class="rust ">
-<span class="attribute">#<span class="op">!</span>[<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
+<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">mem</span>;
 
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">nvapis</span> {
     ($(
+        $(<span class="attribute">#[$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">meta</span>:<span class="ident">meta</span>)<span class="kw-2">*</span>]</span>)<span class="op">*</span>
         <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">id</span>:<span class="ident">expr</span>,
     )<span class="kw-2">*</span>) <span class="op">=&gt;</span> {
         <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">u32</span>)]</span>
         <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>)]</span>
         <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Api</span> {
         $(
+            $(<span class="attribute">#[$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">meta</span>)<span class="kw-2">*</span>]</span>)<span class="op">*</span>
             <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">id</span>,
         )<span class="op">*</span>
         }
@@ -1315,6 +1335,21 @@
 
 <span class="ident">NvAPI_D3D_GetObjectHandleForResource</span> <span class="op">=</span> <span class="number">0xfceac864</span>,
 
+<span class="comment">// source: gpu-z</span>
+
+<span class="doccomment">/// `Unknown(*mut { version = 0x00030038, count, .. })`</span>
+<span class="ident">Unknown_1629A173</span> <span class="op">=</span> <span class="number">0x1629a173</span>,
+<span class="doccomment">/// `Unknown(hDisplayHandle, *mut hGpu)` maybe?</span>
+<span class="ident">Unknown_F1D2777B</span> <span class="op">=</span> <span class="number">0xf1d2777b</span>,
+<span class="doccomment">/// `Unknown(hGpu, *mut u32, *mut u32)`</span>
+<span class="ident">Unknown_8EFC0978</span> <span class="op">=</span> <span class="number">0x8efc0978</span>,
+<span class="doccomment">/// `Unknown(hGpu, *mut { version = 0x00010008, value })` seen `value = 0x703`</span>
+<span class="ident">Unknown_B7BCF50D</span> <span class="op">=</span> <span class="number">0xb7bcf50d</span>,
+<span class="doccomment">/// `Unknown(*mut { version = 0x0002000c, count, ... })` might be handles?</span>
+<span class="ident">Unknown_36E39E6B</span> <span class="op">=</span> <span class="number">0x36e39e6b</span>,
+<span class="doccomment">/// `GPU_GetRasterOperators(hGpu, *mut u32)`</span>
+<span class="ident">Unknown_GetROPCount</span> <span class="op">=</span> <span class="number">0xfdc129fa</span>,
+
 }
 </pre>
 </section>
@@ -1334,13 +1369,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

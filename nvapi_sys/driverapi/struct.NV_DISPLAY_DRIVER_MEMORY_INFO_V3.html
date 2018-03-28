@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'>Struct NV_DISPLAY_DRIVER_MEMORY_INFO_V3</p><div class="block items"><ul><li><a href="#fields">Fields</a></li><li><a href="#methods">Methods</a></li><li><a href="#deref-methods">Methods from Deref&lt;Target=NV_DISPLAY_DRIVER_MEMORY_INFO_V2&gt;</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='../index.html'>nvapi_sys</a>::<wbr><a href='index.html'>driverapi</a></p><script>window.sidebarCurrent = {name: 'NV_DISPLAY_DRIVER_MEMORY_INFO_V3', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct NV_DISPLAY_DRIVER_MEMORY_INFO_V3</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#fields">Fields</a><div class="sidebar-links"><a href="#structfield.v2">v2</a><a href="#structfield.dedicatedVideoMemoryEvictionsSize">dedicatedVideoMemoryEvictionsSize</a><a href="#structfield.dedicatedVideoMemoryEvictionCount">dedicatedVideoMemoryEvictionCount</a></div><a class="sidebar-title" href="#methods">Methods</a><div class="sidebar-links"><a href="#method.zeroed">zeroed</a></div><a class="sidebar-title" href="#deref-methods">Methods from Deref&lt;Target=NV_DISPLAY_DRIVER_MEMORY_INFO_V2&gt;</a><div class="sidebar-links"></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Copy">Copy</a><a href="#impl-Clone">Clone</a><a href="#impl-Debug">Debug</a><a href="#impl-Deref">Deref</a><a href="#impl-DerefMut">DerefMut</a></div></div><p class='location'><a href='../index.html'>nvapi_sys</a>::<wbr><a href='index.html'>driverapi</a></p><script>window.sidebarCurrent = {name: 'NV_DISPLAY_DRIVER_MEMORY_INFO_V3', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -56,15 +57,18 @@
     pub dedicatedVideoMemoryEvictionCount: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>,
 }</pre><div class='docblock'><p>Used in NvAPI_GPU_GetMemoryInfo().</p>
 </div><h2 id='fields' class='fields small-section-header'>
-                       Fields<a href='#fields' class='anchor'></a></h2><span id='structfield.v2' class="structfield">
-                           <span id='v2.v' class='invisible'>
+                       Fields<a href='#fields' class='anchor'></a></h2><span id="structfield.v2" class="structfield small-section-header">
+                           <a href="#structfield.v2" class="anchor field"></a>
+                           <span id="v2.v" class='invisible'>
                            <code>v2: <a class="struct" href="../../nvapi_sys/driverapi/struct.NV_DISPLAY_DRIVER_MEMORY_INFO_V2.html" title="struct nvapi_sys::driverapi::NV_DISPLAY_DRIVER_MEMORY_INFO_V2">NV_DISPLAY_DRIVER_MEMORY_INFO_V2</a></code>
-                           </span></span><span id='structfield.dedicatedVideoMemoryEvictionsSize' class="structfield">
-                           <span id='dedicatedVideoMemoryEvictionsSize.v' class='invisible'>
+                           </span></span><span id="structfield.dedicatedVideoMemoryEvictionsSize" class="structfield small-section-header">
+                           <a href="#structfield.dedicatedVideoMemoryEvictionsSize" class="anchor field"></a>
+                           <span id="dedicatedVideoMemoryEvictionsSize.v" class='invisible'>
                            <code>dedicatedVideoMemoryEvictionsSize: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code>
                            </span></span><div class='docblock'><p>Size(in kb) of the total size of memory released as a result of the evictions.</p>
-</div><span id='structfield.dedicatedVideoMemoryEvictionCount' class="structfield">
-                           <span id='dedicatedVideoMemoryEvictionCount.v' class='invisible'>
+</div><span id="structfield.dedicatedVideoMemoryEvictionCount" class="structfield small-section-header">
+                           <a href="#structfield.dedicatedVideoMemoryEvictionCount" class="anchor field"></a>
+                           <span id="dedicatedVideoMemoryEvictionCount.v" class='invisible'>
                            <code>dedicatedVideoMemoryEvictionCount: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code>
                            </span></span><div class='docblock'><p>Indicates the number of eviction events that caused an allocation to be removed from dedicated video memory to free GPU
 video memory to make room for other allocations.</p>
@@ -73,7 +77,7 @@ video memory to make room for other allocations.</p>
                       Methods<a href='#methods' class='anchor'></a>
                     </h2>
                 <h3 id='impl' class='impl'><span class='in-band'><code>impl <a class="struct" href="../../nvapi_sys/driverapi/struct.NV_DISPLAY_DRIVER_MEMORY_INFO_V3.html" title="struct nvapi_sys::driverapi::NV_DISPLAY_DRIVER_MEMORY_INFO_V3">NV_DISPLAY_DRIVER_MEMORY_INFO_V3</a></code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#52-56' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.zeroed' class="method"><span id='zeroed.v' class='invisible'><code>fn <a href='#method.zeroed' class='fnname'>zeroed</a>() -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#53-55' title='goto source code'>[src]</a></span></h4>
+<div class='impl-items'><h4 id='method.zeroed' class="method"><span id='zeroed.v' class='invisible'><code>pub fn <a href='#method.zeroed' class='fnname'>zeroed</a>() -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#53-55' title='goto source code'>[src]</a></span></h4>
 </div>
                     <h2 id='deref-methods' class='small-section-header'>
                       Methods from <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/deref/trait.Deref.html" title="trait core::ops::deref::Deref">Deref</a>&lt;Target = <a class="struct" href="../../nvapi_sys/driverapi/struct.NV_DISPLAY_DRIVER_MEMORY_INFO_V2.html" title="struct nvapi_sys::driverapi::NV_DISPLAY_DRIVER_MEMORY_INFO_V2">NV_DISPLAY_DRIVER_MEMORY_INFO_V2</a>&gt;<a href='#deref-methods' class='anchor'></a>
@@ -90,7 +94,7 @@ video memory to make room for other allocations.</p>
 <div class='docblock'><p>Performs copy-assignment from <code>source</code>. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from">Read more</a></p>
 </div></div><h3 id='impl-Debug' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../../nvapi_sys/driverapi/struct.NV_DISPLAY_DRIVER_MEMORY_INFO_V3.html" title="struct nvapi_sys::driverapi::NV_DISPLAY_DRIVER_MEMORY_INFO_V3">NV_DISPLAY_DRIVER_MEMORY_INFO_V3</a></code><a href='#impl-Debug' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#47' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#47' title='goto source code'>[src]</a></span></h4>
-<div class='docblock'><p>Formats the value using the given formatter.</p>
+<div class='docblock'><p>Formats the value using the given formatter. <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt">Read more</a></p>
 </div></div><h3 id='impl-Deref' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/deref/trait.Deref.html" title="trait core::ops::deref::Deref">Deref</a> for <a class="struct" href="../../nvapi_sys/driverapi/struct.NV_DISPLAY_DRIVER_MEMORY_INFO_V3.html" title="struct nvapi_sys::driverapi::NV_DISPLAY_DRIVER_MEMORY_INFO_V3">NV_DISPLAY_DRIVER_MEMORY_INFO_V3</a></code><a href='#impl-Deref' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/nvapi_sys/macros.rs.html#22-28' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='associatedtype.Target' class="type"><span id='Target.t' class='invisible'><code>type <a href='https://doc.rust-lang.org/nightly/core/ops/deref/trait.Deref.html#associatedtype.Target' class="type">Target</a> = <a class="struct" href="../../nvapi_sys/driverapi/struct.NV_DISPLAY_DRIVER_MEMORY_INFO_V2.html" title="struct nvapi_sys::driverapi::NV_DISPLAY_DRIVER_MEMORY_INFO_V2">NV_DISPLAY_DRIVER_MEMORY_INFO_V2</a></code></span></h4>
 <div class='docblock'><p>The resulting type after dereferencing.</p>
@@ -116,13 +120,15 @@ video memory to make room for other allocations.</p>
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'>Struct NV_GPU_PERF_PSTATES20_INFO_V1</p><div class="block items"><ul><li><a href="#fields">Fields</a></li><li><a href="#methods">Methods</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='../../../index.html'>nvapi_hi</a>::<wbr><a href='../../index.html'>sys</a>::<wbr><a href='../index.html'>gpu</a>::<wbr><a href='index.html'>pstate</a></p><script>window.sidebarCurrent = {name: 'NV_GPU_PERF_PSTATES20_INFO_V1', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct NV_GPU_PERF_PSTATES20_INFO_V1</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#fields">Fields</a><div class="sidebar-links"><a href="#structfield.version">version</a><a href="#structfield.bIsEditable">bIsEditable</a><a href="#structfield.numPstates">numPstates</a><a href="#structfield.numClocks">numClocks</a><a href="#structfield.numBaseVoltages">numBaseVoltages</a><a href="#structfield.pstates">pstates</a></div><a class="sidebar-title" href="#methods">Methods</a><div class="sidebar-links"><a href="#method.zeroed">zeroed</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Debug">Debug</a><a href="#impl-Copy">Copy</a><a href="#impl-Clone">Clone</a></div></div><p class='location'><a href='../../../index.html'>nvapi_hi</a>::<wbr><a href='../../index.html'>sys</a>::<wbr><a href='../index.html'>gpu</a>::<wbr><a href='index.html'>pstate</a></p><script>window.sidebarCurrent = {name: 'NV_GPU_PERF_PSTATES20_INFO_V1', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -59,27 +60,33 @@
     pub pstates: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">[</a><a class="struct" href="../../../../nvapi_hi/sys/gpu/pstate/struct.NV_GPU_PERF_PSTATES20_PSTATE.html" title="struct nvapi_hi::sys::gpu::pstate::NV_GPU_PERF_PSTATES20_PSTATE">NV_GPU_PERF_PSTATES20_PSTATE</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">; 16]</a>,
 }</pre><div class='docblock'><p>Used in NvAPI_GPU_GetPstates20() interface call.</p>
 </div><h2 id='fields' class='fields small-section-header'>
-                       Fields<a href='#fields' class='anchor'></a></h2><span id='structfield.version' class="structfield">
-                           <span id='version.v' class='invisible'>
+                       Fields<a href='#fields' class='anchor'></a></h2><span id="structfield.version" class="structfield small-section-header">
+                           <a href="#structfield.version" class="anchor field"></a>
+                           <span id="version.v" class='invisible'>
                            <code>version: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code>
                            </span></span><div class='docblock'><p>Version info of the structure (NV_GPU_PERF_PSTATES20_INFO_VER<n>)</p>
-</div><span id='structfield.bIsEditable' class="structfield">
-                           <span id='bIsEditable.v' class='invisible'>
+</div><span id="structfield.bIsEditable" class="structfield small-section-header">
+                           <a href="#structfield.bIsEditable" class="anchor field"></a>
+                           <span id="bIsEditable.v" class='invisible'>
                            <code>bIsEditable: <a class="struct" href="../../../../nvapi_hi/sys/struct.BoolU32.html" title="struct nvapi_hi::sys::BoolU32">BoolU32</a></code>
-                           </span></span><span id='structfield.numPstates' class="structfield">
-                           <span id='numPstates.v' class='invisible'>
+                           </span></span><span id="structfield.numPstates" class="structfield small-section-header">
+                           <a href="#structfield.numPstates" class="anchor field"></a>
+                           <span id="numPstates.v" class='invisible'>
                            <code>numPstates: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code>
                            </span></span><div class='docblock'><p>Number of populated pstates</p>
-</div><span id='structfield.numClocks' class="structfield">
-                           <span id='numClocks.v' class='invisible'>
+</div><span id="structfield.numClocks" class="structfield small-section-header">
+                           <a href="#structfield.numClocks" class="anchor field"></a>
+                           <span id="numClocks.v" class='invisible'>
                            <code>numClocks: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code>
                            </span></span><div class='docblock'><p>Number of populated clocks (per pstate)</p>
-</div><span id='structfield.numBaseVoltages' class="structfield">
-                           <span id='numBaseVoltages.v' class='invisible'>
+</div><span id="structfield.numBaseVoltages" class="structfield small-section-header">
+                           <a href="#structfield.numBaseVoltages" class="anchor field"></a>
+                           <span id="numBaseVoltages.v" class='invisible'>
                            <code>numBaseVoltages: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code>
                            </span></span><div class='docblock'><p>Number of populated base voltages (per pstate)</p>
-</div><span id='structfield.pstates' class="structfield">
-                           <span id='pstates.v' class='invisible'>
+</div><span id="structfield.pstates" class="structfield small-section-header">
+                           <a href="#structfield.pstates" class="anchor field"></a>
+                           <span id="pstates.v" class='invisible'>
                            <code>pstates: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">[</a><a class="struct" href="../../../../nvapi_hi/sys/gpu/pstate/struct.NV_GPU_PERF_PSTATES20_PSTATE.html" title="struct nvapi_hi::sys::gpu::pstate::NV_GPU_PERF_PSTATES20_PSTATE">NV_GPU_PERF_PSTATES20_PSTATE</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">; 16]</a></code>
                            </span></span><div class='docblock'><p>Performance state (P-State) settings
 Valid index range is 0 to numPstates-1</p>
@@ -88,16 +95,16 @@ Valid index range is 0 to numPstates-1</p>
                       Methods<a href='#methods' class='anchor'></a>
                     </h2>
                 <h3 id='impl' class='impl'><span class='in-band'><code>impl <a class="struct" href="../../../../nvapi_hi/sys/gpu/pstate/struct.NV_GPU_PERF_PSTATES20_INFO_V1.html" title="struct nvapi_hi::sys::gpu::pstate::NV_GPU_PERF_PSTATES20_INFO_V1">NV_GPU_PERF_PSTATES20_INFO_V1</a></code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../../src/nvapi_sys/macros.rs.html#52-56' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.zeroed' class="method"><span id='zeroed.v' class='invisible'><code>fn <a href='#method.zeroed' class='fnname'>zeroed</a>() -&gt; <a class="struct" href="../../../../nvapi_hi/sys/gpu/pstate/struct.NV_GPU_PERF_PSTATES20_INFO_V1.html" title="struct nvapi_hi::sys::gpu::pstate::NV_GPU_PERF_PSTATES20_INFO_V1">NV_GPU_PERF_PSTATES20_INFO_V1</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../../src/nvapi_sys/macros.rs.html#53-55' title='goto source code'>[src]</a></span></h4>
+<div class='impl-items'><h4 id='method.zeroed' class="method"><span id='zeroed.v' class='invisible'><code>pub fn <a href='#method.zeroed' class='fnname'>zeroed</a>() -&gt; <a class="struct" href="../../../../nvapi_hi/sys/gpu/pstate/struct.NV_GPU_PERF_PSTATES20_INFO_V1.html" title="struct nvapi_hi::sys::gpu::pstate::NV_GPU_PERF_PSTATES20_INFO_V1">NV_GPU_PERF_PSTATES20_INFO_V1</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../../src/nvapi_sys/macros.rs.html#53-55' title='goto source code'>[src]</a></span></h4>
 </div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
             </h2>
-        <h3 id='impl-Copy' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html" title="trait core::marker::Copy">Copy</a> for <a class="struct" href="../../../../nvapi_hi/sys/gpu/pstate/struct.NV_GPU_PERF_PSTATES20_INFO_V1.html" title="struct nvapi_hi::sys::gpu::pstate::NV_GPU_PERF_PSTATES20_INFO_V1">NV_GPU_PERF_PSTATES20_INFO_V1</a></code><a href='#impl-Copy' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../../src/nvapi_sys/macros.rs.html#47' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'></div><h3 id='impl-Debug' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../../../../nvapi_hi/sys/gpu/pstate/struct.NV_GPU_PERF_PSTATES20_INFO_V1.html" title="struct nvapi_hi::sys::gpu::pstate::NV_GPU_PERF_PSTATES20_INFO_V1">NV_GPU_PERF_PSTATES20_INFO_V1</a></code><a href='#impl-Debug' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../../src/nvapi_sys/macros.rs.html#47' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">()</a>, <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Error.html" title="struct core::fmt::Error">Error</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../../src/nvapi_sys/macros.rs.html#47' title='goto source code'>[src]</a></span></h4>
-<div class='docblock'><p>Formats the value using the given formatter.</p>
-</div></div><h3 id='impl-Clone' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> for <a class="struct" href="../../../../nvapi_hi/sys/gpu/pstate/struct.NV_GPU_PERF_PSTATES20_INFO_V1.html" title="struct nvapi_hi::sys::gpu::pstate::NV_GPU_PERF_PSTATES20_INFO_V1">NV_GPU_PERF_PSTATES20_INFO_V1</a></code><a href='#impl-Clone' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../../src/nvapi_sys/macros.rs.html#47' title='goto source code'>[src]</a></span></h3>
+        <h3 id='impl-Debug' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../../../../nvapi_hi/sys/gpu/pstate/struct.NV_GPU_PERF_PSTATES20_INFO_V1.html" title="struct nvapi_hi::sys::gpu::pstate::NV_GPU_PERF_PSTATES20_INFO_V1">NV_GPU_PERF_PSTATES20_INFO_V1</a></code><a href='#impl-Debug' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../../src/nvapi_sys/macros.rs.html#47' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>, <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Error.html" title="struct core::fmt::Error">Error</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../../src/nvapi_sys/macros.rs.html#47' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Formats the value using the given formatter. <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt">Read more</a></p>
+</div></div><h3 id='impl-Copy' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html" title="trait core::marker::Copy">Copy</a> for <a class="struct" href="../../../../nvapi_hi/sys/gpu/pstate/struct.NV_GPU_PERF_PSTATES20_INFO_V1.html" title="struct nvapi_hi::sys::gpu::pstate::NV_GPU_PERF_PSTATES20_INFO_V1">NV_GPU_PERF_PSTATES20_INFO_V1</a></code><a href='#impl-Copy' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../../src/nvapi_sys/macros.rs.html#47' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'></div><h3 id='impl-Clone' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> for <a class="struct" href="../../../../nvapi_hi/sys/gpu/pstate/struct.NV_GPU_PERF_PSTATES20_INFO_V1.html" title="struct nvapi_hi::sys::gpu::pstate::NV_GPU_PERF_PSTATES20_INFO_V1">NV_GPU_PERF_PSTATES20_INFO_V1</a></code><a href='#impl-Clone' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../../src/nvapi_sys/macros.rs.html#47' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.clone' class="method"><span id='clone.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class="struct" href="../../../../nvapi_hi/sys/gpu/pstate/struct.NV_GPU_PERF_PSTATES20_INFO_V1.html" title="struct nvapi_hi::sys::gpu::pstate::NV_GPU_PERF_PSTATES20_INFO_V1">NV_GPU_PERF_PSTATES20_INFO_V1</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../../src/nvapi_sys/macros.rs.html#47' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></p>
 </div><h4 id='method.clone_from' class="method"><span id='clone_from.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Self)</code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/core/clone.rs.html#112-114' title='goto source code'>[src]</a></span></h4>
@@ -119,13 +126,15 @@ Valid index range is 0 to numPstates-1</p>
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

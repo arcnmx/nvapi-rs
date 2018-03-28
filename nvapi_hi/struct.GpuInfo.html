@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'>Struct GpuInfo</p><div class="block items"><ul><li><a href="#fields">Fields</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='index.html'>nvapi_hi</a></p><script>window.sidebarCurrent = {name: 'GpuInfo', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct GpuInfo</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#fields">Fields</a><div class="sidebar-links"><a href="#structfield.name">name</a><a href="#structfield.codename">codename</a><a href="#structfield.bios_version">bios_version</a><a href="#structfield.driver_model">driver_model</a><a href="#structfield.vendor">vendor</a><a href="#structfield.pci">pci</a><a href="#structfield.memory">memory</a><a href="#structfield.system_type">system_type</a><a href="#structfield.ram_type">ram_type</a><a href="#structfield.ram_maker">ram_maker</a><a href="#structfield.ram_bus_width">ram_bus_width</a><a href="#structfield.ram_bank_count">ram_bank_count</a><a href="#structfield.ram_partition_count">ram_partition_count</a><a href="#structfield.foundry">foundry</a><a href="#structfield.core_count">core_count</a><a href="#structfield.shader_pipe_count">shader_pipe_count</a><a href="#structfield.shader_sub_pipe_count">shader_sub_pipe_count</a><a href="#structfield.base_clocks">base_clocks</a><a href="#structfield.boost_clocks">boost_clocks</a><a href="#structfield.sensors">sensors</a><a href="#structfield.coolers">coolers</a><a href="#structfield.perf">perf</a><a href="#structfield.sensor_limits">sensor_limits</a><a href="#structfield.power_limits">power_limits</a><a href="#structfield.pstate_limits">pstate_limits</a><a href="#structfield.overvolt_limits">overvolt_limits</a><a href="#structfield.vfp_limits">vfp_limits</a><a href="#structfield.vfp_locks">vfp_locks</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Debug">Debug</a><a href="#impl-Clone">Clone</a><a href="#impl-PartialOrd">PartialOrd</a><a href="#impl-Ord">Ord</a><a href="#impl-PartialEq">PartialEq</a><a href="#impl-Eq">Eq</a><a href="#impl-Hash">Hash</a></div></div><p class='location'><a href='index.html'>nvapi_hi</a></p><script>window.sidebarCurrent = {name: 'GpuInfo', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -79,89 +80,117 @@
     pub vfp_limits: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/btree/map/struct.BTreeMap.html" title="struct alloc::btree::map::BTreeMap">BTreeMap</a>&lt;<a class="enum" href="../nvapi_hi/sys/gpu/clock/enum.PublicClockId.html" title="enum nvapi_hi::sys::gpu::clock::PublicClockId">ClockDomain</a>, <a class="struct" href="../nvapi_hi/struct.VfpRange.html" title="struct nvapi_hi::VfpRange">VfpRange</a>&gt;,
     pub vfp_locks: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>&gt;,
 }</pre><h2 id='fields' class='fields small-section-header'>
-                       Fields<a href='#fields' class='anchor'></a></h2><span id='structfield.name' class="structfield">
-                           <span id='name.v' class='invisible'>
+                       Fields<a href='#fields' class='anchor'></a></h2><span id="structfield.name" class="structfield small-section-header">
+                           <a href="#structfield.name" class="anchor field"></a>
+                           <span id="name.v" class='invisible'>
                            <code>name: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a></code>
-                           </span></span><span id='structfield.codename' class="structfield">
-                           <span id='codename.v' class='invisible'>
+                           </span></span><span id="structfield.codename" class="structfield small-section-header">
+                           <a href="#structfield.codename" class="anchor field"></a>
+                           <span id="codename.v" class='invisible'>
                            <code>codename: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a></code>
-                           </span></span><span id='structfield.bios_version' class="structfield">
-                           <span id='bios_version.v' class='invisible'>
+                           </span></span><span id="structfield.bios_version" class="structfield small-section-header">
+                           <a href="#structfield.bios_version" class="anchor field"></a>
+                           <span id="bios_version.v" class='invisible'>
                            <code>bios_version: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/string/struct.String.html" title="struct alloc::string::String">String</a></code>
-                           </span></span><span id='structfield.driver_model' class="structfield">
-                           <span id='driver_model.v' class='invisible'>
+                           </span></span><span id="structfield.driver_model" class="structfield small-section-header">
+                           <a href="#structfield.driver_model" class="anchor field"></a>
+                           <span id="driver_model.v" class='invisible'>
                            <code>driver_model: <a class="struct" href="../nvapi_hi/struct.DriverModel.html" title="struct nvapi_hi::DriverModel">DriverModel</a></code>
-                           </span></span><span id='structfield.vendor' class="structfield">
-                           <span id='vendor.v' class='invisible'>
+                           </span></span><span id="structfield.vendor" class="structfield small-section-header">
+                           <a href="#structfield.vendor" class="anchor field"></a>
+                           <span id="vendor.v" class='invisible'>
                            <code>vendor: <a class="enum" href="../nvapi_hi/sys/gpu/private/enum.VendorId.html" title="enum nvapi_hi::sys::gpu::private::VendorId">Vendor</a></code>
-                           </span></span><span id='structfield.pci' class="structfield">
-                           <span id='pci.v' class='invisible'>
+                           </span></span><span id="structfield.pci" class="structfield small-section-header">
+                           <a href="#structfield.pci" class="anchor field"></a>
+                           <span id="pci.v" class='invisible'>
                            <code>pci: <a class="struct" href="../nvapi_hi/struct.PciIdentifiers.html" title="struct nvapi_hi::PciIdentifiers">PciIdentifiers</a></code>
-                           </span></span><span id='structfield.memory' class="structfield">
-                           <span id='memory.v' class='invisible'>
+                           </span></span><span id="structfield.memory" class="structfield small-section-header">
+                           <a href="#structfield.memory" class="anchor field"></a>
+                           <span id="memory.v" class='invisible'>
                            <code>memory: <a class="struct" href="../nvapi_hi/struct.MemoryInfo.html" title="struct nvapi_hi::MemoryInfo">MemoryInfo</a></code>
-                           </span></span><span id='structfield.system_type' class="structfield">
-                           <span id='system_type.v' class='invisible'>
+                           </span></span><span id="structfield.system_type" class="structfield small-section-header">
+                           <a href="#structfield.system_type" class="anchor field"></a>
+                           <span id="system_type.v" class='invisible'>
                            <code>system_type: <a class="enum" href="../nvapi_hi/sys/gpu/enum.SystemType.html" title="enum nvapi_hi::sys::gpu::SystemType">SystemType</a></code>
-                           </span></span><span id='structfield.ram_type' class="structfield">
-                           <span id='ram_type.v' class='invisible'>
+                           </span></span><span id="structfield.ram_type" class="structfield small-section-header">
+                           <a href="#structfield.ram_type" class="anchor field"></a>
+                           <span id="ram_type.v" class='invisible'>
                            <code>ram_type: <a class="enum" href="../nvapi_hi/sys/gpu/private/enum.RamType.html" title="enum nvapi_hi::sys::gpu::private::RamType">RamType</a></code>
-                           </span></span><span id='structfield.ram_maker' class="structfield">
-                           <span id='ram_maker.v' class='invisible'>
+                           </span></span><span id="structfield.ram_maker" class="structfield small-section-header">
+                           <a href="#structfield.ram_maker" class="anchor field"></a>
+                           <span id="ram_maker.v" class='invisible'>
                            <code>ram_maker: <a class="enum" href="../nvapi_hi/sys/gpu/private/enum.RamMaker.html" title="enum nvapi_hi::sys::gpu::private::RamMaker">RamMaker</a></code>
-                           </span></span><span id='structfield.ram_bus_width' class="structfield">
-                           <span id='ram_bus_width.v' class='invisible'>
+                           </span></span><span id="structfield.ram_bus_width" class="structfield small-section-header">
+                           <a href="#structfield.ram_bus_width" class="anchor field"></a>
+                           <span id="ram_bus_width.v" class='invisible'>
                            <code>ram_bus_width: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code>
-                           </span></span><span id='structfield.ram_bank_count' class="structfield">
-                           <span id='ram_bank_count.v' class='invisible'>
+                           </span></span><span id="structfield.ram_bank_count" class="structfield small-section-header">
+                           <a href="#structfield.ram_bank_count" class="anchor field"></a>
+                           <span id="ram_bank_count.v" class='invisible'>
                            <code>ram_bank_count: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code>
-                           </span></span><span id='structfield.ram_partition_count' class="structfield">
-                           <span id='ram_partition_count.v' class='invisible'>
+                           </span></span><span id="structfield.ram_partition_count" class="structfield small-section-header">
+                           <a href="#structfield.ram_partition_count" class="anchor field"></a>
+                           <span id="ram_partition_count.v" class='invisible'>
                            <code>ram_partition_count: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code>
-                           </span></span><span id='structfield.foundry' class="structfield">
-                           <span id='foundry.v' class='invisible'>
+                           </span></span><span id="structfield.foundry" class="structfield small-section-header">
+                           <a href="#structfield.foundry" class="anchor field"></a>
+                           <span id="foundry.v" class='invisible'>
                            <code>foundry: <a class="enum" href="../nvapi_hi/sys/gpu/private/enum.Foundry.html" title="enum nvapi_hi::sys::gpu::private::Foundry">Foundry</a></code>
-                           </span></span><span id='structfield.core_count' class="structfield">
-                           <span id='core_count.v' class='invisible'>
+                           </span></span><span id="structfield.core_count" class="structfield small-section-header">
+                           <a href="#structfield.core_count" class="anchor field"></a>
+                           <span id="core_count.v" class='invisible'>
                            <code>core_count: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code>
-                           </span></span><span id='structfield.shader_pipe_count' class="structfield">
-                           <span id='shader_pipe_count.v' class='invisible'>
+                           </span></span><span id="structfield.shader_pipe_count" class="structfield small-section-header">
+                           <a href="#structfield.shader_pipe_count" class="anchor field"></a>
+                           <span id="shader_pipe_count.v" class='invisible'>
                            <code>shader_pipe_count: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code>
-                           </span></span><span id='structfield.shader_sub_pipe_count' class="structfield">
-                           <span id='shader_sub_pipe_count.v' class='invisible'>
+                           </span></span><span id="structfield.shader_sub_pipe_count" class="structfield small-section-header">
+                           <a href="#structfield.shader_sub_pipe_count" class="anchor field"></a>
+                           <span id="shader_sub_pipe_count.v" class='invisible'>
                            <code>shader_sub_pipe_count: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code>
-                           </span></span><span id='structfield.base_clocks' class="structfield">
-                           <span id='base_clocks.v' class='invisible'>
+                           </span></span><span id="structfield.base_clocks" class="structfield small-section-header">
+                           <a href="#structfield.base_clocks" class="anchor field"></a>
+                           <span id="base_clocks.v" class='invisible'>
                            <code>base_clocks: <a class="type" href="../nvapi_hi/type.ClockFrequencies.html" title="type nvapi_hi::ClockFrequencies">ClockFrequencies</a></code>
-                           </span></span><span id='structfield.boost_clocks' class="structfield">
-                           <span id='boost_clocks.v' class='invisible'>
+                           </span></span><span id="structfield.boost_clocks" class="structfield small-section-header">
+                           <a href="#structfield.boost_clocks" class="anchor field"></a>
+                           <span id="boost_clocks.v" class='invisible'>
                            <code>boost_clocks: <a class="type" href="../nvapi_hi/type.ClockFrequencies.html" title="type nvapi_hi::ClockFrequencies">ClockFrequencies</a></code>
-                           </span></span><span id='structfield.sensors' class="structfield">
-                           <span id='sensors.v' class='invisible'>
+                           </span></span><span id="structfield.sensors" class="structfield small-section-header">
+                           <a href="#structfield.sensors" class="anchor field"></a>
+                           <span id="sensors.v" class='invisible'>
                            <code>sensors: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="../nvapi_hi/struct.SensorDesc.html" title="struct nvapi_hi::SensorDesc">SensorDesc</a>&gt;</code>
-                           </span></span><span id='structfield.coolers' class="structfield">
-                           <span id='coolers.v' class='invisible'>
+                           </span></span><span id="structfield.coolers" class="structfield small-section-header">
+                           <a href="#structfield.coolers" class="anchor field"></a>
+                           <span id="coolers.v" class='invisible'>
                            <code>coolers: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="../nvapi_hi/struct.CoolerDesc.html" title="struct nvapi_hi::CoolerDesc">CoolerDesc</a>&gt;</code>
-                           </span></span><span id='structfield.perf' class="structfield">
-                           <span id='perf.v' class='invisible'>
+                           </span></span><span id="structfield.perf" class="structfield small-section-header">
+                           <a href="#structfield.perf" class="anchor field"></a>
+                           <span id="perf.v" class='invisible'>
                            <code>perf: <a class="struct" href="../nvapi_hi/struct.PerfInfo.html" title="struct nvapi_hi::PerfInfo">PerfInfo</a></code>
-                           </span></span><span id='structfield.sensor_limits' class="structfield">
-                           <span id='sensor_limits.v' class='invisible'>
+                           </span></span><span id="structfield.sensor_limits" class="structfield small-section-header">
+                           <a href="#structfield.sensor_limits" class="anchor field"></a>
+                           <span id="sensor_limits.v" class='invisible'>
                            <code>sensor_limits: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="../nvapi_hi/struct.SensorLimit.html" title="struct nvapi_hi::SensorLimit">SensorLimit</a>&gt;</code>
-                           </span></span><span id='structfield.power_limits' class="structfield">
-                           <span id='power_limits.v' class='invisible'>
+                           </span></span><span id="structfield.power_limits" class="structfield small-section-header">
+                           <a href="#structfield.power_limits" class="anchor field"></a>
+                           <span id="power_limits.v" class='invisible'>
                            <code>power_limits: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="../nvapi_hi/struct.PowerLimit.html" title="struct nvapi_hi::PowerLimit">PowerLimit</a>&gt;</code>
-                           </span></span><span id='structfield.pstate_limits' class="structfield">
-                           <span id='pstate_limits.v' class='invisible'>
+                           </span></span><span id="structfield.pstate_limits" class="structfield small-section-header">
+                           <a href="#structfield.pstate_limits" class="anchor field"></a>
+                           <span id="pstate_limits.v" class='invisible'>
                            <code>pstate_limits: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/btree/map/struct.BTreeMap.html" title="struct alloc::btree::map::BTreeMap">BTreeMap</a>&lt;<a class="enum" href="../nvapi_hi/sys/gpu/pstate/enum.PstateId.html" title="enum nvapi_hi::sys::gpu::pstate::PstateId">PState</a>, <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/btree/map/struct.BTreeMap.html" title="struct alloc::btree::map::BTreeMap">BTreeMap</a>&lt;<a class="enum" href="../nvapi_hi/sys/gpu/clock/enum.PublicClockId.html" title="enum nvapi_hi::sys::gpu::clock::PublicClockId">ClockDomain</a>, <a class="struct" href="../nvapi_hi/struct.PStateLimit.html" title="struct nvapi_hi::PStateLimit">PStateLimit</a>&gt;&gt;</code>
-                           </span></span><span id='structfield.overvolt_limits' class="structfield">
-                           <span id='overvolt_limits.v' class='invisible'>
+                           </span></span><span id="structfield.overvolt_limits" class="structfield small-section-header">
+                           <a href="#structfield.overvolt_limits" class="anchor field"></a>
+                           <span id="overvolt_limits.v" class='invisible'>
                            <code>overvolt_limits: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="struct" href="../nvapi_hi/struct.OvervoltLimit.html" title="struct nvapi_hi::OvervoltLimit">OvervoltLimit</a>&gt;</code>
-                           </span></span><span id='structfield.vfp_limits' class="structfield">
-                           <span id='vfp_limits.v' class='invisible'>
+                           </span></span><span id="structfield.vfp_limits" class="structfield small-section-header">
+                           <a href="#structfield.vfp_limits" class="anchor field"></a>
+                           <span id="vfp_limits.v" class='invisible'>
                            <code>vfp_limits: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/btree/map/struct.BTreeMap.html" title="struct alloc::btree::map::BTreeMap">BTreeMap</a>&lt;<a class="enum" href="../nvapi_hi/sys/gpu/clock/enum.PublicClockId.html" title="enum nvapi_hi::sys::gpu::clock::PublicClockId">ClockDomain</a>, <a class="struct" href="../nvapi_hi/struct.VfpRange.html" title="struct nvapi_hi::VfpRange">VfpRange</a>&gt;</code>
-                           </span></span><span id='structfield.vfp_locks' class="structfield">
-                           <span id='vfp_locks.v' class='invisible'>
+                           </span></span><span id="structfield.vfp_locks" class="structfield small-section-header">
+                           <a href="#structfield.vfp_locks" class="anchor field"></a>
+                           <span id="vfp_locks.v" class='invisible'>
                            <code>vfp_locks: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>&gt;</code>
                            </span></span>
             <h2 id='implementations' class='small-section-header'>
@@ -169,7 +198,7 @@
             </h2>
         <h3 id='impl-Debug' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../nvapi_hi/struct.GpuInfo.html" title="struct nvapi_hi::GpuInfo">GpuInfo</a></code><a href='#impl-Debug' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/nvapi_hi/gpu.rs.html#29' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/nvapi_hi/gpu.rs.html#29' title='goto source code'>[src]</a></span></h4>
-<div class='docblock'><p>Formats the value using the given formatter.</p>
+<div class='docblock'><p>Formats the value using the given formatter. <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt">Read more</a></p>
 </div></div><h3 id='impl-Clone' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> for <a class="struct" href="../nvapi_hi/struct.GpuInfo.html" title="struct nvapi_hi::GpuInfo">GpuInfo</a></code><a href='#impl-Clone' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/nvapi_hi/gpu.rs.html#29' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.clone' class="method"><span id='clone.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class="struct" href="../nvapi_hi/struct.GpuInfo.html" title="struct nvapi_hi::GpuInfo">GpuInfo</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/nvapi_hi/gpu.rs.html#29' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></p>
@@ -221,13 +250,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

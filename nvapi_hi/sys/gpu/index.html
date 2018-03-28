@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'>Module gpu</p><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#enums">Enums</a></li><li><a href="#constants">Constants</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'><a href='../../index.html'>nvapi_hi</a>::<wbr><a href='../index.html'>sys</a></p><script>window.sidebarCurrent = {name: 'gpu', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+        <p class='location'>Module gpu</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#enums">Enums</a></li><li><a href="#constants">Constants</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'><a href='../../index.html'>nvapi_hi</a>::<wbr><a href='../index.html'>sys</a></p><script>window.sidebarCurrent = {name: 'gpu', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -48,7 +49,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../../src/nvapi_sys/lib.rs.html#41' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../../src/nvapi_sys/lib.rs.html#39' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>The GPU APIs retrieve and control various attributes of the GPU, such as outputs, VBIOS revision, APG rate, frame buffer size, and thermal settings.</p>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
@@ -66,6 +67,13 @@ on a per-GPU basis.</p>
                            <td class='docblock-short'>
                                 <p>The GPU cooler APIs are used to get and set the fan level or equivalent
 cooler levels for various target devices associated with the GPU.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="mod" href="display/index.html"
+                                  title='mod nvapi_hi::sys::gpu::display'>display</a></td>
+                           <td class='docblock-short'>
+                                
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -273,13 +281,15 @@ On newer architectures, this corresponds to the number of SM units</p>
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -370,6 +371,8 @@
 <span id="325">325</span>
 <span id="326">326</span>
 <span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
 </pre><pre class="rust ">
 <span class="doccomment">/// Undocumented API</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">private</span> {
@@ -564,10 +567,12 @@
     <span class="macro">nvbits</span><span class="macro">!</span> {
         <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">NV_GPU_PERF_FLAGS</span> <span class="op">/</span> <span class="ident">PerfFlags</span> {
             <span class="ident">NV_GPU_PERF_FLAGS_POWER_LIMIT</span> <span class="op">/</span> <span class="ident">POWER_LIMIT</span> <span class="op">=</span> <span class="number">1</span>,
-            <span class="ident">NV_GPU_PERF_FLAGS_TEMPERATURE_LIMIT</span> <span class="op">/</span> <span class="ident">TEMPERATURE_LIMIT</span> <span class="op">=</span> <span class="number">2</span>,
-            <span class="ident">NV_GPU_PERF_FLAGS_VOLTAGE_LIMIT</span> <span class="op">/</span> <span class="ident">VOLTAGE_LIMIT</span> <span class="op">=</span> <span class="number">4</span>,
-            <span class="doccomment">/// Seen once with driver crash where flags = 0x0f</span>
-            <span class="ident">NV_GPU_PERF_FLAGS_UNKNOWN_8</span> <span class="op">/</span> <span class="ident">UNKNOWN_8</span> <span class="op">=</span> <span class="number">8</span>,
+            <span class="ident">NV_GPU_PERF_FLAGS_THERMAL_LIMIT</span> <span class="op">/</span> <span class="ident">THERMAL_LIMIT</span> <span class="op">=</span> <span class="number">2</span>,
+            <span class="doccomment">/// Reliability voltage</span>
+            <span class="ident">NV_GPU_PERF_FLAGS_VOLTAGE_REL_LIMIT</span> <span class="op">/</span> <span class="ident">VOLTAGE_REL_LIMIT</span> <span class="op">=</span> <span class="number">4</span>,
+            <span class="doccomment">/// Operating voltage</span>
+            <span class="ident">NV_GPU_PERF_FLAGS_VOLTAGE_OP_LIMIT</span> <span class="op">/</span> <span class="ident">VOLTAGE_OP_LIMIT</span> <span class="op">=</span> <span class="number">8</span>,
+            <span class="doccomment">/// GPU utilization</span>
             <span class="ident">NV_GPU_PERF_FLAGS_NO_LOAD_LIMIT</span> <span class="op">/</span> <span class="ident">NO_LOAD_LIMIT</span> <span class="op">=</span> <span class="number">16</span>,
             <span class="doccomment">/// Never seen this</span>
             <span class="ident">NV_GPU_PERF_FLAGS_UNKNOWN_32</span> <span class="op">/</span> <span class="ident">UNKNOWN_32</span> <span class="op">=</span> <span class="number">32</span>,
@@ -577,9 +582,9 @@
     <span class="macro">nvenum_display</span><span class="macro">!</span> {
         <span class="ident">PerfFlags</span> <span class="op">=&gt;</span> {
             <span class="ident">POWER_LIMIT</span> <span class="op">=</span> <span class="string">&quot;Power&quot;</span>,
-            <span class="ident">TEMPERATURE_LIMIT</span> <span class="op">=</span> <span class="string">&quot;Temperature&quot;</span>,
-            <span class="ident">VOLTAGE_LIMIT</span> <span class="op">=</span> <span class="string">&quot;Voltage&quot;</span>,
-            <span class="ident">UNKNOWN_8</span> <span class="op">=</span> <span class="string">&quot;Unknown8&quot;</span>,
+            <span class="ident">THERMAL_LIMIT</span> <span class="op">=</span> <span class="string">&quot;Temperature&quot;</span>,
+            <span class="ident">VOLTAGE_REL_LIMIT</span> <span class="op">=</span> <span class="string">&quot;Reliability Voltage&quot;</span>,
+            <span class="ident">VOLTAGE_OP_LIMIT</span> <span class="op">=</span> <span class="string">&quot;Operating Voltage&quot;</span>,
             <span class="ident">NO_LOAD_LIMIT</span> <span class="op">=</span> <span class="string">&quot;No Load&quot;</span>,
             <span class="ident">UNKNOWN_32</span> <span class="op">=</span> <span class="string">&quot;Unknown32&quot;</span>,
             _ <span class="op">=</span> _,
@@ -658,12 +663,12 @@
 
     <span class="macro">nvapi</span><span class="macro">!</span> {
         <span class="doccomment">/// Maxwell only</span>
-        <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">NvAPI_GPU_GetVoltageDomainsStatus</span>(<span class="ident">hPhysicalGPU</span>: <span class="ident">NvPhysicalGpuHandle</span>, <span class="ident">pPerfStatus</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">NV_VOLT_STATUS</span>) <span class="op">-&gt;</span> <span class="ident">NvAPI_Status</span>;
+        <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">NvAPI_GPU_GetVoltageDomainsStatus</span>(<span class="ident">hPhysicalGPU</span>: <span class="ident">NvPhysicalGpuHandle</span>, <span class="ident">pVoltStatus</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">NV_VOLT_STATUS</span>) <span class="op">-&gt;</span> <span class="ident">NvAPI_Status</span>;
     }
 
     <span class="macro">nvapi</span><span class="macro">!</span> {
         <span class="doccomment">/// Maxwell only</span>
-        <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">NvAPI_GPU_GetVoltageStep</span>(<span class="ident">hPhysicalGPU</span>: <span class="ident">NvPhysicalGpuHandle</span>, <span class="ident">pPerfStatus</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">NV_VOLT_STATUS</span>) <span class="op">-&gt;</span> <span class="ident">NvAPI_Status</span>;
+        <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">NvAPI_GPU_GetVoltageStep</span>(<span class="ident">hPhysicalGPU</span>: <span class="ident">NvPhysicalGpuHandle</span>, <span class="ident">pVoltStep</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">NV_VOLT_STATUS</span>) <span class="op">-&gt;</span> <span class="ident">NvAPI_Status</span>;
     }
 
     <span class="macro">nvstruct</span><span class="macro">!</span> {
@@ -695,7 +700,7 @@
 
     <span class="macro">nvapi</span><span class="macro">!</span> {
         <span class="doccomment">/// Maxwell only</span>
-        <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">NvAPI_GPU_GetVoltages</span>(<span class="ident">hPhysicalGPU</span>: <span class="ident">NvPhysicalGpuHandle</span>, <span class="ident">pPerfStatus</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">NV_VOLT_TABLE</span>) <span class="op">-&gt;</span> <span class="ident">NvAPI_Status</span>;
+        <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">NvAPI_GPU_GetVoltages</span>(<span class="ident">hPhysicalGPU</span>: <span class="ident">NvPhysicalGpuHandle</span>, <span class="ident">pVolts</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">NV_VOLT_TABLE</span>) <span class="op">-&gt;</span> <span class="ident">NvAPI_Status</span>;
     }
 }
 </pre>
@@ -716,13 +721,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

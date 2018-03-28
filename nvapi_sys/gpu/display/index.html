@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `display` mod in crate `nvapi_sys`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, display">
+
+    <title>nvapi_sys::gpu::display - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc mod">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
+        
+        <p class='location'>Module display</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#constants">Constants</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'><a href='../../index.html'>nvapi_sys</a>::<wbr><a href='../index.html'>gpu</a></p><script>window.sidebarCurrent = {name: 'display', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script></div>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Module <a href='../../index.html'>nvapi_sys</a>::<wbr><a href='../index.html'>gpu</a>::<wbr><a class="mod" href=''>display</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../../src/nvapi_sys/gpu/display.rs.html#1-122' title='goto source code'>[src]</a></span></h1>
+<h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.ConnectedIdsFlags.html"
+                                  title='struct nvapi_sys::gpu::display::ConnectedIdsFlags'>ConnectedIdsFlags</a></td>
+                           <td class='docblock-short'>
+                                <p>Argument to <code>NvAPI_GPU_GetConnectedDisplayIds</code></p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.DisplayIdsFlags.html"
+                                  title='struct nvapi_sys::gpu::display::DisplayIdsFlags'>DisplayIdsFlags</a></td>
+                           <td class='docblock-short'>
+                                <p>Bitfield in <code>NV_GPU_DISPLAYIDS</code></p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.NV_GPU_DISPLAYIDS.html"
+                                  title='struct nvapi_sys::gpu::display::NV_GPU_DISPLAYIDS'>NV_GPU_DISPLAYIDS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.MonitorConnectorType.html"
+                                  title='enum nvapi_sys::gpu::display::MonitorConnectorType'>MonitorConnectorType</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_CONNECTED_IDS_FLAG_EXCLUDE_MST.html"
+                                  title='constant nvapi_sys::gpu::display::NV_GPU_CONNECTED_IDS_FLAG_EXCLUDE_MST'>NV_GPU_CONNECTED_IDS_FLAG_EXCLUDE_MST</a></td>
+                           <td class='docblock-short'>
+                                <p>Excludes devices that are part of the multi stream topology.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_CONNECTED_IDS_FLAG_FAKE.html"
+                                  title='constant nvapi_sys::gpu::display::NV_GPU_CONNECTED_IDS_FLAG_FAKE'>NV_GPU_CONNECTED_IDS_FLAG_FAKE</a></td>
+                           <td class='docblock-short'>
+                                <p>Get devices that includes the fake connected monitors</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_CONNECTED_IDS_FLAG_LIDSTATE.html"
+                                  title='constant nvapi_sys::gpu::display::NV_GPU_CONNECTED_IDS_FLAG_LIDSTATE'>NV_GPU_CONNECTED_IDS_FLAG_LIDSTATE</a></td>
+                           <td class='docblock-short'>
+                                <p>Get devices such that to reflect the Lid State</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_CONNECTED_IDS_FLAG_SLI.html"
+                                  title='constant nvapi_sys::gpu::display::NV_GPU_CONNECTED_IDS_FLAG_SLI'>NV_GPU_CONNECTED_IDS_FLAG_SLI</a></td>
+                           <td class='docblock-short'>
+                                <p>Get devices such that those can be selected in an SLI configuration</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_CONNECTED_IDS_FLAG_UNCACHED.html"
+                                  title='constant nvapi_sys::gpu::display::NV_GPU_CONNECTED_IDS_FLAG_UNCACHED'>NV_GPU_CONNECTED_IDS_FLAG_UNCACHED</a></td>
+                           <td class='docblock-short'>
+                                <p>Get uncached connected devices</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_DISPLAYIDS_FLAGS_ACTIVE.html"
+                                  title='constant nvapi_sys::gpu::display::NV_GPU_DISPLAYIDS_FLAGS_ACTIVE'>NV_GPU_DISPLAYIDS_FLAGS_ACTIVE</a></td>
+                           <td class='docblock-short'>
+                                <p>This display is being actively driven</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_DISPLAYIDS_FLAGS_CLUSTER.html"
+                                  title='constant nvapi_sys::gpu::display::NV_GPU_DISPLAYIDS_FLAGS_CLUSTER'>NV_GPU_DISPLAYIDS_FLAGS_CLUSTER</a></td>
+                           <td class='docblock-short'>
+                                <p>This display is the representative display</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_DISPLAYIDS_FLAGS_CONNECTED.html"
+                                  title='constant nvapi_sys::gpu::display::NV_GPU_DISPLAYIDS_FLAGS_CONNECTED'>NV_GPU_DISPLAYIDS_FLAGS_CONNECTED</a></td>
+                           <td class='docblock-short'>
+                                <p>This display is connected</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_DISPLAYIDS_FLAGS_DYNAMIC.html"
+                                  title='constant nvapi_sys::gpu::display::NV_GPU_DISPLAYIDS_FLAGS_DYNAMIC'>NV_GPU_DISPLAYIDS_FLAGS_DYNAMIC</a></td>
+                           <td class='docblock-short'>
+                                <p>This display is part of MST topology and it&#39;s a dynamic</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_DISPLAYIDS_FLAGS_MST_ROOT_NODE.html"
+                                  title='constant nvapi_sys::gpu::display::NV_GPU_DISPLAYIDS_FLAGS_MST_ROOT_NODE'>NV_GPU_DISPLAYIDS_FLAGS_MST_ROOT_NODE</a></td>
+                           <td class='docblock-short'>
+                                <p>This displayID belongs to a multi stream enabled connector(root node).
+Note that when multi stream is enabled and
+a single multi stream capable monitor is connected to it, the monitor will share the
+display id with the RootNode.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_DISPLAYIDS_FLAGS_OS_VISIBLE.html"
+                                  title='constant nvapi_sys::gpu::display::NV_GPU_DISPLAYIDS_FLAGS_OS_VISIBLE'>NV_GPU_DISPLAYIDS_FLAGS_OS_VISIBLE</a></td>
+                           <td class='docblock-short'>
+                                <p>This display is reported to the OS</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_DISPLAYIDS_FLAGS_PHYSICALLY_CONNECTED.html"
+                                  title='constant nvapi_sys::gpu::display::NV_GPU_DISPLAYIDS_FLAGS_PHYSICALLY_CONNECTED'>NV_GPU_DISPLAYIDS_FLAGS_PHYSICALLY_CONNECTED</a></td>
+                           <td class='docblock-short'>
+                                <p>this display is a phycially connected display; Valid only when is
+Connected bit is set</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_DISPLAYIDS_FLAGS_RESERVED.html"
+                                  title='constant nvapi_sys::gpu::display::NV_GPU_DISPLAYIDS_FLAGS_RESERVED'>NV_GPU_DISPLAYIDS_FLAGS_RESERVED</a></td>
+                           <td class='docblock-short'>
+                                <p>must be zero</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_DISPLAYIDS_FLAGS_RESERVED_INTERNAL.html"
+                                  title='constant nvapi_sys::gpu::display::NV_GPU_DISPLAYIDS_FLAGS_RESERVED_INTERNAL'>NV_GPU_DISPLAYIDS_FLAGS_RESERVED_INTERNAL</a></td>
+                           <td class='docblock-short'>
+                                <p>Do not use</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_DISPLAYIDS_FLAGS_WIRELESS.html"
+                                  title='constant nvapi_sys::gpu::display::NV_GPU_DISPLAYIDS_FLAGS_WIRELESS'>NV_GPU_DISPLAYIDS_FLAGS_WIRELESS</a></td>
+                           <td class='docblock-short'>
+                                <p>This display is wireless</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_DISPLAYIDS_VER.html"
+                                  title='constant nvapi_sys::gpu::display::NV_GPU_DISPLAYIDS_VER'>NV_GPU_DISPLAYIDS_VER</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_DISPLAYIDS_VER1.html"
+                                  title='constant nvapi_sys::gpu::display::NV_GPU_DISPLAYIDS_VER1'>NV_GPU_DISPLAYIDS_VER1</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_DISPLAYIDS_VER2.html"
+                                  title='constant nvapi_sys::gpu::display::NV_GPU_DISPLAYIDS_VER2'>NV_GPU_DISPLAYIDS_VER2</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_MONITOR_CONN_TYPE_COMPONENT.html"
+                                  title='constant nvapi_sys::gpu::display::NV_MONITOR_CONN_TYPE_COMPONENT'>NV_MONITOR_CONN_TYPE_COMPONENT</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_MONITOR_CONN_TYPE_COMPOSITE.html"
+                                  title='constant nvapi_sys::gpu::display::NV_MONITOR_CONN_TYPE_COMPOSITE'>NV_MONITOR_CONN_TYPE_COMPOSITE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_MONITOR_CONN_TYPE_DP.html"
+                                  title='constant nvapi_sys::gpu::display::NV_MONITOR_CONN_TYPE_DP'>NV_MONITOR_CONN_TYPE_DP</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_MONITOR_CONN_TYPE_DVI.html"
+                                  title='constant nvapi_sys::gpu::display::NV_MONITOR_CONN_TYPE_DVI'>NV_MONITOR_CONN_TYPE_DVI</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_MONITOR_CONN_TYPE_HDMI.html"
+                                  title='constant nvapi_sys::gpu::display::NV_MONITOR_CONN_TYPE_HDMI'>NV_MONITOR_CONN_TYPE_HDMI</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_MONITOR_CONN_TYPE_LVDS.html"
+                                  title='constant nvapi_sys::gpu::display::NV_MONITOR_CONN_TYPE_LVDS'>NV_MONITOR_CONN_TYPE_LVDS</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_MONITOR_CONN_TYPE_SVIDEO.html"
+                                  title='constant nvapi_sys::gpu::display::NV_MONITOR_CONN_TYPE_SVIDEO'>NV_MONITOR_CONN_TYPE_SVIDEO</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_MONITOR_CONN_TYPE_UNINITIALIZED.html"
+                                  title='constant nvapi_sys::gpu::display::NV_MONITOR_CONN_TYPE_UNINITIALIZED'>NV_MONITOR_CONN_TYPE_UNINITIALIZED</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_MONITOR_CONN_TYPE_UNKNOWN.html"
+                                  title='constant nvapi_sys::gpu::display::NV_MONITOR_CONN_TYPE_UNKNOWN'>NV_MONITOR_CONN_TYPE_UNKNOWN</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_MONITOR_CONN_TYPE_VGA.html"
+                                  title='constant nvapi_sys::gpu::display::NV_MONITOR_CONN_TYPE_VGA'>NV_MONITOR_CONN_TYPE_VGA</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.NvAPI_GPU_GetAllDisplayIds.html"
+                                  title='fn nvapi_sys::gpu::display::NvAPI_GPU_GetAllDisplayIds'>NvAPI_GPU_GetAllDisplayIds</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                <p>This API returns display IDs for all possible outputs on the GPU.
+For DPMST connector, it will return display IDs for all the video sinks in the topology.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.NvAPI_GPU_GetConnectedDisplayIds.html"
+                                  title='fn nvapi_sys::gpu::display::NvAPI_GPU_GetConnectedDisplayIds'>NvAPI_GPU_GetConnectedDisplayIds</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                <p>Due to space limitation NvAPI_GPU_GetConnectedOutputs can return maximum 32 devices, but
+this is no longer true for DPMST. NvAPI_GPU_GetConnectedDisplayIds will return all
+the connected display devices in the form of displayIds for the associated hPhysicalGpu.
+This function can accept set of flags to request cached, uncached, sli and lid to get the connected devices.
+Default value for flags will be cached.</p>
+                           </td>
+                       </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.GPU_GetAllDisplayIds.html"
+                                  title='type nvapi_sys::gpu::display::GPU_GetAllDisplayIds'>GPU_GetAllDisplayIds</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.GPU_GetConnectedDisplayIds.html"
+                                  title='type nvapi_sys::gpu::display::GPU_GetConnectedDisplayIds'>GPU_GetConnectedDisplayIds</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NV_GPU_CONNECTED_IDS_FLAG.html"
+                                  title='type nvapi_sys::gpu::display::NV_GPU_CONNECTED_IDS_FLAG'>NV_GPU_CONNECTED_IDS_FLAG</a></td>
+                           <td class='docblock-short'>
+                                <p>Argument to <code>NvAPI_GPU_GetConnectedDisplayIds</code></p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NV_GPU_DISPLAYIDS_FLAGS.html"
+                                  title='type nvapi_sys::gpu::display::NV_GPU_DISPLAYIDS_FLAGS'>NV_GPU_DISPLAYIDS_FLAGS</a></td>
+                           <td class='docblock-short'>
+                                <p>Bitfield in <code>NV_GPU_DISPLAYIDS</code></p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NV_MONITOR_CONN_TYPE.html"
+                                  title='type nvapi_sys::gpu::display::NV_MONITOR_CONN_TYPE'>NV_MONITOR_CONN_TYPE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>↑</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>↓</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt style="width:31px;">+ / -</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../../";
+        window.currentCrate = "nvapi_sys";
+    </script>
+    <script src="../../../main.js"></script>
+    <script defer src="../../../search-index.js"></script>
+</body>
+</html>
