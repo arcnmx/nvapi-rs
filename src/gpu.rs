@@ -10,6 +10,8 @@ use pstate::PState;
 #[derive(Debug)]
 pub struct PhysicalGpu(sys::handles::NvPhysicalGpuHandle);
 
+unsafe impl Send for PhysicalGpu { }
+
 pub use sys::gpu::{SystemType, PerformanceDecreaseReason};
 pub use sys::gpu::private::{RamType, RamMaker, Foundry, VendorId as Vendor};
 pub use sys::gpu::clock::ClockFrequencyType;
