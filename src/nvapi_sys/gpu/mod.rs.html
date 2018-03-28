@@ -341,6 +341,26 @@
 <span id="295">295</span>
 <span id="296">296</span>
 <span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
+<span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
 </pre><pre class="rust ">
 <span class="kw">use</span> <span class="ident">status</span>::<span class="ident">NvAPI_Status</span>;
 <span class="kw">use</span> <span class="ident">handles</span>::<span class="ident">NvPhysicalGpuHandle</span>;
@@ -465,6 +485,26 @@
     <span class="doccomment">/// Retrieves the total number of cores defined for a GPU.</span>
     <span class="doccomment">/// Returns 0 on architectures that don&#39;t define GPU cores.</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">NvAPI_GPU_GetGpuCoreCount</span>;
+}
+
+<span class="macro">nvbits</span><span class="macro">!</span> {
+    <span class="doccomment">/// Bit masks for knowing the exact reason for performance decrease</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Used in `NvAPI_GPU_GetPerfDecreaseInfo`</span>
+    <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">NVAPI_GPU_PERF_DECREASE</span> <span class="op">/</span> <span class="ident">PerformanceDecreaseReason</span> {
+        <span class="ident">NV_GPU_PERF_DECREASE_NONE</span> <span class="op">/</span> <span class="ident">NONE</span> <span class="op">=</span> <span class="number">0x00</span>,
+        <span class="ident">NV_GPU_PERF_DECREASE_REASON_THERMAL_PROTECTION</span> <span class="op">/</span> <span class="ident">THERMAL_PROTECTION</span> <span class="op">=</span> <span class="number">0x01</span>,
+        <span class="ident">NV_GPU_PERF_DECREASE_REASON_POWER_CONTROL</span> <span class="op">/</span> <span class="ident">POWER_CONTROL</span> <span class="op">=</span> <span class="number">0x02</span>,
+        <span class="ident">NV_GPU_PERF_DECREASE_REASON_AC_BATT</span> <span class="op">/</span> <span class="ident">AC_BATTERY</span> <span class="op">=</span> <span class="number">0x04</span>,
+        <span class="ident">NV_GPU_PERF_DECREASE_REASON_API_TRIGGERED</span> <span class="op">/</span> <span class="ident">API_TRIGGERED</span> <span class="op">=</span> <span class="number">0x08</span>,
+        <span class="ident">NV_GPU_PERF_DECREASE_REASON_INSUFFICIENT_POWER</span> <span class="op">/</span> <span class="ident">INSUFFICIENT_POWER</span> <span class="op">=</span> <span class="number">0x10</span>,
+        <span class="ident">NV_GPU_PERF_DECREASE_REASON_UNKNOWN</span> <span class="op">/</span> <span class="ident">UNKNOWN</span> <span class="op">=</span> <span class="number">0x00</span>,
+    }
+}
+
+<span class="macro">nvapi</span><span class="macro">!</span> {
+    <span class="doccomment">/// This function retrieves reasons for the current performance decrease.</span>
+    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">NvAPI_GPU_GetPerfDecreaseInfo</span>(<span class="ident">hPhysicalGpu</span>: <span class="ident">NvPhysicalGpuHandle</span>, <span class="ident">pPerfDecrInfo</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">NVAPI_GPU_PERF_DECREASE</span>) <span class="op">-&gt;</span> <span class="ident">NvAPI_Status</span>;
 }
 
 <span class="doccomment">/// Undocumented API</span>

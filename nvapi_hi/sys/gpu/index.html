@@ -30,7 +30,7 @@
     <nav class="sidebar">
         <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'>Module gpu</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#enums">Enums</a></li><li><a href="#constants">Constants</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'><a href='../../index.html'>nvapi_hi</a>::<wbr><a href='../index.html'>sys</a></p><script>window.sidebarCurrent = {name: 'gpu', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script></div>
+        <p class='location'>Module gpu</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#constants">Constants</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'><a href='../../index.html'>nvapi_hi</a>::<wbr><a href='../index.html'>sys</a></p><script>window.sidebarCurrent = {name: 'gpu', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -106,6 +106,14 @@ capability and power consumption states.</p>
                                 <p>The GPU thermal control APIs are used to get temperature levels from the
 various thermal sensors associated with the GPU.</p>
                            </td>
+                       </tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="struct" href="struct.PerformanceDecreaseReason.html"
+                                  title='struct nvapi_hi::sys::gpu::PerformanceDecreaseReason'>PerformanceDecreaseReason</a></td>
+                           <td class='docblock-short'>
+                                <p>Bit masks for knowing the exact reason for performance decrease</p>
+                           </td>
                        </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
 <table>
                        <tr class=' module-item'>
@@ -116,6 +124,55 @@ various thermal sensors associated with the GPU.</p>
                            </td>
                        </tr></table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
 <table>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_PERF_DECREASE_NONE.html"
+                                  title='constant nvapi_hi::sys::gpu::NV_GPU_PERF_DECREASE_NONE'>NV_GPU_PERF_DECREASE_NONE</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_PERF_DECREASE_REASON_AC_BATT.html"
+                                  title='constant nvapi_hi::sys::gpu::NV_GPU_PERF_DECREASE_REASON_AC_BATT'>NV_GPU_PERF_DECREASE_REASON_AC_BATT</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_PERF_DECREASE_REASON_API_TRIGGERED.html"
+                                  title='constant nvapi_hi::sys::gpu::NV_GPU_PERF_DECREASE_REASON_API_TRIGGERED'>NV_GPU_PERF_DECREASE_REASON_API_TRIGGERED</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_PERF_DECREASE_REASON_INSUFFICIENT_POWER.html"
+                                  title='constant nvapi_hi::sys::gpu::NV_GPU_PERF_DECREASE_REASON_INSUFFICIENT_POWER'>NV_GPU_PERF_DECREASE_REASON_INSUFFICIENT_POWER</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_PERF_DECREASE_REASON_POWER_CONTROL.html"
+                                  title='constant nvapi_hi::sys::gpu::NV_GPU_PERF_DECREASE_REASON_POWER_CONTROL'>NV_GPU_PERF_DECREASE_REASON_POWER_CONTROL</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_PERF_DECREASE_REASON_THERMAL_PROTECTION.html"
+                                  title='constant nvapi_hi::sys::gpu::NV_GPU_PERF_DECREASE_REASON_THERMAL_PROTECTION'>NV_GPU_PERF_DECREASE_REASON_THERMAL_PROTECTION</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="constant" href="constant.NV_GPU_PERF_DECREASE_REASON_UNKNOWN.html"
+                                  title='constant nvapi_hi::sys::gpu::NV_GPU_PERF_DECREASE_REASON_UNKNOWN'>NV_GPU_PERF_DECREASE_REASON_UNKNOWN</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
                        <tr class=' module-item'>
                            <td><a class="constant" href="constant.NV_SYSTEM_TYPE_DESKTOP.html"
                                   title='constant nvapi_hi::sys::gpu::NV_SYSTEM_TYPE_DESKTOP'>NV_SYSTEM_TYPE_DESKTOP</a></td>
@@ -167,6 +224,13 @@ Returns 0 on architectures that don&#39;t define GPU cores.</p>
                                   title='fn nvapi_hi::sys::gpu::NvAPI_GPU_GetPCIIdentifiers'>NvAPI_GPU_GetPCIIdentifiers</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
                                 <p>This function returns the PCI identifiers associated with this GPU.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.NvAPI_GPU_GetPerfDecreaseInfo.html"
+                                  title='fn nvapi_hi::sys::gpu::NvAPI_GPU_GetPerfDecreaseInfo'>NvAPI_GPU_GetPerfDecreaseInfo</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                <p>This function retrieves reasons for the current performance decrease.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -256,6 +320,13 @@ On newer architectures, this corresponds to the number of SM units</p>
                                   title='type nvapi_hi::sys::gpu::GPU_GetVbiosVersionStringFn'>GPU_GetVbiosVersionStringFn</a></td>
                            <td class='docblock-short'>
                                 
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="type" href="type.NVAPI_GPU_PERF_DECREASE.html"
+                                  title='type nvapi_hi::sys::gpu::NVAPI_GPU_PERF_DECREASE'>NVAPI_GPU_PERF_DECREASE</a></td>
+                           <td class='docblock-short'>
+                                <p>Bit masks for knowing the exact reason for performance decrease</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>

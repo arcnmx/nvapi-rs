@@ -817,6 +817,17 @@
 <span id="771">771</span>
 <span id="772">772</span>
 <span id="773">773</span>
+<span id="774">774</span>
+<span id="775">775</span>
+<span id="776">776</span>
+<span id="777">777</span>
+<span id="778">778</span>
+<span id="779">779</span>
+<span id="780">780</span>
+<span id="781">781</span>
+<span id="782">782</span>
+<span id="783">783</span>
+<span id="784">784</span>
 </pre><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">ptr</span>, <span class="ident">fmt</span>};
 <span class="kw">use</span> <span class="ident">void</span>::{<span class="ident">Void</span>, <span class="ident">ResultVoidExt</span>};
@@ -830,7 +841,9 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PhysicalGpu</span>(<span class="ident">sys</span>::<span class="ident">handles</span>::<span class="ident">NvPhysicalGpuHandle</span>);
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">sys</span>::<span class="ident">gpu</span>::{<span class="ident">SystemType</span>};
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">Send</span> <span class="kw">for</span> <span class="ident">PhysicalGpu</span> { }
+
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">sys</span>::<span class="ident">gpu</span>::{<span class="ident">SystemType</span>, <span class="ident">PerformanceDecreaseReason</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">sys</span>::<span class="ident">gpu</span>::<span class="ident">private</span>::{<span class="ident">RamType</span>, <span class="ident">RamMaker</span>, <span class="ident">Foundry</span>, <span class="ident">VendorId</span> <span class="kw">as</span> <span class="ident">Vendor</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">sys</span>::<span class="ident">gpu</span>::<span class="ident">clock</span>::<span class="ident">ClockFrequencyType</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">sys</span>::<span class="ident">gpu</span>::<span class="ident">display</span>::{<span class="ident">ConnectedIdsFlags</span>, <span class="ident">DisplayIdsFlags</span>, <span class="ident">MonitorConnectorType</span>};
@@ -1385,6 +1398,15 @@
 
         <span class="ident">sys</span>::<span class="ident">status_result</span>(<span class="kw">unsafe</span> { <span class="ident">power</span>::<span class="ident">private</span>::<span class="ident">NvAPI_GPU_GetVoltages</span>(<span class="self">self</span>.<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data</span>) })
             .<span class="ident">and_then</span>(<span class="op">|</span>_<span class="op">|</span> <span class="ident">data</span>.<span class="ident">convert_raw</span>().<span class="ident">map_err</span>(<span class="ident">From</span>::<span class="ident">from</span>))
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">performance_decrease</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">sys</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">PerformanceDecreaseReason</span><span class="op">&gt;</span> {
+        <span class="macro">trace</span><span class="macro">!</span>(<span class="string">&quot;gpu.performance_decrease()&quot;</span>);
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">gpu</span>::<span class="ident">NV_GPU_PERF_DECREASE_NONE</span>;
+
+        <span class="ident">sys</span>::<span class="ident">status_result</span>(<span class="kw">unsafe</span> { <span class="ident">gpu</span>::<span class="ident">NvAPI_GPU_GetPerfDecreaseInfo</span>(<span class="self">self</span>.<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data</span>) })
+            .<span class="ident">map</span>(<span class="op">|</span>_<span class="op">|</span> <span class="ident">PerformanceDecreaseReason</span>::<span class="ident">from_bits_truncate</span>(<span class="ident">data</span>))
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">display_ids_all</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">sys</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;&lt;</span><span class="ident">display</span>::<span class="ident">NV_GPU_DISPLAYIDS</span> <span class="kw">as</span> <span class="ident">RawConversion</span><span class="op">&gt;</span>::<span class="ident">Target</span><span class="op">&gt;&gt;</span> {
