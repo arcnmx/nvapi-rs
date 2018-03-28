@@ -1,3 +1,5 @@
+use std::{fmt, error};
+
 nvenum! {
     /// NvAPI Status Values
     ///
@@ -273,5 +275,17 @@ nvenum! {
         NVAPI_INVALID_DIRECT_MODE_DISPLAY / InvalidDirectModeDisplay = -216,
         /// GPU is in debug mode, OC is NOT allowed.
         NVAPI_GPU_IN_DEBUG_MODE / GpuInDebugMode = -217,
+    }
+}
+
+impl error::Error for Status {
+    fn description(&self) -> &str {
+        "NVAPI Error"
+    }
+}
+
+impl fmt::Display for Status {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Debug::fmt(self, f)
     }
 }
