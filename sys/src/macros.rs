@@ -135,6 +135,7 @@ macro_rules! nvbits {
 
         bitflags! {
             $(#[$meta])*
+            #[derive(Default)]
             #[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
             pub struct $enum_name: $enum {
             $(
