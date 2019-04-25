@@ -206,7 +206,7 @@ macro_rules! nvapi {
     ) => {
         $(#[$meta])*
         pub unsafe fn $fn($($arg: $arg_ty),*) -> $ret {
-            static CACHE: ::std::sync::atomic::AtomicUsize = ::std::sync::atomic::ATOMIC_USIZE_INIT;
+            static CACHE: ::std::sync::atomic::AtomicUsize = ::std::sync::atomic::AtomicUsize::new(0);
 
             match ::nvapi::query_interface(::nvid::Api::$fn.id(), &CACHE) {
                 Ok(ptr) => ::std::mem::transmute::<_, extern "C" fn($($arg: $arg_ty),*) -> $ret>(ptr)($($arg),*),
