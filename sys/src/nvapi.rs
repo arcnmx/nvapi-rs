@@ -1,4 +1,4 @@
-use std::sync::atomic::{AtomicUsize, Ordering, ATOMIC_USIZE_INIT};
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::os::raw::c_void;
 use status::{Status, NvAPI_Status};
 use types;
@@ -12,7 +12,7 @@ pub const LIBRARY_NAME: &'static [u8; 12] = b"nvapi64.dll\0";
 
 pub const FN_NAME: &'static [u8; 21] = b"nvapi_QueryInterface\0";
 
-static QUERY_INTERFACE_CACHE: AtomicUsize = ATOMIC_USIZE_INIT;
+static QUERY_INTERFACE_CACHE: AtomicUsize = AtomicUsize::new(0);
 
 pub unsafe fn set_query_interface(ptr: QueryInterfaceFn) {
     QUERY_INTERFACE_CACHE.store(ptr as usize, Ordering::Relaxed);
