@@ -592,7 +592,9 @@ impl PhysicalGpu {
         trace!("gpu.display_ids_all()");
         let mut count = 0;
         sys::status_result(unsafe { display::NvAPI_GPU_GetAllDisplayIds(self.0, ptr::null_mut(), &mut count) })?;
-
+        if count == 0 {
+            return Ok(Vec::new());
+        }
         let mut data = display::NV_GPU_DISPLAYIDS::zeroed();
         data.version = display::NV_GPU_DISPLAYIDS_VER;
         let mut data = vec![data; count as usize];
@@ -605,7 +607,9 @@ impl PhysicalGpu {
         trace!("gpu.display_ids_connected({:?})", flags);
         let mut count = 0;
         sys::status_result(unsafe { display::NvAPI_GPU_GetConnectedDisplayIds(self.0, ptr::null_mut(), &mut count, flags.bits()) })?;
-
+        if count == 0 {
+            return Ok(Vec::new());
+        }
         let mut data = display::NV_GPU_DISPLAYIDS::zeroed();
         data.version = display::NV_GPU_DISPLAYIDS_VER;
         let mut data = vec![data; count as usize];
