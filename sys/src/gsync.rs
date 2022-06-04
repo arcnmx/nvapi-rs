@@ -128,13 +128,17 @@ nvenum! {
 }
 
 nvstruct! {
+    #[derive(Debug, Default)]
     pub struct NV_GSYNC_STATUS {
-        version: u32,
-        bIsSynced: u32,
-        bIsStereoSynced: u32,
-        bIsSyncSignalAvailable: u32,
+        pub version: u32,
+        pub bIsSynced: u32,
+        pub bIsStereoSynced: u32,
+        pub bIsSyncSignalAvailable: u32,
     }
 }
+
+// TODO: this most likely wont work and needs to be updated.
+nvversion! { NV_GSYNC_STATUS_VER(NV_GSYNC_STATUS = 0, 1) /* temp */}
 
 nvenum! {
     pub enum NVAPI_GSYNC_RJ45_IO / RJ45_IO {
@@ -178,7 +182,7 @@ nvversion! { NV_GSYNC_STATUS_PARAMS_VER_2(NV_GSYNC_STATUS_PARAMS_V2 = NV_GSYNC_S
 nvversion! { NV_GSYNC_STATUS_PARAMS_VER = NV_GSYNC_STATUS_PARAMS_VER_2 }
 
 nvapi! {
-    pub type GSync_EnumSyncDevicesFn = extern "C" fn(nvGSyncHandles: *mut NvGSyncDeviceHandle, gsyncCount: *mut u32) -> NvAPI_Status;
+    pub type GSync_EnumSyncDevicesFn = extern "C" fn(nvGSyncHandles: *mut [NvGSyncDeviceHandle; super::types::NVAPI_MAX_GSYNC_DEVICES], gsyncCount: *mut u32) -> NvAPI_Status;
     pub unsafe fn NvAPI_GSync_EnumSyncDevices;
 }
 
