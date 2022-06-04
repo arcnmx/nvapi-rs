@@ -30,6 +30,9 @@ pub mod vidio;
 /// The GPU APIs retrieve and control various attributes of the GPU, such as outputs, VBIOS revision, APG rate, frame buffer size, and thermal settings.
 pub mod gpu;
 
+/// Sync Display APIs
+pub mod gsync;
+
 /// I2C API - Provides ability to read or write data using I2C protocol.
 /// These APIs allow I2C access only to DDC monitors
 pub mod i2c;
@@ -60,6 +63,7 @@ pub mod api {
     pub use crate::gpu::cooler::*;
     pub use crate::gpu::thermal::*;
     pub use crate::gpu::pstate::*;
+    pub use crate::gsync::*;
     pub use crate::i2c::*;
     pub use crate::driverapi::*;
     pub use crate::sysgeneral::*;
