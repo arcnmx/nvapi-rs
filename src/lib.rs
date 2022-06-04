@@ -16,6 +16,7 @@ mod pstate;
 mod clock;
 mod thermal;
 mod gpu;
+mod gsync;
 mod info;
 #[cfg(feature = "i2c")]
 mod i2c_impl;
