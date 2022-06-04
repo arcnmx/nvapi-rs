@@ -69,6 +69,8 @@ pub const NVAPI_MAX_ACPI_IDS: usize = 16;
 pub const NVAPI_MAX_VIEW_MODES: usize = 8;
 pub const NVAPI_MAX_HEADS_PER_GPU: usize = 32;
 
+pub const NVAPI_MAX_GSYNC_DEVICES: usize = 4;
+
 /// Maximum heads, each with `NVAPI_DESKTOP_RES` resolution
 pub const NV_MAX_HEADS: usize = 4;
 /// Maximum number of input video streams, each with a `NVAPI_VIDEO_SRC_INFO`
