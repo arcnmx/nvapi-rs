@@ -650,14 +650,15 @@ Unknown_36E39E6B = 0x36e39e6b,
 /// `GPU_GetRasterOperators(hGpu, *mut u32)`
 Unknown_GetROPCount = 0xfdc129fa,
 
-NvAPI_GSync_EnumSyncDevices = 1,
-NvAPI_GSync_QueryCapabilities = 2,
-NvAPI_GSync_GetTopology = 3,
-NvAPI_GSync_SetSyncStateSettings = 4,
-NvAPI_GSync_GetControlParameters = 5,
-NvAPI_GSync_SetControlParameters = 6,
-NvAPI_GSync_AdjustSyncDelay = 7,
-NvAPI_GSync_GetSyncStatus = 8,
-NvAPI_GSync_GetStatusParameters = 9,
+//source: nvapi.h
+NvAPI_GSync_EnumSyncDevices = 0x0D9639601,
+NvAPI_GSync_QueryCapabilities = 0x44A3F1D1,
+NvAPI_GSync_GetTopology = 0x4562BC38,
+NvAPI_GSync_SetSyncStateSettings = 0x60ACDFDD,
+NvAPI_GSync_GetControlParameters = 0x16DE1C6A,
+NvAPI_GSync_SetControlParameters = 0x8BBFF88B,
+NvAPI_GSync_AdjustSyncDelay = 0x2D11FF51,
+NvAPI_GSync_GetSyncStatus = 0x0F1F5B434,
+NvAPI_GSync_GetStatusParameters = 0x70D404EC,
 
 }
