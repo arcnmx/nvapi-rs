@@ -1,6 +1,6 @@
 [package]
 name = "nvapi"
-version = "0.1.3" # keep in sync with html_root_url
+version = "0.1.4" # keep in sync with html_root_url
 authors = ["arcnmx"]
 
 description = "NVIDIA NVAPI bindings"

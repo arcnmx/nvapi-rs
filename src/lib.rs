@@ -1,5 +1,5 @@
 //#![deny(missing_docs)]
-#![doc(html_root_url = "http://docs.rs/nvapi/0.1.3")]
+#![doc(html_root_url = "http://docs.rs/nvapi/0.1.4")]
 
 pub extern crate nvapi_sys as sys;
 extern crate void;
