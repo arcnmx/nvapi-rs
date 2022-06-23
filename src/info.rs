@@ -1,44 +1,40 @@
 use crate::sys;
 use log::trace;
 
-pub fn driver_version() -> sys::Result<(u32, String)> {
+pub fn driver_version() -> crate::NvapiResult<(u32, String)> {
     trace!("driver_version()");
-    let mut str = Default::default();
     let mut version = 0;
     unsafe {
-        sys::status_result(sys::driverapi::NvAPI_SYS_GetDriverAndBranchVersion(&mut version, &mut str))
-            .map(move |()| (version, str.into()))
+        nvcall!(NvAPI_SYS_GetDriverAndBranchVersion@get(&mut version))
+            .map(|str| (version, str.into()))
     }
 }
 
-pub fn interface_version() -> sys::Result<String> {
+pub fn interface_version() -> crate::NvapiResult<String> {
     trace!("interface_version()");
-    let mut str = Default::default();
     unsafe {
-        sys::status_result(sys::nvapi::NvAPI_GetInterfaceVersionString(&mut str))
-            .map(move |()| str.into())
+        nvcall!(NvAPI_GetInterfaceVersionString@get())
+            .map(|str| str.into())
     }
 }
 
-pub fn error_message(status: sys::Status) -> sys::Result<String> {
+pub fn error_message(status: sys::Status) -> crate::NvapiResult<String> {
     trace!("error_message({:?})", status);
-    let mut str = Default::default();
     unsafe {
-        sys::status_result(sys::nvapi::NvAPI_GetErrorMessage(status.raw(), &mut str))
-            .map(move |()| str.into())
+        nvcall!(NvAPI_GetErrorMessage@get(status.raw()) => into)
     }
 }
 
-pub fn initialize() -> sys::Result<()> {
+pub fn initialize() -> crate::NvapiResult<()> {
     trace!("initialize()");
     unsafe {
-        sys::status_result(sys::nvapi::NvAPI_Initialize())
+        nvcall!(NvAPI_Initialize())
     }
 }
 
-pub fn unload() -> sys::Result<()> {
+pub fn unload() -> crate::NvapiResult<()> {
     trace!("unload()");
     unsafe {
-        sys::status_result(sys::nvapi::NvAPI_Unload())
+        nvcall!(NvAPI_Unload())
     }
 }

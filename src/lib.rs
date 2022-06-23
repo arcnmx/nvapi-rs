@@ -3,6 +3,9 @@
 
 pub use nvapi_sys as sys;
 
+#[macro_use]
+mod macros;
+mod error;
 mod types;
 mod pstate;
 mod clock;
@@ -12,6 +15,7 @@ mod info;
 #[cfg(feature = "i2c")]
 mod i2c_impl;
 
+pub use error::*;
 pub use types::*;
 pub use pstate::*;
 pub use clock::*;
@@ -21,4 +25,8 @@ pub use info::*;
 #[cfg(feature = "i2c")]
 pub use i2c_impl::*;
 
-pub use sys::{Status, Result};
+pub use sys::Status;
+/// The result of a fallible NVAPI call.
+pub type Result<T> = std::result::Result<T, Error>;
+/// The result of a fallible NVAPI call.
+pub type NvapiResult<T> = std::result::Result<T, NvapiError>;

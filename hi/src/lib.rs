@@ -6,23 +6,32 @@ mod gpu;
 pub use gpu::*;
 
 pub use nvapi::{
-    Status, Result,
+    Status, Result, Error, NvapiError,
     sys,
     initialize, unload, driver_version, interface_version, error_message
 };
 
-pub fn allowable_result_fallback<T>(v: nvapi::Result<T>, fallback: T) -> nvapi::Result<T> {
-    match v {
+use std::result::Result as StdResult;
+
+pub fn allowable_result_fallback<T, E: Into<Error>>(v: StdResult<T, E>, fallback: T) -> Result<T> {
+    match v.map_err(Into::into) {
         Ok(v) => Ok(v),
-        Err(Status::NotSupported) | Err(Status::NoImplementation) | Err(Status::ArgumentExceedMaxSize) => Ok(fallback),
+        Err(Error::Nvapi(NvapiError { status: Status::NotSupported, .. }))
+        | Err(Error::Nvapi(NvapiError { status: Status::NoImplementation, .. }))
+        | Err(Error::Nvapi(NvapiError { status: Status::ArgumentExceedMaxSize, .. }))
+        | Err(Error::ArgumentRange(..))
+        => Ok(fallback),
         Err(e) => Err(e),
     }
 }
 
-pub fn allowable_result<T>(v: nvapi::Result<T>) -> nvapi::Result<nvapi::Result<T>> {
-    match v {
+pub fn allowable_result<T, E: Into<Error>>(v: StdResult<T, E>) -> Result<Result<T>> {
+    match v.map_err(Into::into) {
         Ok(v) => Ok(Ok(v)),
-        Err(e @ Status::NotSupported) | Err(e @ Status::NoImplementation) => Ok(Err(e)),
+        Err(e @ Error::Nvapi(NvapiError { status: Status::NotSupported, .. }))
+        | Err(e @ Error::Nvapi(NvapiError { status: Status::NoImplementation, .. }))
+        | Err(e @ Error::ArgumentRange(..))
+        => Ok(Err(e)),
         Err(e) => Err(e),
     }
 }

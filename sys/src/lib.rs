@@ -43,6 +43,29 @@ use std::error::Error as StdError;
 use std::{result, fmt};
 use std::convert::Infallible;
 
+pub mod api {
+    pub use crate::handles::*;
+    #[cfg(windows)]
+    pub use crate::dx::*;
+    pub use crate::gpu::*;
+    pub use crate::gpu::private::*;
+    pub use crate::gpu::display::*;
+    pub use crate::gpu::power::*;
+    pub use crate::gpu::power::private::*;
+    pub use crate::gpu::clock::*;
+    pub use crate::gpu::clock::private::*;
+    pub use crate::gpu::cooler::*;
+    pub use crate::gpu::cooler::private::*;
+    pub use crate::gpu::thermal::*;
+    pub use crate::gpu::thermal::private::*;
+    pub use crate::gpu::pstate::*;
+    pub use crate::gpu::pstate::private::*;
+    pub use crate::i2c::*;
+    pub use crate::i2c::private::*;
+    pub use crate::driverapi::*;
+    pub use crate::nvapi::*;
+}
+
 /// The result of a fallible NVAPI call.
 pub type Result<T> = result::Result<T, Status>;
 

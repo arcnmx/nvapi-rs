@@ -126,7 +126,9 @@ impl Gpu {
     }
 
     pub fn enumerate() -> nvapi::Result<Vec<Self>> {
-        PhysicalGpu::enumerate().map(|v| v.into_iter().map(Gpu::new).collect())
+        PhysicalGpu::enumerate()
+            .map_err(Into::into)
+            .map(|v| v.into_iter().map(Gpu::new).collect())
     }
 
     pub fn info(&self) -> nvapi::Result<GpuInfo> {
@@ -142,7 +144,7 @@ impl Gpu {
             codename: self.gpu.short_name()?,
             bios_version: self.gpu.vbios_version_string()?,
             driver_model: self.gpu.driver_model()?,
-            vendor: allowable_result_fallback(pci.vendor().map_err(From::from), Vendor::Unknown)?,
+            vendor: allowable_result_fallback(pci.vendor(), Vendor::Unknown)?,
             pci,
             memory: self.gpu.memory_info()?,
             system_type: allowable_result_fallback(self.gpu.system_type(), SystemType::Unknown)?,
@@ -265,44 +267,52 @@ impl Gpu {
 
     pub fn set_voltage_boost(&self, boost: Percentage) -> nvapi::Result<()> {
         self.gpu.set_core_voltage_boost(boost)
+            .map_err(Into::into)
     }
 
     pub fn set_power_limits<I: Iterator<Item=Percentage>>(&self, limits: I) -> nvapi::Result<()> {
         // TODO: match against power_limit_info, use range.min/max from there if it matches (can get fraction of a percent!)
         self.gpu.set_power_limit(limits.map(From::from))
+            .map_err(Into::into)
     }
 
     pub fn set_sensor_limits<I: Iterator<Item=Celsius>>(&self, limits: I) -> nvapi::Result<()> {
-        self.gpu.thermal_limit_info().and_then(|(_, info)| self.gpu.set_thermal_limit(
+        self.gpu.thermal_limit_info()
+            .map_err(Into::into)
+            .and_then(|(_, info)| self.gpu.set_thermal_limit(
             limits.zip(info.into_iter()).map(|(limit, info)| ThermalLimit {
                 controller: info.controller,
                 flags: info.default_flags,
                 value: limit.into(),
             })
-        ))
+        ).map_err(Into::into))
     }
 
     pub fn set_cooler_levels<I: Iterator<Item=CoolerLevel>>(&self, levels: I) -> nvapi::Result<()> {
         self.gpu.set_cooler_levels(None, levels)
+            .map_err(Into::into)
     }
 
     pub fn reset_cooler_levels(&self) -> nvapi::Result<()> {
         self.gpu.restore_cooler_settings(&[])
+            .map_err(Into::into)
     }
 
     pub fn set_vfp<I: Iterator<Item=(usize, KilohertzDelta)>, M: Iterator<Item=(usize, KilohertzDelta)>>(&self, clock_deltas: I, mem_deltas: M) -> nvapi::Result<()> {
         self.gpu.set_vfp_table([0, 0, 0, 0], clock_deltas.map(|(i, d)| (i, d.into())), mem_deltas.map(|(i, d)| (i, d.into())))
+            .map_err(Into::into)
     }
 
     pub fn set_vfp_lock(&self, voltage: Microvolts) -> nvapi::Result<()> {
         self.gpu.set_vfp_locks(self.gpu.vfp_locks()?
             .into_iter().max_by_key(|&(id, _)| id).into_iter()
             .map(|(id, entry)| (id, Some(voltage)))
-        )
+        ).map_err(Into::into)
     }
 
     pub fn reset_vfp_lock(&self) -> nvapi::Result<()> {
         self.gpu.set_vfp_locks(self.gpu.vfp_locks()?.into_iter().map(|(id, _)| (id, None)))
+            .map_err(Into::into)
     }
 
     pub fn reset_vfp(&self) -> nvapi::Result<()> {
@@ -310,6 +320,7 @@ impl Gpu {
 
         let mask = self.gpu.vfp_mask()?;
         self.gpu.set_vfp_table(mask.mask, iter::empty(), iter::empty())
+            .map_err(Into::into)
     }
 }
 
