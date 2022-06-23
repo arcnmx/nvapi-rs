@@ -40,6 +40,7 @@ pub use types::*;
 pub use status::{NvAPI_Status, Status};
 
 use std::result;
+use std::convert::Infallible;
 
 /// The result of a fallible NVAPI call.
 pub type Result<T> = result::Result<T, Status>;
@@ -59,6 +60,12 @@ pub struct ArgumentRangeError;
 impl From<ArgumentRangeError> for Status {
     fn from(_: ArgumentRangeError) -> Self {
         Status::ArgumentExceedMaxSize
+    }
+}
+
+impl From<Infallible> for ArgumentRangeError {
+    fn from(e: Infallible) -> Self {
+        match e { }
     }
 }
 

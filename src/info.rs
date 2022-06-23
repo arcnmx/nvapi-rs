@@ -1,5 +1,4 @@
 use crate::sys;
-use void::ResultVoidExt;
 use log::trace;
 use crate::types::RawConversion;
 
@@ -9,7 +8,7 @@ pub fn driver_version() -> sys::Result<(u32, String)> {
     let mut version = 0;
     unsafe {
         sys::status_result(sys::driverapi::NvAPI_SYS_GetDriverAndBranchVersion(&mut version, &mut str))
-            .map(move |_| (version, str.convert_raw().void_unwrap()))
+            .and_then(move |_| str.convert_raw().map_err(Into::into).map(|str| (version, str)))
     }
 }
 
@@ -18,7 +17,7 @@ pub fn interface_version() -> sys::Result<String> {
     let mut str = sys::types::short_string();
     unsafe {
         sys::status_result(sys::nvapi::NvAPI_GetInterfaceVersionString(&mut str))
-            .map(move |_| str.convert_raw().void_unwrap())
+            .and_then(move |_| str.convert_raw().map_err(Into::into))
     }
 }
 
@@ -27,7 +26,7 @@ pub fn error_message(status: sys::Status) -> sys::Result<String> {
     let mut str = sys::types::short_string();
     unsafe {
         sys::status_result(sys::nvapi::NvAPI_GetErrorMessage(status.raw(), &mut str))
-            .map(move |_| str.convert_raw().void_unwrap())
+            .and_then(move |_| str.convert_raw().map_err(Into::into))
     }
 }
 

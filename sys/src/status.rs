@@ -1,4 +1,5 @@
 use std::{fmt, error};
+use std::convert::Infallible;
 
 nvenum! {
     /// NvAPI Status Values
@@ -287,5 +288,11 @@ impl error::Error for Status {
 impl fmt::Display for Status {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         fmt::Debug::fmt(self, f)
+    }
+}
+
+impl From<Infallible> for Status {
+    fn from(e: Infallible) -> Self {
+        match e { }
     }
 }

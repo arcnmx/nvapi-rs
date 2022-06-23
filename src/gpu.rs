@@ -1,5 +1,5 @@
 use std::{ptr, fmt};
-use void::{Void, ResultVoidExt};
+use std::convert::Infallible;
 use log::trace;
 use serde::{Serialize, Deserialize};
 use crate::sys::gpu::{self, pstate, clock, power, cooler, thermal, display};
@@ -50,7 +50,7 @@ impl PhysicalGpu {
         let mut str = sys::types::short_string();
         unsafe {
             sys::status_result(gpu::private::NvAPI_GPU_GetShortName(self.0, &mut str))
-                .map(|_| str.convert_raw().void_unwrap())
+                .and_then(|_| str.convert_raw().map_err(Into::into))
         }
     }
 
@@ -59,7 +59,7 @@ impl PhysicalGpu {
         let mut str = sys::types::short_string();
         unsafe {
             sys::status_result(gpu::NvAPI_GPU_GetFullName(self.0, &mut str))
-                .map(|_| str.convert_raw().void_unwrap())
+                .and_then(|_| str.convert_raw().map_err(Into::into))
         }
     }
 
@@ -68,7 +68,7 @@ impl PhysicalGpu {
         let mut str = sys::types::short_string();
         unsafe {
             sys::status_result(gpu::NvAPI_GPU_GetVbiosVersionString(self.0, &mut str))
-                .map(|_| str.convert_raw().void_unwrap())
+                .and_then(|_| str.convert_raw().map_err(Into::into))
         }
     }
 
@@ -205,7 +205,7 @@ impl PhysicalGpu {
         data.version = driverapi::NV_DISPLAY_DRIVER_MEMORY_INFO_VER;
 
         sys::status_result(unsafe { driverapi::NvAPI_GPU_GetMemoryInfo(self.0, &mut data) })
-            .map(|_| data.convert_raw().void_unwrap())
+            .and_then(|_| data.convert_raw().map_err(Into::into))
     }
 
     pub fn clock_frequencies(&self, clock_type: ClockFrequencyType) -> sys::Result<ClockFrequencies> {
@@ -215,7 +215,7 @@ impl PhysicalGpu {
         clocks.set_ClockType(clock_type.raw());
 
         sys::status_result(unsafe { clock::NvAPI_GPU_GetAllClockFrequencies(self.0, &mut clocks) })
-            .map(|_| clocks.convert_raw().void_unwrap())
+            .and_then(|_| clocks.convert_raw().map_err(Into::into))
     }
 
     pub fn current_pstate(&self) -> sys::Result<PState> {
@@ -727,7 +727,7 @@ pub struct MemoryInfo {
 
 impl RawConversion for driverapi::NV_DISPLAY_DRIVER_MEMORY_INFO {
     type Target = MemoryInfo;
-    type Error = Void;
+    type Error = Infallible;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         Ok(MemoryInfo {

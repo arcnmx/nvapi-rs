@@ -1,7 +1,7 @@
 use std::ffi::CStr;
 use std::{fmt, ops};
+use std::convert::Infallible;
 use serde::{Serialize, Deserialize};
-use void::Void;
 use crate::sys;
 
 pub trait RawConversion {
@@ -13,7 +13,7 @@ pub trait RawConversion {
 
 impl RawConversion for sys::types::NvAPI_ShortString {
     type Target = String;
-    type Error = Void;
+    type Error = Infallible;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         unsafe {

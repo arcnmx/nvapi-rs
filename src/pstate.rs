@@ -1,5 +1,5 @@
 use std::collections::BTreeMap;
-use void::{Void, ResultVoidExt};
+use std::convert::Infallible;
 use log::trace;
 use crate::sys::gpu::pstate;
 use crate::sys;
@@ -108,7 +108,7 @@ impl RawConversion for pstate::NV_GPU_PERF_PSTATE20_BASE_VOLTAGE_ENTRY_V1 {
             voltage_domain: VoltageDomain::from_raw(self.domainId)?,
             editable: self.bIsEditable.get(),
             voltage: Microvolts(self.volt_uV),
-            voltage_delta: match self.voltDelta_uV.convert_raw().void_unwrap() {
+            voltage_delta: match self.voltDelta_uV.convert_raw()? {
                 Delta { value, range } => Delta {
                     value: MicrovoltsDelta(value.0),
                     range: Range {
@@ -131,13 +131,13 @@ impl RawConversion for pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_V1 {
             pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_DATA_VALUE::Single(single) => ClockEntry::Single {
                 domain: ClockDomain::from_raw(self.domainId)?,
                 editable: self.bIsEditable.get(),
-                frequency_delta: self.freqDelta_kHz.convert_raw().void_unwrap(),
+                frequency_delta: self.freqDelta_kHz.convert_raw()?,
                 frequency: Kilohertz(single.freq_kHz),
             },
             pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_DATA_VALUE::Range(range) => ClockEntry::Range {
                 domain: ClockDomain::from_raw(self.domainId)?,
                 editable: self.bIsEditable.get(),
-                frequency_delta: self.freqDelta_kHz.convert_raw().void_unwrap(),
+                frequency_delta: self.freqDelta_kHz.convert_raw()?,
                 frequency_range: Range {
                     min: Kilohertz(range.minFreq_kHz),
                     max: Kilohertz(range.maxFreq_kHz),
@@ -154,7 +154,7 @@ impl RawConversion for pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_V1 {
 
 impl RawConversion for pstate::NV_GPU_PERF_PSTATES20_PARAM_DELTA {
     type Target = Delta<KilohertzDelta>;
-    type Error = Void;
+    type Error = Infallible;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);

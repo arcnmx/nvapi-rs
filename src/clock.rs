@@ -1,8 +1,8 @@
 use std::collections::BTreeMap;
+use std::convert::Infallible;
 use std::{iter, slice};
 use crate::sys::gpu::{clock, power};
 use crate::sys;
-use void::{Void, ResultVoidExt};
 use serde::{Serialize, Deserialize};
 use log::trace;
 use crate::types::{Kilohertz, Kilohertz2, KilohertzDelta, Kilohertz2Delta, Percentage, Percentage1000, Microvolts, CelsiusShifted, Range, RawConversion};
@@ -13,7 +13,7 @@ pub use sys::gpu::power::private::PerfFlags;
 
 impl RawConversion for clock::NV_GPU_CLOCK_FREQUENCIES {
     type Target = BTreeMap<ClockDomain, Kilohertz>;
-    type Error = Void;
+    type Error = Infallible;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
@@ -566,7 +566,7 @@ pub struct VoltageEntry {
 
 impl RawConversion for power::private::NV_VOLT_TABLE_ENTRY {
     type Target = VoltageEntry;
-    type Error = Void;
+    type Error = Infallible;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
@@ -592,7 +592,7 @@ impl RawConversion for power::private::NV_VOLT_TABLE {
         trace!("convert_raw({:#?})", self);
         Ok(VoltageTable {
             flags: self.flags,
-            entries: self.entries.iter().map(RawConversion::convert_raw).collect::<Result<_, _>>().void_unwrap(),
+            entries: self.entries.iter().map(RawConversion::convert_raw).collect::<Result<_, _>>()?,
         })
     }
 }
