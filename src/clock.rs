@@ -160,7 +160,7 @@ impl RawConversion for clock::private::NV_CLOCK_MASKS {
         Ok(VfpMask {
             mask: self.mask,
             types: VfpMaskIter::new(&self.mask)
-                .map(|i| &self.clocks.inner()[i])
+                .filter_map(|i| self.clocks.inner().get(i))
                 .map(RawConversion::convert_raw)
                 .collect::<Result<_, _>>()?,
         })
@@ -317,7 +317,7 @@ impl RawConversion for power::private::NV_VFP_CURVE {
                 .map(|i| self.gpuEntries[i].convert_raw().map(|e| (i, VfpEntry::from_entry(e))))
                 .collect::<Result<_, _>>()?,
             memory: VfpMaskIter::new(&self.mask)
-                .filter(|&i| i >= self.gpuEntries.len())
+                .filter(|&i| i >= self.gpuEntries.len() && i < self.gpuEntries.len() + self.memEntries.len())
                 .map(|i| self.memEntries[i - self.gpuEntries.len()].convert_raw().map(|e| (i, VfpEntry::from_entry(e))))
                 .collect::<Result<_, _>>()?,
         })
