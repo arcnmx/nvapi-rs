@@ -1,4 +1,4 @@
-#![doc(html_root_url = "http://arcnmx.github.io/nvapi-rs/")]
+#![doc(html_root_url = "http://docs.rs/nvapi-hi/0.1.0")]
 
 pub extern crate nvapi;
 

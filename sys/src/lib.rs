@@ -1,5 +1,5 @@
 #![allow(non_camel_case_types, non_snake_case)]
-#![doc(html_root_url = "http://arcnmx.github.io/nvapi-rs/")]
+#![doc(html_root_url = "http://docs.rs/nvapi-sys/0.1.3")]
 
 #[cfg(windows)]
 extern crate winapi;

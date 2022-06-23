@@ -1,12 +1,12 @@
 [package]
 name = "nvapi-hi"
-version = "0.1.0"
+version = "0.1.0" # keep in sync with html_root_url
 authors = ["arcnmx"]
 
 description = "NVIDIA NVAPI high level bindings"
 keywords = ["nvidia", "nvapi", "gtx"]
 
-documentation = "http://arcnmx.github.io/nvapi-rs/nvapi_hi"
+documentation = "https://docs.rs/nvapi-hi/latest/nvapi_hi/"
 repository = "https://github.com/arcnmx/nvapi-rs"
 readme = "../README.md"
 license = "MIT"
