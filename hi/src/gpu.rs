@@ -1,12 +1,13 @@
 use std::collections::BTreeMap;
 #[cfg(feature = "serde")]
 use serde::{Serialize, Deserialize};
+use once_cell::sync::OnceCell;
 use crate::{allowable_result, allowable_result_fallback};
 
 use nvapi::{self,
     ClockTable, VfpCurve, VfpEntry, Sensor, Cooler, ThermalInfo, PowerInfoEntry,
     ClockFrequencyType, ClockEntry,
-    BaseVoltage, PStates, ClockRange, ThermalLimit,
+    BaseVoltage, PStates, ClockRange, ThermalLimit, VfpInfo,
 };
 pub use nvapi::{
     PhysicalGpu,
@@ -26,6 +27,7 @@ pub use nvapi::{
 
 pub struct Gpu {
     gpu: PhysicalGpu,
+    vfp_info: OnceCell<VfpInfo>,
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -89,14 +91,12 @@ pub struct EccStatus {
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct VfpRange {
     pub range: Range<KilohertzDelta>,
-    pub temperature: Celsius,
 }
 
 impl From<ClockRange> for VfpRange {
     fn from(c: ClockRange) -> Self {
         VfpRange {
             range: Range::range_from(c.range),
-            temperature: c.temp_max.into(),
         }
     }
 }
@@ -140,6 +140,7 @@ impl Gpu {
     pub fn new(gpu: PhysicalGpu) -> Self {
         Gpu {
             gpu,
+            vfp_info: OnceCell::new(),
         }
     }
 
@@ -217,7 +218,7 @@ impl Gpu {
             pstate_limits: pstates.into_iter().map(|p| (p.id, p.clocks.into_iter().map(|p| (p.domain(), p.into())).collect())).collect(),
             overvolt_limits: ov.into_iter().map(From::from).collect(),
             vfp_limits: match allowable_result(self.gpu.vfp_ranges())? {
-                Ok(l) => l.into_iter().map(|v| (v.domain, v.into())).collect(),
+                Ok(l) => l.domains.into_iter().map(|v| (v.domain, v.into())).collect(),
                 Err(..) => Default::default(),
             },
             vfp_locks: match allowable_result(self.gpu.vfp_locks())? {
@@ -227,8 +228,14 @@ impl Gpu {
         })
     }
 
+    fn vfp_info(&self) -> nvapi::Result<nvapi::Result<&VfpInfo>> {
+        allowable_result(self.vfp_info.get_or_try_init(|| {
+            self.gpu.vfp_info()
+        }))
+    }
+
     pub fn status(&self) -> nvapi::Result<GpuStatus> {
-        let mask = allowable_result(self.gpu.vfp_mask())?;
+        let vfp_info = self.vfp_info()?;
 
         Ok(GpuStatus {
             pstate: self.gpu.current_pstate()?,
@@ -261,8 +268,8 @@ impl Gpu {
                 Err(..) => Default::default(),
             },
             perf: self.gpu.perf_status()?,
-            vfp: match mask {
-                Ok(mask) => allowable_result(self.gpu.vfp_curve(mask.mask))?.map(From::from).ok(),
+            vfp: match &vfp_info {
+                Ok(info) => allowable_result(self.gpu.vfp_curve(info))?.map(From::from).ok(),
                 Err(..) => None,
             },
             vfp_locks: match allowable_result(self.gpu.vfp_locks())? {
@@ -277,7 +284,7 @@ impl Gpu {
     }
 
     pub fn settings(&self) -> nvapi::Result<GpuSettings> {
-        let mask = allowable_result(self.gpu.vfp_mask())?;
+        let vfp_info = self.vfp_info()?;
         let pstates = allowable_result(self.gpu.pstates())?;
         let (pstates, ov) = match pstates {
             Ok(PStates { editable: _editable, pstates, overvolt }) => (pstates, overvolt),
@@ -298,8 +305,8 @@ impl Gpu {
                 Ok(c) => c.into_iter().map(|c| (From::from(c), From::from(c))).collect(),
                 Err(..) => Default::default(),
             },
-            vfp: match mask {
-                Ok(mask) => allowable_result(self.gpu.vfp_table(mask.mask))?.map(From::from).ok(),
+            vfp: match &vfp_info {
+                Ok(info) => allowable_result(self.gpu.vfp_table(info))?.map(From::from).ok(),
                 Err(..) => None,
             },
             vfp_locks: match allowable_result(self.gpu.vfp_locks())? {
@@ -348,7 +355,8 @@ impl Gpu {
     }
 
     pub fn set_vfp<I: Iterator<Item=(usize, KilohertzDelta)>, M: Iterator<Item=(usize, KilohertzDelta)>>(&self, clock_deltas: I, mem_deltas: M) -> nvapi::Result<()> {
-        self.gpu.set_vfp_table([0, 0, 0, 0], clock_deltas.map(|(i, d)| (i, d.into())), mem_deltas.map(|(i, d)| (i, d.into())))
+        let info = self.vfp_info()??;
+        self.gpu.set_vfp_table(info, clock_deltas.map(|(i, d)| (i, d.into())), mem_deltas.map(|(i, d)| (i, d.into())))
             .map_err(Into::into)
     }
 
@@ -367,8 +375,8 @@ impl Gpu {
     pub fn reset_vfp(&self) -> nvapi::Result<()> {
         use std::iter;
 
-        let mask = self.gpu.vfp_mask()?;
-        self.gpu.set_vfp_table(mask.mask, iter::empty(), iter::empty())
+        let info = self.vfp_info()??;
+        self.gpu.set_vfp_table(info, iter::empty(), iter::empty())
             .map_err(Into::into)
     }
 }
@@ -522,15 +530,22 @@ impl From<Cooler> for CoolerStatus {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct VfpPoint {
+    pub default_frequency: Kilohertz,
     pub frequency: Kilohertz,
     pub voltage: Microvolts,
 }
 
-impl<T> From<VfpEntry<T>> for VfpPoint where Kilohertz: From<T> {
+impl<T: Default + PartialEq + Copy> From<VfpEntry<T>> for VfpPoint where Kilohertz: From<T> {
     fn from(v: VfpEntry<T>) -> Self {
+        debug_assert!(v.configured().voltage == v.current.voltage);
+        if !v.overclocked.is_empty() {
+            debug_assert!(v.overclocked.voltage == v.current.voltage);
+        }
+        debug_assert!(v.current.frequency == v.overclocked.frequency);
         VfpPoint {
-            frequency: v.frequency.into(),
-            voltage: v.voltage,
+            default_frequency: v.default.frequency.into(),
+            frequency: v.configured().frequency.into(),
+            voltage: v.configured().voltage,
         }
     }
 }
@@ -545,8 +560,14 @@ pub struct VfpTable {
 impl From<VfpCurve> for VfpTable {
     fn from(v: VfpCurve) -> Self {
         VfpTable {
-            graphics: v.graphics.into_iter().map(|(i, e)| (i, e.into())).collect(),
-            memory: v.memory.into_iter().map(|(i, e)| (i, e.into())).collect(),
+            graphics: v.points.get(&ClockDomain::Graphics).map(|d| d
+                .iter()
+                .map(|&(i, e)| (i, e.into())).collect()
+            ).unwrap_or_default(),
+            memory: v.points.get(&ClockDomain::Memory).map(|d| d
+                .iter()
+                .map(|&(i, e)| (i, e.into())).collect()
+            ).unwrap_or_default(),
         }
     }
 }
@@ -561,8 +582,14 @@ pub struct VfpDeltas {
 impl From<ClockTable> for VfpDeltas {
     fn from(c: ClockTable) -> Self {
         VfpDeltas {
-            graphics: c.gpu_delta.into_iter().map(|(i, d)| (i, d.into())).collect(),
-            memory: c.mem_delta.into_iter().map(|(i, d)| (i, d.into())).collect(),
+            graphics: c.delta_points.get(&ClockDomain::Graphics).map(|d| d
+                .iter()
+                .map(|&(i, d)| (i, d.into())).collect()
+            ).unwrap_or_default(),
+            memory: c.delta_points.get(&ClockDomain::Memory).map(|d| d
+                .iter()
+                .map(|&(i, d)| (i, d.into())).collect()
+            ).unwrap_or_default(),
         }
     }
 }
@@ -573,6 +600,7 @@ pub struct VfPoint {
     pub voltage: Microvolts,
     pub frequency: Kilohertz,
     pub delta: KilohertzDelta,
+    pub default_frequency: Kilohertz,
 }
 
 impl VfPoint {
@@ -580,6 +608,7 @@ impl VfPoint {
         VfPoint {
             voltage: point.voltage,
             frequency: point.frequency,
+            default_frequency: point.default_frequency,
             delta,
         }
     }

@@ -1,3 +1,4 @@
+use std::ops::RangeInclusive;
 use std::{fmt, ops};
 use std::convert::Infallible;
 #[cfg(feature = "serde")]
@@ -467,6 +468,10 @@ impl<T> Range<T> {
             min: v.clone(),
             max: v,
         }
+    }
+
+    pub fn range(&self) -> RangeInclusive<T> where T: Clone{
+        self.min.clone()..=self.max.clone()
     }
 }
 

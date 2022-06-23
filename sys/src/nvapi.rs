@@ -130,7 +130,7 @@ impl NvVersion {
     }
 
     pub const fn new(size: usize, version: u16) -> Self {
-        debug_assert!(size < 0x10000);
+        //debug_assert!(size < 0x10000);
         Self {
             data: size as u32 | (version as u32) << 16,
         }

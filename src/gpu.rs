@@ -7,7 +7,7 @@ use crate::sys::gpu::{pstate, clock, power, cooler, thermal, display, ecc};
 use crate::sys::{self, driverapi, i2c};
 use crate::types::{Kibibytes, KilohertzDelta, Kilohertz2Delta, Microvolts, Percentage, Percentage1000, RawConversion};
 use crate::thermal::CoolerLevel;
-use crate::clock::{ClockDomain, VfpMask};
+use crate::clock::{ClockDomain, ClockDomainInfo, VfpMask};
 use crate::pstate::PState;
 
 #[derive(Debug)]
@@ -382,29 +382,37 @@ impl PhysicalGpu {
         }
     }
 
-    pub fn vfp_table(&self, mask: [u32; 4]) -> crate::Result<<clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL as RawConversion>::Target> {
-        trace!("gpu.vfp_table({:?})", mask);
+    pub fn vfp_info(&self) -> crate::Result<VfpInfo> {
+        Ok(VfpInfo {
+            domains: self.vfp_ranges()?,
+            mask: self.vfp_mask()?,
+        })
+    }
+
+    pub fn vfp_table(&self, info: &VfpInfo) -> crate::Result<crate::clock::ClockTable> {
+        trace!("gpu.vfp_table({:?})", info);
         let mut data = clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL::default();
-        data.mask = mask;
+        data.mask = info.mask.mask;
 
         unsafe {
-            nvcall!(NvAPI_GPU_ClockClientClkVfPointsGetControl@get{data}(self.0) => raw)
+            nvcall!(NvAPI_GPU_ClockClientClkVfPointsGetControl@get{data}(self.0) => err)
+                .and_then(|raw| crate::clock::ClockTable::from_raw(&raw, info))
         }
     }
 
-    pub fn set_vfp_table<I: Iterator<Item=(usize, Kilohertz2Delta)>, M: Iterator<Item=(usize, Kilohertz2Delta)>>(&self, mask: [u32; 4], clocks: I, memory: M) -> crate::NvapiResult<()> {
-        trace!("gpu.set_vfp_table({:?})", mask);
+    pub fn set_vfp_table<I: Iterator<Item=(usize, Kilohertz2Delta)>, M: Iterator<Item=(usize, Kilohertz2Delta)>>(&self, info: &VfpInfo, clocks: I, memory: M) -> crate::NvapiResult<()> {
+        trace!("gpu.set_vfp_table({:?})", info);
         let mut data = clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL::default();
-        data.mask = mask;
+        data.mask = info.mask.mask;
         for (i, delta) in clocks {
             trace!("gpu.set_vfp_table({:?}, {:?})", i, delta);
-            data.gpuDeltas[i].freqDeltaKHz = delta.0;
-            VfpMask::set_bit(&mut data.mask, i);
+            data.points[i].freqDeltaKHz = delta.0;
+            data.mask.set_bit(i);
         }
-        for (i, delta) in memory {
+        /*for (i, delta) in memory {
             data.memFilled[i] = 1;
             data.memDeltas[i] = delta.0;
-        }
+        }*/
 
         unsafe {
             nvcall!(NvAPI_GPU_ClockClientClkVfPointsSetControl(self.0, &data))
@@ -452,13 +460,14 @@ impl PhysicalGpu {
         }
     }
 
-    pub fn vfp_curve(&self, mask: [u32; 4]) -> crate::Result<<power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS as RawConversion>::Target> {
-        trace!("gpu.vfp_curve({:?})", mask);
+    pub fn vfp_curve(&self, info: &VfpInfo) -> crate::Result<crate::clock::VfpCurve> {
+        trace!("gpu.vfp_curve({:?})", info);
         let mut data = power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS::default();
-        data.mask = mask;
+        data.mask = info.mask.mask;
 
         unsafe {
-            nvcall!(NvAPI_GPU_ClockClientClkVfPointsGetStatus@get{data}(self.0) => raw)
+            nvcall!(NvAPI_GPU_ClockClientClkVfPointsGetStatus@get{data}(self.0) => err)
+                .and_then(|raw| crate::clock::VfpCurve::from_raw(&raw, info))
         }
     }
 
@@ -1169,6 +1178,36 @@ impl RawConversion for sys::gpu::NV_GPU_ARCH_INFO_V2 {
         Ok(ArchInfo {
             arch: Architecture::from_raw(self.architecture, self.implementation),
             revision: self.revision,
+        })
+    }
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct VfpInfo {
+    pub domains: ClockDomainInfo,
+    pub mask: VfpMask,
+}
+
+impl VfpInfo {
+    pub fn iter<'s>(&'s self, domain: ClockDomain) -> impl Iterator<Item=usize> + 's {
+        self.domains.get(domain)
+            .into_iter()
+            .flat_map(|d| d.vfp_index.range().filter(|&i| self.mask.mask.get_bit(i)))
+    }
+
+    pub fn index<'s, 'a, T: 'static>(&'s self, domain: ClockDomain, entries: &'a [T]) -> impl Iterator<Item=(usize, &'a T)> + 's where 'a: 's {
+        self.iter(domain).map(move |i| (i, &entries[i]))
+    }
+
+    pub fn index_mut<'s, 'a, T: 'static>(&'s self, domain: ClockDomain, entries: &'a mut [T]) -> impl Iterator<Item=(usize, &'a mut T)> + 's where 'a: 's {
+        let mut entries = entries.iter_mut().enumerate();
+        self.iter(domain).map(move |i| loop {
+            match entries.next() {
+                None => panic!("entries out of range of {:?}", self),
+                Some((ei, _)) if ei < i => (),
+                Some(t) => break t,
+            }
         })
     }
 }

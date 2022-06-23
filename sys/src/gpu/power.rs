@@ -18,7 +18,7 @@ pub mod private {
     pub type NV_GPU_CLIENT_VOLT_RAILS_STATUS = NV_GPU_CLIENT_VOLT_RAILS_STATUS_V1;
 
     nvapi! {
-        /// Pascal only
+        /// Pascal and later
         pub unsafe fn NvAPI_GPU_ClientVoltRailsGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pVoltageStatus: *mut NV_GPU_CLIENT_VOLT_RAILS_STATUS) -> NvAPI_Status;
     }
 
@@ -36,59 +36,70 @@ pub mod private {
     pub type NV_GPU_CLIENT_VOLT_RAILS_CONTROL = NV_GPU_CLIENT_VOLT_RAILS_CONTROL_V1;
 
     nvapi! {
-        /// Pascal only
+        /// Pascal and later
         pub unsafe fn NvAPI_GPU_ClientVoltRailsGetControl(hPhysicalGPU: NvPhysicalGpuHandle, pVoltboostPercent: *mut NV_GPU_CLIENT_VOLT_RAILS_CONTROL) -> NvAPI_Status;
     }
 
     nvapi! {
-        /// Pascal only
+        /// Pascal and later
         pub unsafe fn NvAPI_GPU_ClientVoltRailsSetControl(hPhysicalGPU: NvPhysicalGpuHandle, pVoltboostPercent: *const NV_GPU_CLIENT_VOLT_RAILS_CONTROL) -> NvAPI_Status;
     }
 
     nvstruct! {
-        pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_GPU_ENTRY {
-            pub a: u32, // 0
+        pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINT {
             pub freq_kHz: u32,
             pub voltage_uV: u32,
-            pub d: u32,
-            pub e: u32,
-            pub f: u32,
-            pub g: u32,
         }
     }
 
-    // no real difference here
-    pub type NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_MEM_ENTRY = NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_GPU_ENTRY;
-    /*nvstruct! {
-        pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_MEM_ENTRY {
-            pub a: u32, // 1 for idle values?
-            pub freq_kHz: u32,
-            pub voltage_uV: u32,
-            pub d: u32,
-            pub e: u32,
-            pub f: u32,
-            pub g: u32,
+    nvstruct! {
+        pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V1 {
+            pub clock_type: u32, // 0, 1 for idle mem values?
+            pub point: NV_GPU_CLOCK_CLIENT_CLK_VF_POINT,
+            pub unknown: Padding<[u32; 4]>,
         }
-    }*/
+    }
+
+    nvstruct! {
+        pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V3 {
+            pub clock_type: u32, // 0, 1?
+            pub point: NV_GPU_CLOCK_CLIENT_CLK_VF_POINT,
+            pub point_default: NV_GPU_CLOCK_CLIENT_CLK_VF_POINT,
+            pub unknown0: Padding<[u32; 8]>,
+            /// overclockedFrequencyKhz and millivoltage
+            pub point_overclocked: NV_GPU_CLOCK_CLIENT_CLK_VF_POINT,
+            pub unknown: Padding<[u32; 348/4 - (7 + 8)]>,
+        }
+    }
 
     nvstruct! {
         pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V1 {
             pub version: NvVersion,
-            pub mask: [u32; 4], // 80 bits
-            pub unknown: [u32; 12],
-            pub gpuEntries: [NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_GPU_ENTRY; 80],
-            pub memEntries: [NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_MEM_ENTRY; 23],
-            pub unknown2: [u32; 1064],
+            pub mask: ClockMask,
+            pub unknown: Padding<[u32; 8]>,
+            pub entries: [NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V1; 255],
+        }
+    }
+
+    nvstruct! {
+        pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V3 {
+            pub version: NvVersion,
+            pub mask: ClockMask,
+            pub unknown: Padding<[u8; 0x44]>,
+            pub entries: [NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V3; 255],
         }
     }
 
     nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_VER_1(NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V1 = 0x1c28, 1) }
-    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_VER = NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_VER_1 }
+    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_VER_2(NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V2 = 0x1c28, 2) }
+    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_VER_3(NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V3 = 0x15b0c, 3) } // TODO: 0x5b0c or 0x15b0c?
+    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_VER = NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_VER_3 }
 
-    pub type NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS = NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V1;
+    pub type NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V2 = NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V1;
+    pub type NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS = NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V3;
 
     nvapi! {
-        /// Pascal only
+        /// Pascal and later
         pub unsafe fn NvAPI_GPU_ClockClientClkVfPointsGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pVfpCurve: *mut NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS) -> NvAPI_Status;
     }
 
