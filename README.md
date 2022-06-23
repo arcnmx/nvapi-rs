@@ -16,3 +16,8 @@ See the [documentation][docs] for up to date information.
 [docs]: http://arcnmx.github.io/nvapi-rs/nvapi/
 [license-badge]: https://img.shields.io/badge/license-MIT-ff69b4.svg?style=flat-square
 [license]: https://github.com/arcnmx/nvapi-rs/blob/master/COPYING
+
+This library is represented in 3 different ways in crates.io
+- `nvapi-hi` is usually what you'd want to use as it takes care of most of the internals for you, and things make more sense
+- `nvapi` is the middle ground, allows you to get a bit more dirty with the NVAPI and there are invariants that you will need to uphold as a developer otherwise crashing and/or unexpected behavior is expected
+- `nvapi-sys` are direct bindings to the C++ NVAPI, you can do pretty much anything but you absolutely need to know what you're doing
