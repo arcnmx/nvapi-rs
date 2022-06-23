@@ -75,7 +75,7 @@ macro_rules! nvenum {
         )*
 
         $(#[$meta])*
-        #[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
         #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
         #[repr(i32)]
         pub enum $enum_name {
@@ -86,7 +86,7 @@ macro_rules! nvenum {
         }
 
         impl $enum_name {
-            pub fn from_raw(raw: $enum) -> ::std::result::Result<Self, ::ArgumentRangeError> {
+            pub fn from_raw(raw: $enum) -> ::std::result::Result<Self, crate::ArgumentRangeError> {
                 match raw {
                     $(
                         $symbol
@@ -99,12 +99,12 @@ macro_rules! nvenum {
                 *self as _
             }
 
-            pub fn values() -> ::std::iter::Cloned<::std::slice::Iter<'static, Self>> {
+            pub fn values() -> impl Iterator<Item=Self> {
                 [
                     $(
                         $enum_name::$name
                     ),*
-                ].iter().cloned()
+                ].into_iter()
             }
         }
 
@@ -133,10 +133,10 @@ macro_rules! nvbits {
             pub const $symbol: $enum = $value as _;
         )*
 
-        bitflags! {
+        bitflags::bitflags! {
             $(#[$meta])*
             #[derive(Default)]
-            #[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+            #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
             pub struct $enum_name: $enum {
             $(
                 $(#[$($metai)*])*
@@ -208,7 +208,7 @@ macro_rules! nvapi {
         pub unsafe fn $fn($($arg: $arg_ty),*) -> $ret {
             static CACHE: ::std::sync::atomic::AtomicUsize = ::std::sync::atomic::AtomicUsize::new(0);
 
-            match ::nvapi::query_interface(::nvid::Api::$fn.id(), &CACHE) {
+            match crate::nvapi::query_interface(crate::nvid::Api::$fn.id(), &CACHE) {
                 Ok(ptr) => ::std::mem::transmute::<_, extern "C" fn($($arg: $arg_ty),*) -> $ret>(ptr)($($arg),*),
                 Err(e) => e.raw(),
             }
@@ -240,7 +240,7 @@ macro_rules! nvversion {
         mod $name {
             #[test]
             fn $name() {
-                assert_eq!(::types::GET_NVAPI_SIZE(super::$name), ::std::mem::size_of::<super::$struct>());
+                assert_eq!(crate::types::GET_NVAPI_SIZE(super::$name), ::std::mem::size_of::<super::$struct>());
             }
         }
     };

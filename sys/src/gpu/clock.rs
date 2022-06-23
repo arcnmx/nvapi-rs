@@ -1,6 +1,6 @@
-use status::NvAPI_Status;
-use handles::NvPhysicalGpuHandle;
-use types::BoolU32;
+use crate::status::NvAPI_Status;
+use crate::handles::NvPhysicalGpuHandle;
+use crate::types::BoolU32;
 
 pub const NVAPI_MAX_GPU_CLOCKS: usize = 32;
 pub const NVAPI_MAX_GPU_PUBLIC_CLOCKS: usize = 32;
@@ -99,10 +99,9 @@ pub mod private {
     pub const NVAPI_MAX_USAGES_PER_GPU: usize = 8;
     pub const NVAPI_MAX_CLOCKS_PER_GPU: usize = 288;
 
-    use types::BoolU32;
-    use status::NvAPI_Status;
-    use handles::NvPhysicalGpuHandle;
-    use debug_array::Array;
+    use crate::types::BoolU32;
+    use crate::status::NvAPI_Status;
+    use crate::handles::NvPhysicalGpuHandle;
 
     nvstruct! {
         pub struct NV_USAGES_INFO_USAGE {
@@ -134,12 +133,10 @@ pub mod private {
         pub unsafe fn NvAPI_GPU_GetUsages;
     }
 
-    debug_array_impl! { [u32; NVAPI_MAX_CLOCKS_PER_GPU] }
-
     nvstruct! {
         pub struct NV_CLOCKS_INFO_V1 {
             pub version: u32,
-            pub clocks: Array<[u32; NVAPI_MAX_CLOCKS_PER_GPU]>,
+            pub clocks: [u32; NVAPI_MAX_CLOCKS_PER_GPU],
         }
     }
 
@@ -179,18 +176,15 @@ pub mod private {
         }
     }
 
-    debug_array_impl! { [NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_GPU_DELTA; 80] }
-    debug_array_impl! { [u32; 1529] }
-
     nvstruct! {
         pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_V1 {
             pub version: u32,
             pub mask: [u32; 4], // 80 bits (might be 8xu32?)
             pub unknown: [u32; 12],
-            pub gpuDeltas: Array<[NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_GPU_DELTA; 80]>,
+            pub gpuDeltas: [NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_GPU_DELTA; 80],
             pub memFilled: [u32; 23], // maybe only 4 max
             pub memDeltas: [i32; 23],
-            pub unknown2: Array<[u32; 1529]>,
+            pub unknown2: [u32; 1529],
         }
     }
 
@@ -262,16 +256,13 @@ pub mod private {
         }
     }
 
-    debug_array_impl! { [NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK; 80 + 23] }
-    debug_array_impl! { [u32; 916] }
-
     nvstruct! {
         pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_V1 {
             pub version: u32,
             pub mask: [u32; 4], // 80 bits
             pub unknown: [u32; 8],
-            pub clocks: Array<[NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK; 80 + 23]>,
-            pub unknown2: Array<[u32; 916]>,
+            pub clocks: [NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK; 80 + 23],
+            pub unknown2: [u32; 916],
         }
     }
 

@@ -1,21 +1,8 @@
 #![allow(non_camel_case_types, non_snake_case)]
-#![doc(html_root_url = "http://docs.rs/nvapi-sys/0.1.3")]
-
-#[cfg(windows)]
-extern crate winapi;
-#[macro_use]
-extern crate bitflags;
-
-#[cfg(feature = "serde_derive")]
-#[macro_use]
-extern crate serde_derive;
+#![doc(html_root_url = "http://docs.rs/nvapi-sys/0.2.0")]
 
 #[macro_use]
 mod macros;
-
-#[macro_use]
-mod debug_array;
-pub use debug_array::Array;
 
 pub mod nvid;
 pub mod nvapi;

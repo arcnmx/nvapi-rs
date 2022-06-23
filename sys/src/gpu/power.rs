@@ -1,8 +1,7 @@
 /// Undocumented API
 pub mod private {
-    use status::NvAPI_Status;
-    use handles::NvPhysicalGpuHandle;
-    use debug_array::Array;
+    use crate::status::NvAPI_Status;
+    use crate::handles::NvPhysicalGpuHandle;
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_VOLT_RAILS_STATUS_V1 {
@@ -73,17 +72,14 @@ pub mod private {
         }
     }*/
 
-    debug_array_impl! { [NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_GPU_ENTRY; 80] }
-    debug_array_impl! { [u32; 1064] }
-
     nvstruct! {
         pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V1 {
             pub version: u32,
             pub mask: [u32; 4], // 80 bits
             pub unknown: [u32; 12],
-            pub gpuEntries: Array<[NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_GPU_ENTRY; 80]>,
+            pub gpuEntries: [NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_GPU_ENTRY; 80],
             pub memEntries: [NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_MEM_ENTRY; 23],
-            pub unknown2: Array<[u32; 1064]>,
+            pub unknown2: [u32; 1064],
         }
     }
 
@@ -233,8 +229,6 @@ pub mod private {
         pub unsafe fn NvAPI_GPU_PerfPoliciesGetInfo(hPhysicalGPU: NvPhysicalGpuHandle, pPerfInfo: *mut NV_GPU_PERF_INFO) -> NvAPI_Status;
     }
 
-    debug_array_impl! { [u32; 326] }
-
     nvstruct! {
         pub struct NV_GPU_PERF_STATUS_V1 {
             pub version: u32,
@@ -255,7 +249,7 @@ pub mod private {
             pub zero1: u32,
             /// nanoseconds
             pub timers: [u64; 3],
-            pub padding: Array<[u32; 326]>,
+            pub padding: [u32; 326],
         }
     }
 
@@ -302,18 +296,15 @@ pub mod private {
         }
     }
 
-    debug_array_impl! { [NV_VOLT_TABLE_ENTRY; 128] }
-    debug_array_impl! { [u32; 3888] }
-
     nvstruct! {
         pub struct NV_VOLT_TABLE_V1 {
             pub version: u32,
             pub flags: u32,
             /// 1
             pub filled: u32,
-            pub entries: Array<[NV_VOLT_TABLE_ENTRY; 128]>,
+            pub entries: [NV_VOLT_TABLE_ENTRY; 128],
             /// empty tables?
-            pub buf1: Array<[u32; 3888]>,
+            pub buf1: [u32; 3888],
         }
     }
 

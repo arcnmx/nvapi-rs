@@ -1,6 +1,7 @@
-use sys;
+use crate::sys;
 use void::ResultVoidExt;
-use types::RawConversion;
+use log::trace;
+use crate::types::RawConversion;
 
 pub fn driver_version() -> sys::Result<(u32, String)> {
     trace!("driver_version()");

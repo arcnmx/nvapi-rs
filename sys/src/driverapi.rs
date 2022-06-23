@@ -1,6 +1,6 @@
-use status::NvAPI_Status;
-use types::NvAPI_ShortString;
-use handles;
+use crate::status::NvAPI_Status;
+use crate::types::NvAPI_ShortString;
+use crate::handles;
 
 nvapi! {
     pub type SYS_GetDriverAndBranchVersionFn = extern "C" fn(pDriverVersion: *mut u32, szBuildBranchString: *mut NvAPI_ShortString) -> NvAPI_Status;
@@ -64,8 +64,8 @@ nvapi! {
 
 /// Undocumented API
 pub mod private {
-    use status::NvAPI_Status;
-    use handles;
+    use crate::status::NvAPI_Status;
+    use crate::handles;
 
     nvapi! {
         /// This has a different offset than the NvAPI_GPU_GetMemoryInfo function despite both returning the same struct

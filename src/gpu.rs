@@ -1,11 +1,13 @@
 use std::{ptr, fmt};
 use void::{Void, ResultVoidExt};
-use sys::gpu::{self, pstate, clock, power, cooler, thermal, display};
-use sys::{self, driverapi, i2c};
-use types::{Kibibytes, KilohertzDelta, Kilohertz2Delta, Microvolts, Percentage, Percentage1000, RawConversion};
-use thermal::CoolerLevel;
-use clock::{ClockDomain, VfpMask};
-use pstate::PState;
+use log::trace;
+use serde::{Serialize, Deserialize};
+use crate::sys::gpu::{self, pstate, clock, power, cooler, thermal, display};
+use crate::sys::{self, driverapi, i2c};
+use crate::types::{Kibibytes, KilohertzDelta, Kilohertz2Delta, Microvolts, Percentage, Percentage1000, RawConversion};
+use crate::thermal::CoolerLevel;
+use crate::clock::{ClockDomain, VfpMask};
+use crate::pstate::PState;
 
 #[derive(Debug)]
 pub struct PhysicalGpu(sys::handles::NvPhysicalGpuHandle);
@@ -216,13 +218,13 @@ impl PhysicalGpu {
             .map(|_| clocks.convert_raw().void_unwrap())
     }
 
-    pub fn current_pstate(&self) -> sys::Result<::pstate::PState> {
+    pub fn current_pstate(&self) -> sys::Result<PState> {
         trace!("gpu.current_pstate()");
         let mut pstate = 0;
 
         sys::status_result(unsafe { pstate::NvAPI_GPU_GetCurrentPstate(self.0, &mut pstate) })?;
 
-        ::pstate::PState::from_raw(pstate).map_err(From::from)
+        PState::from_raw(pstate).map_err(From::from)
     }
 
     pub fn pstates(&self) -> sys::Result<<pstate::NV_GPU_PERF_PSTATES20_INFO as RawConversion>::Target> {
@@ -335,7 +337,7 @@ impl PhysicalGpu {
 
     pub fn set_vfp_locks<I: Iterator<Item=(usize, Option<Microvolts>)>>(&self, values: I) -> sys::Result<()> {
         trace!("gpu.set_vfp_locks()");
-        use clock::ClockLockMode;
+        use crate::clock::ClockLockMode;
 
         let mut data = clock::private::NV_GPU_PERF_CLIENT_LIMITS::zeroed();
         data.version = clock::private::NV_GPU_PERF_CLIENT_LIMITS_VER;
@@ -462,7 +464,7 @@ impl PhysicalGpu {
             .and_then(|_| data.convert_raw().map_err(From::from))
     }
 
-    pub fn set_thermal_limit<I: Iterator<Item=::thermal::ThermalLimit>>(&self, value: I) -> sys::Result<()> {
+    pub fn set_thermal_limit<I: Iterator<Item=crate::thermal::ThermalLimit>>(&self, value: I) -> sys::Result<()> {
         trace!("gpu.set_thermal_limit()");
         let mut data = thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_STATUS::zeroed();
         data.version = thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_VER;
@@ -505,7 +507,7 @@ impl PhysicalGpu {
         sys::status_result(unsafe { cooler::private::NvAPI_GPU_RestoreCoolerSettings(self.0, ptr, index.len() as u32) })
     }
 
-    pub fn cooler_policy_table(&self, index: u32, policy: ::thermal::CoolerPolicy) -> sys::Result<<cooler::private::NV_GPU_COOLER_POLICY_TABLE as RawConversion>::Target> {
+    pub fn cooler_policy_table(&self, index: u32, policy: crate::thermal::CoolerPolicy) -> sys::Result<<cooler::private::NV_GPU_COOLER_POLICY_TABLE as RawConversion>::Target> {
         trace!("gpu.cooler_policy_table({:?})", index);
         let mut data = cooler::private::NV_GPU_COOLER_POLICY_TABLE::zeroed();
         data.version = cooler::private::NV_GPU_COOLER_POLICY_TABLE_VER;
@@ -528,7 +530,7 @@ impl PhysicalGpu {
         sys::status_result(unsafe { cooler::private::NvAPI_GPU_SetCoolerPolicyTable(self.0, index, &data, value.levels.len() as u32) })
     }
 
-    pub fn restore_cooler_policy_table(&self, index: &[u32], policy: ::thermal::CoolerPolicy) -> sys::Result<()> {
+    pub fn restore_cooler_policy_table(&self, index: &[u32], policy: crate::thermal::CoolerPolicy) -> sys::Result<()> {
         trace!("gpu.restore_cooler_policy_table({:?}, {:?})", index, policy);
         let ptr = if index.is_empty() { ptr::null() } else { index.as_ptr() };
         sys::status_result(unsafe { cooler::private::NvAPI_GPU_RestoreCoolerPolicyTable(self.0, ptr, index.len() as u32, policy.raw()) })
@@ -663,7 +665,7 @@ impl PhysicalGpu {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PciIdentifiers {
     pub device_id: u32,
@@ -711,7 +713,7 @@ impl PciIdentifiers {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct MemoryInfo {
     pub dedicated: Kibibytes,
@@ -740,7 +742,7 @@ impl RawConversion for driverapi::NV_DISPLAY_DRIVER_MEMORY_INFO {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DriverModel {
     pub value: u32,
@@ -776,7 +778,7 @@ impl fmt::Debug for DriverModel {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct DisplayId {
     pub connector: MonitorConnectorType,

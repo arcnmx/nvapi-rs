@@ -1,5 +1,6 @@
 use std::collections::BTreeMap;
-use {allowable_result, allowable_result_fallback};
+use serde::{Serialize, Deserialize};
+use crate::{allowable_result, allowable_result_fallback};
 
 use nvapi::{self,
     ClockTable, VfpCurve, VfpEntry, Sensor, Cooler, ThermalInfo, PowerInfoEntry,
@@ -25,7 +26,7 @@ pub struct Gpu {
     gpu: PhysicalGpu,
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct GpuInfo {
     pub name: String,
@@ -59,7 +60,7 @@ pub struct GpuInfo {
     pub vfp_locks: Vec<usize>,
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct VfpRange {
     pub range: Range<KilohertzDelta>,
@@ -75,7 +76,7 @@ impl From<ClockRange> for VfpRange {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct GpuStatus {
     pub pstate: PState,
@@ -95,7 +96,7 @@ pub struct GpuStatus {
     pub vfp_locks: BTreeMap<usize, Microvolts>,
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct GpuSettings {
     pub voltage_boost: Option<Percentage>,
@@ -311,7 +312,7 @@ impl Gpu {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct OvervoltLimit {
     pub domain: VoltageDomain,
@@ -333,7 +334,7 @@ impl From<BaseVoltage> for OvervoltLimit {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PStateLimit {
     pub frequency_delta: Option<Range<KilohertzDelta>>,
@@ -361,7 +362,7 @@ impl From<ClockEntry> for PStateLimit {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct PowerLimit {
     pub range: Range<Percentage>,
@@ -377,7 +378,7 @@ impl From<PowerInfoEntry> for PowerLimit {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct SensorLimit {
     pub range: Range<Celsius>,
@@ -395,7 +396,7 @@ impl From<ThermalInfo> for SensorLimit {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct SensorDesc {
     pub controller: ThermalController,
@@ -413,7 +414,7 @@ impl From<Sensor> for SensorDesc {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct CoolerDesc {
     pub kind: CoolerType,
@@ -437,7 +438,7 @@ impl From<Cooler> for CoolerDesc {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct CoolerStatus {
     pub range: Range<Percentage>,
@@ -457,7 +458,7 @@ impl From<Cooler> for CoolerStatus {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct VfpPoint {
     pub frequency: Kilohertz,
@@ -473,7 +474,7 @@ impl<T> From<VfpEntry<T>> for VfpPoint where Kilohertz: From<T> {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct VfpTable {
     pub graphics: BTreeMap<usize, VfpPoint>,
@@ -489,7 +490,7 @@ impl From<VfpCurve> for VfpTable {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct VfpDeltas {
     pub graphics: BTreeMap<usize, KilohertzDelta>,
@@ -505,7 +506,7 @@ impl From<ClockTable> for VfpDeltas {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct VfPoint {
     pub voltage: Microvolts,

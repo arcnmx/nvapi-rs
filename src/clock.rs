@@ -1,9 +1,11 @@
 use std::collections::BTreeMap;
 use std::{iter, slice};
-use sys::gpu::{clock, power};
-use sys;
+use crate::sys::gpu::{clock, power};
+use crate::sys;
 use void::{Void, ResultVoidExt};
-use types::{Kilohertz, Kilohertz2, KilohertzDelta, Kilohertz2Delta, Percentage, Percentage1000, Microvolts, CelsiusShifted, Range, RawConversion};
+use serde::{Serialize, Deserialize};
+use log::trace;
+use crate::types::{Kilohertz, Kilohertz2, KilohertzDelta, Kilohertz2Delta, Percentage, Percentage1000, Microvolts, CelsiusShifted, Range, RawConversion};
 
 pub use sys::gpu::clock::PublicClockId as ClockDomain;
 pub use sys::gpu::clock::private::ClockLockMode;
@@ -25,20 +27,20 @@ impl RawConversion for clock::NV_GPU_CLOCK_FREQUENCIES {
 }
 
 impl RawConversion for clock::private::NV_USAGES_INFO {
-    type Target = BTreeMap<::pstate::UtilizationDomain, Percentage>;
+    type Target = BTreeMap<crate::pstate::UtilizationDomain, Percentage>;
     type Error = sys::ArgumentRangeError;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
         self.usages.iter().enumerate()
             .filter(|&(_, ref usage)| usage.bIsPresent.get())
-            .map(|(i, usage)| ::pstate::UtilizationDomain::from_raw(i as _)
+            .map(|(i, usage)| crate::pstate::UtilizationDomain::from_raw(i as _)
                 .and_then(|i| Percentage::from_raw(usage.percentage).map(|p| (i, p)))
             ).collect()
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub enum VfpMaskType {
     Graphics,
@@ -46,7 +48,7 @@ pub enum VfpMaskType {
     Unknown,
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct VfpMask {
     pub mask: [u32; 4],
@@ -160,14 +162,14 @@ impl RawConversion for clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO {
         Ok(VfpMask {
             mask: self.mask,
             types: VfpMaskIter::new(&self.mask)
-                .filter_map(|i| self.clocks.inner().get(i))
+                .filter_map(|i| self.clocks.get(i))
                 .map(RawConversion::convert_raw)
                 .collect::<Result<_, _>>()?,
         })
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct ClockTable {
     pub gpu_delta: Vec<(usize, Kilohertz2Delta)>,
@@ -201,7 +203,7 @@ impl RawConversion for clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL
         Ok(ClockTable {
             gpu_delta: VfpMaskIter::new(&self.mask)
                 .filter(|&i| i < self.gpuDeltas.len())
-                .map(|i| (i, &self.gpuDeltas.inner()[i]))
+                .map(|i| (i, &self.gpuDeltas[i]))
                 .map(|(i, delta)| delta.convert_raw().map(|delta| (i, delta.into())))
                 .collect::<Result<_, _>>()?,
             mem_delta: self.memFilled.iter().enumerate().filter_map(|(i, &filled)| match filled {
@@ -214,7 +216,7 @@ impl RawConversion for clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct ClockRange {
     pub domain: ClockDomain,
@@ -259,7 +261,7 @@ impl RawConversion for clock::private::NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct VfpEntry<K> {
     /// 1 for idle values / low pstates? only populated for memory clocks
@@ -298,7 +300,7 @@ impl RawConversion for power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct VfpCurve {
     pub graphics: Vec<(usize, VfpEntry<Kilohertz2>)>,
@@ -361,15 +363,15 @@ impl RawConversion for power::private::NV_GPU_CLIENT_VOLT_RAILS_CONTROL_V1 {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct PowerInfoEntry {
-    pub pstate: ::pstate::PState,
+    pub pstate: crate::pstate::PState,
     pub range: Range<Percentage1000>,
     pub default_limit: Percentage1000,
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct PowerInfo {
     pub valid: bool,
@@ -388,7 +390,7 @@ impl RawConversion for power::private::NV_GPU_POWER_INFO_ENTRY {
                 pstate, b: 0, c: 0, min_power, e: 0, f: 0,
                 def_power, h: 0, i: 0, max_power, k: 0,
             } => Ok(PowerInfoEntry {
-                pstate: ::pstate::PState::from_raw(pstate as _)?,
+                pstate: crate::pstate::PState::from_raw(pstate as _)?,
                 range: Range {
                     min: Percentage1000(min_power),
                     max: Percentage1000(max_power),
@@ -468,7 +470,7 @@ impl RawConversion for power::private::NV_GPU_POWER_STATUS {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct ClockLockEntry {
     pub mode: ClockLockMode,
@@ -508,7 +510,7 @@ impl RawConversion for clock::private::NV_GPU_PERF_CLIENT_LIMITS {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct PerfInfo {
     pub max_unknown: u32,
@@ -529,7 +531,7 @@ impl RawConversion for power::private::NV_GPU_PERF_INFO {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct PerfStatus {
     pub unknown: u32,
@@ -555,7 +557,7 @@ impl RawConversion for power::private::NV_GPU_PERF_STATUS {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct VoltageEntry {
     pub unknown: u32,
@@ -575,7 +577,7 @@ impl RawConversion for power::private::NV_VOLT_TABLE_ENTRY {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct VoltageTable {
     pub flags: u32,
@@ -595,7 +597,7 @@ impl RawConversion for power::private::NV_VOLT_TABLE {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct VoltageStatus {
     pub flags: u32,

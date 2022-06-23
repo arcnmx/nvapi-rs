@@ -1,15 +1,7 @@
 //#![deny(missing_docs)]
-#![doc(html_root_url = "http://docs.rs/nvapi/0.1.4")]
+#![doc(html_root_url = "http://docs.rs/nvapi/0.2.0")]
 
-pub extern crate nvapi_sys as sys;
-extern crate void;
-#[cfg(feature = "serde_derive")]
-#[macro_use]
-extern crate serde_derive;
-#[macro_use]
-extern crate log;
-#[cfg(feature = "i2c")]
-extern crate i2c;
+pub use nvapi_sys as sys;
 
 mod types;
 mod pstate;

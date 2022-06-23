@@ -1,6 +1,6 @@
-use status::NvAPI_Status;
-use handles::NvPhysicalGpuHandle;
-use types;
+use crate::status::NvAPI_Status;
+use crate::handles::NvPhysicalGpuHandle;
+use crate::types;
 
 /// The GPU cooler APIs are used to get and set the fan level or equivalent
 /// cooler levels for various target devices associated with the GPU.
@@ -164,9 +164,9 @@ nvapi! {
 
 /// Undocumented API
 pub mod private {
-    use status::NvAPI_Status;
-    use handles::NvPhysicalGpuHandle;
-    use types;
+    use crate::status::NvAPI_Status;
+    use crate::handles::NvPhysicalGpuHandle;
+    use crate::types;
 
     pub const NVAPI_MAX_PROCESSES: usize = 128;
 

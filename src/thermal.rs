@@ -1,6 +1,7 @@
-use sys::gpu::{thermal, cooler};
-use sys;
-use types::{Percentage, Celsius, CelsiusShifted, Range, RawConversion};
+use log::trace;
+use crate::sys::gpu::{thermal, cooler};
+use crate::sys;
+use crate::types::{Percentage, Celsius, CelsiusShifted, Range, RawConversion};
 
 pub use sys::gpu::thermal::{ThermalController, ThermalTarget};
 

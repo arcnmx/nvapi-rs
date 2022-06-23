@@ -1,7 +1,7 @@
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::os::raw::c_void;
-use status::{Status, NvAPI_Status};
-use types;
+use crate::status::{Status, NvAPI_Status};
+use crate::types;
 
 pub type QueryInterfaceFn = extern "C" fn(id: u32) -> *const c_void;
 
@@ -19,13 +19,13 @@ pub unsafe fn set_query_interface(ptr: QueryInterfaceFn) {
 }
 
 #[cfg(not(windows))]
-pub fn nvapi_QueryInterface(id: u32) -> ::Result<usize> {
+pub fn nvapi_QueryInterface(id: u32) -> crate::Result<usize> {
     // TODO: Apparently nvapi is available for macOS?
     Err(Status::LibraryNotFound)
 }
 
 #[cfg(windows)]
-pub fn nvapi_QueryInterface(id: u32) -> ::Result<usize> {
+pub fn nvapi_QueryInterface(id: u32) -> crate::Result<usize> {
     use winapi::um::libloaderapi::{GetProcAddress, LoadLibraryA};
     use std::mem;
     use std::os::raw::c_char;
@@ -56,7 +56,7 @@ pub fn nvapi_QueryInterface(id: u32) -> ::Result<usize> {
     }
 }
 
-pub(crate) fn query_interface(id: u32, cache: &AtomicUsize) -> ::Result<usize> {
+pub(crate) fn query_interface(id: u32, cache: &AtomicUsize) -> crate::Result<usize> {
     match cache.load(Ordering::Relaxed) {
         0 => {
             let value = nvapi_QueryInterface(id)?;

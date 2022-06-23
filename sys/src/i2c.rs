@@ -1,5 +1,5 @@
-use status::NvAPI_Status;
-use handles::NvPhysicalGpuHandle;
+use crate::status::NvAPI_Status;
+use crate::handles::NvPhysicalGpuHandle;
 
 pub const NVAPI_MAX_SIZEOF_I2C_DATA_BUFFER: usize = 4096;
 pub const NVAPI_MAX_SIZEOF_I2C_REG_ADDRESS: usize = 4;
@@ -208,8 +208,8 @@ nvapi! {
 
 /// Undocumented API
 pub mod private {
-    use status::NvAPI_Status;
-    use handles::NvPhysicalGpuHandle;
+    use crate::status::NvAPI_Status;
+    use crate::handles::NvPhysicalGpuHandle;
     use super::NV_I2C_SPEED;
 
     nvstruct! {

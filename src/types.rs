@@ -1,7 +1,8 @@
 use std::ffi::CStr;
 use std::{fmt, ops};
+use serde::{Serialize, Deserialize};
 use void::Void;
-use sys;
+use crate::sys;
 
 pub trait RawConversion {
     type Target;
@@ -21,7 +22,7 @@ impl RawConversion for sys::types::NvAPI_ShortString {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
 pub struct Celsius(pub i32);
 
@@ -38,7 +39,7 @@ impl fmt::Debug for Celsius {
 }
 
 /// Nvidia encodes temperature as `<< 8` for some reason sometimes.
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
 pub struct CelsiusShifted(pub i32);
 
@@ -72,7 +73,7 @@ impl From<Celsius> for CelsiusShifted {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
 pub struct Microvolts(pub u32);
 
@@ -93,7 +94,7 @@ impl fmt::Debug for Microvolts {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
 pub struct MicrovoltsDelta(pub i32);
 
@@ -114,7 +115,7 @@ impl fmt::Debug for MicrovoltsDelta {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
 pub struct Kilohertz(pub u32);
 
@@ -169,7 +170,7 @@ impl ops::Add<KilohertzDelta> for Kilohertz {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
 pub struct Kilohertz2(pub u32);
 
@@ -219,7 +220,7 @@ impl fmt::Debug for Kilohertz2 {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
 pub struct KilohertzDelta(pub i32);
 
@@ -282,7 +283,7 @@ impl ops::Div<i32> for KilohertzDelta {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
 pub struct Kilohertz2Delta(pub i32);
 
@@ -332,7 +333,7 @@ impl fmt::Debug for Kilohertz2Delta {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
 pub struct Kibibytes(pub u32);
 
@@ -372,7 +373,7 @@ impl fmt::Debug for Kibibytes {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
 pub struct Percentage(pub u32);
 
@@ -397,7 +398,7 @@ impl Percentage {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
 pub struct Percentage1000(pub u32);
 
@@ -436,7 +437,7 @@ impl From<Percentage> for Percentage1000 {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
 pub struct Range<T> {
     pub min: T,
@@ -471,7 +472,7 @@ impl<T> Range<T> {
     }
 }
 
-#[cfg_attr(feature = "serde_derive", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
 pub struct Delta<T> {
     pub value: T,

@@ -1,9 +1,10 @@
 use std::collections::BTreeMap;
 use void::{Void, ResultVoidExt};
-use sys::gpu::pstate;
-use sys;
-use types::{Microvolts, MicrovoltsDelta, Kilohertz, KilohertzDelta, Percentage, Range, Delta, RawConversion};
-use clock::ClockDomain;
+use log::trace;
+use crate::sys::gpu::pstate;
+use crate::sys;
+use crate::types::{Microvolts, MicrovoltsDelta, Kilohertz, KilohertzDelta, Percentage, Range, Delta, RawConversion};
+use crate::clock::ClockDomain;
 
 pub use sys::gpu::pstate::{PstateId as PState, VoltageInfoDomain as VoltageDomain, UtilizationDomain};
 

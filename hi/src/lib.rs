@@ -1,10 +1,6 @@
-#![doc(html_root_url = "http://docs.rs/nvapi-hi/0.1.0")]
+#![doc(html_root_url = "http://docs.rs/nvapi-hi/0.2.0")]
 
-pub extern crate nvapi;
-
-#[cfg(feature = "serde_derive")]
-#[macro_use]
-extern crate serde_derive;
+pub use nvapi;
 
 mod gpu;
 pub use gpu::*;
