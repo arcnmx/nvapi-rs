@@ -166,7 +166,7 @@ pub mod private {
     }
 
     nvstruct! {
-        pub struct NV_CLOCK_TABLE_GPU_DELTA {
+        pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_GPU_DELTA {
             pub a: u32,
             pub b: u32,
             pub c: u32,
@@ -179,38 +179,38 @@ pub mod private {
         }
     }
 
-    debug_array_impl! { [NV_CLOCK_TABLE_GPU_DELTA; 80] }
+    debug_array_impl! { [NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_GPU_DELTA; 80] }
     debug_array_impl! { [u32; 1529] }
 
     nvstruct! {
-        pub struct NV_CLOCK_TABLE_V1 {
+        pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_V1 {
             pub version: u32,
             pub mask: [u32; 4], // 80 bits (might be 8xu32?)
             pub unknown: [u32; 12],
-            pub gpuDeltas: Array<[NV_CLOCK_TABLE_GPU_DELTA; 80]>,
+            pub gpuDeltas: Array<[NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_GPU_DELTA; 80]>,
             pub memFilled: [u32; 23], // maybe only 4 max
             pub memDeltas: [i32; 23],
             pub unknown2: Array<[u32; 1529]>,
         }
     }
 
-    nvversion! { NV_CLOCK_TABLE_VER_1(NV_CLOCK_TABLE_V1 = 9248, 1) }
-    nvversion! { NV_CLOCK_TABLE_VER = NV_CLOCK_TABLE_VER_1 }
+    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_VER_1(NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_V1 = 9248, 1) }
+    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_VER = NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_VER_1 }
 
-    pub type NV_CLOCK_TABLE = NV_CLOCK_TABLE_V1;
+    pub type NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL = NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_V1;
 
     nvapi! {
         /// Pascal only
-        pub unsafe fn NvAPI_GPU_GetClockBoostTable(hPhysicalGPU: NvPhysicalGpuHandle, pClockTable: *mut NV_CLOCK_TABLE) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GPU_ClockClientClkVfPointsGetControl(hPhysicalGPU: NvPhysicalGpuHandle, pClockTable: *mut NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL) -> NvAPI_Status;
     }
 
     nvapi! {
         /// Pascal only
-        pub unsafe fn NvAPI_GPU_SetClockBoostTable(hPhysicalGPU: NvPhysicalGpuHandle, pClockTable: *const NV_CLOCK_TABLE) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GPU_ClockClientClkVfPointsSetControl(hPhysicalGPU: NvPhysicalGpuHandle, pClockTable: *const NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL) -> NvAPI_Status;
     }
 
     nvstruct! {
-        pub struct NV_CLOCK_RANGES_ENTRY {
+        pub struct NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_ENTRY {
             pub a: u32,
             pub clockType: super::NV_GPU_PUBLIC_CLOCK_ID,
             pub c: u32,
@@ -233,26 +233,26 @@ pub mod private {
     }
 
     nvstruct! {
-        pub struct NV_CLOCK_RANGES_V1 {
+        pub struct NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_V1 {
             pub version: u32,
             pub numClocks: u32, // unsure
             pub zero: [u32; 8],
-            pub entries: [NV_CLOCK_RANGES_ENTRY; 32],
+            pub entries: [NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_ENTRY; 32],
         }
     }
 
-    nvversion! { NV_CLOCK_RANGES_VER_1(NV_CLOCK_RANGES_V1 = 2344, 1) }
-    nvversion! { NV_CLOCK_RANGES_VER = NV_CLOCK_RANGES_VER_1 }
+    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_VER_1(NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_V1 = 2344, 1) }
+    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_VER = NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_VER_1 }
 
-    pub type NV_CLOCK_RANGES = NV_CLOCK_RANGES_V1;
+    pub type NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO = NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_V1;
 
     nvapi! {
         /// Pascal only
-        pub unsafe fn NvAPI_GPU_GetClockBoostRanges(hPhysicalGPU: NvPhysicalGpuHandle, pClockRanges: *mut NV_CLOCK_RANGES) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GPU_ClockClientClkDomainsGetInfo(hPhysicalGPU: NvPhysicalGpuHandle, pClockRanges: *mut NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO) -> NvAPI_Status;
     }
 
     nvstruct! {
-        pub struct NV_CLOCK_MASKS_CLOCK {
+        pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK {
             pub a: u32,
             pub b: u32,
             pub c: u32,
@@ -262,27 +262,27 @@ pub mod private {
         }
     }
 
-    debug_array_impl! { [NV_CLOCK_MASKS_CLOCK; 80 + 23] }
+    debug_array_impl! { [NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK; 80 + 23] }
     debug_array_impl! { [u32; 916] }
 
     nvstruct! {
-        pub struct NV_CLOCK_MASKS_V1 {
+        pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_V1 {
             pub version: u32,
             pub mask: [u32; 4], // 80 bits
             pub unknown: [u32; 8],
-            pub clocks: Array<[NV_CLOCK_MASKS_CLOCK; 80 + 23]>,
+            pub clocks: Array<[NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK; 80 + 23]>,
             pub unknown2: Array<[u32; 916]>,
         }
     }
 
-    nvversion! { NV_CLOCK_MASKS_VER_1(NV_CLOCK_MASKS_V1 = 6188, 1) }
-    nvversion! { NV_CLOCK_MASKS_VER = NV_CLOCK_MASKS_VER_1 }
+    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_VER_1(NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_V1 = 6188, 1) }
+    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_VER = NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_VER_1 }
 
-    pub type NV_CLOCK_MASKS = NV_CLOCK_MASKS_V1;
+    pub type NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO = NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_V1;
 
     nvapi! {
         /// Pascal only
-        pub unsafe fn NvAPI_GPU_GetClockBoostMask(hPhysicalGPU: NvPhysicalGpuHandle, pClockMasks: *mut NV_CLOCK_MASKS) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GPU_ClockClientClkVfPointsGetInfo(hPhysicalGPU: NvPhysicalGpuHandle, pClockMasks: *mut NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO) -> NvAPI_Status;
     }
 
     nvenum! {
@@ -293,7 +293,7 @@ pub mod private {
     }
 
     nvstruct! {
-        pub struct NV_CLOCK_LOCK_ENTRY {
+        pub struct NV_GPU_PERF_CLIENT_LIMITS_ENTRY {
             pub id: u32, // entry index
             pub b: u32, // 0
             pub mode: NV_GPU_CLOCK_LOCK_MODE, // 0 = default, 3 = manual voltage
@@ -305,26 +305,26 @@ pub mod private {
 
     nvstruct! {
         // 2-030c: 0C 03 02 00 00 00 00 00 01 00 00 00 06 00 00 00
-        pub struct NV_CLOCK_LOCK_V2 {
+        pub struct NV_GPU_PERF_CLIENT_LIMITS_V2 {
             pub version: u32,
             pub flags: u32, // unknown, only see 0
             pub count: u32,
-            pub entries: [NV_CLOCK_LOCK_ENTRY; 0x20],
+            pub entries: [NV_GPU_PERF_CLIENT_LIMITS_ENTRY; 0x20],
         }
     }
 
-    pub type NV_CLOCK_LOCK = NV_CLOCK_LOCK_V2;
+    pub type NV_GPU_PERF_CLIENT_LIMITS = NV_GPU_PERF_CLIENT_LIMITS_V2;
 
-    nvversion! { NV_CLOCK_LOCK_VER_2(NV_CLOCK_LOCK_V2 = 0x30c, 2) }
-    nvversion! { NV_CLOCK_LOCK_VER = NV_CLOCK_LOCK_VER_2 }
+    nvversion! { NV_GPU_PERF_CLIENT_LIMITS_VER_2(NV_GPU_PERF_CLIENT_LIMITS_V2 = 0x30c, 2) }
+    nvversion! { NV_GPU_PERF_CLIENT_LIMITS_VER = NV_GPU_PERF_CLIENT_LIMITS_VER_2 }
 
     nvapi! {
         /// Pascal only
-        pub unsafe fn NvAPI_GPU_GetClockBoostLock(hPhysicalGPU: NvPhysicalGpuHandle, pClockLocks: *mut NV_CLOCK_LOCK) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GPU_PerfClientLimitsGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pClockLocks: *mut NV_GPU_PERF_CLIENT_LIMITS) -> NvAPI_Status;
     }
 
     nvapi! {
         /// Pascal only
-        pub unsafe fn NvAPI_GPU_SetClockBoostLock(hPhysicalGPU: NvPhysicalGpuHandle, pClockLocks: *const NV_CLOCK_LOCK) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GPU_PerfClientLimitsSetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pClockLocks: *const NV_GPU_PERF_CLIENT_LIMITS) -> NvAPI_Status;
     }
 }

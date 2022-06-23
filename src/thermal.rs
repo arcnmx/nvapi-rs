@@ -88,7 +88,7 @@ pub struct ThermalLimit {
     pub flags: u32,
 }
 
-impl RawConversion for thermal::private::NV_GPU_THERMAL_LIMIT_ENTRY {
+impl RawConversion for thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_ENTRY {
     type Target = ThermalLimit;
     type Error = sys::ArgumentRangeError;
 
@@ -102,7 +102,7 @@ impl RawConversion for thermal::private::NV_GPU_THERMAL_LIMIT_ENTRY {
     }
 }
 
-impl RawConversion for thermal::private::NV_GPU_THERMAL_LIMIT {
+impl RawConversion for thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_STATUS {
     type Target = Vec<ThermalLimit>;
     type Error = sys::ArgumentRangeError;
 

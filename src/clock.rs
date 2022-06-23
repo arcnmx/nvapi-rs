@@ -128,20 +128,20 @@ impl<'a> Iterator for VfpMaskIter<'a> {
     }
 }
 
-impl RawConversion for clock::private::NV_CLOCK_MASKS_CLOCK {
+impl RawConversion for clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK {
     type Target = VfpMaskType;
     type Error = sys::ArgumentRangeError;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
         match *self {
-            clock::private::NV_CLOCK_MASKS_CLOCK {
+            clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK {
                 a: 0, b: 0, c: 0, d: 0, memDelta: 1, gpuDelta: 0,
             } => Ok(VfpMaskType::Memory),
-            clock::private::NV_CLOCK_MASKS_CLOCK {
+            clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK {
                 a: 0, b: 0, c: 0, d: 0, memDelta: 0, gpuDelta: 1,
             } => Ok(VfpMaskType::Graphics),
-            clock::private::NV_CLOCK_MASKS_CLOCK {
+            clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK {
                 a: 0, b: 0, c: 0, d: 0, memDelta: 0, gpuDelta: 0,
             } => Ok(VfpMaskType::Unknown),
             _ => Err(sys::ArgumentRangeError),
@@ -149,7 +149,7 @@ impl RawConversion for clock::private::NV_CLOCK_MASKS_CLOCK {
     }
 }
 
-impl RawConversion for clock::private::NV_CLOCK_MASKS {
+impl RawConversion for clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO {
     type Target = VfpMask;
     type Error = sys::ArgumentRangeError;
 
@@ -174,7 +174,7 @@ pub struct ClockTable {
     pub mem_delta: Vec<(usize, KilohertzDelta)>,
 }
 
-impl RawConversion for clock::private::NV_CLOCK_TABLE_GPU_DELTA {
+impl RawConversion for clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_GPU_DELTA {
     type Target = i32;
     type Error = sys::ArgumentRangeError;
 
@@ -182,7 +182,7 @@ impl RawConversion for clock::private::NV_CLOCK_TABLE_GPU_DELTA {
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
         match *self {
-            clock::private::NV_CLOCK_TABLE_GPU_DELTA {
+            clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_GPU_DELTA {
                 a: 0, b: 0, c: 0, d: 0, e: 0, freqDeltaKHz, g: 0, h: 0, i: 0,
             } => Ok(freqDeltaKHz),
             _ => Err(sys::ArgumentRangeError),
@@ -190,7 +190,7 @@ impl RawConversion for clock::private::NV_CLOCK_TABLE_GPU_DELTA {
     }
 }
 
-impl RawConversion for clock::private::NV_CLOCK_TABLE {
+impl RawConversion for clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL {
     type Target = ClockTable;
     type Error = sys::ArgumentRangeError;
 
@@ -223,7 +223,7 @@ pub struct ClockRange {
     pub temp_max: CelsiusShifted,
 }
 
-impl RawConversion for clock::private::NV_CLOCK_RANGES_ENTRY {
+impl RawConversion for clock::private::NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_ENTRY {
     type Target = ClockRange;
     type Error = sys::ArgumentRangeError;
 
@@ -231,7 +231,7 @@ impl RawConversion for clock::private::NV_CLOCK_RANGES_ENTRY {
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
         match *self {
-            clock::private::NV_CLOCK_RANGES_ENTRY {
+            clock::private::NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_ENTRY {
                 a: 0, clockType, c: 0, d: 0, e: 0, f: 0, g: 0, h: 0, i: 0,
                 j: 0, rangeMax, rangeMin, tempMax, n: 0, o: 0, p: 0, q: 0, r: 0,
             } => Ok(ClockRange {
@@ -247,7 +247,7 @@ impl RawConversion for clock::private::NV_CLOCK_RANGES_ENTRY {
     }
 }
 
-impl RawConversion for clock::private::NV_CLOCK_RANGES {
+impl RawConversion for clock::private::NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO {
     type Target = Vec<ClockRange>;
     type Error = sys::ArgumentRangeError;
 
@@ -278,7 +278,7 @@ impl<T> VfpEntry<T> {
     }
 }
 
-impl RawConversion for power::private::NV_VFP_CURVE_GPU_ENTRY {
+impl RawConversion for power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_GPU_ENTRY {
     type Target = VfpEntry<u32>;
     type Error = sys::ArgumentRangeError;
 
@@ -286,7 +286,7 @@ impl RawConversion for power::private::NV_VFP_CURVE_GPU_ENTRY {
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
         match *self {
-            power::private::NV_VFP_CURVE_GPU_ENTRY {
+            power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_GPU_ENTRY {
                 a, freq_kHz, voltage_uV, d: 0, e: 0, f: 0, g: 0,
             } => Ok(VfpEntry {
                 unknown: a,
@@ -305,7 +305,7 @@ pub struct VfpCurve {
     pub memory: Vec<(usize, VfpEntry<Kilohertz>)>,
 }
 
-impl RawConversion for power::private::NV_VFP_CURVE {
+impl RawConversion for power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS {
     type Target = VfpCurve;
     type Error = sys::ArgumentRangeError;
 
@@ -328,7 +328,7 @@ fn all_zero(s: &[u32]) -> bool {
     return s.iter().all(|&v| v == 0)
 }
 
-impl RawConversion for power::private::NV_VOLTAGE_STATUS_V1 {
+impl RawConversion for power::private::NV_GPU_CLIENT_VOLT_RAILS_STATUS_V1 {
     type Target = Microvolts;
     type Error = sys::ArgumentRangeError;
 
@@ -336,7 +336,7 @@ impl RawConversion for power::private::NV_VOLTAGE_STATUS_V1 {
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
         match *self {
-            power::private::NV_VOLTAGE_STATUS_V1 {
+            power::private::NV_GPU_CLIENT_VOLT_RAILS_STATUS_V1 {
                 version: _, flags: 0, ref zero,
                 value_uV, ref unknown,
             } if all_zero(zero) && all_zero(unknown) => Ok(Microvolts(value_uV)),
@@ -345,7 +345,7 @@ impl RawConversion for power::private::NV_VOLTAGE_STATUS_V1 {
     }
 }
 
-impl RawConversion for power::private::NV_VOLTAGE_BOOST_PERCENT_V1 {
+impl RawConversion for power::private::NV_GPU_CLIENT_VOLT_RAILS_CONTROL_V1 {
     type Target = Percentage;
     type Error = sys::ArgumentRangeError;
 
@@ -353,7 +353,7 @@ impl RawConversion for power::private::NV_VOLTAGE_BOOST_PERCENT_V1 {
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
         match *self {
-            power::private::NV_VOLTAGE_BOOST_PERCENT {
+            power::private::NV_GPU_CLIENT_VOLT_RAILS_CONTROL {
                 version: _, percent, ref unknown,
             } if all_zero(unknown) => Percentage::from_raw(percent),
             _ => Err(sys::ArgumentRangeError),
@@ -475,7 +475,7 @@ pub struct ClockLockEntry {
     pub voltage: Microvolts,
 }
 
-impl RawConversion for clock::private::NV_CLOCK_LOCK_ENTRY {
+impl RawConversion for clock::private::NV_GPU_PERF_CLIENT_LIMITS_ENTRY {
     type Target = ClockLockEntry;
     type Error = sys::ArgumentRangeError;
 
@@ -483,7 +483,7 @@ impl RawConversion for clock::private::NV_CLOCK_LOCK_ENTRY {
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
         match *self {
-            clock::private::NV_CLOCK_LOCK_ENTRY {
+            clock::private::NV_GPU_PERF_CLIENT_LIMITS_ENTRY {
                 id: _id, b: 0, mode, d: 0, voltage_uV, f: 0,
             } => Ok(ClockLockEntry {
                 mode: ClockLockMode::from_raw(mode)?,
@@ -494,7 +494,7 @@ impl RawConversion for clock::private::NV_CLOCK_LOCK_ENTRY {
     }
 }
 
-impl RawConversion for clock::private::NV_CLOCK_LOCK {
+impl RawConversion for clock::private::NV_GPU_PERF_CLIENT_LIMITS {
     type Target = BTreeMap<usize, ClockLockEntry>;
     type Error = sys::ArgumentRangeError;
 

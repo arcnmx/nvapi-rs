@@ -278,29 +278,29 @@ impl PhysicalGpu {
             .and_then(|_| usages.convert_raw().map_err(From::from))
     }
 
-    pub fn vfp_mask(&self) -> sys::Result<<clock::private::NV_CLOCK_MASKS as RawConversion>::Target> {
+    pub fn vfp_mask(&self) -> sys::Result<<clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO as RawConversion>::Target> {
         trace!("gpu.vfp_mask()");
-        let mut data = clock::private::NV_CLOCK_MASKS::zeroed();
-        data.version = clock::private::NV_CLOCK_MASKS_VER;
+        let mut data = clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO::zeroed();
+        data.version = clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_VER;
 
-        sys::status_result(unsafe { clock::private::NvAPI_GPU_GetClockBoostMask(self.0, &mut data) })
+        sys::status_result(unsafe { clock::private::NvAPI_GPU_ClockClientClkVfPointsGetInfo(self.0, &mut data) })
             .and_then(|_| data.convert_raw().map_err(From::from))
     }
 
-    pub fn vfp_table(&self, mask: [u32; 4]) -> sys::Result<<clock::private::NV_CLOCK_TABLE as RawConversion>::Target> {
+    pub fn vfp_table(&self, mask: [u32; 4]) -> sys::Result<<clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL as RawConversion>::Target> {
         trace!("gpu.vfp_table({:?})", mask);
-        let mut data = clock::private::NV_CLOCK_TABLE::zeroed();
-        data.version = clock::private::NV_CLOCK_TABLE_VER;
+        let mut data = clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL::zeroed();
+        data.version = clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_VER;
         data.mask = mask;
 
-        sys::status_result(unsafe { clock::private::NvAPI_GPU_GetClockBoostTable(self.0, &mut data) })
+        sys::status_result(unsafe { clock::private::NvAPI_GPU_ClockClientClkVfPointsGetControl(self.0, &mut data) })
             .and_then(|_| data.convert_raw().map_err(From::from))
     }
 
     pub fn set_vfp_table<I: Iterator<Item=(usize, Kilohertz2Delta)>, M: Iterator<Item=(usize, Kilohertz2Delta)>>(&self, mask: [u32; 4], clocks: I, memory: M) -> sys::Result<()> {
         trace!("gpu.set_vfp_table({:?})", mask);
-        let mut data = clock::private::NV_CLOCK_TABLE::zeroed();
-        data.version = clock::private::NV_CLOCK_TABLE_VER;
+        let mut data = clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL::zeroed();
+        data.version = clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_VER;
         data.mask = mask;
         for (i, delta) in clocks {
             trace!("gpu.set_vfp_table({:?}, {:?})", i, delta);
@@ -312,24 +312,24 @@ impl PhysicalGpu {
             data.memDeltas[i] = delta.0;
         }
 
-        sys::status_result(unsafe { clock::private::NvAPI_GPU_SetClockBoostTable(self.0, &data) })
+        sys::status_result(unsafe { clock::private::NvAPI_GPU_ClockClientClkVfPointsSetControl(self.0, &data) })
     }
 
-    pub fn vfp_ranges(&self) -> sys::Result<<clock::private::NV_CLOCK_RANGES as RawConversion>::Target> {
+    pub fn vfp_ranges(&self) -> sys::Result<<clock::private::NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO as RawConversion>::Target> {
         trace!("gpu.vfp_ranges()");
-        let mut data = clock::private::NV_CLOCK_RANGES::zeroed();
-        data.version = clock::private::NV_CLOCK_RANGES_VER;
+        let mut data = clock::private::NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO::zeroed();
+        data.version = clock::private::NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_VER;
 
-        sys::status_result(unsafe { clock::private::NvAPI_GPU_GetClockBoostRanges(self.0, &mut data) })
+        sys::status_result(unsafe { clock::private::NvAPI_GPU_ClockClientClkDomainsGetInfo(self.0, &mut data) })
             .and_then(|_| data.convert_raw().map_err(From::from))
     }
 
-    pub fn vfp_locks(&self) -> sys::Result<<clock::private::NV_CLOCK_LOCK as RawConversion>::Target> {
+    pub fn vfp_locks(&self) -> sys::Result<<clock::private::NV_GPU_PERF_CLIENT_LIMITS as RawConversion>::Target> {
         trace!("gpu.vfp_locks()");
-        let mut data = clock::private::NV_CLOCK_LOCK::zeroed();
-        data.version = clock::private::NV_CLOCK_LOCK_VER;
+        let mut data = clock::private::NV_GPU_PERF_CLIENT_LIMITS::zeroed();
+        data.version = clock::private::NV_GPU_PERF_CLIENT_LIMITS_VER;
 
-        sys::status_result(unsafe { clock::private::NvAPI_GPU_GetClockBoostLock(self.0, &mut data) })
+        sys::status_result(unsafe { clock::private::NvAPI_GPU_PerfClientLimitsGetStatus(self.0, &mut data) })
             .and_then(|_| data.convert_raw().map_err(From::from))
     }
 
@@ -337,8 +337,8 @@ impl PhysicalGpu {
         trace!("gpu.set_vfp_locks()");
         use clock::ClockLockMode;
 
-        let mut data = clock::private::NV_CLOCK_LOCK::zeroed();
-        data.version = clock::private::NV_CLOCK_LOCK_VER;
+        let mut data = clock::private::NV_GPU_PERF_CLIENT_LIMITS::zeroed();
+        data.version = clock::private::NV_GPU_PERF_CLIENT_LIMITS_VER;
         for (i, (id, voltage)) in values.enumerate() {
             trace!("gpu.set_vfp_lock({:?}, {:?})", id, voltage);
             data.count += 1;
@@ -354,44 +354,44 @@ impl PhysicalGpu {
             }
         }
 
-        sys::status_result(unsafe { clock::private::NvAPI_GPU_SetClockBoostLock(self.0, &data) })
+        sys::status_result(unsafe { clock::private::NvAPI_GPU_PerfClientLimitsSetStatus(self.0, &data) })
     }
 
-    pub fn vfp_curve(&self, mask: [u32; 4]) -> sys::Result<<power::private::NV_VFP_CURVE as RawConversion>::Target> {
+    pub fn vfp_curve(&self, mask: [u32; 4]) -> sys::Result<<power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS as RawConversion>::Target> {
         trace!("gpu.vfp_curve({:?})", mask);
-        let mut data = power::private::NV_VFP_CURVE::zeroed();
-        data.version = power::private::NV_VFP_CURVE_VER;
+        let mut data = power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS::zeroed();
+        data.version = power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_VER;
         data.mask = mask;
 
-        sys::status_result(unsafe { power::private::NvAPI_GPU_GetVFPCurve(self.0, &mut data) })
+        sys::status_result(unsafe { power::private::NvAPI_GPU_ClockClientClkVfPointsGetStatus(self.0, &mut data) })
             .and_then(|_| data.convert_raw().map_err(From::from))
     }
 
-    pub fn core_voltage(&self) -> sys::Result<<power::private::NV_VOLTAGE_STATUS as RawConversion>::Target> {
+    pub fn core_voltage(&self) -> sys::Result<<power::private::NV_GPU_CLIENT_VOLT_RAILS_STATUS as RawConversion>::Target> {
         trace!("gpu.core_voltage()");
-        let mut data = power::private::NV_VOLTAGE_STATUS::zeroed();
-        data.version = power::private::NV_VOLTAGE_STATUS_VER;
+        let mut data = power::private::NV_GPU_CLIENT_VOLT_RAILS_STATUS::zeroed();
+        data.version = power::private::NV_GPU_CLIENT_VOLT_RAILS_STATUS_VER;
 
-        sys::status_result(unsafe { power::private::NvAPI_GPU_GetCurrentVoltage(self.0, &mut data) })
+        sys::status_result(unsafe { power::private::NvAPI_GPU_ClientVoltRailsGetStatus(self.0, &mut data) })
             .and_then(|_| data.convert_raw().map_err(From::from))
     }
 
-    pub fn core_voltage_boost(&self) -> sys::Result<<power::private::NV_VOLTAGE_BOOST_PERCENT as RawConversion>::Target> {
+    pub fn core_voltage_boost(&self) -> sys::Result<<power::private::NV_GPU_CLIENT_VOLT_RAILS_CONTROL as RawConversion>::Target> {
         trace!("gpu.core_voltage_boost()");
-        let mut data = power::private::NV_VOLTAGE_BOOST_PERCENT::zeroed();
-        data.version = power::private::NV_VOLTAGE_BOOST_PERCENT_VER;
+        let mut data = power::private::NV_GPU_CLIENT_VOLT_RAILS_CONTROL::zeroed();
+        data.version = power::private::NV_GPU_CLIENT_VOLT_RAILS_CONTROL_VER;
 
-        sys::status_result(unsafe { power::private::NvAPI_GPU_GetCoreVoltageBoostPercent(self.0, &mut data) })
+        sys::status_result(unsafe { power::private::NvAPI_GPU_ClientVoltRailsGetControl(self.0, &mut data) })
             .and_then(|_| data.convert_raw().map_err(From::from))
     }
 
     pub fn set_core_voltage_boost(&self, value: Percentage) -> sys::Result<()> {
         trace!("gpu.set_core_voltage_boost({:?})", value);
-        let mut data = power::private::NV_VOLTAGE_BOOST_PERCENT::zeroed();
-        data.version = power::private::NV_VOLTAGE_BOOST_PERCENT_VER;
+        let mut data = power::private::NV_GPU_CLIENT_VOLT_RAILS_CONTROL::zeroed();
+        data.version = power::private::NV_GPU_CLIENT_VOLT_RAILS_CONTROL_VER;
         data.percent = value.0;
 
-        sys::status_result(unsafe { power::private::NvAPI_GPU_SetCoreVoltageBoostPercent(self.0, &data) })
+        sys::status_result(unsafe { power::private::NvAPI_GPU_ClientVoltRailsSetControl(self.0, &data) })
     }
 
     pub fn power_usage(&self) -> sys::Result<<power::private::NV_GPU_POWER_TOPO as RawConversion>::Target> {
@@ -453,19 +453,19 @@ impl PhysicalGpu {
             .and_then(|_| data.convert_raw().map_err(From::from))
     }
 
-    pub fn thermal_limit(&self) -> sys::Result<<thermal::private::NV_GPU_THERMAL_LIMIT as RawConversion>::Target> {
+    pub fn thermal_limit(&self) -> sys::Result<<thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_STATUS as RawConversion>::Target> {
         trace!("gpu.thermal_limit()");
-        let mut data = thermal::private::NV_GPU_THERMAL_LIMIT::zeroed();
-        data.version = thermal::private::NV_GPU_THERMAL_LIMIT_VER;
+        let mut data = thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_STATUS::zeroed();
+        data.version = thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_VER;
 
-        sys::status_result(unsafe { thermal::private::NvAPI_GPU_ClientThermalPoliciesGetLimit(self.0, &mut data) })
+        sys::status_result(unsafe { thermal::private::NvAPI_GPU_ClientThermalPoliciesGetStatus(self.0, &mut data) })
             .and_then(|_| data.convert_raw().map_err(From::from))
     }
 
     pub fn set_thermal_limit<I: Iterator<Item=::thermal::ThermalLimit>>(&self, value: I) -> sys::Result<()> {
         trace!("gpu.set_thermal_limit()");
-        let mut data = thermal::private::NV_GPU_THERMAL_LIMIT::zeroed();
-        data.version = thermal::private::NV_GPU_THERMAL_LIMIT_VER;
+        let mut data = thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_STATUS::zeroed();
+        data.version = thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_VER;
         for (entry, v) in data.entries.iter_mut().zip(value) {
             trace!("gpu.set_thermal_limit({:?})", v);
             entry.controller = v.controller.raw();
@@ -474,7 +474,7 @@ impl PhysicalGpu {
             data.flags += 1;
         }
 
-        sys::status_result(unsafe { thermal::private::NvAPI_GPU_ClientThermalPoliciesSetLimit(self.0, &data) })
+        sys::status_result(unsafe { thermal::private::NvAPI_GPU_ClientThermalPoliciesSetStatus(self.0, &data) })
     }
 
     pub fn cooler_settings(&self, index: Option<u32>) -> sys::Result<<cooler::private::NV_GPU_COOLER_SETTINGS as RawConversion>::Target> {

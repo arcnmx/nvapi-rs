@@ -5,7 +5,7 @@ pub mod private {
     use debug_array::Array;
 
     nvstruct! {
-        pub struct NV_VOLTAGE_STATUS_V1 {
+        pub struct NV_GPU_CLIENT_VOLT_RAILS_STATUS_V1 {
             pub version: u32,
             pub flags: u32,
             pub zero: [u32; 8],
@@ -14,41 +14,41 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_VOLTAGE_STATUS_VER_1(NV_VOLTAGE_STATUS_V1 = 4 * (2 + 8 + 1 + 8), 1) }
-    nvversion! { NV_VOLTAGE_STATUS_VER = NV_VOLTAGE_STATUS_VER_1 }
+    nvversion! { NV_GPU_CLIENT_VOLT_RAILS_STATUS_VER_1(NV_GPU_CLIENT_VOLT_RAILS_STATUS_V1 = 4 * (2 + 8 + 1 + 8), 1) }
+    nvversion! { NV_GPU_CLIENT_VOLT_RAILS_STATUS_VER = NV_GPU_CLIENT_VOLT_RAILS_STATUS_VER_1 }
 
-    pub type NV_VOLTAGE_STATUS = NV_VOLTAGE_STATUS_V1;
+    pub type NV_GPU_CLIENT_VOLT_RAILS_STATUS = NV_GPU_CLIENT_VOLT_RAILS_STATUS_V1;
 
     nvapi! {
         /// Pascal only
-        pub unsafe fn NvAPI_GPU_GetCurrentVoltage(hPhysicalGPU: NvPhysicalGpuHandle, pVoltageStatus: *mut NV_VOLTAGE_STATUS) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GPU_ClientVoltRailsGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pVoltageStatus: *mut NV_GPU_CLIENT_VOLT_RAILS_STATUS) -> NvAPI_Status;
     }
 
     nvstruct! {
-        pub struct NV_VOLTAGE_BOOST_PERCENT_V1 {
+        pub struct NV_GPU_CLIENT_VOLT_RAILS_CONTROL_V1 {
             pub version: u32,
             pub percent: u32, // apparently actually i32?
             pub unknown: [u32; 8],
         }
     }
 
-    nvversion! { NV_VOLTAGE_BOOST_PERCENT_VER_1(NV_VOLTAGE_BOOST_PERCENT_V1 = 4 * (2 + 8), 1) }
-    nvversion! { NV_VOLTAGE_BOOST_PERCENT_VER = NV_VOLTAGE_BOOST_PERCENT_VER_1 }
+    nvversion! { NV_GPU_CLIENT_VOLT_RAILS_CONTROL_VER_1(NV_GPU_CLIENT_VOLT_RAILS_CONTROL_V1 = 4 * (2 + 8), 1) }
+    nvversion! { NV_GPU_CLIENT_VOLT_RAILS_CONTROL_VER = NV_GPU_CLIENT_VOLT_RAILS_CONTROL_VER_1 }
 
-    pub type NV_VOLTAGE_BOOST_PERCENT = NV_VOLTAGE_BOOST_PERCENT_V1;
+    pub type NV_GPU_CLIENT_VOLT_RAILS_CONTROL = NV_GPU_CLIENT_VOLT_RAILS_CONTROL_V1;
 
     nvapi! {
         /// Pascal only
-        pub unsafe fn NvAPI_GPU_GetCoreVoltageBoostPercent(hPhysicalGPU: NvPhysicalGpuHandle, pVoltboostPercent: *mut NV_VOLTAGE_BOOST_PERCENT) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GPU_ClientVoltRailsGetControl(hPhysicalGPU: NvPhysicalGpuHandle, pVoltboostPercent: *mut NV_GPU_CLIENT_VOLT_RAILS_CONTROL) -> NvAPI_Status;
     }
 
     nvapi! {
         /// Pascal only
-        pub unsafe fn NvAPI_GPU_SetCoreVoltageBoostPercent(hPhysicalGPU: NvPhysicalGpuHandle, pVoltboostPercent: *const NV_VOLTAGE_BOOST_PERCENT) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GPU_ClientVoltRailsSetControl(hPhysicalGPU: NvPhysicalGpuHandle, pVoltboostPercent: *const NV_GPU_CLIENT_VOLT_RAILS_CONTROL) -> NvAPI_Status;
     }
 
     nvstruct! {
-        pub struct NV_VFP_CURVE_GPU_ENTRY {
+        pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_GPU_ENTRY {
             pub a: u32, // 0
             pub freq_kHz: u32,
             pub voltage_uV: u32,
@@ -60,9 +60,9 @@ pub mod private {
     }
 
     // no real difference here
-    pub type NV_VFP_CURVE_MEM_ENTRY = NV_VFP_CURVE_GPU_ENTRY;
+    pub type NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_MEM_ENTRY = NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_GPU_ENTRY;
     /*nvstruct! {
-        pub struct NV_VFP_CURVE_MEM_ENTRY {
+        pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_MEM_ENTRY {
             pub a: u32, // 1 for idle values?
             pub freq_kHz: u32,
             pub voltage_uV: u32,
@@ -73,28 +73,28 @@ pub mod private {
         }
     }*/
 
-    debug_array_impl! { [NV_VFP_CURVE_GPU_ENTRY; 80] }
+    debug_array_impl! { [NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_GPU_ENTRY; 80] }
     debug_array_impl! { [u32; 1064] }
 
     nvstruct! {
-        pub struct NV_VFP_CURVE_V1 {
+        pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V1 {
             pub version: u32,
             pub mask: [u32; 4], // 80 bits
             pub unknown: [u32; 12],
-            pub gpuEntries: Array<[NV_VFP_CURVE_GPU_ENTRY; 80]>,
-            pub memEntries: [NV_VFP_CURVE_MEM_ENTRY; 23],
+            pub gpuEntries: Array<[NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_GPU_ENTRY; 80]>,
+            pub memEntries: [NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_MEM_ENTRY; 23],
             pub unknown2: Array<[u32; 1064]>,
         }
     }
 
-    nvversion! { NV_VFP_CURVE_VER_1(NV_VFP_CURVE_V1 = 0x1c28, 1) }
-    nvversion! { NV_VFP_CURVE_VER = NV_VFP_CURVE_VER_1 }
+    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_VER_1(NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V1 = 0x1c28, 1) }
+    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_VER = NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_VER_1 }
 
-    pub type NV_VFP_CURVE = NV_VFP_CURVE_V1;
+    pub type NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS = NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V1;
 
     nvapi! {
         /// Pascal only
-        pub unsafe fn NvAPI_GPU_GetVFPCurve(hPhysicalGPU: NvPhysicalGpuHandle, pVfpCurve: *mut NV_VFP_CURVE) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GPU_ClockClientClkVfPointsGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pVfpCurve: *mut NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS) -> NvAPI_Status;
     }
 
     nvstruct! {
