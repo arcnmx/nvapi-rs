@@ -104,7 +104,7 @@ macro_rules! nvenum {
                     $(
                         $enum_name::$name
                     ),*
-                ].into_iter().cloned()
+                ].iter().cloned()
             }
         }
 
