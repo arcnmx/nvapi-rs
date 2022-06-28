@@ -10,6 +10,7 @@ nvapi! {
 
 /// Undocumented API
 pub mod private {
+    use crate::nvapi::NvVersion;
     use crate::status::NvAPI_Status;
     use crate::handles::NvPhysicalGpuHandle;
 
@@ -152,7 +153,7 @@ pub mod private {
 
     nvstruct! {
         pub struct NV_GPU_COOLER_SETTINGS_V1 {
-            pub version: u32,
+            pub version: NvVersion,
             pub count: u32,
             pub cooler: [NV_GPU_COOLER_SETTINGS_COOLER; NVAPI_MAX_COOLERS_PER_GPU],
         }
@@ -188,7 +189,7 @@ pub mod private {
 
     nvstruct! {
         pub struct NV_GPU_SETCOOLER_LEVEL_V1 {
-            pub version: u32,
+            pub version: NvVersion,
             pub cooler: [NV_GPU_SETCOOLER_LEVEL_COOLER; NVAPI_MAX_COOLERS_PER_GPU],
         }
     }
@@ -246,7 +247,7 @@ pub mod private {
     nvstruct! {
         pub struct NV_GPU_COOLER_POLICY_TABLE_V1 {
             /// structure version
-            pub version: u32,
+            pub version: NvVersion,
             /// selected policy to update the cooler levels for, example NVAPI_COOLER_POLICY_PERF
             pub policy: NV_COOLER_POLICY,
             pub policyCoolerLevel: [NV_GPU_COOLER_POLICY_LEVEL; NVAPI_MAX_COOLER_LEVELS],

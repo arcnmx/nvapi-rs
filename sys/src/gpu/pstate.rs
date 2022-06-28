@@ -1,3 +1,4 @@
+use crate::nvapi::NvVersion;
 use crate::status::NvAPI_Status;
 use crate::handles::NvPhysicalGpuHandle;
 use crate::types::BoolU32;
@@ -22,7 +23,7 @@ nvstruct! {
     /// Used in NvAPI_GPU_GetDynamicPstatesInfoEx().
     pub struct NV_GPU_DYNAMIC_PSTATES_INFO_EX {
         /// Structure version
-        pub version: u32,
+        pub version: NvVersion,
         /// bit 0 indicates if the dynamic Pstate is enabled or not
         pub flags: u32,
         pub utilization: [NV_GPU_DYNAMIC_PSTATES_INFO_EX_UTILIZATION; NVAPI_MAX_GPU_UTILIZATIONS],
@@ -67,7 +68,8 @@ impl UtilizationDomain {
     }
 }
 
-nvversion! { NV_GPU_DYNAMIC_PSTATES_INFO_EX_VER(NV_GPU_DYNAMIC_PSTATES_INFO_EX = 4 * 2 + (4 * 2) * NVAPI_MAX_GPU_UTILIZATIONS, 1) }
+nvversion! { NV_GPU_DYNAMIC_PSTATES_INFO_EX_VER1(NV_GPU_DYNAMIC_PSTATES_INFO_EX = 4 * 2 + (4 * 2) * NVAPI_MAX_GPU_UTILIZATIONS, 1) }
+nvversion! { NV_GPU_DYNAMIC_PSTATES_INFO_EX_VER = NV_GPU_DYNAMIC_PSTATES_INFO_EX_VER1 }
 
 nvapi! {
     pub type GPU_GetDynamicPstatesInfoExFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pDynamicPstatesInfoEx: *mut NV_GPU_DYNAMIC_PSTATES_INFO_EX) -> NvAPI_Status;
@@ -253,7 +255,7 @@ nvstruct! {
     /// Used in NvAPI_GPU_GetPstates20() interface call.
     pub struct NV_GPU_PERF_PSTATES20_INFO_V1 {
         /// Version info of the structure (NV_GPU_PERF_PSTATES20_INFO_VER<n>)
-        pub version: u32,
+        pub version: NvVersion,
         pub bIsEditable: BoolU32,
         /// Number of populated pstates
         pub numPstates: u32,

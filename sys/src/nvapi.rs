@@ -1,3 +1,4 @@
+use std::mem::{MaybeUninit, size_of};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::os::raw::c_void;
 use crate::status::{Status, NvAPI_Status};
@@ -114,3 +115,68 @@ nvapi! {
     pub unsafe fn NvAPI_GetInterfaceVersionString;
 }
 
+/// NvAPI Version Definition
+#[derive(Default, Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[repr(transparent)]
+pub struct NvVersion {
+    pub data: u32,
+}
+
+impl NvVersion {
+    pub const fn with_version(data: u32) -> Self {
+        Self {
+            data,
+        }
+    }
+
+    pub const fn new(size: usize, version: u16) -> Self {
+        debug_assert!(size < 0x10000);
+        Self {
+            data: size as u32 | (version as u32) << 16,
+        }
+    }
+
+    #[doc(alias = "MAKE_NVAPI_VERSION")]
+    pub const fn with_struct<T>(version: u16) -> Self {
+        Self::new(size_of::<T>(), version)
+    }
+
+    #[doc(alias = "GET_NVAPI_VERSION")]
+    pub const fn version(&self) -> u16 {
+        (self.data >> 16) as u16
+    }
+
+    #[doc(alias = "GET_NVAPI_SIZE")]
+    pub const fn size(&self) -> usize {
+        self.data as usize & 0xffff
+    }
+}
+
+impl From<u32> for NvVersion {
+    fn from(version: u32) -> Self {
+        Self::with_version(version)
+    }
+}
+
+impl From<NvVersion> for u32 {
+    fn from(ver: NvVersion) -> u32 {
+        ver.data
+    }
+}
+
+pub trait VersionedStruct: Sized {
+    fn nvapi_version_mut(&mut self) -> &mut NvVersion;
+    fn nvapi_version(&self) -> NvVersion;
+}
+
+pub trait StructVersion<const VER: u16 = 0>: VersionedStruct {
+    const NVAPI_VERSION: NvVersion;
+
+    fn versioned() -> Self {
+        let mut zero = unsafe {
+            MaybeUninit::<Self>::zeroed().assume_init()
+        };
+        *zero.nvapi_version_mut() = Self::NVAPI_VERSION;
+        zero
+    }
+}

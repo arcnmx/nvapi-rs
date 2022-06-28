@@ -1,3 +1,4 @@
+use crate::nvapi::NvVersion;
 use crate::status::NvAPI_Status;
 use crate::handles::NvPhysicalGpuHandle;
 
@@ -68,7 +69,7 @@ nvbits! {
 
 nvstruct! {
     pub struct NV_GPU_DISPLAYIDS {
-        pub version: u32,
+        pub version: NvVersion,
         /// out: vga, tv, dvi, hdmi and dp. This is reserved for future use and clients should not
         /// rely on this information. Instead get the
         /// GPU connector type from `NvAPI_GPU_GetConnectorInfo`/`NvAPI_GPU_GetConnectorInfoEx`

@@ -1,3 +1,4 @@
+use crate::nvapi::NvVersion;
 use crate::status::NvAPI_Status;
 use crate::types::NvAPI_ShortString;
 use crate::handles;
@@ -13,7 +14,7 @@ nvstruct! {
     /// Used in NvAPI_GPU_GetMemoryInfo().
     pub struct NV_DISPLAY_DRIVER_MEMORY_INFO_V1 {
         /// Version info
-        pub version: u32,
+        pub version: NvVersion,
         /// Size(in kb) of the physical framebuffer.
         pub dedicatedVideoMemory: u32,
         /// Size(in kb) of the available physical framebuffer for allocating video memory surfaces.

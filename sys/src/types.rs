@@ -2,7 +2,7 @@ use std::borrow::Cow;
 use std::ops::{Deref, DerefMut};
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
-use std::mem::size_of;
+use crate::nvapi::NvVersion;
 
 pub type NvBool = u8;
 
@@ -150,15 +150,15 @@ impl<const N: usize> From<NvString<N>> for String {
 
 /// NvAPI Version Definition
 ///
-/// Maintain per structure specific version, meant to be a `const fn`.
-pub fn MAKE_NVAPI_VERSION<T>(ver: u16) -> u32 {
-    size_of::<T>() as u32 | (ver as u32) << 16
+/// Maintain per structure specific version
+pub const fn MAKE_NVAPI_VERSION<T>(ver: u16) -> u32 {
+    NvVersion::with_struct::<T>(ver).data
 }
 
-pub fn GET_NVAPI_VERSION(ver: u32) -> u16 {
-    (ver >> 16) as u16
+pub const fn GET_NVAPI_VERSION(ver: u32) -> u16 {
+    NvVersion::with_version(ver).version()
 }
 
-pub fn GET_NVAPI_SIZE(ver: u32) -> usize {
-    ver as usize & 0xffff
+pub const fn GET_NVAPI_SIZE(ver: u32) -> usize {
+    NvVersion::with_version(ver).size()
 }

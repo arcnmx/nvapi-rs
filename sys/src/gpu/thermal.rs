@@ -1,3 +1,4 @@
+use crate::nvapi::NvVersion;
 use crate::status::NvAPI_Status;
 use crate::handles::NvPhysicalGpuHandle;
 
@@ -68,7 +69,7 @@ nvstruct! {
     /// Used in NvAPI_GPU_GetThermalSettings()
     pub struct NV_GPU_THERMAL_SETTINGS_V1 {
         /// structure version
-        pub version: u32,
+        pub version: NvVersion,
         /// number of associated thermal sensors
         pub count: u32,
         pub sensor: [NV_GPU_THERMAL_SETTINGS_SENSOR; NVAPI_MAX_THERMAL_SENSORS_PER_GPU],
@@ -112,6 +113,7 @@ nvapi! {
 
 /// Undocumented API
 pub mod private {
+    use crate::nvapi::NvVersion;
     use crate::status::NvAPI_Status;
     use crate::handles::NvPhysicalGpuHandle;
 
@@ -131,7 +133,7 @@ pub mod private {
 
     nvstruct! {
         pub struct NV_GPU_THERMAL_INFO_V2 {
-            pub version: u32,
+            pub version: NvVersion,
             pub count: u8,
             pub flags: u8,
             pub padding: [u8; 2],
@@ -162,7 +164,7 @@ pub mod private {
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V2 {
-            pub version: u32,
+            pub version: NvVersion,
             pub flags: u32,
             pub entries: [NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_ENTRY; NVAPI_MAX_THERMAL_LIMIT_ENTRIES],
         }

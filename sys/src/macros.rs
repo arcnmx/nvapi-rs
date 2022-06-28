@@ -32,6 +32,16 @@ macro_rules! nvinherit {
                 &mut self.$id
             }
         }
+
+        impl crate::nvapi::VersionedStruct for $v2 {
+            fn nvapi_version_mut(&mut self) -> &mut crate::nvapi::NvVersion {
+                self.$id.nvapi_version_mut()
+            }
+
+            fn nvapi_version(&self) -> crate::nvapi::NvVersion {
+                self.$id.nvapi_version()
+            }
+        }
     };
 }
 
@@ -49,12 +59,24 @@ macro_rules! nvstruct {
             $($tt)*
         }
 
-        impl $name {
-            pub fn zeroed() -> Self {
-                unsafe { ::std::mem::zeroed() }
+        nvstruct! { @int fields $name ($($tt)*) }
+    };
+    (@int fields $name:ident (
+            $(#[$meta:meta])*
+            pub $id:ident: NvVersion,
+            $($tt:tt)*)
+        ) => {
+        impl crate::nvapi::VersionedStruct for $name {
+            fn nvapi_version_mut(&mut self) -> &mut NvVersion {
+                &mut self.$id
+            }
+
+            fn nvapi_version(&self) -> NvVersion {
+                self.$id
             }
         }
     };
+    (@int fields $name:ident ($($tt:tt)*)) => { };
 }
 
 macro_rules! nvenum {
@@ -229,26 +251,47 @@ macro_rules! nvapi {
     };
 }
 
-// No `const fn` yet :(
 macro_rules! nvversion {
     ($name:ident($struct:ident = $sz:expr, $ver:expr)) => {
-        pub const $name: u32 = ($sz) as u32 | ($ver as u32) << 16;
-        /*pub fn $name() -> u32 {
-            MAKE_NVAPI_VERSION::<$struct>($ver)
-        }*/
+        pub const $name: NvVersion = NvVersion::with_struct::<$struct>($ver);
 
         mod $name {
-            #[test]
-            fn $name() {
-                assert_eq!(crate::types::GET_NVAPI_SIZE(super::$name), ::std::mem::size_of::<super::$struct>());
+            pub(crate) type Argument = super::$struct;
+        }
+
+        impl crate::nvapi::StructVersion<$ver> for $struct {
+            const NVAPI_VERSION: crate::nvapi::NvVersion = $name;
+        }
+
+        const _: () = assert!($sz == std::mem::size_of::<$struct>());
+    };
+    ($name:ident = $target:ident) => {
+        pub const $name: NvVersion = $target;
+
+        impl crate::nvapi::StructVersion for $target::Argument {
+            const NVAPI_VERSION: crate::nvapi::NvVersion = <$target::Argument as crate::nvapi::StructVersion<{$target.version()}>>::NVAPI_VERSION;
+
+            fn versioned() -> Self {
+                <$target::Argument as crate::nvapi::StructVersion<{$target.version()}>>::versioned()
+            }
+        }
+
+        impl Default for $target::Argument {
+            fn default() -> Self {
+                crate::nvapi::StructVersion::<0>::versioned()
             }
         }
     };
-    ($name:ident = $target:ident) => {
-        pub const $name: u32 = $target;
-        /*pub fn $name() -> u32 {
-            $target()
-        }*/
+    ($struct:ident(@.$id:ident)) => {
+        impl crate::nvapi::VersionedStruct for $v2 {
+            fn nvapi_version_mut(&mut self) -> &mut crate::nvapi::NvVersion {
+                &mut self.$id
+            }
+
+            fn nvapi_version(&self) -> crate::nvapi::NvVersion {
+                self.$id
+            }
+        }
     };
 }
 

@@ -1,3 +1,4 @@
+use crate::nvapi::NvVersion;
 use crate::status::NvAPI_Status;
 use crate::handles::NvPhysicalGpuHandle;
 use crate::types::BoolU32;
@@ -27,7 +28,7 @@ nvstruct! {
     /// Used in NvAPI_GPU_GetAllClockFrequencies()
     pub struct NV_GPU_CLOCK_FREQUENCIES_V1 {
         /// Structure version
-        pub version: u32,
+        pub version: NvVersion,
         /// These bits are reserved for future use.
         ///
         /// bits:2 is NV_GPU_CLOCK_FREQUENCIES_CLOCK_TYPE. Used to specify the type of clock to be returned.
@@ -99,6 +100,7 @@ pub mod private {
     pub const NVAPI_MAX_USAGES_PER_GPU: usize = 8;
     pub const NVAPI_MAX_CLOCKS_PER_GPU: usize = 288;
 
+    use crate::nvapi::NvVersion;
     use crate::types::BoolU32;
     use crate::status::NvAPI_Status;
     use crate::handles::NvPhysicalGpuHandle;
@@ -114,7 +116,7 @@ pub mod private {
 
     nvstruct! {
         pub struct NV_USAGES_INFO_V1 {
-            pub version: u32,
+            pub version: NvVersion,
             pub flags: u32,
             /// (core_usage, memory_usage, video_engine_usage), probably indexed by NV_GPU_UTILIZATION_DOMAIN_ID
             pub usages: [NV_USAGES_INFO_USAGE; NVAPI_MAX_USAGES_PER_GPU],
@@ -135,7 +137,7 @@ pub mod private {
 
     nvstruct! {
         pub struct NV_CLOCKS_INFO_V1 {
-            pub version: u32,
+            pub version: NvVersion,
             pub clocks: [u32; NVAPI_MAX_CLOCKS_PER_GPU],
         }
     }
@@ -178,7 +180,7 @@ pub mod private {
 
     nvstruct! {
         pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_V1 {
-            pub version: u32,
+            pub version: NvVersion,
             pub mask: [u32; 4], // 80 bits (might be 8xu32?)
             pub unknown: [u32; 12],
             pub gpuDeltas: [NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_GPU_DELTA; 80],
@@ -228,7 +230,7 @@ pub mod private {
 
     nvstruct! {
         pub struct NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_V1 {
-            pub version: u32,
+            pub version: NvVersion,
             pub numClocks: u32, // unsure
             pub zero: [u32; 8],
             pub entries: [NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_ENTRY; 32],
@@ -258,7 +260,7 @@ pub mod private {
 
     nvstruct! {
         pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_V1 {
-            pub version: u32,
+            pub version: NvVersion,
             pub mask: [u32; 4], // 80 bits
             pub unknown: [u32; 8],
             pub clocks: [NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK; 80 + 23],
@@ -297,7 +299,7 @@ pub mod private {
     nvstruct! {
         // 2-030c: 0C 03 02 00 00 00 00 00 01 00 00 00 06 00 00 00
         pub struct NV_GPU_PERF_CLIENT_LIMITS_V2 {
-            pub version: u32,
+            pub version: NvVersion,
             pub flags: u32, // unknown, only see 0
             pub count: u32,
             pub entries: [NV_GPU_PERF_CLIENT_LIMITS_ENTRY; 0x20],

@@ -1,3 +1,4 @@
+use crate::nvapi::NvVersion;
 use crate::status::NvAPI_Status;
 use crate::handles::NvPhysicalGpuHandle;
 
@@ -34,7 +35,7 @@ nvstruct! {
     /// Used in NvAPI_I2CRead() and NvAPI_I2CWrite()
     pub struct NV_I2C_INFO_V1 {
         /// The structure version.
-        pub version: u32,
+        pub version: NvVersion,
         /// The Display Mask of the concerned display.
         pub displayMask: u32,
         /// This flag indicates either the DDC port (TRUE) or the communication port
@@ -75,7 +76,7 @@ nvstruct! {
         pub v1: NV_I2C_INFO_V1,
         */
         /// The structure version.
-        pub version: u32,
+        pub version: NvVersion,
         /// The Display Mask of the concerned display.
         pub displayMask: u32,
         /// This flag indicates either the DDC port (TRUE) or the communication port
@@ -113,7 +114,7 @@ nvstruct! {
     pub struct NV_I2C_INFO_V3 {
         //pub v2: NV_I2C_INFO_V2,
         /// The structure version.
-        pub version: u32,
+        pub version: NvVersion,
         /// The Display Mask of the concerned display.
         pub displayMask: u32,
         /// This flag indicates either the DDC port (TRUE) or the communication port
@@ -208,6 +209,7 @@ nvapi! {
 
 /// Undocumented API
 pub mod private {
+    use crate::nvapi::NvVersion;
     use crate::status::NvAPI_Status;
     use crate::handles::NvPhysicalGpuHandle;
     use super::NV_I2C_SPEED;
@@ -216,7 +218,7 @@ pub mod private {
         /// Used in NvAPI_I2CRead() and NvAPI_I2CWrite()
         pub struct NV_I2C_INFO_EX_V3 {
             /// The structure version.
-            pub version: u32,
+            pub version: NvVersion,
             /// The Display Mask of the concerned display.
             pub displayMask: u32,
             /// This flag indicates either the DDC port (TRUE) or the communication port

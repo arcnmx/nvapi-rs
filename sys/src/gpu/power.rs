@@ -1,11 +1,12 @@
 /// Undocumented API
 pub mod private {
+    use crate::nvapi::NvVersion;
     use crate::status::NvAPI_Status;
     use crate::handles::NvPhysicalGpuHandle;
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_VOLT_RAILS_STATUS_V1 {
-            pub version: u32,
+            pub version: NvVersion,
             pub flags: u32,
             pub zero: [u32; 8],
             pub value_uV: u32,
@@ -25,7 +26,7 @@ pub mod private {
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_VOLT_RAILS_CONTROL_V1 {
-            pub version: u32,
+            pub version: NvVersion,
             pub percent: u32, // apparently actually i32?
             pub unknown: [u32; 8],
         }
@@ -74,7 +75,7 @@ pub mod private {
 
     nvstruct! {
         pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V1 {
-            pub version: u32,
+            pub version: NvVersion,
             pub mask: [u32; 4], // 80 bits
             pub unknown: [u32; 12],
             pub gpuEntries: [NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_GPU_ENTRY; 80],
@@ -111,7 +112,7 @@ pub mod private {
 
     nvstruct! {
         pub struct NV_GPU_POWER_INFO_V1 {
-            pub version: u32,
+            pub version: NvVersion,
             pub valid: u8,
             pub count: u8,
             pub padding: [u8; 2],
@@ -139,7 +140,7 @@ pub mod private {
 
     nvstruct! {
         pub struct NV_GPU_POWER_STATUS_V1 {
-            pub version: u32,
+            pub version: NvVersion,
             pub count: u32,
             pub entries: [NV_GPU_POWER_STATUS_ENTRY; 4],
         }
@@ -169,7 +170,7 @@ pub mod private {
 
     nvstruct! {
         pub struct NV_GPU_POWER_TOPO_V1 {
-            pub version: u32,
+            pub version: NvVersion,
             pub count: u32,
             pub entries: [NV_GPU_POWER_TOPO_ENTRY; 4],
         }
@@ -213,7 +214,7 @@ pub mod private {
 
     nvstruct! {
         pub struct NV_GPU_PERF_INFO_V1 {
-            pub version: u32,
+            pub version: NvVersion,
             pub maxUnknown: u32,
             pub limitSupport: NV_GPU_PERF_FLAGS,
             pub padding: [u32; 16],
@@ -231,7 +232,7 @@ pub mod private {
 
     nvstruct! {
         pub struct NV_GPU_PERF_STATUS_V1 {
-            pub version: u32,
+            pub version: NvVersion,
             pub flags: u32,
             /// nanoseconds
             pub timer: u64,
@@ -264,7 +265,7 @@ pub mod private {
 
     nvstruct! {
         pub struct NV_VOLT_STATUS_V1 {
-            pub version: u32,
+            pub version: NvVersion,
             pub flags: u32,
             /// unsure
             pub count: u32,
@@ -298,7 +299,7 @@ pub mod private {
 
     nvstruct! {
         pub struct NV_VOLT_TABLE_V1 {
-            pub version: u32,
+            pub version: NvVersion,
             pub flags: u32,
             /// 1
             pub filled: u32,

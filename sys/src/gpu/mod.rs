@@ -1,3 +1,4 @@
+use crate::nvapi::NvVersion;
 use crate::status::NvAPI_Status;
 use crate::handles::NvPhysicalGpuHandle;
 use crate::types;
@@ -126,7 +127,7 @@ nvapi! {
 nvstruct! {
     pub struct NV_BOARD_INFO_V1 {
         /// structure version
-        pub version: u32,
+        pub version: NvVersion,
         /// Board Serial Number
         pub BoardNum: [u8; 16],
     }
