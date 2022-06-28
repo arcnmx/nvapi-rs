@@ -1,3 +1,6 @@
+use std::borrow::Cow;
+use std::ops::{Deref, DerefMut};
+use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 use std::mem::size_of;
 
@@ -82,20 +85,67 @@ pub const NVAPI_SYSTEM_MAX_HWBCS: usize = 128;
 pub const NVAPI_SYSTEM_HWBC_INVALID_ID: usize = 0xffffffff;
 pub const NVAPI_MAX_AUDIO_DEVICES: usize = 16;
 
-pub type NvAPI_String = [c_char; NVAPI_GENERIC_STRING_MAX];
-pub type NvAPI_LongString = [c_char; NVAPI_LONG_STRING_MAX];
-pub type NvAPI_ShortString = [c_char; NVAPI_SHORT_STRING_MAX];
+pub type NvAPI_String = NvString<NVAPI_GENERIC_STRING_MAX>;
+pub type NvAPI_LongString = NvString<NVAPI_LONG_STRING_MAX>;
+pub type NvAPI_ShortString = NvString<NVAPI_SHORT_STRING_MAX>;
 
-pub fn short_string() -> NvAPI_ShortString {
-    [0; NVAPI_SHORT_STRING_MAX]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[repr(transparent)]
+pub struct NvString<const N: usize>(pub [c_char; N]);
+
+impl<const N: usize> NvString<N> {
+    pub fn as_bytes(&self) -> &[u8; N] {
+        let ptr = &self.0 as *const [c_char; N] as *const [u8; N];
+        unsafe { &*ptr }
+    }
+
+    pub fn str_bytes(&self) -> &[u8] {
+        let n = self.iter().take_while(|&&c| c != 0).count();
+        &self.as_bytes()[..n]
+    }
+
+    pub fn as_cstr(&self) -> Result<&CStr, std::ffi::FromBytesWithNulError> {
+        CStr::from_bytes_with_nul(self.str_bytes())
+    }
+
+    pub fn to_cstr(&self) -> Cow<CStr> {
+        match self.as_cstr() {
+            Ok(str) => Cow::Borrowed(str),
+            Err(..) => Cow::Owned(unsafe {
+                CString::from_vec_unchecked(self.str_bytes().into())
+            }),
+        }
+    }
+
+    pub fn to_string_lossy(&self) -> Cow<str> {
+        String::from_utf8_lossy(self.str_bytes())
+    }
 }
 
-pub fn long_string() -> NvAPI_LongString {
-    [0; NVAPI_LONG_STRING_MAX]
+impl<const N: usize> Default for NvString<N> {
+    fn default() -> Self {
+        Self([0; N])
+    }
 }
 
-pub fn string() -> NvAPI_String {
-    [0; NVAPI_GENERIC_STRING_MAX]
+impl<const N: usize> Deref for NvString<N> {
+    type Target = [c_char; N];
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl<const N: usize> DerefMut for NvString<N> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+
+impl<const N: usize> From<NvString<N>> for String {
+    fn from(str: NvString<N>) -> String {
+        str.to_string_lossy().into_owned()
+    }
 }
 
 /// NvAPI Version Definition

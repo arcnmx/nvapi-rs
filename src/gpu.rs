@@ -47,7 +47,7 @@ impl PhysicalGpu {
 
     pub fn short_name(&self) -> sys::Result<String> {
         trace!("gpu.short_name()");
-        let mut str = sys::types::short_string();
+        let mut str = Default::default();
         unsafe {
             sys::status_result(gpu::private::NvAPI_GPU_GetShortName(self.0, &mut str))
                 .and_then(|_| str.convert_raw().map_err(Into::into))
@@ -56,7 +56,7 @@ impl PhysicalGpu {
 
     pub fn full_name(&self) -> sys::Result<String> {
         trace!("gpu.full_name()");
-        let mut str = sys::types::short_string();
+        let mut str = Default::default();
         unsafe {
             sys::status_result(gpu::NvAPI_GPU_GetFullName(self.0, &mut str))
                 .and_then(|_| str.convert_raw().map_err(Into::into))
@@ -65,7 +65,7 @@ impl PhysicalGpu {
 
     pub fn vbios_version_string(&self) -> sys::Result<String> {
         trace!("gpu.vbios_version_string()");
-        let mut str = sys::types::short_string();
+        let mut str = Default::default();
         unsafe {
             sys::status_result(gpu::NvAPI_GPU_GetVbiosVersionString(self.0, &mut str))
                 .and_then(|_| str.convert_raw().map_err(Into::into))

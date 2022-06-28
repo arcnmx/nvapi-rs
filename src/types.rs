@@ -1,4 +1,3 @@
-use std::ffi::CStr;
 use std::{fmt, ops};
 use std::convert::Infallible;
 use serde::{Serialize, Deserialize};
@@ -11,14 +10,12 @@ pub trait RawConversion {
     fn convert_raw(&self) -> Result<Self::Target, Self::Error>;
 }
 
-impl RawConversion for sys::types::NvAPI_ShortString {
+impl<const N: usize> RawConversion for sys::types::NvString<N> {
     type Target = String;
     type Error = Infallible;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        unsafe {
-            Ok(CStr::from_ptr(self.as_ptr()).to_string_lossy().into_owned())
-        }
+        Ok(self.to_string_lossy().into_owned())
     }
 }
 
