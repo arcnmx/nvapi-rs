@@ -112,7 +112,7 @@ pub struct GpuSettings {
 impl Gpu {
     pub fn new(gpu: PhysicalGpu) -> Self {
         Gpu {
-            gpu: gpu,
+            gpu,
         }
     }
 
@@ -142,7 +142,7 @@ impl Gpu {
             bios_version: self.gpu.vbios_version_string()?,
             driver_model: self.gpu.driver_model()?,
             vendor: allowable_result_fallback(pci.vendor().map_err(From::from), Vendor::Unknown)?,
-            pci: pci,
+            pci,
             memory: self.gpu.memory_info()?,
             system_type: allowable_result_fallback(self.gpu.system_type(), SystemType::Unknown)?,
             ram_type: allowable_result_fallback(self.gpu.ram_type(), RamType::Unknown)?,
@@ -350,7 +350,7 @@ impl From<ClockEntry> for PStateLimit {
                 frequency_delta: if editable { Some(frequency_delta.range) } else { None },
                 frequency: frequency_range,
                 voltage: voltage_range,
-                voltage_domain: voltage_domain,
+                voltage_domain,
             },
             ClockEntry::Single { domain: _, editable, frequency_delta, frequency } => PStateLimit {
                 frequency_delta: if editable { Some(frequency_delta.range) } else { None },
@@ -519,7 +519,7 @@ impl VfPoint {
         VfPoint {
             voltage: point.voltage,
             frequency: point.frequency,
-            delta: delta,
+            delta,
         }
     }
 }

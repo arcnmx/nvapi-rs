@@ -751,7 +751,7 @@ pub struct DriverModel {
 impl DriverModel {
     pub fn new(value: u32) -> Self {
         DriverModel {
-            value: value,
+            value,
         }
     }
 
