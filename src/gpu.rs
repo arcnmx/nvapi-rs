@@ -497,6 +497,8 @@ impl PhysicalGpu {
     pub fn set_cooler_policy_table(&self, index: u32, value: &<cooler::private::NV_GPU_COOLER_POLICY_TABLE as RawConversion>::Target) -> sys::Result<()> {
         trace!("gpu.set_cooler_policy_table({:?}, {:?})", index, value);
         let mut data = cooler::private::NV_GPU_COOLER_POLICY_TABLE::default();
+        data.policy = value.policy.raw();
+        // TODO: data.policyCoolerLevel
 
         sys::status_result(unsafe { cooler::private::NvAPI_GPU_SetCoolerPolicyTable(self.0, index, &data, value.levels.len() as u32) })
     }
