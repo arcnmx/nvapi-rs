@@ -135,6 +135,14 @@ macro_rules! nvenum {
                 self as _
             }
         }
+
+        impl TryFrom<$enum> for $enum_name {
+            type Error = crate::ArgumentRangeError;
+
+            fn try_from(raw: $enum) -> ::std::result::Result<Self, crate::ArgumentRangeError> {
+                Self::from_raw(raw)
+            }
+        }
     };
 }
 
