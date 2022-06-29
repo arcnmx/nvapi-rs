@@ -39,7 +39,8 @@ pub use nvapi::nvapi_QueryInterface;
 pub use types::*;
 pub use status::{NvAPI_Status, Status};
 
-use std::result;
+use std::error::Error as StdError;
+use std::{result, fmt};
 use std::convert::Infallible;
 
 /// The result of a fallible NVAPI call.
@@ -56,6 +57,14 @@ pub fn status_result(status: NvAPI_Status) -> Result<()> {
 /// Error type indicating a raw value is out of the range of known enum values.
 #[derive(Debug, Copy, Clone, Default)]
 pub struct ArgumentRangeError;
+
+impl fmt::Display for ArgumentRangeError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("received data out of range")
+    }
+}
+
+impl StdError for ArgumentRangeError { }
 
 impl From<ArgumentRangeError> for Status {
     fn from(_: ArgumentRangeError) -> Self {
