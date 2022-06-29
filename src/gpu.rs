@@ -498,7 +498,7 @@ impl PhysicalGpu {
             entry.currentPolicy = level.policy.raw();
         }
 
-        sys::status_result(unsafe { cooler::private::NvAPI_GPU_SetCoolerLevels(self.0, index.unwrap_or(cooler::private::NVAPI_COOLER_TARGET_ALL as _), &mut data) })
+        sys::status_result(unsafe { cooler::private::NvAPI_GPU_SetCoolerLevels(self.0, index.unwrap_or(cooler::private::NVAPI_COOLER_TARGET_ALL as _), &data) })
     }
 
     pub fn restore_cooler_settings(&self, index: &[u32]) -> sys::Result<()> {
