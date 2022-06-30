@@ -47,9 +47,7 @@ impl StdError for NvapiError {
 
 impl fmt::Display for NvapiError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let msg = crate::error_message(self.status)
-            .unwrap_or_else(|_| format!("{:?}", self));
-        write!(f, "{:?} failed: {}", self.nvid, msg)
+        write!(f, "{:?} failed: {}", self.nvid, self.status)
     }
 }
 

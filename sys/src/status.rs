@@ -1,5 +1,7 @@
 use std::{fmt, error};
 use std::convert::Infallible;
+use crate::nvapi::NvAPI_GetErrorMessage;
+use crate::status_result;
 
 nvenum! {
     /// NvAPI Status Values
@@ -279,15 +281,23 @@ nvenum! {
     }
 }
 
-impl error::Error for Status {
-    fn description(&self) -> &str {
-        "NVAPI Error"
+impl Status {
+    pub fn message(&self) -> crate::Result<String> {
+        let mut message = Default::default();
+        status_result(unsafe {
+            NvAPI_GetErrorMessage(self.raw(), &mut message)
+        }).map(move |()| message.into())
     }
 }
 
+impl error::Error for Status { }
+
 impl fmt::Display for Status {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Debug::fmt(self, f)
+        match &self.message() {
+            Ok(msg) => fmt::Display::fmt(msg, f),
+            Err(_) => fmt::Debug::fmt(self, f),
+        }
     }
 }
 
