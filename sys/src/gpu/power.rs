@@ -1,8 +1,6 @@
 /// Undocumented API
 pub mod private {
-    use crate::nvapi::NvVersion;
-    use crate::status::NvAPI_Status;
-    use crate::handles::NvPhysicalGpuHandle;
+    use crate::prelude_::*;
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_VOLT_RAILS_STATUS_V1 {

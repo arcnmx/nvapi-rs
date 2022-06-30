@@ -1,7 +1,4 @@
-use crate::nvapi::NvVersion;
-use crate::status::NvAPI_Status;
-use crate::handles::NvPhysicalGpuHandle;
-use crate::types::BoolU32;
+use crate::prelude_::*;
 use crate::gpu::clock;
 
 pub const NVAPI_MAX_GPU_PSTATE20_PSTATES: usize = 16;
@@ -318,7 +315,7 @@ nvapi! {
 
 /// Undocumented API
 pub mod private {
-    use crate::status::NvAPI_Status;
+    use crate::prelude_::*;
 
     nvapi! {
         pub type GPU_SetPstates20Fn = extern "C" fn(hPhysicalGPU: super::NvPhysicalGpuHandle, pPstatesInfo: *const super::NV_GPU_PERF_PSTATES20_INFO) -> NvAPI_Status;

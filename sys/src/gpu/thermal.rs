@@ -1,6 +1,4 @@
-use crate::nvapi::NvVersion;
-use crate::status::NvAPI_Status;
-use crate::handles::NvPhysicalGpuHandle;
+use crate::prelude_::*;
 
 nvenum! {
     /// Used in NV_GPU_THERMAL_SETTINGS
@@ -113,9 +111,7 @@ nvapi! {
 
 /// Undocumented API
 pub mod private {
-    use crate::nvapi::NvVersion;
-    use crate::status::NvAPI_Status;
-    use crate::handles::NvPhysicalGpuHandle;
+    use crate::prelude_::*;
 
     pub const NVAPI_MAX_THERMAL_INFO_ENTRIES: usize = 4;
 

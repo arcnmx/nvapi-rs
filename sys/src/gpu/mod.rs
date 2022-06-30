@@ -1,7 +1,4 @@
-use crate::nvapi::NvVersion;
-use crate::status::NvAPI_Status;
-use crate::handles::NvPhysicalGpuHandle;
-use crate::types;
+use crate::prelude_::*;
 
 /// The GPU cooler APIs are used to get and set the fan level or equivalent
 /// cooler levels for various target devices associated with the GPU.
@@ -39,7 +36,7 @@ pub mod display;
 pub mod ecc;
 
 nvapi! {
-    pub type EnumPhysicalGPUsFn = extern "C" fn(nvGPUHandle: *mut [NvPhysicalGpuHandle; types::NVAPI_MAX_PHYSICAL_GPUS], pGpuCount: *mut u32) -> NvAPI_Status;
+    pub type EnumPhysicalGPUsFn = extern "C" fn(nvGPUHandle: *mut [NvPhysicalGpuHandle; NVAPI_MAX_PHYSICAL_GPUS], pGpuCount: *mut u32) -> NvAPI_Status;
 
     /// This function returns an array of physical GPU handles.
     /// Each handle represents a physical GPU present in the system.
@@ -61,7 +58,7 @@ nvapi! {
 }
 
 nvapi! {
-    pub type GPU_GetFullNameFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, szName: *mut types::NvAPI_ShortString) -> NvAPI_Status;
+    pub type GPU_GetFullNameFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, szName: *mut NvAPI_ShortString) -> NvAPI_Status;
 
     /// This function retrieves the full GPU name as an ASCII string - for example, "Quadro FX 1400".
     pub unsafe fn NvAPI_GPU_GetFullName;
@@ -98,7 +95,7 @@ nvapi! {
 }
 
 nvapi! {
-    pub type GPU_GetVbiosVersionStringFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, szBiosRevision: *mut types::NvAPI_ShortString) -> NvAPI_Status;
+    pub type GPU_GetVbiosVersionStringFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, szBiosRevision: *mut NvAPI_ShortString) -> NvAPI_Status;
 
     /// This function returns the full video BIOS version string in the form of xx.xx.xx.xx.yy where
     /// - xx numbers come from NvAPI_GPU_GetVbiosRevision() and
@@ -617,9 +614,7 @@ impl Default for ChipRevision {
 
 /// Undocumented API
 pub mod private {
-    use crate::status::NvAPI_Status;
-    use crate::handles::NvPhysicalGpuHandle;
-    use crate::types;
+    use crate::prelude_::*;
 
     pub const NVAPI_MAX_PROCESSES: usize = 128;
 
@@ -783,7 +778,7 @@ pub mod private {
     }
 
     nvapi! {
-        pub unsafe fn NvAPI_GPU_GetShortName(hPhysicalGpu: NvPhysicalGpuHandle, pName: *mut types::NvAPI_ShortString) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GPU_GetShortName(hPhysicalGpu: NvPhysicalGpuHandle, pName: *mut NvAPI_ShortString) -> NvAPI_Status;
     }
 
     nvapi! {

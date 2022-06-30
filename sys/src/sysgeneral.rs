@@ -1,7 +1,4 @@
-use crate::nvapi::NvVersion;
-use crate::status::NvAPI_Status;
-use crate::types::NvAPI_ShortString;
-use crate::handles;
+use crate::prelude_::*;
 
 nvstruct! {
     pub struct NV_CHIPSET_INFO_v1 {

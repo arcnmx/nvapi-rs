@@ -1,7 +1,4 @@
-use crate::nvapi::NvVersion;
-use crate::status::NvAPI_Status;
-use crate::types::BoolU32;
-use crate::handles::NvPhysicalGpuHandle;
+use crate::prelude_::*;
 
 nvenum! {
     /// Used in [NV_GPU_ECC_STATUS_INFO].

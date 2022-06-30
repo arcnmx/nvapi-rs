@@ -1,6 +1,5 @@
+use crate::prelude_::*;
 use winapi::um::unknwnbase::IUnknown;
-
-use crate::status::NvAPI_Status;
 
 nv_declare_handle! { NVDX_ObjectHandle }
 pub const NVDX_OBJECT_NONE: NVDX_ObjectHandle = NVDX_ObjectHandle(0 as *const _);

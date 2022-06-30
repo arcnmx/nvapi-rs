@@ -1,7 +1,4 @@
-use crate::nvapi::NvVersion;
-use crate::status::NvAPI_Status;
-use crate::handles::NvPhysicalGpuHandle;
-use crate::types::BoolU32;
+use crate::prelude_::*;
 
 pub const NVAPI_MAX_GPU_CLOCKS: usize = 32;
 pub const NVAPI_MAX_GPU_PUBLIC_CLOCKS: usize = 32;
@@ -96,14 +93,11 @@ nvapi! {
 
 /// Undocumented API
 pub mod private {
+    use crate::prelude_::*;
+
     // undocumented constants
     pub const NVAPI_MAX_USAGES_PER_GPU: usize = 8;
     pub const NVAPI_MAX_CLOCKS_PER_GPU: usize = 288;
-
-    use crate::nvapi::NvVersion;
-    use crate::types::BoolU32;
-    use crate::status::NvAPI_Status;
-    use crate::handles::NvPhysicalGpuHandle;
 
     nvstruct! {
         pub struct NV_USAGES_INFO_USAGE {

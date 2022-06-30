@@ -70,6 +70,13 @@ pub mod api {
     pub use crate::nvapi::*;
 }
 
+pub(crate) mod prelude_ {
+    pub(crate) use crate::types::*;
+    pub(crate) use crate::nvapi::NvVersion;
+    pub(crate) use crate::handles::{self, NvPhysicalGpuHandle};
+    pub(crate) use crate::status::NvAPI_Status;
+}
+
 /// The result of a fallible NVAPI call.
 pub type Result<T> = result::Result<T, Status>;
 

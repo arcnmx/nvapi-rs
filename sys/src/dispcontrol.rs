@@ -1,6 +1,5 @@
+use crate::prelude_::*;
 use std::os::raw::c_char;
-use crate::status::NvAPI_Status;
-use crate::handles;
 
 nvapi! {
     pub type EnumNvidiaDisplayHandleFn = extern "C" fn(thisEnum: u32, pNvDispHandle: *mut handles::NvDisplayHandle) -> NvAPI_Status;
