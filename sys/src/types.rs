@@ -2,6 +2,7 @@ use std::borrow::Cow;
 use std::ops::{Deref, DerefMut};
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
+use std::fmt;
 use crate::nvapi::NvVersion;
 
 pub type NvBool = u8;
@@ -161,4 +162,41 @@ pub const fn GET_NVAPI_VERSION(ver: u32) -> u16 {
 
 pub const fn GET_NVAPI_SIZE(ver: u32) -> usize {
     NvVersion::with_version(ver).size()
+}
+
+#[derive(Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct Padding<T> {
+    pub data: T,
+}
+
+impl<T: Copy + Default, const N: usize> Default for Padding<[T; N]> {
+    fn default() -> Self {
+        Self {
+            data: [Default::default(); N],
+        }
+    }
+}
+
+impl<T: Default + PartialEq, const N: usize> Padding<[T; N]> {
+    pub fn all_zero(&self) -> bool {
+        let zero = T::default();
+        self.data.iter().all(|v| v == &zero)
+    }
+
+    pub fn check_zero(&self) -> Result<(), crate::ArgumentRangeError> {
+        match self.all_zero() {
+            true => Ok(()),
+            false => Err(crate::ArgumentRangeError),
+        }
+    }
+}
+
+impl<T: Default + PartialEq + fmt::Debug, const N: usize> fmt::Debug for Padding<[T; N]> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        if self.all_zero() {
+            write!(f, "[0; {}]", N)
+        } else {
+            fmt::Debug::fmt(&self.data, f)
+        }
+    }
 }
