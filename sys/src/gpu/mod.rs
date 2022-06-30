@@ -191,6 +191,7 @@ pub mod private {
             NV_GPU_RAM_GDDR5 / GDDR5 = 8,
             NV_GPU_RAM_LPDDR2 / LPDDR2 = 9,
             NV_GPU_RAM_GDDR5X / GDDR5X = 10,
+            NV_GPU_RAM_GDDR6X / GDDR6X = 15,
         }
     }
 
