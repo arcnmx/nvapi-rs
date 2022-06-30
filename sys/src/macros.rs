@@ -188,6 +188,20 @@ macro_rules! nvbits {
                 { None }
             }
         }
+
+        impl TryFrom<$enum> for $enum_name {
+            type Error = crate::ArgumentRangeError;
+
+            fn try_from(v: $enum) -> Result<Self, Self::Error> {
+                Self::from_bits(v).ok_or(crate::ArgumentRangeError)
+            }
+        }
+
+        impl From<$enum_name> for $enum {
+            fn from(v: $enum_name) -> $enum {
+                v.bits()
+            }
+        }
     };
 }
 
