@@ -15,7 +15,7 @@ pub struct PhysicalGpu(sys::handles::NvPhysicalGpuHandle);
 
 unsafe impl Send for PhysicalGpu { }
 
-pub use sys::gpu::{SystemType, PerformanceDecreaseReason, ArchitectureId, ChipRevision};
+pub use sys::gpu::{SystemType, GpuType, BusType, PerformanceDecreaseReason, WorkstationFeatureMask, ArchitectureId, ChipRevision};
 pub use sys::gpu::private::{RamType, RamMaker, Foundry, VendorId as Vendor};
 pub use sys::gpu::clock::ClockFrequencyType;
 pub use sys::gpu::display::{ConnectedIdsFlags, DisplayIdsFlags, MonitorConnectorType};
@@ -58,6 +58,13 @@ impl PhysicalGpu {
         }
     }
 
+    pub fn vbios_version(&self) -> crate::NvapiResult<(u32, u32)> {
+        trace!("gpu.vbios_revision()");
+        Ok(unsafe {
+            (nvcall!(NvAPI_GPU_GetVbiosRevision@get(self.0))?, nvcall!(NvAPI_GPU_GetVbiosOEMRevision@get(self.0))?)
+        })
+    }
+
     pub fn vbios_version_string(&self) -> crate::NvapiResult<String> {
         trace!("gpu.vbios_version_string()");
         unsafe {
@@ -86,6 +93,68 @@ impl PhysicalGpu {
         unsafe {
             nvcall!(NvAPI_GPU_GetPCIIdentifiers(self.0, &mut pci.device_id, &mut pci.subsystem_id, &mut pci.revision_id, &mut pci.ext_device_id))
                 .map(|()| pci)
+        }
+    }
+
+    pub fn bus_info(&self) -> crate::Result<BusInfo> {
+        trace!("gpu.bus_info()");
+        let bus_type = self.bus_type()?;
+        Ok(BusInfo {
+            irq: self.irq()?,
+            id: self.bus_id()?,
+            slot_id: self.bus_slot_id()?,
+            bus: match bus_type {
+                BusType::Pci => Bus::Pci {
+                    ids: self.pci_identifiers()?,
+                },
+                BusType::PciExpress => Bus::PciExpress {
+                    ids: self.pci_identifiers()?,
+                    lanes: self.pcie_lanes()?,
+                },
+                ty => Bus::Other(ty),
+            },
+        })
+    }
+
+    pub fn gpu_type(&self) -> crate::Result<GpuType> {
+        trace!("gpu.gpu_type()");
+        unsafe {
+            nvcall!(NvAPI_GPU_GetGPUType@get(self.0) => try)
+        }
+    }
+
+    pub fn bus_type(&self) -> crate::Result<BusType> {
+        trace!("gpu.bus_type()");
+        unsafe {
+            nvcall!(NvAPI_GPU_GetBusType@get(self.0) => try)
+        }
+    }
+
+    pub fn bus_id(&self) -> crate::NvapiResult<u32> {
+        trace!("gpu.bus_id()");
+        unsafe {
+            nvcall!(NvAPI_GPU_GetBusId@get(self.0))
+        }
+    }
+
+    pub fn bus_slot_id(&self) -> crate::NvapiResult<u32> {
+        trace!("gpu.bus_slot_id()");
+        unsafe {
+            nvcall!(NvAPI_GPU_GetBusSlotId@get(self.0))
+        }
+    }
+
+    pub fn irq(&self) -> crate::NvapiResult<u32> {
+        trace!("gpu.irq()");
+        unsafe {
+            nvcall!(NvAPI_GPU_GetIRQ@get(self.0))
+        }
+    }
+
+    pub fn pcie_lanes(&self) -> crate::NvapiResult<u32> {
+        trace!("gpu.pcie_lanes()");
+        unsafe {
+            nvcall!(NvAPI_GPU_GetCurrentPCIEDownstreamWidth@get(self.0))
         }
     }
 
@@ -180,6 +249,18 @@ impl PhysicalGpu {
 
         unsafe {
             nvcall!(NvAPI_GPU_GetArchInfo@get(self.0) => raw)
+        }
+    }
+
+    pub fn workstation_features(&self) -> crate::NvapiResult<(WorkstationFeatureMask, WorkstationFeatureMask)> {
+        trace!("gpu.workstation_features()");
+
+        unsafe {
+            nvcall!(NvAPI_GPU_WorkstationFeatureQuery@get2(self.0))
+                .map(|(configured, consistent)| (
+                    WorkstationFeatureMask::from_bits_truncate(configured),
+                    WorkstationFeatureMask::from_bits_truncate(consistent),
+                ))
         }
     }
 
@@ -683,6 +764,87 @@ impl PciIdentifiers {
 
     pub fn vendor(&self) -> Result<Vendor, sys::ArgumentRangeError> {
         Vendor::from_raw(self.vendor_id() as _)
+    }
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Copy, Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct BusInfo {
+    pub id: u32,
+    pub slot_id: u32,
+    pub irq: u32,
+    pub bus: Bus,
+}
+
+impl BusInfo {
+    pub fn vendor(&self) -> Result<Option<Vendor>, sys::ArgumentRangeError> {
+        self.bus.vendor()
+    }
+}
+
+impl fmt::Display for BusInfo {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{} ({}:{} routed to IRQ {})", self.bus, self.id, self.slot_id, self.irq)
+    }
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub enum Bus {
+    Pci {
+        ids: PciIdentifiers,
+    },
+    PciExpress {
+        ids: PciIdentifiers,
+        lanes: u32,
+    },
+    Other(BusType),
+}
+
+impl Bus {
+    pub fn bus_type(&self) -> BusType {
+        match self {
+            Bus::Pci { .. } => BusType::Pci,
+            Bus::PciExpress { .. } => BusType::PciExpress,
+            &Bus::Other(ty) => ty,
+        }
+    }
+
+    pub fn pci_ids(&self) -> Option<&PciIdentifiers> {
+        match self {
+            Bus::Pci { ids } => Some(ids),
+            Bus::PciExpress { ids, .. } => Some(ids),
+            _ => None,
+        }
+    }
+
+    pub fn vendor(&self) -> Result<Option<Vendor>, sys::ArgumentRangeError> {
+        match self.pci_ids() {
+            Some(ids) => ids.vendor().map(Some),
+            None => Ok(None),
+        }
+    }
+}
+
+impl fmt::Display for Bus {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Bus::PciExpress { lanes, .. } => {
+                fmt::Display::fmt(&BusType::PciExpress, f)?;
+                if *lanes > 0 {
+                    write!(f, " x{}", lanes)?;
+                }
+                Ok(())
+            },
+            Bus::Pci { .. } => fmt::Display::fmt(&BusType::Pci, f),
+            Bus::Other(ty) => fmt::Display::fmt(ty, f),
+        }
+    }
+}
+
+impl Default for Bus {
+    fn default() -> Self {
+        Bus::Other(Default::default())
     }
 }
 

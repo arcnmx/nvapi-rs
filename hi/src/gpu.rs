@@ -10,13 +10,13 @@ use nvapi::{self,
 };
 pub use nvapi::{
     PhysicalGpu,
-    Vendor, SystemType, RamType, RamMaker, Foundry, ArchInfo,
+    Vendor, SystemType, GpuType, RamType, RamMaker, Foundry, ArchInfo,
     ClockFrequencies, ClockDomain, VoltageDomain, UtilizationDomain, Utilizations, ClockLockMode, ClockLockEntry,
     CoolerType, CoolerController, CoolerControl, CoolerPolicy, CoolerTarget, CoolerLevel,
     VoltageStatus, VoltageTable,
     PerfInfo, PerfStatus,
     ThermalController, ThermalTarget,
-    MemoryInfo, PciIdentifiers, DriverModel,
+    MemoryInfo, PciIdentifiers, BusInfo, Bus, BusType, DriverModel,
     Percentage, Celsius,
     Range,
     Kibibytes, Microvolts, MicrovoltsDelta, Kilohertz, KilohertzDelta,
@@ -34,10 +34,10 @@ pub struct GpuInfo {
     pub codename: String,
     pub bios_version: String,
     pub driver_model: DriverModel,
-    pub vendor: Vendor,
-    pub pci: PciIdentifiers,
+    pub bus: BusInfo,
     pub memory: MemoryInfo,
     pub system_type: SystemType,
+    pub gpu_type: GpuType,
     pub arch: ArchInfo,
     pub ram_type: RamType,
     pub ram_maker: RamMaker,
@@ -62,6 +62,12 @@ pub struct GpuInfo {
     pub vfp_locks: Vec<usize>,
 }
 
+impl GpuInfo {
+    pub fn vendor(&self) -> Option<Vendor> {
+        self.bus.vendor().ok().flatten()
+    }
+}
+
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct VfpRange {
@@ -84,6 +90,7 @@ pub struct GpuStatus {
     pub pstate: PState,
     pub clocks: ClockFrequencies,
     pub memory: MemoryInfo,
+    pub pcie_lanes: Option<u32>,
     pub voltage: Option<Microvolts>,
     pub voltage_domains: Option<VoltageStatus>,
     pub voltage_step: Option<VoltageStatus>,
@@ -138,17 +145,16 @@ impl Gpu {
             Ok(PStates { editable: _editable, pstates, overvolt }) => (pstates, overvolt),
             Err(..) => (Default::default(), Default::default()),
         };
-        let pci = self.gpu.pci_identifiers()?;
 
         Ok(GpuInfo {
             name: self.gpu.full_name()?,
             codename: self.gpu.short_name()?,
             bios_version: self.gpu.vbios_version_string()?,
             driver_model: self.gpu.driver_model()?,
-            vendor: allowable_result_fallback(pci.vendor(), Vendor::Unknown)?,
-            pci,
+            bus: allowable_result_fallback(self.gpu.bus_info(), Default::default())?,
             memory: self.gpu.memory_info()?,
             system_type: allowable_result_fallback(self.gpu.system_type(), SystemType::Unknown)?,
+            gpu_type: allowable_result_fallback(self.gpu.gpu_type(), GpuType::Unknown)?,
             arch: allowable_result_fallback(self.gpu.architecture(), Default::default())?,
             ram_type: allowable_result_fallback(self.gpu.ram_type(), RamType::Unknown)?,
             ram_maker: allowable_result_fallback(self.gpu.ram_maker(), RamMaker::Unknown)?,
@@ -198,6 +204,10 @@ impl Gpu {
             pstate: self.gpu.current_pstate()?,
             clocks: self.gpu.clock_frequencies(ClockFrequencyType::Current)?,
             memory: self.gpu.memory_info()?,
+            pcie_lanes: match self.gpu.bus_type() {
+                Ok(BusType::PciExpress) => allowable_result_fallback(self.gpu.pcie_lanes().map(Some), None)?,
+                _ => None,
+            },
             voltage: allowable_result(self.gpu.core_voltage())?.ok(),
             voltage_domains: allowable_result(self.gpu.voltage_domains_status())?.ok(),
             voltage_step: allowable_result(self.gpu.voltage_step())?.ok(),

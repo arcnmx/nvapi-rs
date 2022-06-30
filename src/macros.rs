@@ -6,8 +6,17 @@ macro_rules! nvcall {
             nvcall!($nvapi($($arg,)* &mut out) => map(move |()| out) $($tt)*)
         }
     };
+    ($nvapi:ident@get2{$init:expr}($($arg:expr),*$(,)?) $($tt:tt)*) => {
+        {
+            let mut out = $init;
+            nvcall!($nvapi($($arg,)* &mut out.0, &mut out.1) => map(move |()| out) $($tt)*)
+        }
+    };
     ($nvapi:ident@get($($arg:expr),*$(,)?) $($tt:tt)*) => {
         nvcall!($nvapi@get{Default::default()}($($arg),*) $($tt)*)
+    };
+    ($nvapi:ident@get2($($arg:expr),*$(,)?) $($tt:tt)*) => {
+        nvcall!($nvapi@get2{(Default::default(), Default::default())}($($arg),*) $($tt)*)
     };
     ($nvapi:ident($($arg:expr),*$(,)?) $($tt:tt)*) => {
         {

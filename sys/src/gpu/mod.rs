@@ -73,6 +73,28 @@ nvapi! {
 }
 
 nvapi! {
+    pub type GPU_GetVirtualFrameBufferSizeFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pSize: *mut u32) -> NvAPI_Status;
+
+    /// This function returns the virtual size of framebuffer in KB.  This includes the physical RAM plus any
+    /// system RAM that has been dedicated for use by the GPU.
+    pub unsafe fn NvAPI_GPU_GetVirtualFrameBufferSize;
+}
+
+nvapi! {
+    pub type GPU_GetVbiosRevision = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pBiosRevision: *mut u32) -> NvAPI_Status;
+
+    /// This function returns the revision of the video BIOS associated with this GPU.
+    pub unsafe fn NvAPI_GPU_GetVbiosRevision;
+}
+
+nvapi! {
+    pub type GPU_GetVbiosOEMRevision = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pBiosRevision: *mut u32) -> NvAPI_Status;
+
+    /// This function returns the OEM revision of the video BIOS associated with this GPU.
+    pub unsafe fn NvAPI_GPU_GetVbiosOEMRevision;
+}
+
+nvapi! {
     pub type GPU_GetVbiosVersionStringFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, szBiosRevision: *mut types::NvAPI_ShortString) -> NvAPI_Status;
 
     /// This function returns the full video BIOS version string in the form of xx.xx.xx.xx.yy where
@@ -86,6 +108,100 @@ nvapi! {
 
     /// This function returns the PCI identifiers associated with this GPU.
     pub unsafe fn NvAPI_GPU_GetPCIIdentifiers;
+}
+
+nvenum! {
+    /// Used in NvAPI_GPU_GetGPUType().
+    pub enum NV_GPU_TYPE / GpuType {
+        NV_SYSTEM_TYPE_GPU_UNKNOWN / Unknown = 0,
+        /// Integrated GPU
+        NV_SYSTEM_TYPE_IGPU / Integrated = 1,
+        /// Discrete GPU
+        NV_SYSTEM_TYPE_DGPU / Discrete = 2,
+    }
+}
+nvenum_display! {
+    GpuType => {
+        Unknown = "Unknown",
+        Integrated = "iGPU",
+        Discrete = "dGPU",
+    }
+}
+
+nvapi! {
+    pub type GPU_GetGPUTypeFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pGpuType: *mut NV_GPU_TYPE) -> NvAPI_Status;
+
+    /// This function returns the GPU type (integrated or discrete).
+    ///
+    /// See [GpuType].
+    pub unsafe fn NvAPI_GPU_GetGPUType;
+}
+
+nvenum! {
+    /// Used in NvAPI_GPU_GetBusType()
+    pub enum NV_GPU_BUS_TYPE / BusType {
+        NVAPI_GPU_BUS_TYPE_UNDEFINED / Unknown = 0,
+        NVAPI_GPU_BUS_TYPE_PCI / Pci = 1,
+        NVAPI_GPU_BUS_TYPE_AGP / Agp = 2,
+        NVAPI_GPU_BUS_TYPE_PCI_EXPRESS / PciExpress = 3,
+        NVAPI_GPU_BUS_TYPE_FPCI / Fpci = 4,
+        NVAPI_GPU_BUS_TYPE_AXI / Axi = 5,
+    }
+}
+
+nvenum_display! {
+    BusType => {
+        Unknown = "Unknown",
+        Pci = "PCI",
+        Agp = "AGP",
+        PciExpress = "PCIe",
+        Fpci = "FPCI",
+        Axi = "AXI",
+    }
+}
+
+impl Default for BusType {
+    fn default() -> Self {
+        BusType::Unknown
+    }
+}
+
+nvapi! {
+    pub type GPU_GetBusTypeFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pBusType: *mut NV_GPU_BUS_TYPE) -> NvAPI_Status;
+
+    /// This function returns the type of bus associated with this GPU.
+    ///
+    /// See [BusType].
+    pub unsafe fn NvAPI_GPU_GetBusType;
+}
+
+nvapi! {
+    pub type GPU_GetBusId = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pBusId: *mut u32) -> NvAPI_Status;
+
+    /// Returns the ID of the bus associated with this GPU.
+    pub unsafe fn NvAPI_GPU_GetBusId;
+}
+
+nvapi! {
+    pub type GPU_GetBusSlotId = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pBusSlotId: *mut u32) -> NvAPI_Status;
+
+    /// Returns the ID of the bus slot associated with this GPU.
+    pub unsafe fn NvAPI_GPU_GetBusSlotId;
+}
+
+nvapi! {
+    pub type GPU_GetIRQ = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pIRQ: *mut u32) -> NvAPI_Status;
+
+    /// This function returns the interrupt number associated with this GPU.
+    pub unsafe fn NvAPI_GPU_GetIRQ;
+}
+
+nvapi! {
+    pub type GPU_GetCurrentPCIEDownstreamWidth = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pWidth: *mut u32) -> NvAPI_Status;
+
+    /// This function returns the number of PCIE lanes being used for the PCIE interface
+    /// downstream from the GPU.
+    pub unsafe fn NvAPI_GPU_GetCurrentPCIEDownstreamWidth;
 }
 
 nvenum! {
@@ -161,6 +277,26 @@ nvbits! {
 nvapi! {
     /// This function retrieves reasons for the current performance decrease.
     pub unsafe fn NvAPI_GPU_GetPerfDecreaseInfo(hPhysicalGpu: NvPhysicalGpuHandle, pPerfDecrInfo: *mut NVAPI_GPU_PERF_DECREASE) -> NvAPI_Status;
+}
+
+nvbits! {
+    pub enum NVAPI_GPU_WORKSTATION_FEATURE_MASK / WorkstationFeatureMask {
+        NVAPI_GPU_WORKSTATION_FEATURE_MASK_SWAPGROUP / SWAPGROUP = 0x01,
+        NVAPI_GPU_WORKSTATION_FEATURE_MASK_STEREO / STEREO = 0x10,
+        NVAPI_GPU_WORKSTATION_FEATURE_MASK_WARPING / WARPING = 0x100,
+        NVAPI_GPU_WORKSTATION_FEATURE_MASK_PIXINTENSITY / PIXINTENSITY = 0x200,
+        NVAPI_GPU_WORKSTATION_FEATURE_MASK_GRAYSCALE / GRAYSCALE = 0x400,
+        NVAPI_GPU_WORKSTATION_FEATURE_MASK_BPC10 / BPC10 = 0x1000,
+    }
+}
+
+nvapi! {
+    pub unsafe fn NvAPI_GPU_WorkstationFeatureSetup(hPhysicalGpu: NvPhysicalGpuHandle, featureEnableMask: NVAPI_GPU_WORKSTATION_FEATURE_MASK, featureDisableMask: NVAPI_GPU_WORKSTATION_FEATURE_MASK) -> NvAPI_Status;
+}
+
+nvapi! {
+    /// This API queries the current set of workstation features.
+    pub unsafe fn NvAPI_GPU_WorkstationFeatureQuery(hPhysicalGpu: NvPhysicalGpuHandle, pConfiguredFeatureMask: *mut NVAPI_GPU_WORKSTATION_FEATURE_MASK, pConsistentFeatureMask: *mut NVAPI_GPU_WORKSTATION_FEATURE_MASK) -> NvAPI_Status;
 }
 
 nvstruct! {
@@ -630,6 +766,12 @@ pub mod private {
             PNY_ = "PNY",
             Galax = "Galax / KFA2",
             _ = _,
+        }
+    }
+
+    impl Default for VendorId {
+        fn default() -> Self {
+            VendorId::Unknown
         }
     }
 
