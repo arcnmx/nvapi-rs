@@ -3,6 +3,7 @@ use std::convert::Infallible;
 use std::{iter, slice};
 use crate::sys::gpu::{clock, power};
 use crate::sys;
+#[cfg(feature = "serde")]
 use serde::{Serialize, Deserialize};
 use log::trace;
 use crate::types::{Kilohertz, Kilohertz2, KilohertzDelta, Kilohertz2Delta, Percentage, Percentage1000, Microvolts, CelsiusShifted, Range, RawConversion};

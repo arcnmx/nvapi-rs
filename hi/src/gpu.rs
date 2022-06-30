@@ -1,4 +1,5 @@
 use std::collections::BTreeMap;
+#[cfg(feature = "serde")]
 use serde::{Serialize, Deserialize};
 use crate::{allowable_result, allowable_result_fallback};
 

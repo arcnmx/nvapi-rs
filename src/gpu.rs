@@ -1,6 +1,7 @@
 use std::{ptr, fmt};
 use std::convert::Infallible;
 use log::trace;
+#[cfg(feature = "serde")]
 use serde::{Serialize, Deserialize};
 use crate::sys::gpu::{self, pstate, clock, power, cooler, thermal, display};
 use crate::sys::{self, driverapi, i2c};

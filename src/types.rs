@@ -1,5 +1,6 @@
 use std::{fmt, ops};
 use std::convert::Infallible;
+#[cfg(feature = "serde")]
 use serde::{Serialize, Deserialize};
 use crate::sys;
 
