@@ -497,7 +497,7 @@ impl PhysicalGpu {
         }
     }
 
-    pub fn power_usage(&self) -> crate::Result<<power::private::NV_GPU_POWER_TOPO as RawConversion>::Target> {
+    pub fn power_usage(&self) -> crate::Result<<power::private::NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS as RawConversion>::Target> {
         trace!("gpu.power_usage()");
 
         unsafe {
@@ -505,7 +505,7 @@ impl PhysicalGpu {
         }
     }
 
-    pub fn power_limit_info(&self) -> crate::Result<<power::private::NV_GPU_POWER_INFO as RawConversion>::Target> {
+    pub fn power_limit_info(&self) -> crate::Result<<power::private::NV_GPU_CLIENT_POWER_POLICIES_INFO as RawConversion>::Target> {
         trace!("gpu.power_limit_info()");
 
         unsafe {
@@ -513,7 +513,7 @@ impl PhysicalGpu {
         }
     }
 
-    pub fn power_limit(&self) -> crate::Result<<power::private::NV_GPU_POWER_STATUS as RawConversion>::Target> {
+    pub fn power_limit(&self) -> crate::Result<<power::private::NV_GPU_CLIENT_POWER_POLICIES_STATUS as RawConversion>::Target> {
         trace!("gpu.power_limit()");
 
         unsafe {
@@ -523,7 +523,7 @@ impl PhysicalGpu {
 
     pub fn set_power_limit<I: Iterator<Item=Percentage1000>>(&self, values: I) -> crate::NvapiResult<()> {
         trace!("gpu.set_power_limit()");
-        let mut data = power::private::NV_GPU_POWER_STATUS::default();
+        let mut data = power::private::NV_GPU_CLIENT_POWER_POLICIES_STATUS::default();
         //data.valid = 1;
         for (entry, v) in data.entries.iter_mut().zip(values) {
             trace!("gpu.set_power_limit({:?})", v);
@@ -544,7 +544,7 @@ impl PhysicalGpu {
         }
     }
 
-    pub fn thermal_limit_info(&self) -> crate::Result<<thermal::private::NV_GPU_THERMAL_INFO as RawConversion>::Target> {
+    pub fn thermal_limit_info(&self) -> crate::Result<<thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_INFO as RawConversion>::Target> {
         trace!("gpu.thermal_limit_info()");
 
         unsafe {
@@ -576,7 +576,7 @@ impl PhysicalGpu {
         }
     }
 
-    pub fn cooler_settings(&self, index: Option<u32>) -> crate::Result<<cooler::private::NV_GPU_COOLER_SETTINGS as RawConversion>::Target> {
+    pub fn cooler_settings(&self, index: Option<u32>) -> crate::Result<<cooler::private::NV_GPU_GETCOOLER_SETTINGS as RawConversion>::Target> {
         trace!("gpu.cooler_settings({:?})", index);
 
         unsafe {
@@ -640,7 +640,7 @@ impl PhysicalGpu {
         }
     }
 
-    pub fn perf_info(&self) -> crate::Result<<power::private::NV_GPU_PERF_INFO as RawConversion>::Target> {
+    pub fn perf_info(&self) -> crate::Result<<power::private::NV_GPU_PERF_POLICIES_INFO_PARAMS as RawConversion>::Target> {
         trace!("gpu.perf_info()");
 
         unsafe {
@@ -648,7 +648,7 @@ impl PhysicalGpu {
         }
     }
 
-    pub fn perf_status(&self) -> crate::Result<<power::private::NV_GPU_PERF_STATUS as RawConversion>::Target> {
+    pub fn perf_status(&self) -> crate::Result<<power::private::NV_GPU_PERF_POLICIES_STATUS_PARAMS as RawConversion>::Target> {
         trace!("gpu.perf_status()");
 
         unsafe {

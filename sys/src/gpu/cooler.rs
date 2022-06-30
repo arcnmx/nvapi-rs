@@ -120,7 +120,7 @@ pub mod private {
     }
 
     nvstruct! {
-        pub struct NV_GPU_COOLER_SETTINGS_COOLER {
+        pub struct NV_GPU_GETCOOLER_SETTINGS_COOLER {
             /// type of cooler - FAN, WATER, LIQUID_NO2...
             pub type_: NV_COOLER_TYPE,
             /// internal, ADI...
@@ -149,22 +149,22 @@ pub mod private {
     }
 
     nvstruct! {
-        pub struct NV_GPU_COOLER_SETTINGS_V1 {
+        pub struct NV_GPU_GETCOOLER_SETTINGS_V1 {
             pub version: NvVersion,
             pub count: u32,
-            pub cooler: [NV_GPU_COOLER_SETTINGS_COOLER; NVAPI_MAX_COOLERS_PER_GPU],
+            pub cooler: [NV_GPU_GETCOOLER_SETTINGS_COOLER; NVAPI_MAX_COOLERS_PER_GPU],
         }
     }
 
     const NV_GPU_COOLER_SETTINGS_COOLER_SIZE: usize = 4 * 12;
 
-    nvversion! { NV_GPU_COOLER_SETTINGS_VER_1(NV_GPU_COOLER_SETTINGS_V1 = 4 * 2 + NV_GPU_COOLER_SETTINGS_COOLER_SIZE * NVAPI_MAX_COOLERS_PER_GPU, 1) }
-    nvversion! { NV_GPU_COOLER_SETTINGS_VER = NV_GPU_COOLER_SETTINGS_VER_1 }
+    nvversion! { NV_GPU_GETCOOLER_SETTINGS_VER_1(NV_GPU_GETCOOLER_SETTINGS_V1 = 152, 1) }
+    nvversion! { NV_GPU_GETCOOLER_SETTINGS_VER = NV_GPU_GETCOOLER_SETTINGS_VER_1 }
 
-    pub type NV_GPU_COOLER_SETTINGS = NV_GPU_COOLER_SETTINGS_V1;
+    pub type NV_GPU_GETCOOLER_SETTINGS = NV_GPU_GETCOOLER_SETTINGS_V1;
 
     nvapi! {
-        pub type GPU_GetCoolerSettingsFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolerIndex: u32, pCoolerInfo: *mut NV_GPU_COOLER_SETTINGS) -> NvAPI_Status;
+        pub type GPU_GetCoolerSettingsFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolerIndex: u32, pCoolerInfo: *mut NV_GPU_GETCOOLER_SETTINGS) -> NvAPI_Status;
 
         /// Undocumented function.
         /// Retrieves the cooler information of all coolers or a specific cooler associated with the selected GPU.

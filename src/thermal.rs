@@ -50,7 +50,7 @@ pub struct ThermalInfo {
     pub default_flags: u32,
 }
 
-impl RawConversion for thermal::private::NV_GPU_THERMAL_INFO_ENTRY {
+impl RawConversion for thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_INFO_ENTRY {
     type Target = ThermalInfo;
     type Error = sys::ArgumentRangeError;
 
@@ -69,7 +69,7 @@ impl RawConversion for thermal::private::NV_GPU_THERMAL_INFO_ENTRY {
     }
 }
 
-impl RawConversion for thermal::private::NV_GPU_THERMAL_INFO {
+impl RawConversion for thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_INFO {
     type Target = (u32, Vec<ThermalInfo>);
     type Error = sys::ArgumentRangeError;
 
@@ -131,7 +131,7 @@ pub struct Cooler {
     pub active: bool,
 }
 
-impl RawConversion for cooler::private::NV_GPU_COOLER_SETTINGS_COOLER {
+impl RawConversion for cooler::private::NV_GPU_GETCOOLER_SETTINGS_COOLER {
     type Target = Cooler;
     type Error = sys::ArgumentRangeError;
 
@@ -158,7 +158,7 @@ impl RawConversion for cooler::private::NV_GPU_COOLER_SETTINGS_COOLER {
     }
 }
 
-impl RawConversion for cooler::private::NV_GPU_COOLER_SETTINGS {
+impl RawConversion for cooler::private::NV_GPU_GETCOOLER_SETTINGS {
     type Target = Vec<Cooler>;
     type Error = sys::ArgumentRangeError;
 

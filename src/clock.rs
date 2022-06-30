@@ -418,7 +418,7 @@ pub struct PowerInfo {
     pub entries: Vec<PowerInfoEntry>,
 }
 
-impl RawConversion for power::private::NV_GPU_POWER_INFO_ENTRY {
+impl RawConversion for power::private::NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY {
     type Target = PowerInfoEntry;
     type Error = sys::ArgumentRangeError;
 
@@ -426,7 +426,7 @@ impl RawConversion for power::private::NV_GPU_POWER_INFO_ENTRY {
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
         match *self {
-            power::private::NV_GPU_POWER_INFO_ENTRY {
+            power::private::NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY {
                 pstate, b: 0, c: 0, min_power, e: 0, f: 0,
                 def_power, h: 0, i: 0, max_power, k: 0,
             } => Ok(PowerInfoEntry {
@@ -442,7 +442,7 @@ impl RawConversion for power::private::NV_GPU_POWER_INFO_ENTRY {
     }
 }
 
-impl RawConversion for power::private::NV_GPU_POWER_INFO {
+impl RawConversion for power::private::NV_GPU_CLIENT_POWER_POLICIES_INFO {
     type Target = PowerInfo;
     type Error = sys::ArgumentRangeError;
 
@@ -456,7 +456,7 @@ impl RawConversion for power::private::NV_GPU_POWER_INFO {
     }
 }
 
-impl RawConversion for power::private::NV_GPU_POWER_TOPO_ENTRY {
+impl RawConversion for power::private::NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_ENTRY {
     type Target = Percentage1000;
     type Error = sys::ArgumentRangeError;
 
@@ -464,7 +464,7 @@ impl RawConversion for power::private::NV_GPU_POWER_TOPO_ENTRY {
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
         match *self {
-            power::private::NV_GPU_POWER_TOPO_ENTRY {
+            power::private::NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_ENTRY {
                 a: unknown, b: 0, power, d: 0
             } => Ok(Percentage1000(power)),
             _ => Err(sys::ArgumentRangeError),
@@ -472,7 +472,7 @@ impl RawConversion for power::private::NV_GPU_POWER_TOPO_ENTRY {
     }
 }
 
-impl RawConversion for power::private::NV_GPU_POWER_TOPO {
+impl RawConversion for power::private::NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS {
     type Target = Vec<Percentage1000>;
     type Error = sys::ArgumentRangeError;
 
@@ -483,7 +483,7 @@ impl RawConversion for power::private::NV_GPU_POWER_TOPO {
     }
 }
 
-impl RawConversion for power::private::NV_GPU_POWER_STATUS_ENTRY {
+impl RawConversion for power::private::NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY {
     type Target = Percentage1000;
     type Error = sys::ArgumentRangeError;
 
@@ -491,7 +491,7 @@ impl RawConversion for power::private::NV_GPU_POWER_STATUS_ENTRY {
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
         match *self {
-            power::private::NV_GPU_POWER_STATUS_ENTRY {
+            power::private::NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY {
                 a: 0, b: 0, power, d: 0,
             } => Ok(Percentage1000(power)),
             _ => Err(sys::ArgumentRangeError),
@@ -499,7 +499,7 @@ impl RawConversion for power::private::NV_GPU_POWER_STATUS_ENTRY {
     }
 }
 
-impl RawConversion for power::private::NV_GPU_POWER_STATUS {
+impl RawConversion for power::private::NV_GPU_CLIENT_POWER_POLICIES_STATUS {
     type Target = Vec<Percentage1000>;
     type Error = sys::ArgumentRangeError;
 
@@ -557,7 +557,7 @@ pub struct PerfInfo {
     pub limits: PerfFlags,
 }
 
-impl RawConversion for power::private::NV_GPU_PERF_INFO {
+impl RawConversion for power::private::NV_GPU_PERF_POLICIES_INFO_PARAMS {
     type Target = PerfInfo;
     type Error = sys::ArgumentRangeError;
 
@@ -578,7 +578,7 @@ pub struct PerfStatus {
     pub limits: PerfFlags,
 }
 
-impl RawConversion for power::private::NV_GPU_PERF_STATUS {
+impl RawConversion for power::private::NV_GPU_PERF_POLICIES_STATUS_PARAMS {
     type Target = PerfStatus;
     type Error = sys::ArgumentRangeError;
 
@@ -586,7 +586,7 @@ impl RawConversion for power::private::NV_GPU_PERF_STATUS {
         trace!("convert_raw({:#?})", self);
         // TODO: check padding
         match *self {
-            power::private::NV_GPU_PERF_STATUS {
+            power::private::NV_GPU_PERF_POLICIES_STATUS_PARAMS {
                 flags: 0, limits, zero0: 0, unknown, zero1: 0, ..
             } => Ok(PerfStatus {
                 unknown,
