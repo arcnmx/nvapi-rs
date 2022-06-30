@@ -7,6 +7,7 @@ pub use nvapi_sys as sys;
 mod macros;
 mod error;
 mod types;
+mod ecc;
 mod pstate;
 mod clock;
 mod thermal;
@@ -17,6 +18,7 @@ mod i2c_impl;
 
 pub use error::*;
 pub use types::*;
+pub use ecc::*;
 pub use pstate::*;
 pub use clock::*;
 pub use thermal::*;

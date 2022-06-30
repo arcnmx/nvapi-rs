@@ -11,6 +11,7 @@ use nvapi::{self,
 pub use nvapi::{
     PhysicalGpu,
     Vendor, SystemType, GpuType, RamType, RamMaker, Foundry, ArchInfo,
+    EccErrors,
     ClockFrequencies, ClockDomain, VoltageDomain, UtilizationDomain, Utilizations, ClockLockMode, ClockLockEntry,
     CoolerType, CoolerController, CoolerControl, CoolerPolicy, CoolerTarget, CoolerLevel,
     VoltageStatus, VoltageTable,
@@ -48,6 +49,7 @@ pub struct GpuInfo {
     pub core_count: u32,
     pub shader_pipe_count: u32,
     pub shader_sub_pipe_count: u32,
+    pub ecc: EccInfo,
     pub base_clocks: ClockFrequencies,
     pub boost_clocks: ClockFrequencies,
     pub sensors: Vec<SensorDesc>,
@@ -66,6 +68,20 @@ impl GpuInfo {
     pub fn vendor(&self) -> Option<Vendor> {
         self.bus.vendor().ok().flatten()
     }
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct EccInfo {
+    pub enabled_by_default: bool,
+    pub info: nvapi::EccStatus,
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct EccStatus {
+    pub enabled: bool,
+    pub errors: EccErrors,
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -91,6 +107,7 @@ pub struct GpuStatus {
     pub clocks: ClockFrequencies,
     pub memory: MemoryInfo,
     pub pcie_lanes: Option<u32>,
+    pub ecc: EccStatus,
     pub voltage: Option<Microvolts>,
     pub voltage_domains: Option<VoltageStatus>,
     pub voltage_step: Option<VoltageStatus>,
@@ -153,6 +170,13 @@ impl Gpu {
             driver_model: self.gpu.driver_model()?,
             bus: allowable_result_fallback(self.gpu.bus_info(), Default::default())?,
             memory: self.gpu.memory_info()?,
+            ecc: EccInfo {
+                enabled_by_default: allowable_result_fallback(
+                    self.gpu.ecc_configuration().map(|(_enabled, enabled_by_default)| enabled_by_default),
+                    false
+                )?,
+                info: allowable_result_fallback(self.gpu.ecc_status(), Default::default())?,
+            },
             system_type: allowable_result_fallback(self.gpu.system_type(), SystemType::Unknown)?,
             gpu_type: allowable_result_fallback(self.gpu.gpu_type(), GpuType::Unknown)?,
             arch: allowable_result_fallback(self.gpu.architecture(), Default::default())?,
@@ -207,6 +231,13 @@ impl Gpu {
             pcie_lanes: match self.gpu.bus_type() {
                 Ok(BusType::PciExpress) => allowable_result_fallback(self.gpu.pcie_lanes().map(Some), None)?,
                 _ => None,
+            },
+            ecc: EccStatus {
+                enabled: allowable_result_fallback(
+                    self.gpu.ecc_configuration().map(|(enabled, _enabled_by_default)| enabled),
+                    false
+                )?,
+                errors: allowable_result_fallback(self.gpu.ecc_errors(), Default::default())?,
             },
             voltage: allowable_result(self.gpu.core_voltage())?.ok(),
             voltage_domains: allowable_result(self.gpu.voltage_domains_status())?.ok(),

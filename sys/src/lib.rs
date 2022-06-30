@@ -50,6 +50,7 @@ pub mod api {
     pub use crate::gpu::*;
     pub use crate::gpu::private::*;
     pub use crate::gpu::display::*;
+    pub use crate::gpu::ecc::*;
     pub use crate::gpu::power::*;
     pub use crate::gpu::power::private::*;
     pub use crate::gpu::clock::*;

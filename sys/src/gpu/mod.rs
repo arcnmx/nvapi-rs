@@ -35,6 +35,9 @@ pub mod power;
 
 pub mod display;
 
+/// ECC memory error information
+pub mod ecc;
+
 nvapi! {
     pub type EnumPhysicalGPUsFn = extern "C" fn(nvGPUHandle: *mut [NvPhysicalGpuHandle; types::NVAPI_MAX_PHYSICAL_GPUS], pGpuCount: *mut u32) -> NvAPI_Status;
 

@@ -3,7 +3,7 @@ use std::convert::Infallible;
 use log::trace;
 #[cfg(feature = "serde")]
 use serde::{Serialize, Deserialize};
-use crate::sys::gpu::{pstate, clock, power, cooler, thermal, display};
+use crate::sys::gpu::{pstate, clock, power, cooler, thermal, display, ecc};
 use crate::sys::{self, driverapi, i2c};
 use crate::types::{Kibibytes, KilohertzDelta, Kilohertz2Delta, Microvolts, Percentage, Percentage1000, RawConversion};
 use crate::thermal::CoolerLevel;
@@ -261,6 +261,47 @@ impl PhysicalGpu {
                     WorkstationFeatureMask::from_bits_truncate(configured),
                     WorkstationFeatureMask::from_bits_truncate(consistent),
                 ))
+        }
+    }
+
+    pub fn ecc_status(&self) -> crate::Result<<ecc::NV_GPU_ECC_STATUS_INFO as RawConversion>::Target> {
+        trace!("gpu.ecc_status()");
+
+        unsafe {
+            nvcall!(NvAPI_GPU_GetECCStatusInfo@get(self.0) => raw)
+        }
+    }
+
+    pub fn ecc_errors(&self) -> crate::NvapiResult<<ecc::NV_GPU_ECC_ERROR_INFO as RawConversion>::Target> {
+        trace!("gpu.ecc_errors()");
+
+        unsafe {
+            nvcall!(NvAPI_GPU_GetECCErrorInfo@get(self.0) => raw)
+        }
+    }
+
+    pub fn ecc_reset(&self, current: bool, aggregate: bool) -> crate::NvapiResult<()> {
+        trace!("gpu.ecc_reset({:?}, {:?})", current, aggregate);
+
+        unsafe {
+            nvcall!(NvAPI_GPU_ResetECCErrorInfo(self.0, current.into(), aggregate.into()))
+        }
+    }
+
+    pub fn ecc_configuration(&self) -> crate::NvapiResult<(bool, bool)> {
+        trace!("gpu.ecc_configuration()");
+
+        unsafe {
+            nvcall!(NvAPI_GPU_GetECCConfigurationInfo@get(self.0))
+                .map(|raw| (raw.isEnabled(), raw.isEnabledByDefault()))
+        }
+    }
+
+    pub fn ecc_configure(&self, enable: bool, immediately: bool) -> crate::NvapiResult<()> {
+        trace!("gpu.ecc_configure()");
+
+        unsafe {
+            nvcall!(NvAPI_GPU_SetECCConfiguration(self.0, enable.into(), immediately.into()))
         }
     }
 
