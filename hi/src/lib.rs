@@ -8,7 +8,7 @@ pub use gpu::*;
 pub use nvapi::{
     Status, Result, Error, NvapiError,
     sys,
-    initialize, unload, driver_version, interface_version, error_message
+    initialize, unload, chipset_info, driver_version, interface_version, error_message
 };
 
 use std::result::Result as StdResult;

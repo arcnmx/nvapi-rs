@@ -22,6 +22,8 @@ pub mod handles;
 /// The display driver APIs are used to retrieve information about the display driver.
 pub mod driverapi;
 
+pub mod sysgeneral;
+
 /// The GPU APIs retrieve and control various attributes of the GPU, such as outputs, VBIOS revision, APG rate, frame buffer size, and thermal settings.
 pub mod gpu;
 
@@ -64,6 +66,7 @@ pub mod api {
     pub use crate::i2c::*;
     pub use crate::i2c::private::*;
     pub use crate::driverapi::*;
+    pub use crate::sysgeneral::*;
     pub use crate::nvapi::*;
 }
 
@@ -101,5 +104,3 @@ impl From<Infallible> for ArgumentRangeError {
         match e { }
     }
 }
-
-// TODO: NvAPI_SYS_GetChipSetInfo

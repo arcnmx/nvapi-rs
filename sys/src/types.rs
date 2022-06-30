@@ -89,7 +89,7 @@ pub type NvAPI_String = NvString<NVAPI_GENERIC_STRING_MAX>;
 pub type NvAPI_LongString = NvString<NVAPI_LONG_STRING_MAX>;
 pub type NvAPI_ShortString = NvString<NVAPI_SHORT_STRING_MAX>;
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(transparent)]
 pub struct NvString<const N: usize>(pub [c_char; N]);
 
