@@ -163,6 +163,319 @@ nvapi! {
     pub unsafe fn NvAPI_GPU_GetPerfDecreaseInfo(hPhysicalGpu: NvPhysicalGpuHandle, pPerfDecrInfo: *mut NVAPI_GPU_PERF_DECREASE) -> NvAPI_Status;
 }
 
+nvstruct! {
+    /// Used in NvAPI_GPU_GetArchInfo()
+    pub struct NV_GPU_ARCH_INFO_V1 {
+        pub version: NvVersion,
+        pub architecture: NV_GPU_ARCHITECTURE_ID,
+        pub implementation: NV_GPU_ARCH_IMPLEMENTATION_ID,
+        pub revision: NV_GPU_CHIP_REVISION,
+    }
+}
+
+pub type NV_GPU_ARCH_INFO_V2 = NV_GPU_ARCH_INFO_V1;
+pub type NV_GPU_ARCH_INFO = NV_GPU_ARCH_INFO_V2;
+
+nvversion! { NV_GPU_ARCH_INFO_VER_1(NV_GPU_ARCH_INFO_V1 = 4*4, 1) }
+nvversion! { NV_GPU_ARCH_INFO_VER_2(NV_GPU_ARCH_INFO_V2 = 4*4, 2) }
+nvversion! { NV_GPU_ARCH_INFO_VER = NV_GPU_ARCH_INFO_VER_2 }
+
+nvapi! {
+    pub type GPU_GetArchInfo = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pGpuArchInfo: *mut NV_GPU_ARCH_INFO) -> NvAPI_Status;
+
+    pub unsafe fn NvAPI_GPU_GetArchInfo;
+}
+
+nvenum! {
+    /// NV_GPU_ARCH_INFO() values to identify Architecture level for the GPU.
+    pub enum NV_GPU_ARCHITECTURE_ID / ArchitectureId {
+        NV_GPU_ARCHITECTURE_T2X / T2X = 0xE0000020,
+        NV_GPU_ARCHITECTURE_T3X / T3X = 0xE0000030,
+        NV_GPU_ARCHITECTURE_NV40 / NV40 = 0x00000040,
+        NV_GPU_ARCHITECTURE_NV50 / NV50 = 0x00000050,
+        NV_GPU_ARCHITECTURE_G78 / G78 = 0x00000060,
+        NV_GPU_ARCHITECTURE_G80 / G80 = 0x00000080,
+        NV_GPU_ARCHITECTURE_G90 / G90 = 0x00000090,
+        NV_GPU_ARCHITECTURE_GT200 / GT200 = 0x000000A0,
+        NV_GPU_ARCHITECTURE_GF100 / GF100 = 0x000000C0,
+        NV_GPU_ARCHITECTURE_GF110 / GF110 = 0x000000D0,
+        NV_GPU_ARCHITECTURE_GK100 / GK100 = 0x000000E0,
+        NV_GPU_ARCHITECTURE_GK110 / GK110 = 0x000000F0,
+        NV_GPU_ARCHITECTURE_GK200 / GK200 = 0x00000100,
+        NV_GPU_ARCHITECTURE_GM000 / GM000 = 0x00000110,
+        NV_GPU_ARCHITECTURE_GM200 / GM200 = 0x00000120,
+        NV_GPU_ARCHITECTURE_GP100 / GP100 = 0x00000130,
+        NV_GPU_ARCHITECTURE_GV100 / GV100 = 0x00000140,
+        NV_GPU_ARCHITECTURE_GV110 / GV110 = 0x00000150,
+        NV_GPU_ARCHITECTURE_TU100 / TU100 = 0x00000160,
+        NV_GPU_ARCHITECTURE_GA100 / GA100 = 0x00000170,
+    }
+}
+
+pub const NV_GPU_ARCHITECTURE_T4X: NV_GPU_ARCHITECTURE_ID = NV_GPU_ARCHITECTURE_NV40;
+pub const NV_GPU_ARCHITECTURE_T12X: NV_GPU_ARCHITECTURE_ID = NV_GPU_ARCHITECTURE_NV40;
+
+nvenum_display! {
+    ArchitectureId => {
+        NV40 = "NV40 / T12X / T4X",
+        _ = _,
+    }
+}
+
+nvenum! {
+    pub enum NV_GPU_ARCH_IMPLEMENTATION_ID_T2X / ArchitectureImplementationT2X {
+        NV_GPU_ARCH_IMPLEMENTATION_T20 / T20 = 0x00000000,
+    }
+}
+nvenum_display! {
+    ArchitectureImplementationT2X => _
+}
+
+nvenum! {
+    pub enum NV_GPU_ARCH_IMPLEMENTATION_ID_T3X / ArchitectureImplementationT3X {
+        NV_GPU_ARCH_IMPLEMENTATION_T30 / T30 = 0x00000000,
+        NV_GPU_ARCH_IMPLEMENTATION_T35 / T35 = 0x00000005,
+    }
+}
+nvenum_display! {
+    ArchitectureImplementationT3X => _
+}
+
+nvenum! {
+    pub enum NV_GPU_ARCH_IMPLEMENTATION_ID_T4X / ArchitectureImplementationT4X {
+        NV_GPU_ARCH_IMPLEMENTATION_T40 / T40 = 0x00000000,
+    }
+}
+nvenum_display! {
+    ArchitectureImplementationT4X => _
+}
+
+nvenum! {
+    pub enum NV_GPU_ARCH_IMPLEMENTATION_ID_T12X / ArchitectureImplementationT12X {
+        NV_GPU_ARCH_IMPLEMENTATION_T124 / T124 = 0x00000000,
+    }
+}
+nvenum_display! {
+    ArchitectureImplementationT12X => _
+}
+
+nvenum! {
+    pub enum NV_GPU_ARCH_IMPLEMENTATION_ID_NV40 / ArchitectureImplementationNV40 {
+        NV_GPU_ARCH_IMPLEMENTATION_NV40 / NV40 = 0x00000000,
+        NV_GPU_ARCH_IMPLEMENTATION_NV41 / NV41 = 0x00000001,
+        NV_GPU_ARCH_IMPLEMENTATION_NV42 / NV42 = 0x00000002,
+        NV_GPU_ARCH_IMPLEMENTATION_NV43 / NV43 = 0x00000003,
+        NV_GPU_ARCH_IMPLEMENTATION_NV44 / NV44 = 0x00000004,
+        NV_GPU_ARCH_IMPLEMENTATION_NV44A / NV44A = 0x0000000A,
+        NV_GPU_ARCH_IMPLEMENTATION_NV46 / NV46 = 0x00000006,
+        NV_GPU_ARCH_IMPLEMENTATION_NV47 / NV47 = 0x00000007,
+        NV_GPU_ARCH_IMPLEMENTATION_NV49 / NV49 = 0x00000009,
+        NV_GPU_ARCH_IMPLEMENTATION_NV4B / NV4B = 0x0000000B,
+        NV_GPU_ARCH_IMPLEMENTATION_NV4C / NV4C = 0x0000000C,
+        NV_GPU_ARCH_IMPLEMENTATION_NV4E / NV4E = 0x0000000E,
+    }
+}
+nvenum_display! {
+    ArchitectureImplementationNV40 => _
+}
+
+nvenum! {
+    pub enum NV_GPU_ARCH_IMPLEMENTATION_ID_NV50 / ArchitectureImplementationNV50 {
+        NV_GPU_ARCH_IMPLEMENTATION_NV50 / NV50 = 0x00000000,
+        NV_GPU_ARCH_IMPLEMENTATION_NV63 / NV63 = 0x00000003,
+        NV_GPU_ARCH_IMPLEMENTATION_NV67 / NV67 = 0x00000007,
+    }
+}
+nvenum_display! {
+    ArchitectureImplementationNV50 => _
+}
+
+nvenum! {
+    pub enum NV_GPU_ARCH_IMPLEMENTATION_ID_G80 / ArchitectureImplementationG80 {
+        NV_GPU_ARCH_IMPLEMENTATION_G84 / G84 = 0x00000004,
+        NV_GPU_ARCH_IMPLEMENTATION_G86 / G86 = 0x00000006,
+    }
+}
+nvenum_display! {
+    ArchitectureImplementationG80 => _
+}
+
+nvenum! {
+    pub enum NV_GPU_ARCH_IMPLEMENTATION_ID_G90 / ArchitectureImplementationG90 {
+        NV_GPU_ARCH_IMPLEMENTATION_G92 / G92 = 0x00000002,
+        NV_GPU_ARCH_IMPLEMENTATION_G94 / G94 = 0x00000004,
+        NV_GPU_ARCH_IMPLEMENTATION_G96 / G96 = 0x00000006,
+        NV_GPU_ARCH_IMPLEMENTATION_G98 / G98 = 0x00000008,
+    }
+}
+nvenum_display! {
+    ArchitectureImplementationG90 => _
+}
+
+nvenum! {
+    pub enum NV_GPU_ARCH_IMPLEMENTATION_ID_GT200 / ArchitectureImplementationGT200 {
+        NV_GPU_ARCH_IMPLEMENTATION_GT200 / GT200 = 0x00000000,
+        NV_GPU_ARCH_IMPLEMENTATION_GT212 / GT212 = 0x00000002,
+        NV_GPU_ARCH_IMPLEMENTATION_GT214 / GT214 = 0x00000004,
+        NV_GPU_ARCH_IMPLEMENTATION_GT215 / GT215 = 0x00000003,
+        NV_GPU_ARCH_IMPLEMENTATION_GT216 / GT216 = 0x00000005,
+        NV_GPU_ARCH_IMPLEMENTATION_GT218 / GT218 = 0x00000008,
+        NV_GPU_ARCH_IMPLEMENTATION_MCP77 / MCP77 = 0x0000000A,
+        NV_GPU_ARCH_IMPLEMENTATION_GT21C / GT21C = 0x0000000B,
+        NV_GPU_ARCH_IMPLEMENTATION_MCP79 / MCP79 = 0x0000000C,
+        NV_GPU_ARCH_IMPLEMENTATION_GT21A / GT21A = 0x0000000D,
+        NV_GPU_ARCH_IMPLEMENTATION_MCP89 / MCP89 = 0x0000000F,
+    }
+}
+nvenum_display! {
+    ArchitectureImplementationGT200 => _
+}
+
+nvenum! {
+    pub enum NV_GPU_ARCH_IMPLEMENTATION_ID_GF100 / ArchitectureImplementationGF100 {
+        NV_GPU_ARCH_IMPLEMENTATION_GF100 / GF100 = 0x00000000,
+        NV_GPU_ARCH_IMPLEMENTATION_GF104 / GF104 = 0x00000004,
+        NV_GPU_ARCH_IMPLEMENTATION_GF106 / GF106 = 0x00000003,
+        NV_GPU_ARCH_IMPLEMENTATION_GF108 / GF108 = 0x00000001,
+    }
+}
+nvenum_display! {
+    ArchitectureImplementationGF100 => _
+}
+
+nvenum! {
+    pub enum NV_GPU_ARCH_IMPLEMENTATION_ID_GF110 / ArchitectureImplementationGF110 {
+        NV_GPU_ARCH_IMPLEMENTATION_GF110 / GF110 = 0x00000000,
+        NV_GPU_ARCH_IMPLEMENTATION_GF116 / GF116 = 0x00000006,
+        NV_GPU_ARCH_IMPLEMENTATION_GF117 / GF117 = 0x00000007,
+        NV_GPU_ARCH_IMPLEMENTATION_GF118 / GF118 = 0x00000008,
+        NV_GPU_ARCH_IMPLEMENTATION_GF119 / GF119 = 0x00000009,
+    }
+}
+nvenum_display! {
+    ArchitectureImplementationGF110 => _
+}
+
+nvenum! {
+    pub enum NV_GPU_ARCH_IMPLEMENTATION_ID_GK100 / ArchitectureImplementationGK100 {
+        NV_GPU_ARCH_IMPLEMENTATION_GK104 / GK104 = 0x00000004,
+        NV_GPU_ARCH_IMPLEMENTATION_GK106 / GK106 = 0x00000006,
+        NV_GPU_ARCH_IMPLEMENTATION_GK107 / GK107 = 0x00000007,
+        NV_GPU_ARCH_IMPLEMENTATION_GK20A / GK20A = 0x0000000A,
+    }
+}
+nvenum_display! {
+    ArchitectureImplementationGK100 => _
+}
+
+nvenum! {
+    pub enum NV_GPU_ARCH_IMPLEMENTATION_ID_GK110 / ArchitectureImplementationGK110 {
+        NV_GPU_ARCH_IMPLEMENTATION_GK110 / GK110 = 0x00000000,
+    }
+}
+nvenum_display! {
+    ArchitectureImplementationGK110 => _
+}
+
+nvenum! {
+    pub enum NV_GPU_ARCH_IMPLEMENTATION_ID_GK200 / ArchitectureImplementationGK200 {
+        NV_GPU_ARCH_IMPLEMENTATION_GK208 / GK208 = 0x00000008,
+    }
+}
+nvenum_display! {
+    ArchitectureImplementationGK200 => _
+}
+
+nvenum! {
+    pub enum NV_GPU_ARCH_IMPLEMENTATION_ID_GM200 / ArchitectureImplementationGM200 {
+        NV_GPU_ARCH_IMPLEMENTATION_GM204 / GM204 = 0x00000004,
+        NV_GPU_ARCH_IMPLEMENTATION_GM206 / GM206 = 0x00000006,
+    }
+}
+nvenum_display! {
+    ArchitectureImplementationGM200 => _
+}
+
+nvenum! {
+    pub enum NV_GPU_ARCH_IMPLEMENTATION_ID_GP100 / ArchitectureImplementationGP100 {
+        NV_GPU_ARCH_IMPLEMENTATION_GP100 / GP100 = 0x00000000,
+        NV_GPU_ARCH_IMPLEMENTATION_GP000 / GP000 = 0x00000001,
+        NV_GPU_ARCH_IMPLEMENTATION_GP102 / GP102 = 0x00000002,
+        NV_GPU_ARCH_IMPLEMENTATION_GP104 / GP104 = 0x00000004,
+        NV_GPU_ARCH_IMPLEMENTATION_GP106 / GP106 = 0x00000006,
+        NV_GPU_ARCH_IMPLEMENTATION_GP107 / GP107 = 0x00000007,
+        NV_GPU_ARCH_IMPLEMENTATION_GP108 / GP108 = 0x00000008,
+    }
+}
+nvenum_display! {
+    ArchitectureImplementationGP100 => _
+}
+
+nvenum! {
+    pub enum NV_GPU_ARCH_IMPLEMENTATION_ID_GV100 / ArchitectureImplementationGV100 {
+        NV_GPU_ARCH_IMPLEMENTATION_GV100 / GV100 = 0x00000000,
+        NV_GPU_ARCH_IMPLEMENTATION_GV10B / GV10B = 0x0000000B,
+    }
+}
+nvenum_display! {
+    ArchitectureImplementationGV100 => _
+}
+
+nvenum! {
+    pub enum NV_GPU_ARCH_IMPLEMENTATION_ID_TU100 / ArchitectureImplementationTU100 {
+        NV_GPU_ARCH_IMPLEMENTATION_TU100 / TU100 = 0x00000000,
+        NV_GPU_ARCH_IMPLEMENTATION_TU102 / TU102 = 0x00000002,
+        NV_GPU_ARCH_IMPLEMENTATION_TU104 / TU104 = 0x00000004,
+        NV_GPU_ARCH_IMPLEMENTATION_TU106 / TU106 = 0x00000006,
+        NV_GPU_ARCH_IMPLEMENTATION_TU116 / TU116 = 0x00000008,
+        NV_GPU_ARCH_IMPLEMENTATION_TU117 / TU117 = 0x00000007,
+        NV_GPU_ARCH_IMPLEMENTATION_TU000 / TU000 = 0x00000001,
+    }
+}
+nvenum_display! {
+    ArchitectureImplementationTU100 => _
+}
+
+nvenum! {
+    pub enum NV_GPU_ARCH_IMPLEMENTATION_ID_GA100 / ArchitectureImplementationGA100 {
+        NV_GPU_ARCH_IMPLEMENTATION_GA100 / GA100 = 0x00000000,
+        NV_GPU_ARCH_IMPLEMENTATION_GA102 / GA102 = 0x00000002,
+        NV_GPU_ARCH_IMPLEMENTATION_GA104 / GA104 = 0x00000004,
+    }
+}
+nvenum_display! {
+    ArchitectureImplementationGA100 => _
+}
+
+pub type NV_GPU_ARCH_IMPLEMENTATION_ID = NV_GPU_ARCH_IMPLEMENTATION_ID_GA100;
+
+nvenum! {
+    pub enum NV_GPU_CHIP_REVISION / ChipRevision {
+        /// QT chip
+        NV_GPU_CHIP_REV_EMULATION_QT / QT = 0x00000000,
+        /// FPGA implementation of the chipset
+        NV_GPU_CHIP_REV_EMULATION_FPGA / FPGA = 0x00000001,
+        /// First silicon chipset revision
+        NV_GPU_CHIP_REV_A01 / A01 = 0x00000011,
+        /// Second Silicon chipset revision
+        NV_GPU_CHIP_REV_A02 / A02 = 0x00000012,
+        /// Third Silicon chipset revision
+        NV_GPU_CHIP_REV_A03 / A03 = 0x00000013,
+        /// Unknown chip revision
+        NV_GPU_CHIP_REV_UNKNOWN / Unknown = 0xffffffff,
+    }
+}
+
+nvenum_display! {
+    ChipRevision => _
+}
+
+impl Default for ChipRevision {
+    fn default() -> Self {
+        ChipRevision::Unknown
+    }
+}
+
 /// Undocumented API
 pub mod private {
     use crate::status::NvAPI_Status;

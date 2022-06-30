@@ -93,10 +93,12 @@ macro_rules! nvenum {
         pub type $enum = ::std::os::raw::c_int;
         $(
             $(#[$metai])*
+            #[allow(overflowing_literals)]
             pub const $symbol: $enum = $value as _;
         )*
 
         $(#[$meta])*
+        #[allow(overflowing_literals)]
         #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
         #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
         #[repr(i32)]
@@ -108,6 +110,7 @@ macro_rules! nvenum {
         }
 
         impl $enum_name {
+            #[allow(overflowing_literals)]
             pub fn from_raw(raw: $enum) -> ::std::result::Result<Self, crate::ArgumentRangeError> {
                 match raw {
                     $(

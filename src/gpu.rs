@@ -15,7 +15,7 @@ pub struct PhysicalGpu(sys::handles::NvPhysicalGpuHandle);
 
 unsafe impl Send for PhysicalGpu { }
 
-pub use sys::gpu::{SystemType, PerformanceDecreaseReason};
+pub use sys::gpu::{SystemType, PerformanceDecreaseReason, ArchitectureId, ChipRevision};
 pub use sys::gpu::private::{RamType, RamMaker, Foundry, VendorId as Vendor};
 pub use sys::gpu::clock::ClockFrequencyType;
 pub use sys::gpu::display::{ConnectedIdsFlags, DisplayIdsFlags, MonitorConnectorType};
@@ -172,6 +172,14 @@ impl PhysicalGpu {
 
         unsafe {
             nvcall!(NvAPI_GPU_GetMemoryInfo@get(self.0) => raw)
+        }
+    }
+
+    pub fn architecture(&self) -> crate::NvapiResult<ArchInfo> {
+        trace!("gpu.architecture()");
+
+        unsafe {
+            nvcall!(NvAPI_GPU_GetArchInfo@get(self.0) => raw)
         }
     }
 
@@ -760,6 +768,204 @@ impl RawConversion for display::NV_GPU_DISPLAYIDS {
             connector: MonitorConnectorType::from_raw(self.connectorType)?,
             display_id: self.displayId,
             flags: DisplayIdsFlags::from_bits_truncate(self.flags),
+        })
+    }
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub enum Architecture {
+    T2X(sys::gpu::ArchitectureImplementationT2X),
+    T3X(sys::gpu::ArchitectureImplementationT3X),
+    NV40(sys::gpu::ArchitectureImplementationNV40),
+    NV50(sys::gpu::ArchitectureImplementationNV50),
+    G78(sys::gpu::NV_GPU_ARCH_IMPLEMENTATION_ID),
+    G80(sys::gpu::ArchitectureImplementationG80),
+    G90(sys::gpu::ArchitectureImplementationG90),
+    GT200(sys::gpu::ArchitectureImplementationGT200),
+    GF100(sys::gpu::ArchitectureImplementationGF100),
+    GK100(sys::gpu::ArchitectureImplementationGK100),
+    GK110(sys::gpu::ArchitectureImplementationGK110),
+    GK200(sys::gpu::ArchitectureImplementationGK200),
+    GM000(sys::gpu::NV_GPU_ARCH_IMPLEMENTATION_ID),
+    GM200(sys::gpu::ArchitectureImplementationGM200),
+    GP100(sys::gpu::ArchitectureImplementationGP100),
+    GV100(sys::gpu::ArchitectureImplementationGV100),
+    GV110(sys::gpu::NV_GPU_ARCH_IMPLEMENTATION_ID),
+    TU100(sys::gpu::ArchitectureImplementationTU100),
+    GA100(sys::gpu::ArchitectureImplementationGA100),
+    Unknown {
+        id: sys::gpu::NV_GPU_ARCHITECTURE_ID,
+        implementation: sys::gpu::NV_GPU_ARCH_IMPLEMENTATION_ID,
+    },
+}
+
+impl Default for Architecture {
+    fn default() -> Self {
+        Architecture::Unknown {
+            id: 0,
+            implementation: 0,
+        }
+    }
+}
+
+impl Architecture {
+    pub fn new<I: Into<sys::gpu::NV_GPU_ARCH_IMPLEMENTATION_ID>>(id: ArchitectureId, implementation: I) -> Self {
+        Self::from_raw(id.into(), implementation.into())
+    }
+
+    pub fn from_raw(id: sys::gpu::NV_GPU_ARCHITECTURE_ID, implementation: sys::gpu::NV_GPU_ARCH_IMPLEMENTATION_ID) -> Self {
+        Self::from_raw_inner(id, implementation)
+            .unwrap_or_else(|_| Self::Unknown {
+                id,
+                implementation,
+            })
+    }
+
+    fn from_raw_inner(id: sys::gpu::NV_GPU_ARCHITECTURE_ID, implementation: sys::gpu::NV_GPU_ARCH_IMPLEMENTATION_ID) -> Result<Self, sys::ArgumentRangeError> {
+        Ok(match id {
+            sys::gpu::NV_GPU_ARCHITECTURE_T2X => Architecture::T2X(implementation.try_into()?),
+            sys::gpu::NV_GPU_ARCHITECTURE_T3X => Architecture::T3X(implementation.try_into()?),
+            sys::gpu::NV_GPU_ARCHITECTURE_NV40 => Architecture::NV40(implementation.try_into()?),
+            sys::gpu::NV_GPU_ARCHITECTURE_NV50 => Architecture::NV50(implementation.try_into()?),
+            sys::gpu::NV_GPU_ARCHITECTURE_G78 => Architecture::G78(implementation),
+            sys::gpu::NV_GPU_ARCHITECTURE_G80 => Architecture::G80(implementation.try_into()?),
+            sys::gpu::NV_GPU_ARCHITECTURE_G90 => Architecture::G90(implementation.try_into()?),
+            sys::gpu::NV_GPU_ARCHITECTURE_GT200 => Architecture::GT200(implementation.try_into()?),
+            sys::gpu::NV_GPU_ARCHITECTURE_GF100 => Architecture::GF100(implementation.try_into()?),
+            sys::gpu::NV_GPU_ARCHITECTURE_GK100 => Architecture::GK100(implementation.try_into()?),
+            sys::gpu::NV_GPU_ARCHITECTURE_GK110 => Architecture::GK110(implementation.try_into()?),
+            sys::gpu::NV_GPU_ARCHITECTURE_GK200 => Architecture::GK200(implementation.try_into()?),
+            sys::gpu::NV_GPU_ARCHITECTURE_GM000 => Architecture::GM000(implementation),
+            sys::gpu::NV_GPU_ARCHITECTURE_GM200 => Architecture::GM200(implementation.try_into()?),
+            sys::gpu::NV_GPU_ARCHITECTURE_GP100 => Architecture::GP100(implementation.try_into()?),
+            sys::gpu::NV_GPU_ARCHITECTURE_GV100 => Architecture::GV100(implementation.try_into()?),
+            sys::gpu::NV_GPU_ARCHITECTURE_GV110 => Architecture::GV110(implementation),
+            sys::gpu::NV_GPU_ARCHITECTURE_TU100 => Architecture::TU100(implementation.try_into()?),
+            sys::gpu::NV_GPU_ARCHITECTURE_GA100 => Architecture::GA100(implementation.try_into()?),
+            _ => return Err(Default::default()),
+        })
+    }
+
+    pub fn id(&self) -> Result<ArchitectureId, sys::gpu::NV_GPU_ARCHITECTURE_ID> {
+        Ok(match *self {
+            Architecture::T2X(..) => ArchitectureId::T2X,
+            Architecture::T3X(..) => ArchitectureId::T3X,
+            Architecture::NV40(..) => ArchitectureId::NV40,
+            Architecture::NV50(..) => ArchitectureId::NV50,
+            Architecture::G78(..) => ArchitectureId::G78,
+            Architecture::G80(..) => ArchitectureId::G80,
+            Architecture::G90(..) => ArchitectureId::G90,
+            Architecture::GT200(..) => ArchitectureId::GT200,
+            Architecture::GF100(..) => ArchitectureId::GF100,
+            Architecture::GK100(..) => ArchitectureId::GK100,
+            Architecture::GK110(..) => ArchitectureId::GK110,
+            Architecture::GK200(..) => ArchitectureId::GK200,
+            Architecture::GM000(..) => ArchitectureId::GM000,
+            Architecture::GM200(..) => ArchitectureId::GM200,
+            Architecture::GP100(..) => ArchitectureId::GP100,
+            Architecture::GV100(..) => ArchitectureId::GV100,
+            Architecture::GV110(..) => ArchitectureId::GV110,
+            Architecture::TU100(..) => ArchitectureId::TU100,
+            Architecture::GA100(..) => ArchitectureId::GA100,
+            Architecture::Unknown { id, .. } => return id.try_into().map_err(|_| id),
+        })
+    }
+
+    pub fn raw_id(&self) -> sys::gpu::NV_GPU_ARCHITECTURE_ID {
+        self.id().map(|id| id.into()).unwrap_or_else(|id| id)
+    }
+
+    pub fn raw_implementation(&self) -> sys::gpu::NV_GPU_ARCH_IMPLEMENTATION_ID {
+        match *self {
+            Architecture::T2X(i) => i.into(),
+            Architecture::T3X(i) => i.into(),
+            Architecture::NV40(i) => i.into(),
+            Architecture::NV50(i) => i.into(),
+            Architecture::G78(i) => i,
+            Architecture::G80(i) => i.into(),
+            Architecture::G90(i) => i.into(),
+            Architecture::GT200(i) => i.into(),
+            Architecture::GF100(i) => i.into(),
+            Architecture::GK100(i) => i.into(),
+            Architecture::GK110(i) => i.into(),
+            Architecture::GK200(i) => i.into(),
+            Architecture::GM000(i) => i,
+            Architecture::GM200(i) => i.into(),
+            Architecture::GP100(i) => i.into(),
+            Architecture::GV100(i) => i.into(),
+            Architecture::GV110(i) => i,
+            Architecture::TU100(i) => i.into(),
+            Architecture::GA100(i) => i.into(),
+            Architecture::Unknown { implementation, .. } => implementation,
+        }
+    }
+}
+
+impl fmt::Display for Architecture {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Architecture::T2X(i) => fmt::Display::fmt(i, f),
+            Architecture::T3X(i) => fmt::Display::fmt(i, f),
+            Architecture::NV40(i) => fmt::Display::fmt(i, f),
+            Architecture::NV50(i) => fmt::Display::fmt(i, f),
+            Architecture::G80(i) => fmt::Display::fmt(i, f),
+            Architecture::G90(i) => fmt::Display::fmt(i, f),
+            Architecture::GT200(i) => fmt::Display::fmt(i, f),
+            Architecture::GF100(i) => fmt::Display::fmt(i, f),
+            Architecture::GK100(i) => fmt::Display::fmt(i, f),
+            Architecture::GK110(i) => fmt::Display::fmt(i, f),
+            Architecture::GK200(i) => fmt::Display::fmt(i, f),
+            Architecture::GM200(i) => fmt::Display::fmt(i, f),
+            Architecture::GP100(i) => fmt::Display::fmt(i, f),
+            Architecture::GV100(i) => fmt::Display::fmt(i, f),
+            Architecture::TU100(i) => fmt::Display::fmt(i, f),
+            Architecture::GA100(i) => fmt::Display::fmt(i, f),
+            Architecture::G78(implementation)
+                | Architecture::GM000(implementation)
+                | Architecture::GV110(implementation)
+                | Architecture::Unknown { implementation, .. }
+                => match self.id() {
+                    Ok(ref id) if *implementation == 0 => fmt::Display::fmt(id, f),
+                    Ok(id) => write!(f, "{}:{}", id, implementation),
+                    Err(id) => write!(f, "Unknown:{}:{}", id, implementation),
+                },
+        }
+    }
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Default, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct ArchInfo {
+    pub arch: Architecture,
+    pub revision: sys::gpu::NV_GPU_CHIP_REVISION,
+}
+
+impl ArchInfo {
+    pub fn revision(&self) -> Result<ChipRevision, sys::gpu::NV_GPU_CHIP_REVISION> {
+        self.revision.try_into().map_err(|_| self.revision)
+    }
+}
+
+impl fmt::Display for ArchInfo {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Display::fmt(&self.arch, f)?;
+        match self.revision() {
+            Ok(rev) => write!(f, ":{}", rev),
+            Err(rev) => write!(f, ":{}", rev),
+        }
+    }
+}
+
+impl RawConversion for sys::gpu::NV_GPU_ARCH_INFO_V2 {
+    type Target = ArchInfo;
+    type Error = Infallible;
+
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:?})", self);
+        Ok(ArchInfo {
+            arch: Architecture::from_raw(self.architecture, self.implementation),
+            revision: self.revision,
         })
     }
 }
