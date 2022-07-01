@@ -4,6 +4,7 @@ use crate::sys;
 use crate::types::{Percentage, Celsius, CelsiusShifted, Range, RawConversion};
 
 pub use sys::gpu::thermal::{ThermalController, ThermalTarget};
+pub use sys::gpu::thermal::private::ThermalPolicyId;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Sensor {
@@ -43,21 +44,21 @@ impl RawConversion for thermal::NV_GPU_THERMAL_SETTINGS {
 
 #[derive(Debug, Copy, Clone)]
 pub struct ThermalInfo {
-    pub controller: ThermalController,
+    pub policy: ThermalPolicyId,
     pub unknown: u32,
     pub temperature_range: Range<CelsiusShifted>,
     pub default_temperature: CelsiusShifted,
     pub default_flags: u32,
 }
 
-impl RawConversion for thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_INFO_ENTRY {
+impl RawConversion for thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_INFO_ENTRY_V2 {
     type Target = ThermalInfo;
     type Error = sys::ArgumentRangeError;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
         Ok(ThermalInfo {
-            controller: ThermalController::from_raw(self.controller)?,
+            policy: self.policy_id.try_into()?,
             unknown: self.unknown,
             temperature_range: Range {
                 min: CelsiusShifted(self.minTemp),
@@ -69,47 +70,105 @@ impl RawConversion for thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_INFO_ENT
     }
 }
 
-impl RawConversion for thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_INFO {
+impl RawConversion for thermal::private::NV_GPU_CLIENT_THERMAL_POLICY_INFO_V3 {
+    type Target = ThermalInfo;
+    type Error = sys::ArgumentRangeError;
+
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
+        Ok(ThermalInfo {
+            policy: self.policy_id.try_into()?,
+            unknown: self.unknown,
+            temperature_range: Range {
+                min: CelsiusShifted(self.minTemp),
+                max: CelsiusShifted(self.maxTemp),
+            },
+            default_temperature: CelsiusShifted(self.defaultTemp),
+            default_flags: self.defaultFlags,
+        })
+    }
+}
+
+impl RawConversion for thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V2 {
     type Target = (u32, Vec<ThermalInfo>);
     type Error = sys::ArgumentRangeError;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
-        self.entries[..self.count as usize].iter()
+        self.entries().iter()
             .map(RawConversion::convert_raw)
             .collect::<Result<_, _>>()
             .map(|t| (self.flags as _, t))
     }
 }
 
+impl RawConversion for thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V3 {
+    type Target = (u32, Vec<ThermalInfo>);
+    type Error = sys::ArgumentRangeError;
+
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
+        self.entries().iter()
+            .map(RawConversion::convert_raw)
+            .collect::<Result<_, _>>()
+            .map(|t| (0, t))
+    }
+}
+
 #[derive(Debug, Copy, Clone)]
 pub struct ThermalLimit {
-    pub controller: ThermalController,
+    pub policy: ThermalPolicyId,
     pub value: CelsiusShifted,
     pub flags: u32,
 }
 
-impl RawConversion for thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_ENTRY {
+impl RawConversion for thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_ENTRY_V2 {
     type Target = ThermalLimit;
     type Error = sys::ArgumentRangeError;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
         Ok(ThermalLimit {
-            controller: ThermalController::from_raw(self.controller)?,
-            value: CelsiusShifted(self.value as _),
-            flags: self.flags,
+            policy: self.policy_id.try_into()?,
+            value: CelsiusShifted(self.temp_limit_C as _),
+            flags: self.pstate as _,
         })
     }
 }
 
-impl RawConversion for thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_STATUS {
+impl RawConversion for thermal::private::NV_GPU_CLIENT_THERMAL_POLICY_STATUS_V3 {
+    type Target = ThermalLimit;
+    type Error = sys::ArgumentRangeError;
+
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
+        Ok(ThermalLimit {
+            policy: self.policy_id.try_into()?,
+            value: CelsiusShifted(self.temp_limit_C as _),
+            flags: 0,
+        })
+    }
+}
+
+impl RawConversion for thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V2 {
     type Target = Vec<ThermalLimit>;
     type Error = sys::ArgumentRangeError;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
-        self.entries[..self.flags as usize].iter()
+        self.entries().iter()
+            .map(RawConversion::convert_raw)
+            .collect::<Result<_, _>>()
+    }
+}
+
+impl RawConversion for thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V3 {
+    type Target = Vec<ThermalLimit>;
+    type Error = sys::ArgumentRangeError;
+
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
+        self.entries().iter()
             .map(RawConversion::convert_raw)
             .collect::<Result<_, _>>()
     }

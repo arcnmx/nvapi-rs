@@ -579,10 +579,10 @@ impl PhysicalGpu {
         let mut data = thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_STATUS::default();
         for (entry, v) in data.entries.iter_mut().zip(value) {
             trace!("gpu.set_thermal_limit({:?})", v);
-            entry.controller = v.controller.raw();
-            entry.value = v.value.0 as _;
+            entry.policy_id = v.policy.into();
+            entry.temp_limit_C = v.value.0 as _;
             entry.flags = v.flags;
-            data.flags += 1;
+            data.count += 1;
         }
 
         unsafe {
