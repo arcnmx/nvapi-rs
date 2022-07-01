@@ -406,7 +406,7 @@ impl RawConversion for power::private::NV_GPU_CLIENT_VOLT_RAILS_CONTROL_V1 {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct PowerInfoEntry {
-    pub pstate: crate::pstate::PState,
+    pub policy_id: power::private::NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID,
     pub range: Range<Percentage1000>,
     pub default_limit: Percentage1000,
 }
@@ -418,7 +418,7 @@ pub struct PowerInfo {
     pub entries: Vec<PowerInfoEntry>,
 }
 
-impl RawConversion for power::private::NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY {
+impl RawConversion for power::private::NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V1 {
     type Target = PowerInfoEntry;
     type Error = sys::ArgumentRangeError;
 
@@ -426,11 +426,35 @@ impl RawConversion for power::private::NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY {
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
         match *self {
-            power::private::NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY {
-                pstate, b: 0, c: 0, min_power, e: 0, f: 0,
-                def_power, h: 0, i: 0, max_power, k: 0,
+            power::private::NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V1 {
+                policy_id, min_power, def_power, max_power,
+                ..
             } => Ok(PowerInfoEntry {
-                pstate: crate::pstate::PState::from_raw(pstate as _)?,
+                policy_id: policy_id.try_into()?,
+                range: Range {
+                    min: Percentage1000(min_power),
+                    max: Percentage1000(max_power),
+                },
+                default_limit: Percentage1000(def_power),
+            }),
+            _ => Err(sys::ArgumentRangeError),
+        }
+    }
+}
+
+impl RawConversion for power::private::NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V2 {
+    type Target = PowerInfoEntry;
+    type Error = sys::ArgumentRangeError;
+
+    #[allow(non_snake_case)]
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
+        match *self {
+            power::private::NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V2 {
+                policy_id, min_power, def_power, max_power,
+                ..
+            } => Ok(PowerInfoEntry {
+                policy_id: policy_id.try_into()?,
                 range: Range {
                     min: Percentage1000(min_power),
                     max: Percentage1000(max_power),
@@ -451,7 +475,7 @@ impl RawConversion for power::private::NV_GPU_CLIENT_POWER_POLICIES_INFO {
         trace!("convert_raw({:#?})", self);
         Ok(PowerInfo {
             valid: self.valid != 0,
-            entries: self.entries[..self.count as usize].iter().map(RawConversion::convert_raw).collect::<Result<_, _>>()?,
+            entries: self.entries().iter().map(RawConversion::convert_raw).collect::<Result<_, _>>()?,
         })
     }
 }
@@ -483,7 +507,7 @@ impl RawConversion for power::private::NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS {
     }
 }
 
-impl RawConversion for power::private::NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY {
+impl RawConversion for power::private::NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1 {
     type Target = Percentage1000;
     type Error = sys::ArgumentRangeError;
 
@@ -491,9 +515,25 @@ impl RawConversion for power::private::NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
         match *self {
-            power::private::NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY {
-                a: 0, b: 0, power, d: 0,
-            } => Ok(Percentage1000(power)),
+            power::private::NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1 {
+                policy_id, power_target, ..
+            } => Ok(Percentage1000(power_target)),
+            _ => Err(sys::ArgumentRangeError),
+        }
+    }
+}
+
+impl RawConversion for power::private::NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2 {
+    type Target = Percentage1000;
+    type Error = sys::ArgumentRangeError;
+
+    #[allow(non_snake_case)]
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
+        match *self {
+            power::private::NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2 {
+                policy_id, power_target, ..
+            } => Ok(Percentage1000(power_target)),
             _ => Err(sys::ArgumentRangeError),
         }
     }

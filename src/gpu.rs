@@ -541,7 +541,7 @@ impl PhysicalGpu {
         //data.valid = 1;
         for (entry, v) in data.entries.iter_mut().zip(values) {
             trace!("gpu.set_power_limit({:?})", v);
-            entry.power = v.0;
+            entry.power_target = v.0;
             data.count += 1;
         }
 
