@@ -37,6 +37,22 @@ impl fmt::Debug for Celsius {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
+pub struct Rpm(pub u32);
+
+impl fmt::Display for Rpm {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{} RPM", self.0)
+    }
+}
+
+impl fmt::Debug for Rpm {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Display::fmt(self, f)
+    }
+}
+
 /// Nvidia encodes temperature as `<< 8` for some reason sometimes.
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]

@@ -159,13 +159,21 @@ pub mod private {
     nvstruct! {
         pub struct NV_GPU_CLIENT_THERMAL_POLICY_INFO_V3 {
             pub policy_id: NV_GPU_CLIENT_THERMAL_POLICIES_POLICY_ID,
-            pub editable: BoolU32,
+            pub flags: u32,
             pub unknown: u32,
             pub minTemp: i32,
             pub defaultTemp: i32,
             pub maxTemp: i32,
             pub defaultFlags: u32,
-            pub padding: Padding<[u32; 348/4 - 7]>,
+            pub padding0: Padding<[u32; 16]>,
+            pub pff_curve: NV_GPU_CLIENT_PFF_CURVE_V1,
+            pub padding1: Padding<[u32; 49]>,
+        }
+    }
+
+    impl NV_GPU_CLIENT_THERMAL_POLICY_INFO_V3 {
+        pub fn has_pff(&self) -> bool {
+            self.flags == 1
         }
     }
 
@@ -227,13 +235,36 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_CLIENT_THERMAL_POLICY_STATUS_V3 {
             pub policy_id: NV_GPU_CLIENT_THERMAL_POLICIES_POLICY_ID,
-            pub editable: BoolU32,
+            pub flags: u32,
             /// shifted 8 bits
+            ///
+            /// aka iT0X
             pub temp_limit_C: u32,
-            pub bRemoveTdpLimit: BoolU32,
-            pub padding: Padding<[u32; 336/4 - 4]>,
+            /// aka bRemoveTdpLimit
+            pub remove_tdp_limit: BoolU32,
+            pub padding0: Padding<[u32; 17]>,
+            pub pff_curve: NV_GPU_CLIENT_PFF_CURVE_V1, // 92-8
+            /// aka uiT{1,2,3}OCY
+            pub pff_freqs: [u32; 3], // 152-8 ~ 160-8
+            pub padding1: Padding<[u32; 45]>,
+        }
+    }
+
+    impl NV_GPU_CLIENT_THERMAL_POLICY_STATUS_V3 {
+        pub fn has_pff(&self) -> bool {
+            self.flags == 1
+        }
+
+        pub fn set_pff(&mut self, enabled: bool) {
+            self.flags = if enabled { 1 } else { 0 }
+        }
+
+        pub fn pff_freqs(&self) -> &[u32] {
+            let count = self.pff_curve.points().len();
+            &self.pff_freqs[..count]
         }
     }
 
@@ -263,5 +294,31 @@ pub mod private {
 
     nvapi! {
         pub unsafe fn NvAPI_GPU_ClientThermalPoliciesSetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pThermalLimit: *const NV_GPU_CLIENT_THERMAL_POLICIES_STATUS) -> NvAPI_Status;
+    }
+
+    nvstruct! {
+        #[derive(Default)]
+        pub struct NV_GPU_CLIENT_PFF_CURVE_POINT_V1 {
+            pub enabled: BoolU32,
+            /// uiT{1,2,3}Y
+            pub uiT_Y: u32,
+            /// iT{1,2,3}X
+            pub temp: u32,
+            pub padding: Padding<[u32; 2]>,
+        }
+    }
+
+    nvstruct! {
+        #[derive(Default)]
+        pub struct NV_GPU_CLIENT_PFF_CURVE_V1 {
+            pub points: [NV_GPU_CLIENT_PFF_CURVE_POINT_V1; 3],
+        }
+    }
+
+    impl NV_GPU_CLIENT_PFF_CURVE_V1 {
+        pub fn points(&self) -> &[NV_GPU_CLIENT_PFF_CURVE_POINT_V1] {
+            let count = self.points.iter().take_while(|p| p.enabled.get()).count();
+            &self.points[..count]
+        }
     }
 }

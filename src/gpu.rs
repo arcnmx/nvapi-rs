@@ -1,12 +1,12 @@
 use std::{ptr, fmt};
 use std::convert::Infallible;
+use std::collections::BTreeMap;
 use log::trace;
 #[cfg(feature = "serde")]
 use serde::{Serialize, Deserialize};
 use crate::sys::gpu::{pstate, clock, power, cooler, thermal, display, ecc};
 use crate::sys::{self, driverapi, i2c};
 use crate::types::{Kibibytes, KilohertzDelta, Kilohertz2Delta, Microvolts, Percentage, Percentage1000, RawConversion};
-use crate::thermal::CoolerLevel;
 use crate::clock::{ClockDomain, ClockDomainInfo, VfpMask};
 use crate::pstate::PState;
 
@@ -333,7 +333,6 @@ impl PhysicalGpu {
 
     pub fn set_pstates<I: Iterator<Item=(PState, ClockDomain, KilohertzDelta)>>(&self, deltas: I) -> crate::NvapiResult<()> {
         trace!("gpu.set_pstates()");
-        use std::collections::BTreeMap;
 
         let mut info = pstate::NV_GPU_PERF_PSTATES20_INFO::default();
 
@@ -574,14 +573,12 @@ impl PhysicalGpu {
         }
     }
 
-    pub fn set_thermal_limit<I: Iterator<Item=crate::thermal::ThermalLimit>>(&self, value: I) -> crate::NvapiResult<()> {
+    pub fn set_thermal_limit<I: IntoIterator<Item=crate::thermal::ThermalLimit>>(&self, value: I) -> crate::NvapiResult<()> {
         trace!("gpu.set_thermal_limit()");
         let mut data = thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_STATUS::default();
         for (entry, v) in data.entries.iter_mut().zip(value) {
             trace!("gpu.set_thermal_limit({:?})", v);
-            entry.policy_id = v.policy.into();
-            entry.temp_limit_C = v.value.0 as _;
-            entry.flags = v.flags;
+            *entry = v.to_raw();
             data.count += 1;
         }
 
@@ -590,25 +587,138 @@ impl PhysicalGpu {
         }
     }
 
-    pub fn cooler_settings(&self, index: Option<u32>) -> crate::Result<<cooler::private::NV_GPU_GETCOOLER_SETTINGS as RawConversion>::Target> {
-        trace!("gpu.cooler_settings({:?})", index);
+    pub fn cooler_info(&self) -> crate::Result<BTreeMap<crate::thermal::FanCoolerId, crate::thermal::CoolerInfo>> {
+        trace!("gpu.cooler_info()");
 
+        let res = unsafe {
+            nvcall!(NvAPI_GPU_ClientFanCoolersGetInfo@get(self.0) => raw)
+        };
+
+        match res {
+            Err(crate::Error::Nvapi(crate::NvapiError { status: crate::Status::NotSupported, .. })) => (),
+            res => return res,
+        }
+
+        self.cooler_settings_().map(|c| c.into_iter()
+            .map(|(i, c)| (i, c.info)).collect()
+        )
+    }
+
+    pub fn cooler_status(&self) -> crate::Result<BTreeMap<crate::thermal::FanCoolerId, crate::thermal::CoolerStatus>> {
+        trace!("gpu.cooler_status()");
+
+        let res = unsafe {
+            nvcall!(NvAPI_GPU_ClientFanCoolersGetStatus@get(self.0) => raw)
+        };
+
+        match res {
+            Err(crate::Error::Nvapi(crate::NvapiError { status: crate::Status::NotSupported, .. })) => (),
+            res => return res,
+        }
+
+        self.cooler_settings_().map(|c| c.into_iter()
+            .map(|(i, c)| (i, c.status)).collect()
+        )
+    }
+
+    pub fn cooler_control(&self) -> crate::Result<BTreeMap<crate::thermal::FanCoolerId, crate::thermal::CoolerSettings>> {
+        trace!("gpu.cooler_status()");
+
+        let res = unsafe {
+            nvcall!(NvAPI_GPU_ClientFanCoolersGetControl@get(self.0) => raw)
+        };
+
+        match res {
+            Err(crate::Error::Nvapi(crate::NvapiError { status: crate::Status::NotSupported, .. })) => (),
+            res => return res,
+        }
+
+        self.cooler_settings_().map(|c| c.into_iter()
+            .map(|(i, c)| (i, c.control)).collect()
+        )
+    }
+
+    pub fn getcooler_settings(&self, index: Option<u32>) -> crate::Result<Vec<crate::thermal::Cooler>> {
+        trace!("gpu.getcooler_settings({:?})", index);
+
+        let index = match index {
+            Some(index) => index,
+            None if <cooler::private::NV_GPU_GETCOOLER_SETTINGS as sys::nvapi::StructVersion>::NVAPI_VERSION.version() < 4 =>
+                cooler::private::NVAPI_COOLER_TARGET_ALL as _,
+            None => 0,
+        };
         unsafe {
-            nvcall!(NvAPI_GPU_GetCoolerSettings@get(self.0, index.unwrap_or(cooler::private::NVAPI_COOLER_TARGET_ALL as _)) => raw)
+            nvcall!(NvAPI_GPU_GetCoolerSettings@get(self.0, index) => raw)
         }
     }
 
-    pub fn set_cooler_levels<I: Iterator<Item=CoolerLevel>>(&self, index: Option<u32>, values: I) -> crate::NvapiResult<()> {
+    fn cooler_settings_(&self) -> crate::Result<BTreeMap<crate::thermal::FanCoolerId, crate::thermal::Cooler>> {
+        self.getcooler_settings(None).and_then(|c| c.into_iter().enumerate()
+            .map(|(i, c)| (i as i32 + 1).try_into().map_err(Into::into)
+                .map(|i| (i, c))
+            )
+            .collect()
+        )
+    }
+
+    pub fn cooler_settings(&self) -> crate::Result<BTreeMap<crate::thermal::FanCoolerId, crate::thermal::Cooler>> {
+        match self.cooler_settings_() {
+            Err(crate::Error::Nvapi(crate::NvapiError { status: crate::Status::NotSupported, .. })) => (),
+            res => return res,
+        }
+
+        self.cooler_info()?.into_iter()
+            .zip(self.cooler_status()?.into_iter())
+            .zip(self.cooler_control()?.into_iter())
+            .map(|(((id, info), (ids, status)), (idc, control))| match id {
+                id if id == ids && id == idc => Ok((id, crate::thermal::Cooler {
+                    info,
+                    status,
+                    control,
+                    unknown: 0,
+                })),
+                _ => Err(sys::ArgumentRangeError.into()),
+            }).collect()
+    }
+
+    #[deprecated]
+    pub fn set_cooler_levels<I: IntoIterator<Item=crate::thermal::CoolerSettings>>(&self, index: Option<u32>, values: I) -> crate::NvapiResult<()> {
         trace!("gpu.set_cooler_levels({:?})", index);
         let mut data = cooler::private::NV_GPU_SETCOOLER_LEVEL::default();
         for (entry, level) in data.cooler.iter_mut().zip(values) {
             trace!("gpu.set_cooler_level({:?})", level);
-            entry.currentLevel = level.level.0;
+            entry.currentLevel = level.level.unwrap_or_default().0;
             entry.currentPolicy = level.policy.raw();
         }
 
         unsafe {
             nvcall!(NvAPI_GPU_SetCoolerLevels(self.0, index.unwrap_or(cooler::private::NVAPI_COOLER_TARGET_ALL as _), &data))
+        }
+    }
+
+    pub fn set_cooler<I: IntoIterator<Item=(crate::thermal::FanCoolerId, crate::thermal::CoolerSettings)>>(&self, values: I) -> crate::NvapiResult<()> {
+        trace!("gpu.set_cooler()");
+        let mut backup = cooler::private::NV_GPU_SETCOOLER_LEVEL::default();
+        let mut data = cooler::private::NV_GPU_CLIENT_FAN_COOLERS_CONTROL::default();
+
+        for (entry, (backup_entry, (id, settings))) in data.coolers.iter_mut().zip(backup.cooler.iter_mut().zip(values)) {
+            trace!("gpu.set_cooler({:?})", settings);
+            *entry = settings.to_raw(id);
+            data.count += 1;
+
+            backup_entry.currentLevel = settings.level.unwrap_or_default().0;
+            backup_entry.currentPolicy = settings.policy.raw();
+        }
+
+        let res = unsafe {
+            nvcall!(NvAPI_GPU_ClientFanCoolersSetControl(self.0, &data))
+        };
+
+        match res {
+            Err(crate::NvapiError { status: crate::Status::NotSupported, .. }) => unsafe {
+                nvcall!(NvAPI_GPU_SetCoolerLevels(self.0, cooler::private::NVAPI_COOLER_TARGET_ALL as _, &backup))
+            },
+            res => res,
         }
     }
 

@@ -15,6 +15,9 @@ pub mod private {
     pub const NVAPI_MAX_COOLER_LEVEL: usize = 100;
     pub const NVAPI_MAX_COOLER_LEVELS: usize = 24;
     pub const NVAPI_MAX_COOLERS_PER_GPU: usize = 3;
+    pub const NVAPI_MAX_COOLERS_PER_GPU_VER2: usize = 20;
+    pub const NVAPI_MAX_COOLERS_PER_GPU_VER3: usize = NVAPI_MAX_COOLERS_PER_GPU_VER2;
+    pub const NVAPI_MAX_COOLERS_PER_GPU_VER4: usize = NVAPI_MAX_COOLERS_PER_GPU_VER3;
 
     nvenum! {
         pub enum NV_COOLER_TYPE / CoolerType {
@@ -55,17 +58,17 @@ pub mod private {
             /// Hybrid of performance and temperature levels.
             NVAPI_COOLER_POLICY_HYBRID / Hybrid = 9, // are you sure this isn't just a bitmask?
             /// Fan turns off at idle, default of MSI Gaming X
-            NVAPI_COOLER_POLICY_SILENT / Silent = 16,
+            NVAPI_COOLER_POLICY_TEMPERATURE_CONTINUOUS_SW / TemperatureContinuousSoftware = 16,
             /// Apparently a default of some GPUs
-            NVAPI_COOLER_POLICY_UNKNOWN_32 / Unknown32 = 32,
+            NVAPI_COOLER_POLICY_DEFAULT / Default = 32,
         }
     }
 
     nvenum_display! {
         CoolerPolicy => {
-            TemperatureDiscrete = "Discrete Thermal",
-            TemperatureContinuous = "Continuous Thermal",
-            Silent = "Silent",
+            TemperatureDiscrete = "Thermal (Discrete)",
+            TemperatureContinuous = "Thermal",
+            TemperatureContinuousSoftware = "Thermal (Silent)",
             _ = _,
         }
     }
@@ -120,7 +123,7 @@ pub mod private {
     }
 
     nvstruct! {
-        pub struct NV_GPU_GETCOOLER_SETTINGS_COOLER {
+        pub struct NV_GPU_GETCOOLER_SETTING_V1 {
             /// type of cooler - FAN, WATER, LIQUID_NO2...
             pub type_: NV_COOLER_TYPE,
             /// internal, ADI...
@@ -152,16 +155,84 @@ pub mod private {
         pub struct NV_GPU_GETCOOLER_SETTINGS_V1 {
             pub version: NvVersion,
             pub count: u32,
-            pub cooler: [NV_GPU_GETCOOLER_SETTINGS_COOLER; NVAPI_MAX_COOLERS_PER_GPU],
+            pub cooler: [NV_GPU_GETCOOLER_SETTING_V1; NVAPI_MAX_COOLERS_PER_GPU],
         }
     }
 
-    const NV_GPU_COOLER_SETTINGS_COOLER_SIZE: usize = 4 * 12;
+    impl NV_GPU_GETCOOLER_SETTINGS_V1 {
+        pub fn coolers(&self) -> &[NV_GPU_GETCOOLER_SETTING_V1] {
+            &self.cooler[..self.count as usize]
+        }
+    }
+
+    nvstruct! {
+        pub struct NV_COOLER_TACHOMETER {
+            /// current tachometer reading in RPM
+            pub speedRPM: u32,
+            /// cooler supports tach function?
+            pub bSupported: BoolU32,
+            /// Maximum RPM corresponding to 100% defaultMaxLevel
+            pub maxSpeedRPM: u32,
+            /// Minimum RPM corresponding to 100% defaultMinLevel
+            pub minSpeedRPM: u32,
+        }
+    }
+
+    nvstruct! {
+        pub struct NV_GPU_GETCOOLER_SETTING_V3 {
+            pub v1: NV_GPU_GETCOOLER_SETTING_V1,
+            /// cooler tachometer info
+            pub tachometer: NV_COOLER_TACHOMETER,
+        }
+    }
+
+    nvinherit! { struct NV_GPU_GETCOOLER_SETTING_V3(v1: NV_GPU_GETCOOLER_SETTING_V1) }
+
+    nvstruct! {
+        pub struct NV_GPU_GETCOOLER_SETTINGS_V3 {
+            /// structure version
+            pub version: NvVersion,
+            /// number of associated coolers with the selected GPU
+            pub count: u32,
+            pub cooler: [NV_GPU_GETCOOLER_SETTING_V3; NVAPI_MAX_COOLERS_PER_GPU_VER3],
+        }
+    }
+
+    impl NV_GPU_GETCOOLER_SETTINGS_V3 {
+        pub fn coolers(&self) -> &[NV_GPU_GETCOOLER_SETTING_V3] {
+            &self.cooler[..self.count as usize]
+        }
+    }
+
+    nvstruct! {
+        pub struct NV_GPU_GETCOOLER_SETTING_V4 {
+            pub v3: NV_GPU_GETCOOLER_SETTING_V3,
+            pub unknown: u32,
+        }
+    }
+
+    nvinherit! { struct NV_GPU_GETCOOLER_SETTING_V4(v3: NV_GPU_GETCOOLER_SETTING_V3) }
+
+    nvstruct! {
+        pub struct NV_GPU_GETCOOLER_SETTINGS_V4 {
+            pub version: NvVersion,
+            pub count: u32,
+            pub cooler: [NV_GPU_GETCOOLER_SETTING_V4; NVAPI_MAX_COOLERS_PER_GPU_VER4],
+        }
+    }
+
+    impl NV_GPU_GETCOOLER_SETTINGS_V4 {
+        pub fn coolers(&self) -> &[NV_GPU_GETCOOLER_SETTING_V4] {
+            &self.cooler[..self.count as usize]
+        }
+    }
 
     nvversion! { NV_GPU_GETCOOLER_SETTINGS_VER_1(NV_GPU_GETCOOLER_SETTINGS_V1 = 152, 1) }
-    nvversion! { NV_GPU_GETCOOLER_SETTINGS_VER = NV_GPU_GETCOOLER_SETTINGS_VER_1 }
+    nvversion! { NV_GPU_GETCOOLER_SETTINGS_VER_3(NV_GPU_GETCOOLER_SETTINGS_V3 = 1288, 3) }
+    nvversion! { NV_GPU_GETCOOLER_SETTINGS_VER_4(NV_GPU_GETCOOLER_SETTINGS_V4 = 1368, 4) }
+    nvversion! { NV_GPU_GETCOOLER_SETTINGS_VER = NV_GPU_GETCOOLER_SETTINGS_VER_4 }
 
-    pub type NV_GPU_GETCOOLER_SETTINGS = NV_GPU_GETCOOLER_SETTINGS_V1;
+    pub type NV_GPU_GETCOOLER_SETTINGS = NV_GPU_GETCOOLER_SETTINGS_V4;
 
     nvapi! {
         pub type GPU_GetCoolerSettingsFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolerIndex: u32, pCoolerInfo: *mut NV_GPU_GETCOOLER_SETTINGS) -> NvAPI_Status;
@@ -400,5 +471,160 @@ pub mod private {
         pub type GPU_ClientFanArbitersSetControlFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, arbiter: *const NV_GPU_CLIENT_FAN_ARBITERS_CONTROL) -> NvAPI_Status;
 
         pub unsafe fn NvAPI_GPU_ClientFanArbitersSetControl;
+    }
+
+    nvenum! {
+        pub enum NV_GPU_CLIENT_FAN_COOLERS_COOLER_ID / FanCoolerId {
+            NV_GPU_CLIENT_FAN_COOLERS_COOLER_ID_NONE / None = 0,
+            NV_GPU_CLIENT_FAN_COOLERS_COOLER_ID_1 / Cooler1 = 1,
+            NV_GPU_CLIENT_FAN_COOLERS_COOLER_ID_2 / Cooler2 = 2,
+        }
+    }
+
+    nvenum_display! {
+        FanCoolerId => {
+            Cooler1 = "Fan1",
+            Cooler2 = "Fan2",
+            _ = _,
+        }
+    }
+
+    nvstruct! {
+        pub struct NV_GPU_CLIENT_FAN_COOLER_INFO_V1 {
+            pub cooler_id: NV_GPU_CLIENT_FAN_COOLERS_COOLER_ID,
+            pub tach_supported: BoolU32,
+            pub tach_min_rpm: u32,
+            pub tach_max_rpm: u32,
+            pub padding: Padding<[u32; 8]>,
+        }
+    }
+
+    nvstruct! {
+        pub struct NV_GPU_CLIENT_FAN_COOLERS_INFO_V1 {
+            pub version: NvVersion,
+            pub flags: u32,
+            pub count: u32,
+            pub padding: Padding<[u32; 8]>,
+            pub coolers: [NV_GPU_CLIENT_FAN_COOLER_INFO_V1; 32], // offset 44
+        }
+    }
+
+    impl NV_GPU_CLIENT_FAN_COOLERS_INFO_V1 {
+        pub fn valid(&self) -> bool {
+            self.flags & 1 != 0
+        }
+
+        pub fn coolers(&self) -> &[NV_GPU_CLIENT_FAN_COOLER_INFO_V1] {
+            &self.coolers[..self.count as usize]
+        }
+    }
+
+    nvversion! { NV_GPU_CLIENT_FAN_COOLERS_INFO_VER_1(NV_GPU_CLIENT_FAN_COOLERS_INFO_V1 = 0x62c, 1) }
+    nvversion! { NV_GPU_CLIENT_FAN_COOLERS_INFO_VER = NV_GPU_CLIENT_FAN_COOLERS_INFO_VER_1 }
+
+    pub type NV_GPU_CLIENT_FAN_COOLERS_INFO = NV_GPU_CLIENT_FAN_COOLERS_INFO_V1;
+
+    nvapi! {
+        pub type GPU_ClientFanCoolersGetInfoFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolers: *mut NV_GPU_CLIENT_FAN_COOLERS_INFO) -> NvAPI_Status;
+
+        pub unsafe fn NvAPI_GPU_ClientFanCoolersGetInfo;
+    }
+
+    nvstruct! {
+        pub struct NV_GPU_CLIENT_FAN_COOLER_STATUS_V1 {
+            pub cooler_id: NV_GPU_CLIENT_FAN_COOLERS_COOLER_ID,
+            pub tach_rpm: u32,
+            pub level_minimum: u32,
+            pub level_maximum: u32,
+            pub level: u32,
+            pub padding: Padding<[u32; 8]>,
+        }
+    }
+
+    nvstruct! {
+        pub struct NV_GPU_CLIENT_FAN_COOLERS_STATUS_V1 {
+            pub version: NvVersion,
+            pub count: u32,
+            pub padding: Padding<[u32; 8]>,
+            pub coolers: [NV_GPU_CLIENT_FAN_COOLER_STATUS_V1; 32],
+        }
+    }
+
+    impl NV_GPU_CLIENT_FAN_COOLERS_STATUS_V1 {
+        pub fn coolers(&self) -> &[NV_GPU_CLIENT_FAN_COOLER_STATUS_V1] {
+            &self.coolers[..self.count as usize]
+        }
+    }
+
+    nvversion! { NV_GPU_CLIENT_FAN_COOLERS_STATUS_VER_1(NV_GPU_CLIENT_FAN_COOLERS_STATUS_V1 = 0x6a8, 1) }
+    nvversion! { NV_GPU_CLIENT_FAN_COOLERS_STATUS_VER = NV_GPU_CLIENT_FAN_COOLERS_STATUS_VER_1 }
+
+    pub type NV_GPU_CLIENT_FAN_COOLERS_STATUS = NV_GPU_CLIENT_FAN_COOLERS_STATUS_V1;
+
+    nvapi! {
+        pub type GPU_ClientFanCoolersGetStatusFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolers: *mut NV_GPU_CLIENT_FAN_COOLERS_STATUS) -> NvAPI_Status;
+
+        pub unsafe fn NvAPI_GPU_ClientFanCoolersGetStatus;
+    }
+
+    nvstruct! {
+        #[derive(Default)]
+        pub struct NV_GPU_CLIENT_FAN_COOLER_CONTROL_V1 {
+            pub cooler_id: NV_GPU_CLIENT_FAN_COOLERS_COOLER_ID,
+            pub level: u32,
+            pub flags: u32,
+            pub padding: Padding<[u32; 8]>,
+        }
+    }
+
+    impl NV_GPU_CLIENT_FAN_COOLER_CONTROL_V1 {
+        pub fn manual(&self) -> bool {
+            self.flags & 1 != 0
+        }
+
+        pub fn set_manual(&mut self, manual: bool) {
+            self.flags = self.flags & 0xfffffffe | if manual { 1 } else { 0 }
+        }
+    }
+
+    nvstruct! {
+        pub struct NV_GPU_CLIENT_FAN_COOLERS_CONTROL_V1 {
+            pub version: NvVersion,
+            pub flags: u32,
+            pub count: u32,
+            pub padding: Padding<[u32; 8]>,
+            pub coolers: [NV_GPU_CLIENT_FAN_COOLER_CONTROL_V1; 32],
+        }
+    }
+
+    impl NV_GPU_CLIENT_FAN_COOLERS_CONTROL_V1 {
+        pub fn valid(&self) -> bool {
+            self.flags & 1 != 0
+        }
+
+        pub fn set_valid(&mut self, valid: bool) {
+            self.flags = self.flags & 0xfffffffe | if valid { 1 } else { 0 }
+        }
+
+        pub fn coolers(&self) -> &[NV_GPU_CLIENT_FAN_COOLER_CONTROL_V1] {
+            &self.coolers[..self.count as usize]
+        }
+    }
+
+    nvversion! { NV_GPU_CLIENT_FAN_COOLERS_CONTROL_VER_1(NV_GPU_CLIENT_FAN_COOLERS_CONTROL_V1 = 0x5ac, 1) }
+    nvversion! { NV_GPU_CLIENT_FAN_COOLERS_CONTROL_VER = NV_GPU_CLIENT_FAN_COOLERS_CONTROL_VER_1 }
+
+    pub type NV_GPU_CLIENT_FAN_COOLERS_CONTROL = NV_GPU_CLIENT_FAN_COOLERS_CONTROL_V1;
+
+    nvapi! {
+        pub type GPU_ClientFanCoolersGetControlFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolers: *mut NV_GPU_CLIENT_FAN_COOLERS_CONTROL) -> NvAPI_Status;
+
+        pub unsafe fn NvAPI_GPU_ClientFanCoolersGetControl;
+    }
+
+    nvapi! {
+        pub type GPU_ClientFanCoolersSetControlFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolers: *const NV_GPU_CLIENT_FAN_COOLERS_CONTROL) -> NvAPI_Status;
+
+        pub unsafe fn NvAPI_GPU_ClientFanCoolersSetControl;
     }
 }

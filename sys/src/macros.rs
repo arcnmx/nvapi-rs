@@ -23,7 +23,7 @@ macro_rules! nv_declare_handle {
 
 macro_rules! nvinherit {
     (
-        $v2:ident($id:ident: $v1:ty)
+        struct $v2:ident($id:ident: $v1:ty)
     ) => {
         impl ::std::ops::Deref for $v2 {
             type Target = $v1;
@@ -38,6 +38,11 @@ macro_rules! nvinherit {
                 &mut self.$id
             }
         }
+    };
+    (
+        $v2:ident($id:ident: $v1:ty)
+    ) => {
+        nvinherit! { struct $v2($id: $v1) }
 
         impl crate::nvapi::VersionedStruct for $v2 {
             fn nvapi_version_mut(&mut self) -> &mut crate::nvapi::NvVersion {

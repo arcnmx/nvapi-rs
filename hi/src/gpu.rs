@@ -5,21 +5,23 @@ use once_cell::sync::OnceCell;
 use crate::{allowable_result, allowable_result_fallback};
 
 use nvapi::{self,
-    ClockTable, VfpCurve, VfpEntry, Sensor, Cooler, ThermalInfo, PowerInfoEntry,
+    ClockTable, VfpCurve, VfpEntry, Sensor, ThermalInfo, PowerInfoEntry,
     ClockFrequencyType, ClockEntry,
-    BaseVoltage, PStates, ClockRange, ThermalLimit, VfpInfo,
+    BaseVoltage, PStates, ClockRange, VfpInfo,
+    ThermalLimit, ThermalPolicyId, PffStatus,
 };
 pub use nvapi::{
     PhysicalGpu,
     Vendor, SystemType, GpuType, RamType, RamMaker, Foundry, ArchInfo,
     EccErrors,
     ClockFrequencies, ClockDomain, VoltageDomain, UtilizationDomain, Utilizations, ClockLockMode, ClockLockEntry,
-    CoolerType, CoolerController, CoolerControl, CoolerPolicy, CoolerTarget, CoolerLevel,
+    CoolerType, CoolerController, CoolerControl, CoolerPolicy, CoolerTarget,
+    FanCoolerId, CoolerInfo, CoolerStatus, CoolerSettings,
     VoltageStatus, VoltageTable, PowerTopologyChannelId,
     PerfInfo, PerfStatus,
-    ThermalController, ThermalTarget,
+    ThermalController, ThermalTarget, PffPoint, PffCurve,
     MemoryInfo, PciIdentifiers, BusInfo, Bus, BusType, DriverModel,
-    Percentage, Celsius,
+    Percentage, Celsius, Rpm,
     Range,
     Kibibytes, Microvolts, MicrovoltsDelta, Kilohertz, KilohertzDelta,
     PState,
@@ -56,7 +58,7 @@ pub struct GpuInfo {
     pub base_clocks: ClockFrequencies,
     pub boost_clocks: ClockFrequencies,
     pub sensors: Vec<SensorDesc>,
-    pub coolers: Vec<CoolerDesc>,
+    pub coolers: BTreeMap<FanCoolerId, CoolerInfo>,
     pub perf: PerfInfo,
     pub sensor_limits: Vec<SensorLimit>,
     pub power_limits: Vec<PowerLimit>,
@@ -117,7 +119,7 @@ pub struct GpuStatus {
     pub utilization: Utilizations,
     pub power: BTreeMap<PowerTopologyChannelId, Percentage>,
     pub sensors: Vec<(SensorDesc, Celsius)>,
-    pub coolers: Vec<(CoolerDesc, CoolerStatus)>,
+    pub coolers: BTreeMap<FanCoolerId, CoolerStatus>,
     pub perf: PerfStatus,
     pub vfp: Option<VfpTable>,
     pub vfp_locks: BTreeMap<usize, Microvolts>,
@@ -127,9 +129,9 @@ pub struct GpuStatus {
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct GpuSettings {
     pub voltage_boost: Option<Percentage>,
-    pub sensor_limits: Vec<Celsius>,
+    pub sensor_limits: Vec<SensorThrottle>,
     pub power_limits: Vec<Percentage>,
-    pub coolers: Vec<(CoolerDesc, CoolerStatus)>,
+    pub coolers: BTreeMap<FanCoolerId, CoolerSettings>,
     pub vfp: Option<VfpDeltas>,
     pub pstate_deltas: BTreeMap<PState, BTreeMap<ClockDomain, KilohertzDelta>>,
     pub overvolt: Vec<MicrovoltsDelta>,
@@ -202,13 +204,13 @@ impl Gpu {
                 Ok(s) => s.into_iter().map(From::from).collect(),
                 Err(..) => Default::default(),
             },
-            coolers: match allowable_result(self.gpu.cooler_settings(None))? {
-                Ok(c) => c.into_iter().map(From::from).collect(),
-                Err(..) => Default::default(),
+            coolers: match allowable_result(self.gpu.cooler_info())? {
+                Ok(c) => c,
+                Err(e) => Default::default(),
             },
             perf: self.gpu.perf_info()?,
             sensor_limits: match allowable_result(self.gpu.thermal_limit_info())? {
-                Ok((_, l)) => l.into_iter().map(From::from).collect(),
+                Ok(l) => l.into_iter().map(From::from).collect(),
                 Err(..) => Default::default(),
             },
             power_limits: match allowable_result(self.gpu.power_limit_info())? {
@@ -264,9 +266,9 @@ impl Gpu {
                 Ok(s) => s.into_iter().map(|s| (From::from(s), s.current_temperature)).collect(),
                 Err(..) => Default::default(),
             },
-            coolers: match allowable_result(self.gpu.cooler_settings(None))? {
-                Ok(c) => c.into_iter().map(|c| (From::from(c), From::from(c))).collect(),
-                Err(..) => Default::default(),
+            coolers: match allowable_result(self.gpu.cooler_status())? {
+                Ok(c) => c,
+                Err(e) => Default::default(),
             },
             perf: self.gpu.perf_status()?,
             vfp: match &vfp_info {
@@ -295,16 +297,16 @@ impl Gpu {
         Ok(GpuSettings {
             voltage_boost: allowable_result(self.gpu.core_voltage_boost())?.ok(),
             sensor_limits: match allowable_result(self.gpu.thermal_limit())? {
-                Ok(l) => l.into_iter().map(|l| l.value.into()).collect(),
+                Ok(l) => l.into_iter().map(|l| SensorThrottle::from_limit(&l)).collect(),
                 Err(..) => Default::default(),
             },
             power_limits: match allowable_result(self.gpu.power_limit())? {
                 Ok(l) => l.into_iter().map(|l| l.into()).collect(),
                 Err(..) => Default::default(),
             },
-            coolers: match allowable_result(self.gpu.cooler_settings(None))? {
-                Ok(c) => c.into_iter().map(|c| (From::from(c), From::from(c))).collect(),
-                Err(..) => Default::default(),
+            coolers: match allowable_result(self.gpu.cooler_control())? {
+                Ok(c) => c,
+                Err(e) => Default::default(),
             },
             vfp: match &vfp_info {
                 Ok(info) => allowable_result(self.gpu.vfp_table(info))?.map(From::from).ok(),
@@ -333,20 +335,16 @@ impl Gpu {
             .map_err(Into::into)
     }
 
-    pub fn set_sensor_limits<I: Iterator<Item=Celsius>>(&self, limits: I) -> nvapi::Result<()> {
+    pub fn set_sensor_limits<I: Iterator<Item=SensorThrottle>>(&self, limits: I) -> nvapi::Result<()> {
         self.gpu.thermal_limit_info()
             .map_err(Into::into)
-            .and_then(|(_, info)| self.gpu.set_thermal_limit(
-            limits.zip(info.into_iter()).map(|(limit, info)| ThermalLimit {
-                controller: info.controller,
-                flags: info.default_flags,
-                value: limit.into(),
-            })
+            .and_then(|info| self.gpu.set_thermal_limit(
+            limits.zip(info.into_iter()).map(|(limit, info)| limit.to_limit(info.policy, info.pff.as_ref()))
         ).map_err(Into::into))
     }
 
-    pub fn set_cooler_levels<I: Iterator<Item=CoolerLevel>>(&self, levels: I) -> nvapi::Result<()> {
-        self.gpu.set_cooler_levels(None, levels)
+    pub fn set_cooler_levels<I: Iterator<Item=(FanCoolerId, CoolerSettings)>>(&self, levels: I) -> nvapi::Result<()> {
+        self.gpu.set_cooler(levels)
             .map_err(Into::into)
     }
 
@@ -454,6 +452,7 @@ pub struct SensorLimit {
     pub range: Range<Celsius>,
     pub default: Celsius,
     pub flags: u32,
+    pub throttle_curve: Option<PffCurve>,
 }
 
 impl From<ThermalInfo> for SensorLimit {
@@ -462,6 +461,57 @@ impl From<ThermalInfo> for SensorLimit {
             range: Range::range_from(info.temperature_range),
             default: info.default_temperature.into(),
             flags: info.default_flags,
+            throttle_curve: info.pff,
+        }
+    }
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Default, Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct SensorThrottle {
+    pub value: Celsius,
+    pub remove_tdp_limit: bool,
+    pub curve: Option<PffCurve>,
+}
+
+impl SensorThrottle {
+    pub fn to_limit(&self, policy: ThermalPolicyId, info: Option<&PffCurve>) -> ThermalLimit {
+        ThermalLimit {
+            policy,
+            value: self.value.into(),
+            remove_tdp_limit: self.remove_tdp_limit,
+            pff: self.curve.as_ref().map(|pff| PffStatus {
+                values: pff.points.iter().map(|p| p.y.into()).collect(),
+                curve: match info {
+                    Some(curve) => curve.clone(),
+                    None => pff.clone(),
+                },
+            })
+        }
+    }
+
+    pub fn from_limit(limit: &ThermalLimit) -> Self {
+        Self {
+            value: limit.value.into(),
+            remove_tdp_limit: limit.remove_tdp_limit,
+            curve: limit.pff.as_ref().map(|pff| pff.curve()),
+        }
+    }
+
+    pub fn from_default(info: SensorLimit) -> Self {
+        Self {
+            value: info.default,
+            curve: info.throttle_curve.clone(),
+            remove_tdp_limit: false,
+        }
+    }
+}
+
+impl From<Celsius> for SensorThrottle {
+    fn from(value: Celsius) -> Self {
+        Self {
+            value,
+            .. Default::default()
         }
     }
 }
@@ -480,50 +530,6 @@ impl From<Sensor> for SensorDesc {
             controller: sensor.controller,
             target: sensor.target,
             range: sensor.default_temperature_range,
-        }
-    }
-}
-
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct CoolerDesc {
-    pub kind: CoolerType,
-    pub controller: CoolerController,
-    pub range: Range<Percentage>,
-    pub default_policy: CoolerPolicy,
-    pub target: CoolerTarget,
-    pub control: CoolerControl,
-}
-
-impl From<Cooler> for CoolerDesc {
-    fn from(cooler: Cooler) -> Self {
-        CoolerDesc {
-            kind: cooler.kind,
-            controller: cooler.controller,
-            range: cooler.default_level_range,
-            default_policy: cooler.default_policy,
-            target: cooler.target,
-            control: cooler.control,
-        }
-    }
-}
-
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct CoolerStatus {
-    pub range: Range<Percentage>,
-    pub level: Percentage,
-    pub policy: CoolerPolicy,
-    pub active: bool,
-}
-
-impl From<Cooler> for CoolerStatus {
-    fn from(cooler: Cooler) -> Self {
-        CoolerStatus {
-            range: cooler.current_level_range,
-            level: cooler.current_level,
-            policy: cooler.current_policy,
-            active: cooler.active,
         }
     }
 }
