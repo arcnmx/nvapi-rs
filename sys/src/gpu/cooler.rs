@@ -287,4 +287,118 @@ pub mod private {
         /// coolerCount: Number of coolers to restore.
         pub unsafe fn NvAPI_GPU_RestoreCoolerPolicyTable;
     }
+
+    nvstruct! {
+        pub struct NV_GPU_CLIENT_FAN_ARBITERS_INFO_ENTRY_V1 {
+            pub unknown: u32,
+            pub flags: u32,
+            pub arbiter_index: u32,
+            pub padding: Padding<[u32; 40/4-3]>,
+        }
+    }
+
+    impl NV_GPU_CLIENT_FAN_ARBITERS_INFO_ENTRY_V1 {
+        pub fn fan_stop_supported(&self) -> bool {
+            self.flags & 1 != 0
+        }
+        pub fn fan_stop_default_enable(&self) -> bool {
+            self.flags & 2 != 0
+        }
+    }
+
+    nvstruct! {
+        pub struct NV_GPU_CLIENT_FAN_ARBITERS_INFO_V1 {
+            pub version: NvVersion,
+            pub count: u32,
+            pub padding: Padding<[u32; 28/4]>,
+            pub entries: [NV_GPU_CLIENT_FAN_ARBITERS_INFO_ENTRY_V1; 32], // offset 36
+        }
+    }
+
+    nvversion! { NV_GPU_CLIENT_FAN_ARBITERS_INFO_VER_1(NV_GPU_CLIENT_FAN_ARBITERS_INFO_V1 = 1316, 1) }
+    nvversion! { NV_GPU_CLIENT_FAN_ARBITERS_INFO_VER = NV_GPU_CLIENT_FAN_ARBITERS_INFO_VER_1 }
+
+    pub type NV_GPU_CLIENT_FAN_ARBITERS_INFO = NV_GPU_CLIENT_FAN_ARBITERS_INFO_V1;
+
+    nvapi! {
+        pub type GPU_ClientFanArbitersGetInfoFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, arbiter: *mut NV_GPU_CLIENT_FAN_ARBITERS_INFO) -> NvAPI_Status;
+
+        pub unsafe fn NvAPI_GPU_ClientFanArbitersGetInfo;
+    }
+
+    nvstruct! {
+        pub struct NV_GPU_CLIENT_FAN_ARBITERS_STATUS_ENTRY_V1 {
+            pub unknown0: u32,
+            pub unknown1: u32,
+        }
+    }
+
+    impl NV_GPU_CLIENT_FAN_ARBITERS_STATUS_ENTRY_V1 {
+        pub fn fan_stop_active(&self) -> bool {
+            self.unknown1 != 0
+        }
+    }
+
+    nvstruct! {
+        pub struct NV_GPU_CLIENT_FAN_ARBITERS_STATUS_V1 {
+            pub version: NvVersion,
+            pub count: u32,
+            pub padding: Padding<[u32; 28/4]>,
+            pub entries: [NV_GPU_CLIENT_FAN_ARBITERS_STATUS_ENTRY_V1; 32], // offset 36
+        }
+    }
+
+    nvversion! { NV_GPU_CLIENT_FAN_ARBITERS_STATUS_VER_1(NV_GPU_CLIENT_FAN_ARBITERS_STATUS_V1 = 292, 1) }
+    nvversion! { NV_GPU_CLIENT_FAN_ARBITERS_STATUS_VER = NV_GPU_CLIENT_FAN_ARBITERS_STATUS_VER_1 }
+
+    pub type NV_GPU_CLIENT_FAN_ARBITERS_STATUS = NV_GPU_CLIENT_FAN_ARBITERS_STATUS_V1;
+
+    nvapi! {
+        pub type GPU_ClientFanArbitersGetStatusFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, arbiter: *mut NV_GPU_CLIENT_FAN_ARBITERS_STATUS) -> NvAPI_Status;
+
+        pub unsafe fn NvAPI_GPU_ClientFanArbitersGetStatus;
+    }
+
+    nvstruct! {
+        pub struct NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_ENTRY_V1 {
+            pub arbiter_index: u32,
+            pub flags: u32,
+        }
+    }
+
+    impl NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_ENTRY_V1 {
+        pub fn fan_stop_feature_enabled(&self) -> bool {
+            self.flags & 1 != 0
+        }
+
+        pub fn set_fan_stop_feature_enabled(&mut self, enable: bool) {
+            self.flags = (self.flags & !1) | if enable { 1 } else { 0 };
+        }
+    }
+
+    nvstruct! {
+        pub struct NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_V1 {
+            pub version: NvVersion,
+            pub count: u32,
+            pub padding: Padding<[u32; 28/4]>,
+            pub entries: [NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_ENTRY_V1; 32], // offset 36
+        }
+    }
+
+    nvversion! { NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_VER_1(NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_V1 = 292, 1) }
+    nvversion! { NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_VER = NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_VER_1 }
+
+    pub type NV_GPU_CLIENT_FAN_ARBITERS_CONTROL = NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_V1;
+
+    nvapi! {
+        pub type GPU_ClientFanArbitersGetControlFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, arbiter: *mut NV_GPU_CLIENT_FAN_ARBITERS_CONTROL) -> NvAPI_Status;
+
+        pub unsafe fn NvAPI_GPU_ClientFanArbitersGetControl;
+    }
+
+    nvapi! {
+        pub type GPU_ClientFanArbitersSetControlFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, arbiter: *const NV_GPU_CLIENT_FAN_ARBITERS_CONTROL) -> NvAPI_Status;
+
+        pub unsafe fn NvAPI_GPU_ClientFanArbitersSetControl;
+    }
 }
