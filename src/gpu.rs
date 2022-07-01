@@ -497,11 +497,25 @@ impl PhysicalGpu {
         }
     }
 
-    pub fn power_usage(&self) -> crate::Result<<power::private::NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS as RawConversion>::Target> {
+    pub fn power_usage<C: IntoIterator<Item=crate::clock::PowerTopologyChannelId>>(&self, channels: C) -> crate::Result<<power::private::NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS as RawConversion>::Target> {
         trace!("gpu.power_usage()");
+        let mut status = power::private::NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS::default();
+        status.count = 0;
+        for (channel, entry) in channels.into_iter().zip(&mut status.entries) {
+            entry.channel = channel.into();
+            status.count += 1;
+        }
+        status.count = status.count.saturating_sub(1);
 
         unsafe {
             nvcall!(NvAPI_GPU_ClientPowerTopologyGetStatus@get(self.0) => raw)
+        }
+    }
+
+    pub fn power_usage_channels(&self) -> crate::Result<Vec<crate::clock::PowerTopologyChannelId>> {
+        trace!("gpu.power_usage_channels()");
+        unsafe {
+            nvcall!(NvAPI_GPU_ClientPowerTopologyGetInfo@get(self.0) => raw)
         }
     }
 

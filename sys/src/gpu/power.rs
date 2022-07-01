@@ -170,11 +170,50 @@ pub mod private {
     }
 
     nvstruct! {
+        pub struct NV_GPU_CLIENT_POWER_TOPOLOGY_INFO_V1 {
+            pub version: NvVersion,
+            pub unknown_count0: u8,
+            pub unknown_count1: u8,
+            pub padding: Padding<[u8; 2]>,
+            pub channels: [NV_GPU_CLIENT_POWER_TOPOLOGY_CHANNEL_ID; 4],
+        }
+    }
+
+    impl NV_GPU_CLIENT_POWER_TOPOLOGY_INFO_V1 {
+        pub fn channels(&self) -> &[NV_GPU_CLIENT_POWER_TOPOLOGY_CHANNEL_ID] {
+            &self.channels[self.unknown_count0 as usize..self.unknown_count1 as usize]
+        }
+    }
+
+    pub type NV_GPU_CLIENT_POWER_TOPOLOGY_INFO = NV_GPU_CLIENT_POWER_TOPOLOGY_INFO_V1;
+
+    nvversion! { NV_GPU_CLIENT_POWER_TOPOLOGY_INFO_VER_1(NV_GPU_CLIENT_POWER_TOPOLOGY_INFO_V1 = 24, 1) }
+    nvversion! { NV_GPU_CLIENT_POWER_TOPOLOGY_INFO_VER = NV_GPU_CLIENT_POWER_TOPOLOGY_INFO_VER_1 }
+
+    nvapi! {
+        pub unsafe fn NvAPI_GPU_ClientPowerTopologyGetInfo(hPhysicalGPU: NvPhysicalGpuHandle, pPowerTopo: *mut NV_GPU_CLIENT_POWER_TOPOLOGY_INFO) -> NvAPI_Status;
+    }
+
+    nvenum! {
+        pub enum NV_GPU_CLIENT_POWER_TOPOLOGY_CHANNEL_ID / PowerTopologyChannelId {
+            NV_GPU_CLIENT_POWER_TOPOLOGY_CHANNEL_ID_TOTAL_GPU_POWER / TotalGpuPower = 0,
+            NV_GPU_CLIENT_POWER_TOPOLOGY_CHANNEL_ID_NORMALIZED_TOTAL_POWER / NormalizedTotalPower = 1,
+        }
+    }
+
+    nvenum_display! {
+        PowerTopologyChannelId => {
+            TotalGpuPower = "Total Power",
+            NormalizedTotalPower = "Normalized Power",
+        }
+    }
+
+    nvstruct! {
         pub struct NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_ENTRY {
-            pub a: u32,
-            pub b: u32,
+            pub channel: NV_GPU_CLIENT_POWER_TOPOLOGY_CHANNEL_ID,
+            pub unknown0: u32,
             pub power: u32,
-            pub d: u32,
+            pub unknown1: u32,
         }
     }
 
@@ -186,9 +225,15 @@ pub mod private {
         }
     }
 
+    impl NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_V1 {
+        pub fn entries(&self) -> &[NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_ENTRY] {
+            &self.entries[..self.count as usize]
+        }
+    }
+
     pub type NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS = NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_V1;
 
-    nvversion! { NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_VER_1(NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_V1 = 4 * 2 + 4 * (4 * 4), 1) }
+    nvversion! { NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_VER_1(NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_V1 = 72, 1) }
     nvversion! { NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_VER = NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_VER_1 }
 
     nvapi! {

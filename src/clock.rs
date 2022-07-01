@@ -12,7 +12,7 @@ use crate::types::{Kilohertz, Kilohertz2, KilohertzDelta, Kilohertz2Delta, Perce
 
 pub use sys::gpu::clock::PublicClockId as ClockDomain;
 pub use sys::gpu::clock::private::ClockLockMode;
-pub use sys::gpu::power::private::PerfFlags;
+pub use sys::gpu::power::private::{PerfFlags, PowerTopologyChannelId};
 
 impl RawConversion for clock::NV_GPU_CLOCK_FREQUENCIES {
     type Target = BTreeMap<ClockDomain, Kilohertz>;
@@ -457,7 +457,7 @@ impl RawConversion for power::private::NV_GPU_CLIENT_POWER_POLICIES_INFO {
 }
 
 impl RawConversion for power::private::NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_ENTRY {
-    type Target = Percentage1000;
+    type Target = (PowerTopologyChannelId, Percentage1000);
     type Error = sys::ArgumentRangeError;
 
     #[allow(non_snake_case)]
@@ -465,21 +465,21 @@ impl RawConversion for power::private::NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_ENTRY
         trace!("convert_raw({:#?})", self);
         match *self {
             power::private::NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_ENTRY {
-                a: unknown, b: 0, power, d: 0
-            } => Ok(Percentage1000(power)),
+                channel, power, unknown0, unknown1,
+            } => Ok((channel.try_into()?, Percentage1000(power))),
             _ => Err(sys::ArgumentRangeError),
         }
     }
 }
 
 impl RawConversion for power::private::NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS {
-    type Target = Vec<Percentage1000>;
+    type Target = BTreeMap<PowerTopologyChannelId, Percentage1000>;
     type Error = sys::ArgumentRangeError;
 
     #[allow(non_snake_case)]
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
-        self.entries[..self.count as usize].iter().map(RawConversion::convert_raw).collect()
+        self.entries().iter().map(RawConversion::convert_raw).collect()
     }
 }
 
@@ -496,6 +496,19 @@ impl RawConversion for power::private::NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY
             } => Ok(Percentage1000(power)),
             _ => Err(sys::ArgumentRangeError),
         }
+    }
+}
+
+impl RawConversion for power::private::NV_GPU_CLIENT_POWER_TOPOLOGY_INFO {
+    type Target = Vec<PowerTopologyChannelId>;
+    type Error = sys::ArgumentRangeError;
+
+    #[allow(non_snake_case)]
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
+        self.channels().iter().copied()
+            .map(|raw| raw.try_into())
+            .collect()
     }
 }
 

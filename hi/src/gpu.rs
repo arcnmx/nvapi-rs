@@ -15,7 +15,7 @@ pub use nvapi::{
     EccErrors,
     ClockFrequencies, ClockDomain, VoltageDomain, UtilizationDomain, Utilizations, ClockLockMode, ClockLockEntry,
     CoolerType, CoolerController, CoolerControl, CoolerPolicy, CoolerTarget, CoolerLevel,
-    VoltageStatus, VoltageTable,
+    VoltageStatus, VoltageTable, PowerTopologyChannelId,
     PerfInfo, PerfStatus,
     ThermalController, ThermalTarget,
     MemoryInfo, PciIdentifiers, BusInfo, Bus, BusType, DriverModel,
@@ -115,7 +115,7 @@ pub struct GpuStatus {
     pub voltage_table: Option<VoltageTable>,
     pub tachometer: Option<u32>,
     pub utilization: Utilizations,
-    pub power: Vec<Percentage>,
+    pub power: BTreeMap<PowerTopologyChannelId, Percentage>,
     pub sensors: Vec<(SensorDesc, Celsius)>,
     pub coolers: Vec<(CoolerDesc, CoolerStatus)>,
     pub perf: PerfStatus,
@@ -258,7 +258,8 @@ impl Gpu {
             voltage_table: allowable_result(self.gpu.voltage_table())?.ok(),
             tachometer: allowable_result(self.gpu.tachometer())?.ok(),
             utilization: self.gpu.dynamic_pstates_info()?,
-            power: self.gpu.power_usage()?.into_iter().map(From::from).collect(),
+            power: self.gpu.power_usage(self.gpu.power_usage_channels()?)?
+                .into_iter().map(|(ch, power)| (ch, power.into())).collect(),
             sensors: match allowable_result(self.gpu.thermal_settings(None))? {
                 Ok(s) => s.into_iter().map(|s| (From::from(s), s.current_temperature)).collect(),
                 Err(..) => Default::default(),
