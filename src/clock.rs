@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 use std::convert::Infallible;
-use std::{iter, slice};
+use std::{iter, slice, fmt};
 use crate::sys::gpu::{clock, power};
 use crate::sys;
 #[cfg(feature = "serde")]
@@ -11,7 +11,7 @@ use crate::gpu::VfpInfo;
 use crate::types::{Kilohertz, Kilohertz2, KilohertzDelta, Kilohertz2Delta, Percentage, Percentage1000, Microvolts, Range, RawConversion};
 
 pub use sys::gpu::clock::PublicClockId as ClockDomain;
-pub use sys::gpu::clock::private::ClockLockMode;
+pub use sys::gpu::clock::private::PerfLimitId;
 pub use sys::gpu::power::private::{PerfFlags, PowerTopologyChannelId};
 
 impl RawConversion for clock::NV_GPU_CLOCK_FREQUENCIES {
@@ -561,9 +561,60 @@ impl RawConversion for power::private::NV_GPU_CLIENT_POWER_POLICIES_STATUS {
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
+pub enum ClockLockValue {
+    Frequency(Kilohertz),
+    Voltage(Microvolts),
+}
+
+impl ClockLockValue {
+    pub fn value(&self) -> u32 {
+        match self {
+            ClockLockValue::Frequency(v) => v.0,
+            ClockLockValue::Voltage(v) => v.0,
+        }
+    }
+
+    pub fn voltage(&self) -> Option<Microvolts> {
+        match self {
+            &ClockLockValue::Voltage(v) => Some(v),
+            _ => None,
+        }
+    }
+
+    pub fn frequency(&self) -> Option<Kilohertz> {
+        match self {
+            &ClockLockValue::Frequency(v) => Some(v),
+            _ => None,
+        }
+    }
+
+    pub fn from_raw(raw: &clock::private::NV_GPU_PERF_CLIENT_LIMITS_ENTRY) -> Result<Option<Self>, sys::ArgumentRangeError> {
+        Ok(match clock::private::ClockLockMode::from_raw(raw.mode)? {
+            clock::private::ClockLockMode::None =>
+                None,
+            clock::private::ClockLockMode::ManualVoltage =>
+                Some(ClockLockValue::Voltage(Microvolts(raw.value))),
+            clock::private::ClockLockMode::ManualFrequency =>
+                Some(ClockLockValue::Frequency(Kilohertz(raw.value))),
+        })
+    }
+}
+
+impl fmt::Display for ClockLockValue {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            ClockLockValue::Voltage(v) => fmt::Display::fmt(v, f),
+            ClockLockValue::Frequency(v) => fmt::Display::fmt(v, f),
+        }
+    }
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct ClockLockEntry {
-    pub mode: ClockLockMode,
-    pub voltage: Microvolts,
+    pub limit: PerfLimitId,
+    pub lock_value: Option<ClockLockValue>,
+    pub clock: ClockDomain,
 }
 
 impl RawConversion for clock::private::NV_GPU_PERF_CLIENT_LIMITS_ENTRY {
@@ -575,10 +626,11 @@ impl RawConversion for clock::private::NV_GPU_PERF_CLIENT_LIMITS_ENTRY {
         trace!("convert_raw({:#?})", self);
         match *self {
             clock::private::NV_GPU_PERF_CLIENT_LIMITS_ENTRY {
-                id: _id, b: 0, mode, d: 0, voltage_uV, f: 0,
+                id, mode, value, clock_id, ..
             } => Ok(ClockLockEntry {
-                mode: ClockLockMode::from_raw(mode)?,
-                voltage: Microvolts(voltage_uV),
+                limit: id.try_into()?,
+                clock: clock_id.try_into()?,
+                lock_value: ClockLockValue::from_raw(self)?,
             }),
             _ => Err(sys::ArgumentRangeError),
         }
@@ -586,7 +638,7 @@ impl RawConversion for clock::private::NV_GPU_PERF_CLIENT_LIMITS_ENTRY {
 }
 
 impl RawConversion for clock::private::NV_GPU_PERF_CLIENT_LIMITS {
-    type Target = BTreeMap<usize, ClockLockEntry>;
+    type Target = Vec<ClockLockEntry>;
     type Error = sys::ArgumentRangeError;
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
@@ -594,7 +646,7 @@ impl RawConversion for clock::private::NV_GPU_PERF_CLIENT_LIMITS {
         if self.flags != 0 {
             Err(sys::ArgumentRangeError)
         } else {
-            self.entries[..self.count as usize].iter().map(|v| v.convert_raw().map(|e| (v.id as usize, e))).collect()
+            self.entries().iter().map(RawConversion::convert_raw).collect()
         }
     }
 }

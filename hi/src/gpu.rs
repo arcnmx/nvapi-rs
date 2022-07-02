@@ -14,7 +14,8 @@ pub use nvapi::{
     PhysicalGpu,
     Vendor, SystemType, GpuType, RamType, RamMaker, Foundry, ArchInfo,
     EccErrors,
-    ClockFrequencies, ClockDomain, VoltageDomain, UtilizationDomain, Utilizations, ClockLockMode, ClockLockEntry,
+    ClockFrequencies, ClockDomain, VoltageDomain, UtilizationDomain, Utilizations,
+    ClockLockValue, ClockLockEntry, PerfLimitId,
     CoolerType, CoolerController, CoolerControl, CoolerPolicy, CoolerTarget,
     FanCoolerId, CoolerInfo, CoolerStatus, CoolerSettings,
     VoltageStatus, VoltageTable, PowerTopologyChannelId,
@@ -66,7 +67,6 @@ pub struct GpuInfo {
     // TODO: pstate base_voltages
     pub overvolt_limits: Vec<OvervoltLimit>,
     pub vfp_limits: BTreeMap<ClockDomain, VfpRange>,
-    pub vfp_locks: Vec<usize>,
 }
 
 impl GpuInfo {
@@ -122,7 +122,7 @@ pub struct GpuStatus {
     pub coolers: BTreeMap<FanCoolerId, CoolerStatus>,
     pub perf: PerfStatus,
     pub vfp: Option<VfpTable>,
-    pub vfp_locks: BTreeMap<usize, Microvolts>,
+    pub vfp_locks: BTreeMap<PerfLimitId, ClockLockValue>,
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -135,7 +135,7 @@ pub struct GpuSettings {
     pub vfp: Option<VfpDeltas>,
     pub pstate_deltas: BTreeMap<PState, BTreeMap<ClockDomain, KilohertzDelta>>,
     pub overvolt: Vec<MicrovoltsDelta>,
-    pub vfp_locks: BTreeMap<usize, ClockLockEntry>,
+    pub vfp_locks: BTreeMap<PerfLimitId, ClockLockEntry>,
 }
 
 impl Gpu {
@@ -223,10 +223,6 @@ impl Gpu {
                 Ok(l) => l.domains.into_iter().map(|v| (v.domain, v.into())).collect(),
                 Err(..) => Default::default(),
             },
-            vfp_locks: match allowable_result(self.gpu.vfp_locks())? {
-                Ok(v) => v.into_iter().map(|(id, _)| id).collect(),
-                Err(..) => Default::default(),
-            },
         })
     }
 
@@ -275,12 +271,10 @@ impl Gpu {
                 Ok(info) => allowable_result(self.gpu.vfp_curve(info))?.map(From::from).ok(),
                 Err(..) => None,
             },
-            vfp_locks: match allowable_result(self.gpu.vfp_locks())? {
-                Ok(l) => l.into_iter().filter_map(|(id, e)| if e.mode == ClockLockMode::Manual {
-                    Some((id, e.voltage))
-                } else {
-                    None
-                }).collect(),
+            vfp_locks: match allowable_result(self.gpu.vfp_locks(PerfLimitId::values()))? {
+                Ok(l) => l.into_iter().filter_map(|lock| lock.lock_value
+                    .map(|value| (lock.limit, value))
+                ).collect(),
                 Err(..) => Default::default(),
             },
         })
@@ -312,8 +306,8 @@ impl Gpu {
                 Ok(info) => allowable_result(self.gpu.vfp_table(info))?.map(From::from).ok(),
                 Err(..) => None,
             },
-            vfp_locks: match allowable_result(self.gpu.vfp_locks())? {
-                Ok(l) => l,
+            vfp_locks: match allowable_result(self.gpu.vfp_locks(PerfLimitId::values()))? {
+                Ok(v) => v.into_iter().map(|lock| (lock.limit, lock)).collect(),
                 Err(..) => Default::default(),
             },
             pstate_deltas: pstates.into_iter().filter(|p| p.editable)
@@ -359,16 +353,45 @@ impl Gpu {
             .map_err(Into::into)
     }
 
-    pub fn set_vfp_lock(&self, voltage: Microvolts) -> nvapi::Result<()> {
-        self.gpu.set_vfp_locks(self.gpu.vfp_locks()?
-            .into_iter().max_by_key(|&(id, _)| id).into_iter()
-            .map(|(id, entry)| (id, Some(voltage)))
-        ).map_err(Into::into)
+    pub fn set_vfp_lock_voltage(&self, voltage: Option<Microvolts>) -> nvapi::Result<()> {
+        self.gpu.set_vfp_locks([ClockLockEntry {
+            limit: PerfLimitId::Voltage,
+            clock: ClockDomain::Graphics,
+            lock_value: voltage.map(ClockLockValue::Voltage),
+        }]).map_err(Into::into)
+    }
+
+    pub fn set_vfp_lock(&self, domain: ClockDomain, frequency: Option<Kilohertz>) -> nvapi::Result<()> {
+        let gpu = match domain {
+            ClockDomain::Graphics => true,
+            ClockDomain::Memory => false,
+            _ => return Err(nvapi::sys::ArgumentRangeError.into()),
+        };
+        self.gpu.set_vfp_locks([
+            ClockLockEntry {
+                limit: match gpu {
+                    true => PerfLimitId::Gpu,
+                    false => PerfLimitId::Memory,
+                },
+                clock: domain,
+                lock_value: frequency.map(ClockLockValue::Frequency),
+            },
+            ClockLockEntry {
+                limit: match gpu {
+                    true => PerfLimitId::GpuUnknown,
+                    false => PerfLimitId::MemoryUnknown,
+                },
+                clock: domain,
+                lock_value: frequency.map(ClockLockValue::Frequency),
+            },
+        ]).map_err(Into::into)
     }
 
     pub fn reset_vfp_lock(&self) -> nvapi::Result<()> {
-        self.gpu.set_vfp_locks(self.gpu.vfp_locks()?.into_iter().map(|(id, _)| (id, None)))
-            .map_err(Into::into)
+        self.gpu.set_vfp_locks(self.gpu.vfp_locks(None)?.into_iter().map(|mut lock| {
+            lock.lock_value = None;
+            lock
+        })).map_err(Into::into)
     }
 
     pub fn reset_vfp(&self) -> nvapi::Result<()> {

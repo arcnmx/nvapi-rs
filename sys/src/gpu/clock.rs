@@ -261,18 +261,37 @@ pub mod private {
     nvenum! {
         pub enum NV_GPU_CLOCK_LOCK_MODE / ClockLockMode {
             NVAPI_GPU_CLOCK_LOCK_NONE / None = 0,
-            NVAPI_GPU_CLOCK_LOCK_MANUAL / Manual = 3,
+            NVAPI_GPU_CLOCK_LOCK_MANUAL_FREQUENCY / ManualFrequency = 2,
+            NVAPI_GPU_CLOCK_LOCK_MANUAL_VOLTAGE / ManualVoltage = 3,
+        }
+    }
+
+    nvenum! {
+        pub enum NV_PERF_CLIENT_LIMIT_ID / PerfLimitId {
+            NV_PERF_CLIENT_LIMIT_ID_GPU / Gpu = 0,
+            NV_PERF_CLIENT_LIMIT_ID_GPU_UNKNOWN / GpuUnknown = 1,
+            NV_PERF_CLIENT_LIMIT_ID_MEMORY / Memory = 2,
+            NV_PERF_CLIENT_LIMIT_ID_MEMORY_UNKOWN / MemoryUnknown = 3,
+            NV_PERF_CLIENT_LIMIT_ID_VOLTAGE / Voltage = 6,
+        }
+    }
+
+    nvenum_display! {
+        PerfLimitId => {
+            Gpu = "GPU",
+            _ = _,
         }
     }
 
     nvstruct! {
         pub struct NV_GPU_PERF_CLIENT_LIMITS_ENTRY {
-            pub id: u32, // entry index
+            pub id: NV_PERF_CLIENT_LIMIT_ID, // entry index
             pub b: u32, // 0
             pub mode: NV_GPU_CLOCK_LOCK_MODE, // 0 = default, 3 = manual voltage
             pub d: u32, // 0
-            pub voltage_uV: u32, // 0 unless set explicitly, seems to always get set on the last/highest entry only
-            pub f: u32, // 0
+            /// voltage uV or freq kHz depending on `id`
+            pub value: u32, // 0 unless set explicitly, seems to always get set on the last/highest entry only
+            pub clock_id: super::NV_GPU_PUBLIC_CLOCK_ID,
         }
     }
 
@@ -283,6 +302,12 @@ pub mod private {
             pub flags: u32, // unknown, only see 0
             pub count: u32,
             pub entries: [NV_GPU_PERF_CLIENT_LIMITS_ENTRY; 0x20],
+        }
+    }
+
+    impl NV_GPU_PERF_CLIENT_LIMITS_V2 {
+        pub fn entries(&self) -> &[NV_GPU_PERF_CLIENT_LIMITS_ENTRY] {
+            &self.entries[..self.count as usize]
         }
     }
 

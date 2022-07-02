@@ -426,32 +426,38 @@ impl PhysicalGpu {
         }
     }
 
-    pub fn vfp_locks(&self) -> crate::Result<<clock::private::NV_GPU_PERF_CLIENT_LIMITS as RawConversion>::Target> {
+    pub fn vfp_locks<I: IntoIterator<Item=crate::clock::PerfLimitId>>(&self, limits: I) -> crate::Result<<clock::private::NV_GPU_PERF_CLIENT_LIMITS as RawConversion>::Target> {
         trace!("gpu.vfp_locks()");
+        let mut status = clock::private::NV_GPU_PERF_CLIENT_LIMITS::default();
+        for (limit, entry) in limits.into_iter().zip(&mut status.entries) {
+            entry.id = limit.into();
+            status.count += 1;
+        }
 
         unsafe {
-            nvcall!(NvAPI_GPU_PerfClientLimitsGetStatus@get(self.0) => raw)
+            nvcall!(NvAPI_GPU_PerfClientLimitsGetStatus@get{status}(self.0) => raw)
         }
     }
 
-    pub fn set_vfp_locks<I: Iterator<Item=(usize, Option<Microvolts>)>>(&self, values: I) -> crate::NvapiResult<()> {
+    pub fn set_vfp_locks<I: IntoIterator<Item=crate::clock::ClockLockEntry>>(&self, values: I) -> crate::NvapiResult<()> {
         trace!("gpu.set_vfp_locks()");
-        use crate::clock::ClockLockMode;
+        use clock::private::ClockLockMode;
 
         let mut data = clock::private::NV_GPU_PERF_CLIENT_LIMITS::default();
-        for (i, (id, voltage)) in values.enumerate() {
-            trace!("gpu.set_vfp_lock({:?}, {:?})", id, voltage);
+        for (lock, entry) in values.into_iter().zip(&mut data.entries) {
+            trace!("gpu.set_vfp_lock({:?})", lock);
             data.count += 1;
-            let entry = &mut data.entries[i];
-            entry.id = id as _;
-            if let Some(voltage) = voltage {
-                entry.mode = ClockLockMode::Manual.raw();
-                entry.voltage_uV = voltage.0;
-            } else {
-                // these are already 0
-                //entry.mode = ClockLockMode::None.raw();
-                //entry.voltage_uV = 0;
-            }
+            entry.id = lock.limit.into();
+            let (mode, value) = match lock.lock_value {
+                Some(crate::clock::ClockLockValue::Frequency(v)) =>
+                    (ClockLockMode::ManualFrequency.raw(), v.0),
+                Some(crate::clock::ClockLockValue::Voltage(v)) =>
+                    (ClockLockMode::ManualVoltage.raw(), v.0),
+                None => (ClockLockMode::None.raw(), 0),
+            };
+            entry.mode = mode;
+            entry.value = value;
+            entry.clock_id = lock.clock.into();
         }
 
         unsafe {
