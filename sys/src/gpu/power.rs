@@ -6,9 +6,9 @@ pub mod private {
         pub struct NV_GPU_CLIENT_VOLT_RAILS_STATUS_V1 {
             pub version: NvVersion,
             pub flags: u32,
-            pub zero: [u32; 8],
+            pub zero: Padding<[u32; 8]>,
             pub value_uV: u32,
-            pub unknown: [u32; 8],
+            pub unknown: Padding<[u32; 8]>,
         }
     }
 
@@ -27,7 +27,7 @@ pub mod private {
             pub version: NvVersion,
             /// uiDelta
             pub percent: u32, // apparently actually i32?
-            pub unknown: [u32; 8],
+            pub unknown: Padding<[u32; 8]>,
         }
     }
 
@@ -137,7 +137,7 @@ pub mod private {
             pub version: NvVersion,
             pub valid: u8,
             pub count: u8,
-            pub padding: [u8; 2],
+            pub padding: Padding<[u8; 2]>,
             pub entries: [NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V1; 4],
         }
     }
@@ -160,7 +160,7 @@ pub mod private {
             pub version: NvVersion,
             pub valid: u8,
             pub count: u8,
-            pub padding: [u8; 2],
+            pub padding: Padding<[u8; 2]>,
             pub entries: [NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V2; 4],
         }
     }
@@ -340,7 +340,7 @@ pub mod private {
             pub version: NvVersion,
             pub maxUnknown: u32,
             pub limitSupport: NV_GPU_PERF_FLAGS,
-            pub padding: [u32; 16],
+            pub padding: Padding<[u32; 16]>,
         }
     }
 
@@ -373,7 +373,7 @@ pub mod private {
             pub zero1: u32,
             /// nanoseconds
             pub timers: [u64; 3],
-            pub padding: [u32; 326],
+            pub padding: Padding<[u32; 326]>,
         }
     }
 

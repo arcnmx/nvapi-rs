@@ -366,10 +366,6 @@ impl VfpCurve {
     }
 }
 
-fn all_zero(s: &[u32]) -> bool {
-    return s.iter().all(|&v| v == 0)
-}
-
 impl RawConversion for power::private::NV_GPU_CLIENT_VOLT_RAILS_STATUS_V1 {
     type Target = Microvolts;
     type Error = sys::ArgumentRangeError;
@@ -381,7 +377,7 @@ impl RawConversion for power::private::NV_GPU_CLIENT_VOLT_RAILS_STATUS_V1 {
             power::private::NV_GPU_CLIENT_VOLT_RAILS_STATUS_V1 {
                 version: _, flags: 0, ref zero,
                 value_uV, ref unknown,
-            } if all_zero(zero) && all_zero(unknown) => Ok(Microvolts(value_uV)),
+            } if zero.all_zero() && unknown.all_zero() => Ok(Microvolts(value_uV)),
             _ => Err(sys::ArgumentRangeError),
         }
     }
@@ -397,7 +393,7 @@ impl RawConversion for power::private::NV_GPU_CLIENT_VOLT_RAILS_CONTROL_V1 {
         match *self {
             power::private::NV_GPU_CLIENT_VOLT_RAILS_CONTROL {
                 version: _, percent, ref unknown,
-            } if all_zero(unknown) => Percentage::from_raw(percent),
+            } if unknown.all_zero() => Percentage::from_raw(percent),
             _ => Err(sys::ArgumentRangeError),
         }
     }
