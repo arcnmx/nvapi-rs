@@ -7,6 +7,12 @@ macro_rules! nv_declare_handle {
         #[derive(Copy, Clone, Debug)]
         pub struct $name(*const ::std::os::raw::c_void);
 
+        impl $name {
+            pub fn as_ptr(&self) -> *const ::std::os::raw::c_void {
+                self.0
+            }
+        }
+
         impl Default for $name {
             fn default() -> Self {
                 $name(::std::ptr::null())

@@ -31,6 +31,7 @@ pub struct Gpu {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct GpuInfo {
+    pub id: usize,
     pub name: String,
     pub codename: String,
     pub bios_version: String,
@@ -150,6 +151,10 @@ impl Gpu {
         &self.gpu
     }
 
+    pub fn id(&self) -> usize {
+        self.gpu.handle().as_ptr() as _
+    }
+
     pub fn enumerate() -> nvapi::Result<Vec<Self>> {
         PhysicalGpu::enumerate()
             .map_err(Into::into)
@@ -164,6 +169,7 @@ impl Gpu {
         };
 
         Ok(GpuInfo {
+            id: self.id(),
             name: self.gpu.full_name()?,
             codename: self.gpu.short_name()?,
             bios_version: self.gpu.vbios_version_string()?,
