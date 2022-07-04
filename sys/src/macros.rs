@@ -70,6 +70,14 @@ macro_rules! nvstruct {
             $($tt)*
         }
 
+        unsafe impl zerocopy::AsBytes for $name {
+            fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized { }
+        }
+
+        unsafe impl zerocopy::FromBytes for $name {
+            fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized { }
+        }
+
         nvstruct! { @int fields $name ($($tt)*) }
     };
     (@int fields $name:ident (

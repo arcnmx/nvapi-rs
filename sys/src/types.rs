@@ -1,8 +1,10 @@
 use std::borrow::Cow;
+use std::mem::MaybeUninit;
 use std::ops::{Deref, DerefMut};
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 use std::fmt;
+use zerocopy::{AsBytes, FromBytes};
 use crate::nvapi::NvVersion;
 
 pub type NvBool = u8;
@@ -11,7 +13,8 @@ pub const NV_TRUE: NvBool = 1;
 pub const NV_FALSE: NvBool = 0;
 
 /// A boolean containing reserved bits
-#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash, AsBytes, FromBytes)]
+#[repr(transparent)]
 pub struct BoolU32(pub u32);
 
 impl BoolU32 {
@@ -161,6 +164,14 @@ impl<const N: usize> From<NvString<N>> for String {
     }
 }
 
+unsafe impl<const N: usize> AsBytes for NvString<N> {
+    fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized { }
+}
+
+unsafe impl<const N: usize> FromBytes for NvString<N> {
+    fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized { }
+}
+
 /// NvAPI Version Definition
 ///
 /// Maintain per structure specific version
@@ -177,22 +188,75 @@ pub const fn GET_NVAPI_SIZE(ver: u32) -> usize {
 }
 
 #[derive(Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+#[repr(transparent)]
 pub struct Padding<T> {
     pub data: T,
 }
 
-impl<T: Copy + Default, const N: usize> Default for Padding<[T; N]> {
+impl<T> Deref for Padding<T> {
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        &self.data
+    }
+}
+
+impl<T> DerefMut for Padding<T> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.data
+    }
+}
+
+impl<T: IntoIterator> IntoIterator for Padding<T> {
+    type Item = T::Item;
+    type IntoIter = T::IntoIter;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.data.into_iter()
+    }
+}
+
+impl<'a, T> IntoIterator for &'a Padding<T> where &'a T: IntoIterator {
+    type Item = <&'a T as IntoIterator>::Item;
+    type IntoIter = <&'a T as IntoIterator>::IntoIter;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.data.into_iter()
+    }
+}
+
+impl<'a, T> IntoIterator for &'a mut Padding<T> where &'a mut T: IntoIterator {
+    type Item = <&'a mut T as IntoIterator>::Item;
+    type IntoIter = <&'a mut T as IntoIterator>::IntoIter;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.data.into_iter()
+    }
+}
+
+unsafe impl<T: AsBytes> AsBytes for Padding<T> {
+    fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized { }
+}
+
+unsafe impl<T: FromBytes> FromBytes for Padding<T> {
+    fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized { }
+}
+
+impl<T: FromBytes, const N: usize> Default for Padding<[T; N]> {
     fn default() -> Self {
-        Self {
-            data: [Default::default(); N],
+        unsafe {
+            MaybeUninit::zeroed().assume_init()
         }
     }
 }
 
-impl<T: Default + PartialEq, const N: usize> Padding<[T; N]> {
+fn all_zero<T: AsBytes>(v: &T) -> bool {
+    v.as_bytes().iter().all(|&v| v == 0)
+}
+
+impl<T: AsBytes, const N: usize> Padding<[T; N]> {
     pub fn all_zero(&self) -> bool {
-        let zero = T::default();
-        self.data.iter().all(|v| v == &zero)
+        all_zero(self)
     }
 
     pub fn check_zero(&self) -> Result<(), crate::ArgumentRangeError> {
@@ -203,13 +267,38 @@ impl<T: Default + PartialEq, const N: usize> Padding<[T; N]> {
     }
 }
 
-impl<T: Default + PartialEq + fmt::Debug, const N: usize> fmt::Debug for Padding<[T; N]> {
+impl<T: AsBytes + fmt::Debug, const N: usize> fmt::Debug for Padding<[T; N]> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        if self.all_zero() {
-            write!(f, "[0; {}]", N)
-        } else {
-            write!(f, "{:?}", self.data)
+        let mut it = self.data.iter();
+        f.write_str("[")?;
+        let mut prev: Option<&T> = None;
+        let mut repeat: usize = 0;
+        while let Some(v) = it.next() {
+            match prev {
+                Some(prev) if prev.as_bytes() == v.as_bytes() =>
+                    repeat = repeat.saturating_add(1),
+                _ => {
+                    if repeat > 1 {
+                        write!(f, ";{}, ", repeat)?;
+                    } else if repeat == 1 {
+                        f.write_str(", ")?;
+                    }
+
+                    if all_zero(v) {
+                        f.write_str("0")?;
+                    } else {
+                        fmt::Debug::fmt(&v, f)?;
+                    }
+
+                    prev = Some(v);
+                    repeat = 1;
+                },
+            }
         }
+        if repeat > 1 {
+            write!(f, ";{}", repeat)?;
+        }
+        f.write_str("]")
     }
 }
 
@@ -265,6 +354,14 @@ impl<const N: usize> Default for ClockMask<N> {
             mask: [0u32; N],
         }
     }
+}
+
+unsafe impl<const N: usize> AsBytes for ClockMask<N> {
+    fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized { }
+}
+
+unsafe impl<const N: usize> FromBytes for ClockMask<N> {
+    fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized { }
 }
 
 impl<'a, const N: usize> IntoIterator for &'a ClockMask<N> {

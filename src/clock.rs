@@ -122,7 +122,7 @@ impl ClockTable {
     pub fn from_raw(raw: &clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL, info: &VfpInfo) -> crate::Result<Self> {
         Ok(Self {
             delta_points: info.domains.domains.iter()
-                .map(|d| info.index(d.domain, &raw.points)
+                .map(|d| info.index(d.domain, &raw.points[..])
                     .map(|(i, p)| p.convert_raw().map(|p| (i, p))).collect::<Result<_, _>>()
                     .map(|p| (d.domain, p))
                 ).collect::<Result<_, _>>()?,
@@ -200,7 +200,7 @@ impl RawConversion for clock::private::NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO {
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
-        let domains = self.mask.index(&self.entries)
+        let domains = self.mask.index(&self.entries[..])
             .map(|(_i, v)| v)
             .filter(|v| v.disabled == 0)
             .map(RawConversion::convert_raw)
@@ -342,7 +342,7 @@ impl VfpCurve {
     pub fn from_raw_v3(raw: &power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V3, info: &VfpInfo) -> crate::Result<Self> {
         Ok(Self {
             points: info.domains.domains.iter()
-                .map(|d| info.index(d.domain, &raw.entries)
+                .map(|d| info.index(d.domain, &raw.entries[..])
                     .map(|(i, p)| p.convert_raw().map(|p| (i, VfpEntry::from_entry(p))))
                     .collect::<Result<Vec<_>, _>>()
                     .map(|p| (d.domain, p))
@@ -353,7 +353,7 @@ impl VfpCurve {
     pub fn from_raw_v1(raw: &power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V1, info: &VfpInfo) -> crate::Result<Self> {
         Ok(Self {
             points: info.domains.domains.iter()
-                .map(|d| info.index(d.domain, &raw.entries)
+                .map(|d| info.index(d.domain, &raw.entries[..])
                     .map(|(i, p)| p.convert_raw().map(|p| (i, VfPoint::from_entry(p).into())))
                     .collect::<Result<Vec<_>, _>>()
                     .map(|p| (d.domain, p))
@@ -701,7 +701,6 @@ impl RawConversion for power::private::NV_GPU_PERF_POLICIES_STATUS_PARAMS {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct VoltageEntry {
-    pub unknown: u32,
     pub voltage: Microvolts,
 }
 
@@ -712,7 +711,6 @@ impl RawConversion for power::private::NV_VOLT_TABLE_ENTRY {
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
         Ok(VoltageEntry {
-            unknown: self.unknown,
             voltage: Microvolts(self.voltage_uV),
         })
     }
@@ -745,7 +743,6 @@ pub struct VoltageStatus {
     pub unknown0: u32,
     pub voltage: Microvolts,
     pub count: u32,
-    pub unknown1: [u32; 30],
 }
 
 impl RawConversion for power::private::NV_VOLT_STATUS {
@@ -759,7 +756,6 @@ impl RawConversion for power::private::NV_VOLT_STATUS {
             count: self.count,
             unknown0: self.unknown,
             voltage: Microvolts(self.value_uV),
-            unknown1: self.buf1,
         })
     }
 }

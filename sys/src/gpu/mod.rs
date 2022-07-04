@@ -245,7 +245,7 @@ nvstruct! {
         /// structure version
         pub version: NvVersion,
         /// Board Serial Number
-        pub BoardNum: [u8; 16],
+        pub BoardNum: Array<[u8; 16]>,
     }
 }
 

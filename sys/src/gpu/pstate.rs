@@ -23,7 +23,7 @@ nvstruct! {
         pub version: NvVersion,
         /// bit 0 indicates if the dynamic Pstate is enabled or not
         pub flags: u32,
-        pub utilization: [NV_GPU_DYNAMIC_PSTATES_INFO_EX_UTILIZATION; NVAPI_MAX_GPU_UTILIZATIONS],
+        pub utilization: Array<[NV_GPU_DYNAMIC_PSTATES_INFO_EX_UTILIZATION; NVAPI_MAX_GPU_UTILIZATIONS]>,
     }
 }
 
@@ -240,10 +240,10 @@ nvstruct! {
         pub bIsEditable: BoolU32,
         /// Array of clock entries
         /// Valid index range is 0 to numClocks-1
-        pub clocks: [NV_GPU_PSTATE20_CLOCK_ENTRY_V1; NVAPI_MAX_GPU_PSTATE20_CLOCKS],
+        pub clocks: Array<[NV_GPU_PSTATE20_CLOCK_ENTRY_V1; NVAPI_MAX_GPU_PSTATE20_CLOCKS]>,
         /// Array of baseVoltage entries
         /// Valid index range is 0 to numBaseVoltages-1
-        pub baseVoltages: [NV_GPU_PERF_PSTATE20_BASE_VOLTAGE_ENTRY_V1; NVAPI_MAX_GPU_PSTATE20_BASE_VOLTAGES],
+        pub baseVoltages: Array<[NV_GPU_PERF_PSTATE20_BASE_VOLTAGE_ENTRY_V1; NVAPI_MAX_GPU_PSTATE20_BASE_VOLTAGES]>,
     }
 }
 
@@ -261,7 +261,7 @@ nvstruct! {
         pub numBaseVoltages: u32,
         /// Performance state (P-State) settings
         /// Valid index range is 0 to numPstates-1
-        pub pstates: [NV_GPU_PERF_PSTATES20_PSTATE; NVAPI_MAX_GPU_PSTATE20_PSTATES],
+        pub pstates: Array<[NV_GPU_PERF_PSTATES20_PSTATE; NVAPI_MAX_GPU_PSTATE20_PSTATES]>,
     }
 }
 
@@ -273,7 +273,7 @@ nvstruct! {
         pub numVoltages: u32,
         /// OV settings - Please refer to NVIDIA over-volting recommendation to understand impact of this functionality
         /// Valid index range is 0 to numVoltages-1
-        pub voltages: [NV_GPU_PERF_PSTATE20_BASE_VOLTAGE_ENTRY_V1; NVAPI_MAX_GPU_PSTATE20_BASE_VOLTAGES],
+        pub voltages: Array<[NV_GPU_PERF_PSTATE20_BASE_VOLTAGE_ENTRY_V1; NVAPI_MAX_GPU_PSTATE20_BASE_VOLTAGES]>,
     }
 }
 nvinherit! { NV_GPU_PERF_PSTATES20_INFO_V2(v1: NV_GPU_PERF_PSTATES20_INFO_V1) }

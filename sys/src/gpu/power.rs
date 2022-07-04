@@ -72,7 +72,7 @@ pub mod private {
             pub version: NvVersion,
             pub mask: ClockMask,
             pub unknown: Padding<[u32; 8]>,
-            pub entries: [NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V1; 255],
+            pub entries: Array<[NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V1; 255]>,
         }
     }
 
@@ -81,7 +81,7 @@ pub mod private {
             pub version: NvVersion,
             pub mask: ClockMask,
             pub unknown: Padding<[u8; 0x44]>,
-            pub entries: [NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V3; 255],
+            pub entries: Array<[NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V3; 255]>,
         }
     }
 
@@ -128,7 +128,7 @@ pub mod private {
             pub valid: u8,
             pub count: u8,
             pub padding: Padding<[u8; 2]>,
-            pub entries: [NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V1; 4],
+            pub entries: Array<[NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V1; 4]>,
         }
     }
 
@@ -151,7 +151,7 @@ pub mod private {
             pub valid: u8,
             pub count: u8,
             pub padding: Padding<[u8; 2]>,
-            pub entries: [NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V2; 4],
+            pub entries: Array<[NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V2; 4]>,
         }
     }
 
@@ -181,7 +181,7 @@ pub mod private {
         pub struct NV_GPU_CLIENT_POWER_POLICIES_STATUS_V1 {
             pub version: NvVersion,
             pub count: u32,
-            pub entries: [NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1; 4],
+            pub entries: Array<[NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1; 4]>,
         }
     }
 
@@ -206,7 +206,7 @@ pub mod private {
         pub struct NV_GPU_CLIENT_POWER_POLICIES_STATUS_V2 {
             pub version: NvVersion,
             pub count: u32,
-            pub entries: [NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2; 4],
+            pub entries: Array<[NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2; 4]>,
         }
     }
 
@@ -227,7 +227,7 @@ pub mod private {
             pub valid: u8,
             pub count: u8,
             pub padding: Padding<[u8; 2]>,
-            pub channels: [NV_GPU_CLIENT_POWER_TOPOLOGY_CHANNEL_ID; 4],
+            pub channels: Array<[NV_GPU_CLIENT_POWER_TOPOLOGY_CHANNEL_ID; 4]>,
         }
     }
 
@@ -270,7 +270,7 @@ pub mod private {
         pub struct NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_V1 {
             pub version: NvVersion,
             pub count: u32,
-            pub entries: [NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_ENTRY; 4],
+            pub entries: Array<[NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_ENTRY; 4]>,
         }
     }
 
@@ -366,7 +366,7 @@ pub mod private {
             pub count: u32,
             pub unknown: u32,
             pub value_uV: u32,
-            pub buf1: [u32; 30],
+            pub buf1: Padding<[u32; 30]>,
         }
     }
 

@@ -162,7 +162,7 @@ impl PhysicalGpu {
         trace!("gpu.board_number()");
         unsafe {
             nvcall!(NvAPI_GPU_GetBoardInfo@get(self.0))
-                .map(|data| data.BoardNum)
+                .map(|data| *data.BoardNum)
         }
     }
 

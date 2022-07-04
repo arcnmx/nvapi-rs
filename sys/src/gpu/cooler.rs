@@ -155,7 +155,7 @@ pub mod private {
         pub struct NV_GPU_GETCOOLER_SETTINGS_V1 {
             pub version: NvVersion,
             pub count: u32,
-            pub cooler: [NV_GPU_GETCOOLER_SETTING_V1; NVAPI_MAX_COOLERS_PER_GPU],
+            pub cooler: Array<[NV_GPU_GETCOOLER_SETTING_V1; NVAPI_MAX_COOLERS_PER_GPU]>,
         }
     }
 
@@ -194,7 +194,7 @@ pub mod private {
             pub version: NvVersion,
             /// number of associated coolers with the selected GPU
             pub count: u32,
-            pub cooler: [NV_GPU_GETCOOLER_SETTING_V3; NVAPI_MAX_COOLERS_PER_GPU_VER3],
+            pub cooler: Array<[NV_GPU_GETCOOLER_SETTING_V3; NVAPI_MAX_COOLERS_PER_GPU_VER3]>,
         }
     }
 
@@ -217,7 +217,7 @@ pub mod private {
         pub struct NV_GPU_GETCOOLER_SETTINGS_V4 {
             pub version: NvVersion,
             pub count: u32,
-            pub cooler: [NV_GPU_GETCOOLER_SETTING_V4; NVAPI_MAX_COOLERS_PER_GPU_VER4],
+            pub cooler: Array<[NV_GPU_GETCOOLER_SETTING_V4; NVAPI_MAX_COOLERS_PER_GPU_VER4]>,
         }
     }
 
@@ -255,7 +255,7 @@ pub mod private {
     nvstruct! {
         pub struct NV_GPU_SETCOOLER_LEVEL_V1 {
             pub version: NvVersion,
-            pub cooler: [NV_GPU_SETCOOLER_LEVEL_COOLER; NVAPI_MAX_COOLERS_PER_GPU],
+            pub cooler: Array<[NV_GPU_SETCOOLER_LEVEL_COOLER; NVAPI_MAX_COOLERS_PER_GPU]>,
         }
     }
 
@@ -308,7 +308,7 @@ pub mod private {
             pub version: NvVersion,
             /// selected policy to update the cooler levels for, example NVAPI_COOLER_POLICY_PERF
             pub policy: NV_COOLER_POLICY,
-            pub policyCoolerLevel: [NV_GPU_COOLER_POLICY_LEVEL; NVAPI_MAX_COOLER_LEVELS],
+            pub policyCoolerLevel: Array<[NV_GPU_COOLER_POLICY_LEVEL; NVAPI_MAX_COOLER_LEVELS]>,
         }
     }
 
@@ -369,7 +369,7 @@ pub mod private {
             pub version: NvVersion,
             pub count: u32,
             pub padding: Padding<[u32; 28/4]>,
-            pub entries: [NV_GPU_CLIENT_FAN_ARBITERS_INFO_ENTRY_V1; 32], // offset 36
+            pub entries: Array<[NV_GPU_CLIENT_FAN_ARBITERS_INFO_ENTRY_V1; 32]>, // offset 36
         }
     }
 
@@ -399,7 +399,7 @@ pub mod private {
             pub version: NvVersion,
             pub count: u32,
             pub padding: Padding<[u32; 28/4]>,
-            pub entries: [NV_GPU_CLIENT_FAN_ARBITERS_STATUS_ENTRY_V1; 32], // offset 36
+            pub entries: Array<[NV_GPU_CLIENT_FAN_ARBITERS_STATUS_ENTRY_V1; 32]>, // offset 36
         }
     }
 
@@ -433,7 +433,7 @@ pub mod private {
             pub version: NvVersion,
             pub count: u32,
             pub padding: Padding<[u32; 28/4]>,
-            pub entries: [NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_ENTRY_V1; 32], // offset 36
+            pub entries: Array<[NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_ENTRY_V1; 32]>, // offset 36
         }
     }
 
@@ -483,7 +483,7 @@ pub mod private {
             pub flags: u32,
             pub count: u32,
             pub padding: Padding<[u32; 8]>,
-            pub coolers: [NV_GPU_CLIENT_FAN_COOLER_INFO_V1; 32], // offset 44
+            pub coolers: Array<[NV_GPU_CLIENT_FAN_COOLER_INFO_V1; 32]>, // offset 44
         }
     }
 
@@ -521,7 +521,7 @@ pub mod private {
             pub version: NvVersion,
             pub count: u32,
             pub padding: Padding<[u32; 8]>,
-            pub coolers: [NV_GPU_CLIENT_FAN_COOLER_STATUS_V1; 32],
+            pub coolers: Array<[NV_GPU_CLIENT_FAN_COOLER_STATUS_V1; 32]>,
         }
     }
 
@@ -565,7 +565,7 @@ pub mod private {
             pub flags: u32,
             pub count: u32,
             pub padding: Padding<[u32; 8]>,
-            pub coolers: [NV_GPU_CLIENT_FAN_COOLER_CONTROL_V1; 32],
+            pub coolers: Array<[NV_GPU_CLIENT_FAN_COOLER_CONTROL_V1; 32]>,
         }
     }
 

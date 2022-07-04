@@ -30,7 +30,7 @@ nvstruct! {
         ///
         /// bits:2 is NV_GPU_CLOCK_FREQUENCIES_CLOCK_TYPE. Used to specify the type of clock to be returned.
         pub reserved: u32,
-        pub domain: [NV_GPU_CLOCK_FREQUENCIES_DOMAIN; NVAPI_MAX_GPU_PUBLIC_CLOCKS],
+        pub domain: Array<[NV_GPU_CLOCK_FREQUENCIES_DOMAIN; NVAPI_MAX_GPU_PUBLIC_CLOCKS]>,
     }
 }
 
@@ -107,7 +107,7 @@ pub mod private {
             pub version: NvVersion,
             pub flags: u32,
             /// (core_usage, memory_usage, video_engine_usage), probably indexed by NV_GPU_UTILIZATION_DOMAIN_ID
-            pub usages: [NV_USAGES_INFO_USAGE; NVAPI_MAX_USAGES_PER_GPU],
+            pub usages: Array<[NV_USAGES_INFO_USAGE; NVAPI_MAX_USAGES_PER_GPU]>,
         }
     }
 
@@ -123,7 +123,7 @@ pub mod private {
     nvstruct! {
         pub struct NV_CLOCKS_INFO_V1 {
             pub version: NvVersion,
-            pub clocks: [u32; NVAPI_MAX_CLOCKS_PER_GPU],
+            pub clocks: Array<[u32; NVAPI_MAX_CLOCKS_PER_GPU]>,
         }
     }
 
@@ -163,7 +163,7 @@ pub mod private {
             pub version: NvVersion,
             pub mask: ClockMask,
             pub unknown: Padding<[u32; 8]>,
-            pub points: [NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_CONTROL_V1; 255],
+            pub points: Array<[NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_CONTROL_V1; 255]>,
         }
     }
 
@@ -199,7 +199,7 @@ pub mod private {
             pub version: NvVersion,
             pub mask: ClockMask<1>,
             pub zero: Padding<[u32; 8]>,
-            pub entries: [NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_ENTRY; 32],
+            pub entries: Array<[NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_ENTRY; 32]>,
         }
     }
 
@@ -224,8 +224,8 @@ pub mod private {
         pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_V1 {
             pub version: NvVersion,
             pub mask: ClockMask,
-            pub unknown: [u32; 8],
-            pub clocks: [NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK; 255],
+            pub unknown: Padding<[u32; 8]>,
+            pub clocks: Array<[NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK; 255]>,
         }
     }
 
@@ -279,7 +279,7 @@ pub mod private {
             pub version: NvVersion,
             pub flags: u32, // unknown, only see 0
             pub count: u32,
-            pub entries: [NV_GPU_PERF_CLIENT_LIMITS_ENTRY; 0x20],
+            pub entries: Array<[NV_GPU_PERF_CLIENT_LIMITS_ENTRY; 0x20]>,
         }
     }
 

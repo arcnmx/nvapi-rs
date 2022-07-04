@@ -70,7 +70,7 @@ nvstruct! {
         pub version: NvVersion,
         /// number of associated thermal sensors
         pub count: u32,
-        pub sensor: [NV_GPU_THERMAL_SETTINGS_SENSOR; NVAPI_MAX_THERMAL_SENSORS_PER_GPU],
+        pub sensor: Array<[NV_GPU_THERMAL_SETTINGS_SENSOR; NVAPI_MAX_THERMAL_SENSORS_PER_GPU]>,
     }
 }
 
@@ -138,8 +138,8 @@ pub mod private {
             pub version: NvVersion,
             pub count: u8,
             pub flags: u8,
-            pub padding: [u8; 2],
-            pub entries: [NV_GPU_CLIENT_THERMAL_POLICIES_INFO_ENTRY_V2; NVAPI_MAX_THERMAL_INFO_ENTRIES],
+            pub padding: Padding<[u8; 2]>,
+            pub entries: Array<[NV_GPU_CLIENT_THERMAL_POLICIES_INFO_ENTRY_V2; NVAPI_MAX_THERMAL_INFO_ENTRIES]>,
         }
     }
 
@@ -176,7 +176,7 @@ pub mod private {
             pub flags: u8,
             pub count: u8,
             pub padding: Padding<[u8; 2]>,
-            pub entries: [NV_GPU_CLIENT_THERMAL_POLICY_INFO_V3; NVAPI_MAX_THERMAL_INFO_ENTRIES],
+            pub entries: Array<[NV_GPU_CLIENT_THERMAL_POLICY_INFO_V3; NVAPI_MAX_THERMAL_INFO_ENTRIES]>,
         }
     }
 
@@ -212,7 +212,7 @@ pub mod private {
         pub struct NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V2 {
             pub version: NvVersion,
             pub count: u32,
-            pub entries: [NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_ENTRY_V2; NVAPI_MAX_THERMAL_LIMIT_ENTRIES],
+            pub entries: Array<[NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_ENTRY_V2; NVAPI_MAX_THERMAL_LIMIT_ENTRIES]>,
         }
     }
 
@@ -260,7 +260,7 @@ pub mod private {
         pub struct NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V3 {
             pub version: NvVersion,
             pub count: u32,
-            pub entries: [NV_GPU_CLIENT_THERMAL_POLICY_STATUS_V3; NVAPI_MAX_THERMAL_LIMIT_ENTRIES],
+            pub entries: Array<[NV_GPU_CLIENT_THERMAL_POLICY_STATUS_V3; NVAPI_MAX_THERMAL_LIMIT_ENTRIES]>,
         }
     }
 
@@ -296,7 +296,7 @@ pub mod private {
     nvstruct! {
         #[derive(Default)]
         pub struct NV_GPU_CLIENT_PFF_CURVE_V1 {
-            pub points: [NV_GPU_CLIENT_PFF_CURVE_POINT_V1; 3],
+            pub points: Array<[NV_GPU_CLIENT_PFF_CURVE_POINT_V1; 3]>,
         }
     }
 
