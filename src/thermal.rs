@@ -10,7 +10,7 @@ use crate::types::{Percentage, Rpm, Celsius, CelsiusShifted, Kilohertz, Range, R
 
 pub use sys::gpu::thermal::{ThermalController, ThermalTarget};
 pub use sys::gpu::thermal::private::ThermalPolicyId;
-pub use sys::gpu::cooler::private::FanCoolerId;
+pub use sys::gpu::cooler::private::{FanCoolerId, FanArbiterInfoFlags};
 
 #[derive(Debug, Copy, Clone)]
 pub struct Sensor {
@@ -641,5 +641,89 @@ impl RawConversion for cooler::private::NV_GPU_COOLER_POLICY_TABLE {
             policy: CoolerPolicy::from_raw(self.policy)?,
             levels: self.policyCoolerLevel.iter().map(RawConversion::convert_raw).collect::<Result<_, _>>()?,
         })
+    }
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
+pub struct FanArbiterInfo {
+    pub flags: FanArbiterInfoFlags,
+}
+
+impl RawConversion for cooler::private::NV_GPU_CLIENT_FAN_ARBITER_INFO_V1 {
+    type Target = (u32, FanArbiterInfo);
+    type Error = sys::ArgumentRangeError;
+
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
+        Ok((self.arbiter_index, FanArbiterInfo {
+            flags: self.flags.try_into()?,
+        }))
+    }
+}
+
+impl RawConversion for cooler::private::NV_GPU_CLIENT_FAN_ARBITERS_INFO_V1 {
+    type Target = BTreeMap<u32, FanArbiterInfo>;
+    type Error = sys::ArgumentRangeError;
+
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
+        self.arbiters().iter().map(RawConversion::convert_raw).collect()
+    }
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
+pub struct FanArbiterStatus {
+    pub fan_stopped: bool,
+}
+
+impl RawConversion for cooler::private::NV_GPU_CLIENT_FAN_ARBITER_STATUS_V1 {
+    type Target = (u32, FanArbiterStatus);
+    type Error = sys::ArgumentRangeError;
+
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
+        Ok((self.unknown0, FanArbiterStatus {
+            fan_stopped: self.fan_stop_active()
+        }))
+    }
+}
+
+impl RawConversion for cooler::private::NV_GPU_CLIENT_FAN_ARBITERS_STATUS_V1 {
+    type Target = BTreeMap<u32, FanArbiterStatus>;
+    type Error = sys::ArgumentRangeError;
+
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
+        self.arbiters().iter().map(RawConversion::convert_raw).collect()
+    }
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
+pub struct FanArbiterControl {
+    pub stop_fan: bool,
+}
+
+impl RawConversion for cooler::private::NV_GPU_CLIENT_FAN_ARBITER_CONTROL_V1 {
+    type Target = (u32, FanArbiterControl);
+    type Error = sys::ArgumentRangeError;
+
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
+        Ok((self.arbiter_index, FanArbiterControl {
+            stop_fan: self.flags().contains(cooler::private::FanArbiterControlFlags::FAN_STOP),
+        }))
+    }
+}
+
+impl RawConversion for cooler::private::NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_V1 {
+    type Target = BTreeMap<u32, FanArbiterControl>;
+    type Error = sys::ArgumentRangeError;
+
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        trace!("convert_raw({:#?})", self);
+        self.arbiters().iter().map(RawConversion::convert_raw).collect()
     }
 }

@@ -346,21 +346,27 @@ pub mod private {
         pub unsafe fn NvAPI_GPU_RestoreCoolerPolicyTable;
     }
 
+    nvbits! {
+        pub enum NV_FAN_ARBITER_INFO_FLAGS / FanArbiterInfoFlags {
+            /// Supports full fan stop
+            NV_FAN_ARBITER_INFO_FLAGS_FAN_STOP / FAN_STOP = 1,
+            /// Fan stop is enabled by default
+            NV_FAN_ARBITER_INFO_FLAGS_FAN_STOP_DEFAULT / FAN_STOP_DEFAULT = 2,
+        }
+    }
+
     nvstruct! {
-        pub struct NV_GPU_CLIENT_FAN_ARBITERS_INFO_ENTRY_V1 {
+        pub struct NV_GPU_CLIENT_FAN_ARBITER_INFO_V1 {
             pub unknown: u32,
-            pub flags: u32,
+            pub flags: NV_FAN_ARBITER_INFO_FLAGS,
             pub arbiter_index: u32,
             pub padding: Padding<[u32; 40/4-3]>,
         }
     }
 
-    impl NV_GPU_CLIENT_FAN_ARBITERS_INFO_ENTRY_V1 {
-        pub fn fan_stop_supported(&self) -> bool {
-            self.flags & 1 != 0
-        }
-        pub fn fan_stop_default_enable(&self) -> bool {
-            self.flags & 2 != 0
+    impl NV_GPU_CLIENT_FAN_ARBITER_INFO_V1 {
+        pub fn flags(&self) -> FanArbiterInfoFlags {
+            FanArbiterInfoFlags::from_bits_truncate(self.flags)
         }
     }
 
@@ -369,7 +375,13 @@ pub mod private {
             pub version: NvVersion,
             pub count: u32,
             pub padding: Padding<[u32; 28/4]>,
-            pub entries: Array<[NV_GPU_CLIENT_FAN_ARBITERS_INFO_ENTRY_V1; 32]>, // offset 36
+            pub arbiters: Array<[NV_GPU_CLIENT_FAN_ARBITER_INFO_V1; 32]>, // offset 36
+        }
+    }
+
+    impl NV_GPU_CLIENT_FAN_ARBITERS_INFO_V1 {
+        pub fn arbiters(&self) -> &[NV_GPU_CLIENT_FAN_ARBITER_INFO_V1] {
+            &self.arbiters[..self.count as usize]
         }
     }
 
@@ -382,13 +394,13 @@ pub mod private {
     }
 
     nvstruct! {
-        pub struct NV_GPU_CLIENT_FAN_ARBITERS_STATUS_ENTRY_V1 {
+        pub struct NV_GPU_CLIENT_FAN_ARBITER_STATUS_V1 {
             pub unknown0: u32,
             pub unknown1: u32,
         }
     }
 
-    impl NV_GPU_CLIENT_FAN_ARBITERS_STATUS_ENTRY_V1 {
+    impl NV_GPU_CLIENT_FAN_ARBITER_STATUS_V1 {
         pub fn fan_stop_active(&self) -> bool {
             self.unknown1 != 0
         }
@@ -399,7 +411,13 @@ pub mod private {
             pub version: NvVersion,
             pub count: u32,
             pub padding: Padding<[u32; 28/4]>,
-            pub entries: Array<[NV_GPU_CLIENT_FAN_ARBITERS_STATUS_ENTRY_V1; 32]>, // offset 36
+            pub arbiters: Array<[NV_GPU_CLIENT_FAN_ARBITER_STATUS_V1; 32]>, // offset 36
+        }
+    }
+
+    impl NV_GPU_CLIENT_FAN_ARBITERS_STATUS_V1 {
+        pub fn arbiters(&self) -> &[NV_GPU_CLIENT_FAN_ARBITER_STATUS_V1] {
+            &self.arbiters[..self.count as usize]
         }
     }
 
@@ -412,19 +430,22 @@ pub mod private {
     }
 
     nvstruct! {
-        pub struct NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_ENTRY_V1 {
+        pub struct NV_GPU_CLIENT_FAN_ARBITER_CONTROL_V1 {
             pub arbiter_index: u32,
-            pub flags: u32,
+            pub flags: NV_FAN_ARBITER_CONTROL_FLAGS,
         }
     }
 
-    impl NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_ENTRY_V1 {
-        pub fn fan_stop_feature_enabled(&self) -> bool {
-            self.flags & 1 != 0
+    nvbits! {
+        pub enum NV_FAN_ARBITER_CONTROL_FLAGS / FanArbiterControlFlags {
+            /// Fan stop enabled
+            NV_FAN_ARBITER_CONTROL_FLAGS_FAN_STOP / FAN_STOP = 1,
         }
+    }
 
-        pub fn set_fan_stop_feature_enabled(&mut self, enable: bool) {
-            self.flags = (self.flags & !1) | if enable { 1 } else { 0 };
+    impl NV_GPU_CLIENT_FAN_ARBITER_CONTROL_V1 {
+        pub fn flags(&self) -> FanArbiterControlFlags {
+            FanArbiterControlFlags::from_bits_truncate(self.flags)
         }
     }
 
@@ -433,7 +454,13 @@ pub mod private {
             pub version: NvVersion,
             pub count: u32,
             pub padding: Padding<[u32; 28/4]>,
-            pub entries: Array<[NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_ENTRY_V1; 32]>, // offset 36
+            pub arbiters: Array<[NV_GPU_CLIENT_FAN_ARBITER_CONTROL_V1; 32]>, // offset 36
+        }
+    }
+
+    impl NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_V1 {
+        pub fn arbiters(&self) -> &[NV_GPU_CLIENT_FAN_ARBITER_CONTROL_V1] {
+            &self.arbiters[..self.count as usize]
         }
     }
 

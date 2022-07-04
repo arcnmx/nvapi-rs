@@ -770,6 +770,30 @@ impl PhysicalGpu {
         }
     }
 
+    pub fn fan_arbiter_info(&self) -> crate::Result<<cooler::private::NV_GPU_CLIENT_FAN_ARBITERS_INFO_V1 as RawConversion>::Target> {
+        trace!("gpu.fan_arbiter_info()");
+
+        unsafe {
+            nvcall!(NvAPI_GPU_ClientFanArbitersGetInfo@get(self.0) => raw)
+        }
+    }
+
+    pub fn fan_arbiter_status(&self) -> crate::Result<<cooler::private::NV_GPU_CLIENT_FAN_ARBITERS_STATUS_V1 as RawConversion>::Target> {
+        trace!("gpu.fan_arbiter_status()");
+
+        unsafe {
+            nvcall!(NvAPI_GPU_ClientFanArbitersGetStatus@get(self.0) => raw)
+        }
+    }
+
+    pub fn fan_arbiter_control(&self) -> crate::Result<<cooler::private::NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_V1 as RawConversion>::Target> {
+        trace!("gpu.fan_arbiter_control()");
+
+        unsafe {
+            nvcall!(NvAPI_GPU_ClientFanArbitersGetControl@get(self.0) => raw)
+        }
+    }
+
     pub fn perf_info(&self) -> crate::Result<<power::private::NV_GPU_PERF_POLICIES_INFO_PARAMS as RawConversion>::Target> {
         trace!("gpu.perf_info()");
 
