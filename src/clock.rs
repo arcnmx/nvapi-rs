@@ -731,7 +731,7 @@ impl RawConversion for power::private::NV_VOLT_TABLE {
         trace!("convert_raw({:#?})", self);
         Ok(VoltageTable {
             flags: self.flags,
-            entries: self.entries.iter().map(RawConversion::convert_raw).collect::<Result<_, _>>()?,
+            entries: self.entries().iter().map(RawConversion::convert_raw).collect::<Result<_, _>>()?,
         })
     }
 }

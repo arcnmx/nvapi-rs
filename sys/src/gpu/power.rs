@@ -384,8 +384,9 @@ pub mod private {
 
     nvstruct! {
         pub struct NV_VOLT_TABLE_ENTRY {
+            pub voltage_domain: u32,
             pub voltage_uV: u32,
-            pub unknown: u32,
+            pub unknown: Padding<[u32; 257]>,
         }
     }
 
@@ -393,11 +394,14 @@ pub mod private {
         pub struct NV_VOLT_TABLE_V1 {
             pub version: NvVersion,
             pub flags: u32,
-            /// 1
-            pub filled: u32,
-            pub entries: [NV_VOLT_TABLE_ENTRY; 128],
-            /// empty tables?
-            pub buf1: [u32; 3888],
+            pub count: u32,
+            pub entries: Array<[NV_VOLT_TABLE_ENTRY; 16]>,
+        }
+    }
+
+    impl NV_VOLT_TABLE_V1 {
+        pub fn entries(&self) -> &[NV_VOLT_TABLE_ENTRY] {
+            &self.entries[..self.count as usize]
         }
     }
 
