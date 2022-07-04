@@ -11,16 +11,28 @@ pub const NV_TRUE: NvBool = 1;
 pub const NV_FALSE: NvBool = 0;
 
 /// A boolean containing reserved bits
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct BoolU32(pub u32);
 
 impl BoolU32 {
+    pub fn new(flag: bool, rest: u32) -> Self {
+        let mut value = BoolU32(rest);
+        value.set(flag);
+        value
+    }
+
     pub fn get(&self) -> bool {
         self.0 & 1 == 1
     }
 
     pub fn set(&mut self, value: bool) {
         self.0 = self.0 & 0xffffffe | if value { NV_TRUE } else { NV_FALSE } as u32
+    }
+}
+
+impl From<bool> for BoolU32 {
+    fn from(v: bool) -> Self {
+        Self::new(v, 0)
     }
 }
 
