@@ -331,7 +331,7 @@ impl PhysicalGpu {
         }
     }
 
-    pub fn set_pstates<I: Iterator<Item=(PState, ClockDomain, KilohertzDelta)>>(&self, deltas: I) -> crate::NvapiResult<()> {
+    pub fn set_pstates<I: IntoIterator<Item=(PState, ClockDomain, KilohertzDelta)>>(&self, deltas: I) -> crate::NvapiResult<()> {
         trace!("gpu.set_pstates()");
 
         let mut info = pstate::NV_GPU_PERF_PSTATES20_INFO::default();
@@ -540,7 +540,7 @@ impl PhysicalGpu {
         }
     }
 
-    pub fn set_power_limit<I: Iterator<Item=Percentage1000>>(&self, values: I) -> crate::NvapiResult<()> {
+    pub fn set_power_limit<I: IntoIterator<Item=Percentage1000>>(&self, values: I) -> crate::NvapiResult<()> {
         trace!("gpu.set_power_limit()");
         let mut data = power::private::NV_GPU_CLIENT_POWER_POLICIES_STATUS::default();
         //data.valid = 1;

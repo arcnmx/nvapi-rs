@@ -323,21 +323,21 @@ impl Gpu {
             .map_err(Into::into)
     }
 
-    pub fn set_power_limits<I: Iterator<Item=Percentage>>(&self, limits: I) -> nvapi::Result<()> {
+    pub fn set_power_limits<I: IntoIterator<Item=Percentage>>(&self, limits: I) -> nvapi::Result<()> {
         // TODO: match against power_limit_info, use range.min/max from there if it matches (can get fraction of a percent!)
-        self.gpu.set_power_limit(limits.map(From::from))
+        self.gpu.set_power_limit(limits.into_iter().map(From::from))
             .map_err(Into::into)
     }
 
-    pub fn set_sensor_limits<I: Iterator<Item=SensorThrottle>>(&self, limits: I) -> nvapi::Result<()> {
+    pub fn set_sensor_limits<I: IntoIterator<Item=SensorThrottle>>(&self, limits: I) -> nvapi::Result<()> {
         self.gpu.thermal_limit_info()
             .map_err(Into::into)
             .and_then(|info| self.gpu.set_thermal_limit(
-            limits.zip(info.into_iter()).map(|(limit, info)| limit.to_limit(info.policy, info.pff.as_ref()))
+            limits.into_iter().zip(info.into_iter()).map(|(limit, info)| limit.to_limit(info.policy, info.pff.as_ref()))
         ).map_err(Into::into))
     }
 
-    pub fn set_cooler_levels<I: Iterator<Item=(FanCoolerId, CoolerSettings)>>(&self, levels: I) -> nvapi::Result<()> {
+    pub fn set_cooler_levels<I: IntoIterator<Item=(FanCoolerId, CoolerSettings)>>(&self, levels: I) -> nvapi::Result<()> {
         self.gpu.set_cooler(levels)
             .map_err(Into::into)
     }
