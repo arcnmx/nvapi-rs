@@ -227,12 +227,9 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_GETCOOLER_SETTINGS_VER_1(NV_GPU_GETCOOLER_SETTINGS_V1 = 152, 1) }
-    nvversion! { NV_GPU_GETCOOLER_SETTINGS_VER_3(NV_GPU_GETCOOLER_SETTINGS_V3 = 1288, 3) }
-    nvversion! { NV_GPU_GETCOOLER_SETTINGS_VER_4(NV_GPU_GETCOOLER_SETTINGS_V4 = 1368, 4) }
-    nvversion! { NV_GPU_GETCOOLER_SETTINGS_VER = NV_GPU_GETCOOLER_SETTINGS_VER_4 }
-
-    pub type NV_GPU_GETCOOLER_SETTINGS = NV_GPU_GETCOOLER_SETTINGS_V4;
+    nvversion! { NV_GPU_GETCOOLER_SETTINGS_V1(1) = 152 }
+    nvversion! { NV_GPU_GETCOOLER_SETTINGS_V3(3) = 1288 }
+    nvversion! { @=NV_GPU_GETCOOLER_SETTINGS NV_GPU_GETCOOLER_SETTINGS_V4(4) = 1368 }
 
     nvapi! {
         pub type GPU_GetCoolerSettingsFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolerIndex: u32, pCoolerInfo: *mut NV_GPU_GETCOOLER_SETTINGS) -> NvAPI_Status;
@@ -262,12 +259,7 @@ pub mod private {
         }
     }
 
-    const NV_GPU_SETCOOLER_LEVEL_COOLER_SIZE: usize = 4 * 2;
-
-    nvversion! { NV_GPU_SETCOOLER_LEVEL_VER_1(NV_GPU_SETCOOLER_LEVEL_V1 = 4 + NV_GPU_SETCOOLER_LEVEL_COOLER_SIZE * NVAPI_MAX_COOLERS_PER_GPU, 1) }
-    nvversion! { NV_GPU_SETCOOLER_LEVEL_VER = NV_GPU_SETCOOLER_LEVEL_VER_1 }
-
-    pub type NV_GPU_SETCOOLER_LEVEL = NV_GPU_SETCOOLER_LEVEL_V1;
+    nvversion! { @=NV_GPU_SETCOOLER_LEVEL NV_GPU_SETCOOLER_LEVEL_V1(1) }
 
     nvapi! {
         pub type GPU_SetCoolerLevelsFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolerIndex: u32, pCoolerLevels: *const NV_GPU_SETCOOLER_LEVEL) -> NvAPI_Status;
@@ -310,8 +302,6 @@ pub mod private {
         }
     }
 
-    const NV_GPU_COOLER_POLICY_LEVEL_SIZE: usize = 4 * 3;
-
     nvstruct! {
         pub struct NV_GPU_COOLER_POLICY_TABLE_V1 {
             /// structure version
@@ -322,10 +312,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_COOLER_POLICY_TABLE_VER_1(NV_GPU_COOLER_POLICY_TABLE_V1 = 4 * 2 + NV_GPU_COOLER_POLICY_LEVEL_SIZE * NVAPI_MAX_COOLER_LEVELS, 1) }
-    nvversion! { NV_GPU_COOLER_POLICY_TABLE_VER = NV_GPU_COOLER_POLICY_TABLE_VER_1 }
-
-    pub type NV_GPU_COOLER_POLICY_TABLE = NV_GPU_COOLER_POLICY_TABLE_V1;
+    nvversion! { @=NV_GPU_COOLER_POLICY_TABLE NV_GPU_COOLER_POLICY_TABLE_V1(1) }
 
     nvapi! {
         pub type GPU_GetCoolerPolicyTableFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolerIndex: u32, pCoolerTable: *mut NV_GPU_COOLER_POLICY_TABLE, count: *mut u32) -> NvAPI_Status;
@@ -386,10 +373,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLIENT_FAN_ARBITERS_INFO_VER_1(NV_GPU_CLIENT_FAN_ARBITERS_INFO_V1 = 1316, 1) }
-    nvversion! { NV_GPU_CLIENT_FAN_ARBITERS_INFO_VER = NV_GPU_CLIENT_FAN_ARBITERS_INFO_VER_1 }
-
-    pub type NV_GPU_CLIENT_FAN_ARBITERS_INFO = NV_GPU_CLIENT_FAN_ARBITERS_INFO_V1;
+    nvversion! { @=NV_GPU_CLIENT_FAN_ARBITERS_INFO NV_GPU_CLIENT_FAN_ARBITERS_INFO_V1(1) = 1316 }
 
     nvapi! {
         pub type GPU_ClientFanArbitersGetInfoFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, arbiter: *mut NV_GPU_CLIENT_FAN_ARBITERS_INFO) -> NvAPI_Status;
@@ -419,10 +403,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLIENT_FAN_ARBITERS_STATUS_VER_1(NV_GPU_CLIENT_FAN_ARBITERS_STATUS_V1 = 292, 1) }
-    nvversion! { NV_GPU_CLIENT_FAN_ARBITERS_STATUS_VER = NV_GPU_CLIENT_FAN_ARBITERS_STATUS_VER_1 }
-
-    pub type NV_GPU_CLIENT_FAN_ARBITERS_STATUS = NV_GPU_CLIENT_FAN_ARBITERS_STATUS_V1;
+    nvversion! { @=NV_GPU_CLIENT_FAN_ARBITERS_STATUS NV_GPU_CLIENT_FAN_ARBITERS_STATUS_V1(1) = 292 }
 
     nvapi! {
         pub type GPU_ClientFanArbitersGetStatusFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, arbiter: *mut NV_GPU_CLIENT_FAN_ARBITERS_STATUS) -> NvAPI_Status;
@@ -456,10 +437,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_VER_1(NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_V1 = 292, 1) }
-    nvversion! { NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_VER = NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_VER_1 }
-
-    pub type NV_GPU_CLIENT_FAN_ARBITERS_CONTROL = NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_V1;
+    nvversion! { @=NV_GPU_CLIENT_FAN_ARBITERS_CONTROL NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_V1(1) = 292 }
 
     nvapi! {
         pub type GPU_ClientFanArbitersGetControlFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, arbiter: *mut NV_GPU_CLIENT_FAN_ARBITERS_CONTROL) -> NvAPI_Status;
@@ -519,10 +497,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLIENT_FAN_COOLERS_INFO_VER_1(NV_GPU_CLIENT_FAN_COOLERS_INFO_V1 = 0x62c, 1) }
-    nvversion! { NV_GPU_CLIENT_FAN_COOLERS_INFO_VER = NV_GPU_CLIENT_FAN_COOLERS_INFO_VER_1 }
-
-    pub type NV_GPU_CLIENT_FAN_COOLERS_INFO = NV_GPU_CLIENT_FAN_COOLERS_INFO_V1;
+    nvversion! { @=NV_GPU_CLIENT_FAN_COOLERS_INFO NV_GPU_CLIENT_FAN_COOLERS_INFO_V1(1) = 0x62c }
 
     nvapi! {
         pub type GPU_ClientFanCoolersGetInfoFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolers: *mut NV_GPU_CLIENT_FAN_COOLERS_INFO) -> NvAPI_Status;
@@ -556,10 +531,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLIENT_FAN_COOLERS_STATUS_VER_1(NV_GPU_CLIENT_FAN_COOLERS_STATUS_V1 = 0x6a8, 1) }
-    nvversion! { NV_GPU_CLIENT_FAN_COOLERS_STATUS_VER = NV_GPU_CLIENT_FAN_COOLERS_STATUS_VER_1 }
-
-    pub type NV_GPU_CLIENT_FAN_COOLERS_STATUS = NV_GPU_CLIENT_FAN_COOLERS_STATUS_V1;
+    nvversion! { @=NV_GPU_CLIENT_FAN_COOLERS_STATUS NV_GPU_CLIENT_FAN_COOLERS_STATUS_V1(1) = 0x6a8 }
 
     nvapi! {
         pub type GPU_ClientFanCoolersGetStatusFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolers: *mut NV_GPU_CLIENT_FAN_COOLERS_STATUS) -> NvAPI_Status;
@@ -611,10 +583,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLIENT_FAN_COOLERS_CONTROL_VER_1(NV_GPU_CLIENT_FAN_COOLERS_CONTROL_V1 = 0x5ac, 1) }
-    nvversion! { NV_GPU_CLIENT_FAN_COOLERS_CONTROL_VER = NV_GPU_CLIENT_FAN_COOLERS_CONTROL_VER_1 }
-
-    pub type NV_GPU_CLIENT_FAN_COOLERS_CONTROL = NV_GPU_CLIENT_FAN_COOLERS_CONTROL_V1;
+    nvversion! { @=NV_GPU_CLIENT_FAN_COOLERS_CONTROL NV_GPU_CLIENT_FAN_COOLERS_CONTROL_V1(1) = 0x5ac }
 
     nvapi! {
         pub type GPU_ClientFanCoolersGetControlFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolers: *mut NV_GPU_CLIENT_FAN_COOLERS_CONTROL) -> NvAPI_Status;

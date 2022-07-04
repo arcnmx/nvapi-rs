@@ -37,8 +37,7 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_GPU_ECC_STATUS_INFO_VER1(NV_GPU_ECC_STATUS_INFO = 4*4, 1) }
-nvversion! { NV_GPU_ECC_STATUS_INFO_VER = NV_GPU_ECC_STATUS_INFO_VER1 }
+nvversion! { @NV_GPU_ECC_STATUS_INFO(1) }
 
 nvapi! {
     pub type GPU_GetECCStatusInfoFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pECCStatusInfo: *mut NV_GPU_ECC_STATUS_INFO) -> NvAPI_Status;
@@ -73,8 +72,7 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_GPU_ECC_ERROR_INFO_VER1(NV_GPU_ECC_ERROR_INFO = 4 + 8*2*2 + 4, 1) }
-nvversion! { NV_GPU_ECC_ERROR_INFO_VER = NV_GPU_ECC_ERROR_INFO_VER1 }
+nvversion! { @NV_GPU_ECC_ERROR_INFO(1) }
 
 nvapi! {
     pub type GPU_GetECCErrorInfoFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pECCErrorInfo: *mut NV_GPU_ECC_ERROR_INFO) -> NvAPI_Status;
@@ -102,8 +100,7 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_GPU_ECC_CONFIGURATION_INFO_VER1(NV_GPU_ECC_CONFIGURATION_INFO = 8, 1) }
-nvversion! { NV_GPU_ECC_CONFIGURATION_INFO_VER = NV_GPU_ECC_CONFIGURATION_INFO_VER1 }
+nvversion! { @NV_GPU_ECC_CONFIGURATION_INFO(1) = 8 }
 
 impl NV_GPU_ECC_CONFIGURATION_INFO {
     pub fn isEnabled(&self) -> bool {

@@ -61,11 +61,6 @@ nvstruct! {
     }
 }
 
-#[cfg(target_pointer_width = "64")]
-const NV_I2C_INFO_V1_SIZE: usize = 4 * 2 + (1 * 2) + 6 + 8 + 4 + 4 + 8 + 4 * 2;
-#[cfg(target_pointer_width = "32")]
-const NV_I2C_INFO_V1_SIZE: usize = 4 * 2 + (1 * 2) + 2 + 4 + 4 + 4 + 4 * 2;
-
 nvstruct! {
     /// Used in NvAPI_I2CRead() and NvAPI_I2CWrite()
     pub struct NV_I2C_INFO_V2 {
@@ -101,11 +96,6 @@ nvstruct! {
         pub i2cSpeedKhz: NV_I2C_SPEED,
     }
 }
-
-#[cfg(target_pointer_width = "64")]
-const NV_I2C_INFO_V2_SIZE: usize = NV_I2C_INFO_V1_SIZE + 4 + 4;
-#[cfg(target_pointer_width = "32")]
-const NV_I2C_INFO_V2_SIZE: usize = NV_I2C_INFO_V1_SIZE + 4;
 
 nvstruct! {
     /// Used in NvAPI_I2CRead() and NvAPI_I2CWrite()
@@ -146,14 +136,9 @@ nvstruct! {
     }
 }
 
-const NV_I2C_INFO_V3_SIZE: usize = NV_I2C_INFO_V2_SIZE + 1 + 3 + 4;
-
-pub type NV_I2C_INFO = NV_I2C_INFO_V3;
-
-nvversion! { NV_I2C_INFO_VER1(NV_I2C_INFO_V1 = NV_I2C_INFO_V1_SIZE, 1) }
-nvversion! { NV_I2C_INFO_VER2(NV_I2C_INFO_V2 = NV_I2C_INFO_V2_SIZE, 2) }
-nvversion! { NV_I2C_INFO_VER3(NV_I2C_INFO_V3 = NV_I2C_INFO_V3_SIZE, 3) }
-nvversion! { NV_I2C_INFO_VER = NV_I2C_INFO_VER3 }
+nvversion! { NV_I2C_INFO_V1(1) }
+nvversion! { NV_I2C_INFO_V2(2) }
+nvversion! { @=NV_I2C_INFO NV_I2C_INFO_V3(3) }
 
 nvapi! {
     pub type NvAPI_I2CReadFn = extern "C" fn(hPhysicalGpu: NvPhysicalGpuHandle, pI2cInfo: *mut NV_I2C_INFO) -> NvAPI_Status;
@@ -248,15 +233,7 @@ pub mod private {
         }
     }
 
-    #[cfg(target_pointer_width = "64")]
-    const NV_I2C_INFO_EX_V3_SIZE: usize = 4 * 2 + (1 * 2) + 6 + 8 + 4 + 4 + 8 + 4 * 3 + 1 + 3 + 4 + 4;
-    #[cfg(target_pointer_width = "32")]
-    const NV_I2C_INFO_EX_V3_SIZE: usize = 4 * 2 + (1 * 2) + 2 + 4 + 4 + 4 + 4 * 3 + 1 + 3 + 4;
-
-    pub type NV_I2C_INFO_EX = NV_I2C_INFO_EX_V3;
-
-    nvversion! { NV_I2C_INFO_EX_VER3(NV_I2C_INFO_EX_V3 = NV_I2C_INFO_EX_V3_SIZE, 3) }
-    nvversion! { NV_I2C_INFO_EX_VER = NV_I2C_INFO_EX_VER3 }
+    nvversion! { @=NV_I2C_INFO_EX NV_I2C_INFO_EX_V3(3) }
 
     nvapi! {
         pub type NvAPI_I2CReadExFn = extern "C" fn(hPhysicalGpu: NvPhysicalGpuHandle, pI2cInfo: *mut NV_I2C_INFO_EX, pData: *mut u32) -> NvAPI_Status;

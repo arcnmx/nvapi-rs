@@ -79,9 +79,8 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_GPU_DISPLAYIDS_VER1(NV_GPU_DISPLAYIDS = 4 * 4, 1) }
-nvversion! { NV_GPU_DISPLAYIDS_VER2(NV_GPU_DISPLAYIDS = 4 * 4, 3) }
-nvversion! { NV_GPU_DISPLAYIDS_VER = NV_GPU_DISPLAYIDS_VER2 }
+nvversion! { NV_GPU_DISPLAYIDS(1) }
+nvversion! { @NV_GPU_DISPLAYIDS(3) }
 
 nvapi! {
     pub type GPU_GetConnectedDisplayIds = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pDisplayIds: *mut NV_GPU_DISPLAYIDS, pDisplayIdCount: *mut u32, flags: NV_GPU_CONNECTED_IDS_FLAG) -> NvAPI_Status;

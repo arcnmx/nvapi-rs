@@ -288,35 +288,35 @@ macro_rules! nvapi {
 }
 
 macro_rules! nvversion {
-    ($name:ident($struct:ident = $sz:expr, $ver:expr)) => {
-        pub const $name: NvVersion = NvVersion::with_struct::<$struct>($ver);
+    (@ $(=$name:ident)? $target:ident($ver:expr) $(= $sz:expr)?) => {
+        nvversion! { $(=$name)? $target($ver) $(=$sz)? }
 
-        mod $name {
-            pub(crate) type Argument = super::$struct;
-        }
-
-        impl crate::nvapi::StructVersion<$ver> for $struct {
-            const NVAPI_VERSION: crate::nvapi::NvVersion = $name;
-        }
-
-        const _: () = assert!($sz == std::mem::size_of::<$struct>());
-    };
-    ($name:ident = $target:ident) => {
-        pub const $name: NvVersion = $target;
-
-        impl crate::nvapi::StructVersion for $target::Argument {
-            const NVAPI_VERSION: crate::nvapi::NvVersion = <$target::Argument as crate::nvapi::StructVersion<{$target.version()}>>::NVAPI_VERSION;
+        impl crate::nvapi::StructVersion for $target {
+            const NVAPI_VERSION: crate::nvapi::NvVersion = <$target as crate::nvapi::StructVersion<{$ver}>>::NVAPI_VERSION;
 
             fn versioned() -> Self {
-                <$target::Argument as crate::nvapi::StructVersion<{$target.version()}>>::versioned()
+                <$target as crate::nvapi::StructVersion<{$ver}>>::versioned()
             }
         }
 
-        impl Default for $target::Argument {
+        impl Default for $target {
             fn default() -> Self {
                 crate::nvapi::StructVersion::<0>::versioned()
             }
         }
+    };
+    ($(=$name:ident)? $target:ident($ver:expr) $(= $sz:expr)?) => {
+        $(
+            pub type $name = $target;
+        )?
+
+        impl crate::nvapi::StructVersion<$ver> for $target {
+            const NVAPI_VERSION: crate::nvapi::NvVersion = NvVersion::with_struct::<$target>($ver);
+        }
+
+        $(
+            const _: () = assert!($sz == std::mem::size_of::<$target>());
+        )?
     };
     ($struct:ident(@.$id:ident)) => {
         impl crate::nvapi::VersionedStruct for $v2 {

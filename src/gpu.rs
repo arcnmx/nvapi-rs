@@ -1299,7 +1299,7 @@ impl fmt::Display for ArchInfo {
     }
 }
 
-impl RawConversion for sys::gpu::NV_GPU_ARCH_INFO_V2 {
+impl RawConversion for sys::gpu::NV_GPU_ARCH_INFO_V1 {
     type Target = ArchInfo;
     type Error = Infallible;
 

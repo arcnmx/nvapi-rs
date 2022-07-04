@@ -90,13 +90,8 @@ nvstruct! {
     }
 }
 
-pub type NV_GPU_THERMAL_SETTINGS_V2 = NV_GPU_THERMAL_SETTINGS_V1; // the only difference is the _SENSOR struct uses i32 instead of u32 fields
-pub type NV_GPU_THERMAL_SETTINGS = NV_GPU_THERMAL_SETTINGS_V2;
-
-const NV_GPU_THERMAL_SETTINGS_V1_SIZE: usize = 4 * 2 + (4 * 5) * NVAPI_MAX_THERMAL_SENSORS_PER_GPU;
-nvversion! { NV_GPU_THERMAL_SETTINGS_VER_1(NV_GPU_THERMAL_SETTINGS_V1 = NV_GPU_THERMAL_SETTINGS_V1_SIZE, 1) }
-nvversion! { NV_GPU_THERMAL_SETTINGS_VER_2(NV_GPU_THERMAL_SETTINGS_V2 = NV_GPU_THERMAL_SETTINGS_V1_SIZE, 2) }
-nvversion! { NV_GPU_THERMAL_SETTINGS_VER = NV_GPU_THERMAL_SETTINGS_VER_2 }
+nvversion! { NV_GPU_THERMAL_SETTINGS_V1(1) }
+nvversion! { @=NV_GPU_THERMAL_SETTINGS NV_GPU_THERMAL_SETTINGS_V1(2) } // the only v2 difference is the _SENSOR struct uses i32 instead of u32 fields
 
 nvapi! {
     pub type GPU_GetThermalSettingsFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, sensorIndex: u32, pThermalSettings: *mut NV_GPU_THERMAL_SETTINGS) -> NvAPI_Status;
@@ -137,7 +132,6 @@ pub mod private {
             pub defaultFlags: u32,
         }
     }
-    const NV_GPU_CLIENT_THERMAL_POLICIES_INFO_ENTRY_SIZE: usize = 4 * 6;
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V2 {
@@ -148,7 +142,6 @@ pub mod private {
             pub entries: [NV_GPU_CLIENT_THERMAL_POLICIES_INFO_ENTRY_V2; NVAPI_MAX_THERMAL_INFO_ENTRIES],
         }
     }
-    const NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V2_SIZE: usize = 4 * 2 + NV_GPU_CLIENT_THERMAL_POLICIES_INFO_ENTRY_SIZE * NVAPI_MAX_THERMAL_INFO_ENTRIES;
 
     impl NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V2 {
         pub fn entries(&self) -> &[NV_GPU_CLIENT_THERMAL_POLICIES_INFO_ENTRY_V2] {
@@ -197,11 +190,8 @@ pub mod private {
         }
     }
 
-    pub type NV_GPU_CLIENT_THERMAL_POLICIES_INFO = NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V3;
-
-    nvversion! { NV_GPU_CLIENT_THERMAL_POLICIES_INFO_VER_2(NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V2 = NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V2_SIZE, 2) }
-    nvversion! { NV_GPU_CLIENT_THERMAL_POLICIES_INFO_VER_3(NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V3 = 1400, 3) }
-    nvversion! { NV_GPU_CLIENT_THERMAL_POLICIES_INFO_VER = NV_GPU_CLIENT_THERMAL_POLICIES_INFO_VER_3 }
+    nvversion! { NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V2(2) }
+    nvversion! { @=NV_GPU_CLIENT_THERMAL_POLICIES_INFO NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V3(3) = 1400 }
 
     nvapi! {
         pub unsafe fn NvAPI_GPU_ClientThermalPoliciesGetInfo(hPhysicalGPU: NvPhysicalGpuHandle, pThermalInfo: *mut NV_GPU_CLIENT_THERMAL_POLICIES_INFO) -> NvAPI_Status;
@@ -217,7 +207,6 @@ pub mod private {
             pub pstate: crate::gpu::pstate::NV_GPU_PERF_PSTATE_ID,
         }
     }
-    const NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_ENTRY_SIZE: usize = 4 * 3;
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V2 {
@@ -226,7 +215,6 @@ pub mod private {
             pub entries: [NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_ENTRY_V2; NVAPI_MAX_THERMAL_LIMIT_ENTRIES],
         }
     }
-    const NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V2_SIZE: usize = 4 * 2 + NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_ENTRY_SIZE * NVAPI_MAX_THERMAL_LIMIT_ENTRIES;
 
     impl NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V2 {
         pub fn entries(&self) -> &[NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_ENTRY_V2] {
@@ -282,11 +270,8 @@ pub mod private {
         }
     }
 
-    pub type NV_GPU_CLIENT_THERMAL_POLICIES_STATUS = NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V3;
-
-    nvversion! { NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_VER_2(NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V2 = NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V2_SIZE, 2) }
-    nvversion! { NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_VER_3(NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V3 = 1352, 3) }
-    nvversion! { NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_VER = NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_VER_3 }
+    nvversion! { NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V2(2) }
+    nvversion! { @=NV_GPU_CLIENT_THERMAL_POLICIES_STATUS NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V3(3) = 1352 }
 
     nvapi! {
         pub unsafe fn NvAPI_GPU_ClientThermalPoliciesGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pThermalLimit: *mut NV_GPU_CLIENT_THERMAL_POLICIES_STATUS) -> NvAPI_Status;

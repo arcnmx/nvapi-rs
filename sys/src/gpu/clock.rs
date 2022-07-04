@@ -44,15 +44,9 @@ impl NV_GPU_CLOCK_FREQUENCIES_V1 {
     }
 }
 
-pub type NV_GPU_CLOCK_FREQUENCIES_V2 = NV_GPU_CLOCK_FREQUENCIES_V1;
-
-/// Used in NvAPI_GPU_GetAllClockFrequencies()
-pub type NV_GPU_CLOCK_FREQUENCIES = NV_GPU_CLOCK_FREQUENCIES_V2;
-
-nvversion! { NV_GPU_CLOCK_FREQUENCIES_VER_1(NV_GPU_CLOCK_FREQUENCIES_V1 = 4 * 2 + (4 * 2) * NVAPI_MAX_GPU_PUBLIC_CLOCKS, 1) }
-nvversion! { NV_GPU_CLOCK_FREQUENCIES_VER_2(NV_GPU_CLOCK_FREQUENCIES_V2 = 4 * 2 + (4 * 2) * NVAPI_MAX_GPU_PUBLIC_CLOCKS, 2) }
-nvversion! { NV_GPU_CLOCK_FREQUENCIES_VER_3(NV_GPU_CLOCK_FREQUENCIES_V2 = 4 * 2 + (4 * 2) * NVAPI_MAX_GPU_PUBLIC_CLOCKS, 3) }
-nvversion! { NV_GPU_CLOCK_FREQUENCIES_VER = NV_GPU_CLOCK_FREQUENCIES_VER_3 }
+nvversion! { NV_GPU_CLOCK_FREQUENCIES_V1(1) }
+nvversion! { NV_GPU_CLOCK_FREQUENCIES_V1(2) }
+nvversion! { @=NV_GPU_CLOCK_FREQUENCIES NV_GPU_CLOCK_FREQUENCIES_V1(3) }
 
 nvenum! {
     /// Used in NvAPI_GPU_GetAllClockFrequencies()
@@ -117,10 +111,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_USAGES_INFO_VER_1(NV_USAGES_INFO_V1 = 4 * (2 + 4 * NVAPI_MAX_USAGES_PER_GPU), 1) }
-    nvversion! { NV_USAGES_INFO_VER = NV_USAGES_INFO_VER_1 }
-
-    pub type NV_USAGES_INFO = NV_USAGES_INFO_V1;
+    nvversion! { @=NV_USAGES_INFO NV_USAGES_INFO_V1(1) }
 
     nvapi! {
         pub type GPU_GetUsagesFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pUsagesInfo: *mut NV_USAGES_INFO) -> NvAPI_Status;
@@ -136,10 +127,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_CLOCKS_INFO_VER_1(NV_CLOCKS_INFO_V1 = 4 * (1 + NVAPI_MAX_CLOCKS_PER_GPU), 1) }
-    nvversion! { NV_CLOCKS_INFO_VER = NV_CLOCKS_INFO_VER_1 }
-
-    pub type NV_CLOCKS_INFO = NV_CLOCKS_INFO_V1;
+    nvversion! { @=NV_CLOCKS_INFO NV_CLOCKS_INFO_V1(1) }
 
     nvapi! {
         pub type GPU_GetAllClocksFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pClocksInfo: *mut NV_CLOCKS_INFO) -> NvAPI_Status;
@@ -179,12 +167,8 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_VER_1(NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_V1 = 9248, 1) }
-    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_VER_2(NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_V2 = 9248, 2) }
-    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_VER = NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_VER_2 }
-
-    pub type NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_V2 = NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_V1;
-    pub type NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL = NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_V2;
+    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_V1(1) = 9248 }
+    nvversion! { @=NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_V1(2) }
 
     nvapi! {
         /// Pascal and later
@@ -219,10 +203,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_VER_1(NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_V1 = 2344, 1) }
-    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_VER = NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_VER_1 }
-
-    pub type NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO = NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_V1;
+    nvversion! { @=NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_V1(1) = 2344 }
 
     nvapi! {
         /// Pascal only
@@ -248,10 +229,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_VER_1(NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_V1 = 6188, 1) }
-    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_VER = NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_VER_1 }
-
-    pub type NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO = NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_V1;
+    nvversion! { @=NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_V1(1) = 6188 }
 
     nvapi! {
         /// Pascal and later
@@ -311,10 +289,7 @@ pub mod private {
         }
     }
 
-    pub type NV_GPU_PERF_CLIENT_LIMITS = NV_GPU_PERF_CLIENT_LIMITS_V2;
-
-    nvversion! { NV_GPU_PERF_CLIENT_LIMITS_VER_2(NV_GPU_PERF_CLIENT_LIMITS_V2 = 0x30c, 2) }
-    nvversion! { NV_GPU_PERF_CLIENT_LIMITS_VER = NV_GPU_PERF_CLIENT_LIMITS_VER_2 }
+    nvversion! { @=NV_GPU_PERF_CLIENT_LIMITS NV_GPU_PERF_CLIENT_LIMITS_V2(2) = 0x30c }
 
     nvapi! {
         /// Pascal only
