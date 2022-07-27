@@ -1,6 +1,6 @@
 use std::cmp;
 use std::borrow::Borrow;
-use {i2c, sys, PhysicalGpu};
+use crate::{PhysicalGpu, sys};
 
 pub struct I2c<G = PhysicalGpu> {
     inner: G,
@@ -42,7 +42,7 @@ impl<G> I2c<G> {
 }
 
 impl<G: Borrow<PhysicalGpu>> I2c<G> {
-    pub fn nvapi_read(&self, register: &[u8], bytes: &mut [u8]) -> sys::Result<usize> {
+    pub fn nvapi_read(&self, register: &[u8], bytes: &mut [u8]) -> crate::NvapiResult<usize> {
         // TODO: use i2c_read_ex if port_is_ddc is false? docs say it must be true here
         self.inner.borrow().i2c_read(
             self.display_mask,
@@ -53,7 +53,7 @@ impl<G: Borrow<PhysicalGpu>> I2c<G> {
         )
     }
 
-    pub fn nvapi_write(&self, register: &[u8], bytes: &[u8]) -> sys::Result<()> {
+    pub fn nvapi_write(&self, register: &[u8], bytes: &[u8]) -> crate::NvapiResult<()> {
         // TODO: use i2c_write_ex if port_is_ddc is false? docs say it must be true here
         self.inner.borrow().i2c_write(
             self.display_mask,
@@ -66,13 +66,13 @@ impl<G: Borrow<PhysicalGpu>> I2c<G> {
 }
 
 impl<G> i2c::Master for I2c<G> {
-    type Error = sys::Status;
+    type Error = crate::Error;
 }
 
 impl<G> i2c::Address for I2c<G> {
-    fn set_slave_address(&mut self, addr: u16, tenbit: bool) -> sys::Result<()> {
+    fn set_slave_address(&mut self, addr: u16, tenbit: bool) -> crate::Result<()> {
         if tenbit {
-            Err(sys::Status::InvalidArgument)
+            Err(sys::ArgumentRangeError.into())
         } else {
             self.address = addr as u8;
             Ok(())
@@ -83,10 +83,12 @@ impl<G> i2c::Address for I2c<G> {
 impl<G: Borrow<PhysicalGpu>> i2c::ReadWrite for I2c<G> {
     fn i2c_read(&mut self, value: &mut [u8]) -> Result<usize, Self::Error> {
         self.nvapi_read(&[], value)
+            .map_err(Into::into)
     }
 
     fn i2c_write(&mut self, value: &[u8]) -> Result<(), Self::Error> {
         self.nvapi_write(&[], value)
+            .map_err(Into::into)
     }
 }
 
@@ -96,37 +98,43 @@ impl<G: Borrow<PhysicalGpu>> i2c::Smbus for I2c<G> {
             self.nvapi_read(&[], &mut []).map(drop)
         } else {
             self.nvapi_write(&[], &[])
-        }
+        }.map_err(Into::into)
     }
 
     fn smbus_read_byte(&mut self) -> Result<u8, Self::Error> {
         let mut buf = [0];
         self.nvapi_read(&[], &mut buf)
+            .map_err(Into::into)
             .map(|_| buf[0])
     }
 
     fn smbus_write_byte(&mut self, value: u8) -> Result<(), Self::Error> {
         self.nvapi_write(&[], &[value])
+            .map_err(Into::into)
     }
 
     fn smbus_read_byte_data(&mut self, command: u8) -> Result<u8, Self::Error> {
         let mut buf = [0];
         self.nvapi_read(&[command], &mut buf)
+            .map_err(Into::into)
             .map(|_| buf[0])
     }
 
     fn smbus_write_byte_data(&mut self, command: u8, value: u8) -> Result<(), Self::Error> {
         self.nvapi_write(&[command], &[value])
+            .map_err(Into::into)
     }
 
     fn smbus_read_word_data(&mut self, command: u8) -> Result<u16, Self::Error> {
         let mut buf = [0, 0];
         self.nvapi_read(&[command], &mut buf)
+            .map_err(Into::into)
             .map(|_| buf[0] as u16 | (buf[0] as u16) << 8)
     }
 
     fn smbus_write_word_data(&mut self, command: u8, value: u16) -> Result<(), Self::Error> {
         self.nvapi_write(&[command], &[value as u8, (value >> 8) as u8])
+            .map_err(Into::into)
     }
 
     fn smbus_process_call(&mut self, command: u8, value: u16) -> Result<u16, Self::Error> {
@@ -136,6 +144,7 @@ impl<G: Borrow<PhysicalGpu>> i2c::Smbus for I2c<G> {
     fn smbus_read_block_data(&mut self, command: u8, value: &mut [u8]) -> Result<usize, Self::Error> {
         let mut buf = [0; 33];
         self.nvapi_read(&[command], &mut buf)
+            .map_err(Into::into)
             .map(|len| {
                 let len = cmp::min(cmp::min(len, buf[0] as usize), value.len());
                 value[..len].copy_from_slice(&buf[1..1 + len]);
@@ -145,6 +154,7 @@ impl<G: Borrow<PhysicalGpu>> i2c::Smbus for I2c<G> {
 
     fn smbus_write_block_data(&mut self, command: u8, value: &[u8]) -> Result<(), Self::Error> {
         self.nvapi_write(&[command, value.len() as _], value)
+            .map_err(Into::into)
     }
 }
 
@@ -152,10 +162,12 @@ impl<G: Borrow<PhysicalGpu>> i2c::BlockTransfer for I2c<G> {
     fn i2c_read_block_data(&mut self, command: u8, value: &mut [u8]) -> Result<usize, Self::Error> {
         // TODO: nvapi docs say with register set, value cannot be longer than 16 bytes??
         self.nvapi_read(&[command], value)
+            .map_err(Into::into)
     }
 
     fn i2c_write_block_data(&mut self, command: u8, value: &[u8]) -> Result<(), Self::Error> {
         // TODO: nvapi docs say with register set, value cannot be longer than 16 bytes??
         self.nvapi_write(&[command], value)
+            .map_err(Into::into)
     }
 }
