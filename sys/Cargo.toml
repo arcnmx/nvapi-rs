@@ -13,13 +13,13 @@ readme = "../README.md"
 license = "MIT"
 
 [target.'cfg(windows)'.dependencies]
-winapi = { version = "^0.3.4", features = ["libloaderapi", "unknwnbase"] }
+winapi = { version = "0.3", features = ["libloaderapi", "unknwnbase"] }
 
 [dependencies]
-bitflags = "^1.0.1"
-serde = { version = "^1.0.0", features = ["derive"], optional = true }
-zerocopy = "^0.6.1"
+bitflags = "1"
+serde = { version = "1", features = ["derive"], optional = true }
+zerocopy = "0.6"
 
 [features]
-serde_types = ["serde"]
-default = ["serde_types"]
+default = ["serde"]
+serde = ["dep:serde"]

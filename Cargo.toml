@@ -13,15 +13,14 @@ readme = "README.md"
 license = "MIT"
 
 [dependencies]
-nvapi-sys = { version = "^0.2.0", path = "sys", default-features = false }
-serde = { version = "^1.0.0", optional = true }
-serde_derive = { version = "^1.0.0", optional = true }
-i2c = { version = "^0.1.0", optional = true }
-log = "^0.4.1"
+nvapi-sys = { version = "0.2", path = "sys", default-features = false }
+serde = { version = "1", features = ["derive"], optional = true }
+i2c = { version = "0.1", optional = true }
+log = "0.4"
 
 [features]
-serde_types = ["serde", "serde_derive", "nvapi-sys/serde_types"]
-default = ["serde_types"]
+default = ["serde"]
+serde = ["dep:serde", "nvapi-sys/serde"]
 
 [workspace]
 members = ["sys", "hi"]
