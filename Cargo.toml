@@ -1,6 +1,6 @@
 [package]
 name = "nvapi"
-version = "0.2.0" # keep in sync with html_root_url
+version = "0.3.0" # keep in sync with html_root_url
 authors = ["arcnmx"]
 edition = "2021"
 
@@ -13,7 +13,7 @@ readme = "README.md"
 license = "MIT"
 
 [dependencies]
-nvapi-sys = { version = "0.2", path = "sys", default-features = false }
+nvapi-sys = { version = "0.3", path = "sys", default-features = false }
 serde = { version = "1", features = ["derive"], optional = true }
 i2c = { version = "0.1", optional = true }
 log = "0.4"
