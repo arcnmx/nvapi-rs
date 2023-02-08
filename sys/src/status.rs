@@ -7,6 +7,8 @@ nvenum! {
     /// NvAPI Status Values
     ///
     /// All NvAPI functions return one of these codes.
+    ///
+    /// As described in the [NVIDIA online documentation](https://docs.nvidia.com/gameworks/content/gameworkslibrary/coresdk/nvapi/group__nvapistatus.html)
     pub enum NvAPI_Status / Status {
         /// Success. Request is completed.
         NVAPI_OK / Ok = 0,
@@ -278,6 +280,56 @@ nvenum! {
         NVAPI_INVALID_DIRECT_MODE_DISPLAY / InvalidDirectModeDisplay = -216,
         /// GPU is in debug mode, OC is NOT allowed.
         NVAPI_GPU_IN_DEBUG_MODE / GpuInDebugMode = -217,
+        /// No NvAPI context was found for this D3D object.
+        NVAPI_D3D_CONTEXT_NOT_FOUND / D3DContextNotFound = -218,
+        /// there is version mismatch between stereo driver and dx driver
+        NVAPI_STEREO_VERSION_MISMATCH / StereoVersionMismatch = -219,
+        /// GPU is not powered and so the request cannot be completed.
+        NVAPI_GPU_NOT_POWERED / GpuNotPowered = -220,
+        /// The display driver update in progress.
+        NVAPI_ERROR_DRIVER_RELOAD_IN_PROGRESS / DriverReloadInProgress = -221,
+        /// Wait for HW resources allocation.
+        NVAPI_WAIT_FOR_HW_RESOURCE / WaitForHwResource = -222,
+        /// operation requires further HDCP action
+        NVAPI_REQUIRE_FURTHER_HDCP_ACTION / RequireFurtherHdcpAction = -223,
+        /// Dynamic Mux transition failure.
+        NVAPI_DISPLAY_MUX_TRANSITION_FAILED / DisplayMuxTransitionFailed = -224,
+        /// Invalid DSC version.
+        NVAPI_INVALID_DSC_VERSION / InvalidDscVersion = -225,
+        /// Invalid DSC slice count.
+        NVAPI_INVALID_DSC_SLICECOUNT / InvalidDscSlicecount = -226,
+        /// Invalid DSC output BPP.
+        NVAPI_INVALID_DSC_OUTPUT_BPP / InvalidDscOutputBpp = -227,
+        /// There was an error while loading nvapi.dll from the driver store.
+        NVAPI_FAILED_TO_LOAD_FROM_DRIVER_STORE / FailedToLoadFromDriverStore = -228,
+        /// OpenGL does not export Vulkan fake extensions.
+        NVAPI_NO_VULKAN / NoVulkan = -229,
+        /// A request for NvTOPPs telemetry CData has already been made and is pending a response.
+        NVAPI_REQUEST_PENDING / RequestPending = -230,
+        /// Operation cannot be performed because the resource is in use.
+        NVAPI_RESOURCE_IN_USE / ResourceInUse = -231,
+        /// Device kernel image is invalid.
+        NVAPI_INVALID_IMAGE / InvalidImage = -232,
+        /// PTX JIT compilation failed.
+        NVAPI_INVALID_PTX / InvalidPtx = -233,
+        /// Uncorrectable NVLink error was detected during the execution.
+        NVAPI_NVLINK_UNCORRECTABLE / NvlinkUncorrectable = -234,
+        /// PTX JIT compiler library was not found.
+        NVAPI_JIT_COMPILER_NOT_FOUND / JitCompilerNotFound = -235,
+        /// Device kernel source is invalid.
+        NVAPI_INVALID_SOURCE / InvalidSource = -236,
+        /// While executing a kernel, the device encountered an illegal instruction.
+        NVAPI_ILLEGAL_INSTRUCTION / IllegalInstruction = -237,
+        /// While executing a kernel, the device program counter wrapped its address space.
+        NVAPI_INVALID_PC / InvalidPc = -238,
+        /// An exception occurred on the device while executing a kernel.
+        NVAPI_LAUNCH_FAILED / LaunchFailed = -239,
+        /// Attempted operation is not permitted.
+        NVAPI_NOT_PERMITTED / NotPermitted = -240,
+        /// The callback function has already been registered.
+        NVAPI_CALLBACK_ALREADY_REGISTERED / CallbackAlreadyRegistered = -241,
+        /// The callback function is not found or not registered.
+        NVAPI_CALLBACK_NOT_FOUND / CallbackNotFound = -242,
     }
 }
 
