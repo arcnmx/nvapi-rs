@@ -7,6 +7,8 @@ nvenum! {
     /// NvAPI Status Values
     ///
     /// All NvAPI functions return one of these codes.
+    /// 
+    /// https://docs.nvidia.com/gameworks/content/gameworkslibrary/coresdk/nvapi/group__nvapistatus.html
     pub enum NvAPI_Status / Status {
         /// Success. Request is completed.
         NVAPI_OK / Ok = 0,
@@ -278,6 +280,29 @@ nvenum! {
         NVAPI_INVALID_DIRECT_MODE_DISPLAY / InvalidDirectModeDisplay = -216,
         /// GPU is in debug mode, OC is NOT allowed.
         NVAPI_GPU_IN_DEBUG_MODE / GpuInDebugMode = -217,
+        NVAPI_D3D_CONTEXT_NOT_FOUND / D3DContextNotFound = -218,
+        NVAPI_STEREO_VERSION_MISMATCH / StereoVersionMismatch = -219,
+        NVAPI_GPU_NOT_POWERED / GpuNotPowered = -220,
+        NVAPI_ERROR_DRIVER_RELOAD_IN_PROGRESS / DriverReloadInProgress = -221,
+        NVAPI_WAIT_FOR_HW_RESOURCE / WaitForHwResource = -222,
+        NVAPI_REQUIRE_FURTHER_HDCP_ACTION / RequireFurtherHdcpAction = -223,
+        NVAPI_DISPLAY_MUX_TRANSITION_FAILED / DisplayMuxTransitionFailed = -224,
+        NVAPI_INVALID_DSC_VERSION / InvalidDscVersion = -225,
+        NVAPI_INVALID_DSC_SLICECOUNT / InvalidDscSlicecount = -226,
+        NVAPI_INVALID_DSC_OUTPUT_BPP / InvalidDscOutputBpp = -227,
+        NVAPI_FAILED_TO_LOAD_FROM_DRIVER_STORE / FailedToLoadFromDriverStore = -228,
+        NVAPI_NO_VULKAN / NoVulkan = -229,
+        NVAPI_REQUEST_PENDING / RequestPending = -230,
+        NVAPI_RESOURCE_IN_USE / ResourceInUse = -231,
+        NVAPI_INVALID_IMAGE / InvalidImage = -232,
+        NVAPI_INVALID_PTX / InvalidPtx = -233,
+        NVAPI_NVLINK_UNCORRECTABLE / NvlinkUncorrectable = -234,
+        NVAPI_JIT_COMPILER_NOT_FOUND / JitCompilerNotFound = -235,
+        NVAPI_INVALID_SOURCE / InvalidSource = -236,
+        NVAPI_ILLEGAL_INSTRUCTION / IllegalInstruction = -237,
+        NVAPI_INVALID_PC / InvalidPc = -238,
+        NVAPI_LAUNCH_FAILED / LaunchFailed = -239,
+        NVAPI_NOT_PERMITTED / NotPermitted = -240,
     }
 }
 
