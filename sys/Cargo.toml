@@ -21,6 +21,9 @@ include = [
 [target.'cfg(windows)'.dependencies]
 winapi = { version = "0.3", features = ["libloaderapi", "unknwnbase"] }
 
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
 [dependencies]
 bitflags = "1"
 serde = { version = "1", features = ["derive"], optional = true }
