@@ -1,6 +1,8 @@
 #![allow(non_camel_case_types, non_snake_case)]
 #![doc(html_root_url = "http://docs.rs/nvapi-sys/0.1.3")]
 
+#[cfg(target_os = "linux")]
+extern crate libc;
 #[cfg(windows)]
 extern crate winapi;
 #[macro_use]
