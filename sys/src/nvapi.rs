@@ -9,6 +9,8 @@ pub type QueryInterfaceFn = extern "C" fn(id: u32) -> *const c_void;
 pub const LIBRARY_NAME: &'static [u8; 10] = b"nvapi.dll\0";
 #[cfg(all(windows, target_pointer_width = "64"))]
 pub const LIBRARY_NAME: &'static [u8; 12] = b"nvapi64.dll\0";
+#[cfg(target_os = "linux")]
+pub const LIBRARY_NAME: &'static [u8; 19] = b"libnvidia-api.so.1\0";
 
 pub const FN_NAME: &'static [u8; 21] = b"nvapi_QueryInterface\0";
 
@@ -18,11 +20,50 @@ pub unsafe fn set_query_interface(ptr: QueryInterfaceFn) {
     QUERY_INTERFACE_CACHE.store(ptr as usize, Ordering::Relaxed);
 }
 
-#[cfg(not(windows))]
+// Since v525 NVIDIA drivers have libnvidia-api.so.1 which implements NVAPI but the implementation is still poor
+// (many functions are not there, like it's impossible to identify physical handler by pci slot etc)
+#[cfg(target_os = "linux")]
+pub fn nvapi_QueryInterface(id: u32) -> crate::Result<usize> {
+    use libc::{ dlopen, dlsym };
+    use std::os::raw::{ c_char, c_int};
+    use std::mem;
+
+    const RTLD_LAZY: c_int = 0x00001;
+    const RTLD_LOCAL: c_int = 0;
+
+    unsafe {
+        let ptr = match QUERY_INTERFACE_CACHE.load(Ordering::Relaxed) {
+            0 => {
+                let lib = dlopen(LIBRARY_NAME.as_ptr() as *const c_char,RTLD_LAZY | RTLD_LOCAL);
+                if lib.is_null() {
+                    Err(Status::LibraryNotFound)
+                } else {
+                    let ptr = dlsym(lib, FN_NAME.as_ptr() as *const c_char);
+                    if ptr.is_null() {
+                        Err(Status::LibraryNotFound)
+                    } else {
+                        QUERY_INTERFACE_CACHE.store(ptr as usize, Ordering::Relaxed);
+                        Ok(ptr as usize)
+                    }
+                }
+            },
+            ptr => Ok(ptr),
+        }?;
+
+        match mem::transmute::<_, QueryInterfaceFn>(ptr)(id) as usize {
+            0 => Err(Status::NoImplementation),
+            ptr => Ok(ptr),
+        }
+    }
+}
+
+#[cfg(macos)]
 pub fn nvapi_QueryInterface(id: u32) -> crate::Result<usize> {
     // TODO: Apparently nvapi is available for macOS?
     Err(Status::LibraryNotFound)
 }
+
+
 
 #[cfg(windows)]
 pub fn nvapi_QueryInterface(id: u32) -> crate::Result<usize> {
