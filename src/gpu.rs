@@ -408,7 +408,7 @@ impl PhysicalGpu {
         data.mask = info.mask.mask;
         for (i, delta) in clocks {
             trace!("gpu.set_vfp_table({:?}, {:?})", i, delta);
-            data.points[i].freqDeltaKHz = delta.0;
+            data.points[i].freqDeltaKHz = delta.0 / 2;
             data.mask.set_bit(i);
         }
         /*for (i, delta) in memory {
