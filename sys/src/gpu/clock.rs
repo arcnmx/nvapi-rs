@@ -249,7 +249,9 @@ pub mod private {
             NV_PERF_CLIENT_LIMIT_ID_GPU / Gpu = 0,
             NV_PERF_CLIENT_LIMIT_ID_GPU_UNKNOWN / GpuUnknown = 1,
             NV_PERF_CLIENT_LIMIT_ID_MEMORY / Memory = 2,
-            NV_PERF_CLIENT_LIMIT_ID_MEMORY_UNKOWN / MemoryUnknown = 3,
+            NV_PERF_CLIENT_LIMIT_ID_MEMORY_UNKNOWN / MemoryUnknown = 3,
+            NV_PERF_CLIENT_LIMIT_ID_UNKNOWN / Unknown = 4,
+            NV_PERF_CLIENT_LIMIT_ID_UNKNOWN_2 / Unknown_2 = 5,
             NV_PERF_CLIENT_LIMIT_ID_VOLTAGE / Voltage = 6,
         }
     }

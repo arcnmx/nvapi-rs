@@ -1,6 +1,6 @@
 [package]
 name = "nvapi-hi"
-version = "0.2.0" # keep in sync with html_root_url
+version = "0.3.1" # keep in sync with html_root_url
 authors = ["arcnmx"]
 edition = "2021"
 
@@ -13,11 +13,11 @@ readme = "../README.md"
 license = "MIT"
 
 [dependencies]
-nvapi = { version = "^0.2.0", path = "../", default-features = false }
+nvapi = { version = "^0.3.0", path = "../", default-features = false }
 serde = { version = "^1.0.0", optional = true }
 serde_derive = { version = "^1.0.0", optional = true }
 once_cell = "^1.12.0"
 
 [features]
-serde_types = ["serde", "serde_derive", "nvapi/serde_types"]
+serde_types = ["serde", "serde_derive", "nvapi/serde"]
 default = ["serde_types"]

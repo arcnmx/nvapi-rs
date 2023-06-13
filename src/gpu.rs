@@ -388,31 +388,34 @@ impl PhysicalGpu {
         })
     }
 
-    pub fn vfp_table(&self, info: &VfpInfo) -> crate::Result<crate::clock::ClockTable> {
+    pub fn vfp_table_raw(&self, info: &VfpInfo) -> Result<clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL,crate::Error> {
         trace!("gpu.vfp_table({:?})", info);
         let mut data = clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL::default();
         data.mask = info.mask.mask;
 
         unsafe {
-            nvcall!(NvAPI_GPU_ClockClientClkVfPointsGetControl@get{data}(self.0) => err)
-                .and_then(|raw| crate::clock::ClockTable::from_raw(&raw, info))
+            nvcall!(NvAPI_GPU_ClockClientClkVfPointsGetControl@get{data}(self.0) => err)       
         }
+    }
+    
+    pub fn vfp_table(&self, info: &VfpInfo) -> crate::Result<crate::clock::ClockTable> {
+        self.vfp_table_raw(info).and_then(|raw| crate::clock::ClockTable::from_raw(&raw, info))
     }
 
     pub fn set_vfp_table<I: Iterator<Item=(usize, Kilohertz2Delta)>, M: Iterator<Item=(usize, Kilohertz2Delta)>>(&self, info: &VfpInfo, clocks: I, memory: M) -> crate::NvapiResult<()> {
         trace!("gpu.set_vfp_table({:?})", info);
-        let mut data = clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL::default();
+        let mut data = self.vfp_table_raw(info).unwrap();
         data.mask = info.mask.mask;
         for (i, delta) in clocks {
             trace!("gpu.set_vfp_table({:?}, {:?})", i, delta);
-            data.points[i].freqDeltaKHz = delta.0;
+            data.points[i].freqDeltaKHz = delta.0 / 2;
             data.mask.set_bit(i);
         }
         /*for (i, delta) in memory {
             data.memFilled[i] = 1;
             data.memDeltas[i] = delta.0;
         }*/
-
+        
         unsafe {
             nvcall!(NvAPI_GPU_ClockClientClkVfPointsSetControl(self.0, &data))
         }
