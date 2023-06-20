@@ -3,6 +3,7 @@
 [![release-badge][]][cargo] [![docs-badge][]][docs] [![license-badge][]][license]
 
 `nvapi` provides access to NVIDIA driver functionality on Windows.
+NVAPI is available on Linux as of driver version 525 with limited functionality.
 
 ## [Documentation][docs]
 

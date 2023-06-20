@@ -31,17 +31,14 @@ pub fn nvapi_QueryInterface(id: u32) -> crate::Result<usize> {
 // (many functions are not there, like it's impossible to identify physical handler by pci slot etc)
 #[cfg(target_os = "linux")]
 pub fn nvapi_QueryInterface(id: u32) -> crate::Result<usize> {
-    use libc::{ dlopen, dlsym };
-    use std::os::raw::{ c_char, c_int};
+    use libc::{RTLD_LAZY, RTLD_LOCAL, dlopen, dlsym};
+    use std::os::raw::{c_char, c_int};
     use std::mem;
-
-    const RTLD_LAZY: c_int = 0x00001;
-    const RTLD_LOCAL: c_int = 0;
 
     unsafe {
         let ptr = match QUERY_INTERFACE_CACHE.load(Ordering::Relaxed) {
             0 => {
-                let lib = dlopen(LIBRARY_NAME.as_ptr() as *const c_char,RTLD_LAZY | RTLD_LOCAL);
+                let lib = dlopen(LIBRARY_NAME.as_ptr() as *const c_char, RTLD_LAZY | RTLD_LOCAL);
                 if lib.is_null() {
                     Err(Status::LibraryNotFound)
                 } else {
