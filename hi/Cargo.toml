@@ -11,6 +11,12 @@ repository = "https://github.com/arcnmx/nvapi-rs"
 readme = "../README.md"
 license = "MIT"
 
+include = [
+	"/src/**/*.rs",
+	"/README*",
+	"/COPYING*",
+]
+
 [dependencies]
 nvapi = { version = "^0.1.0", path = "../", default-features = false }
 serde = { version = "^1.0.0", optional = true }

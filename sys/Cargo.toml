@@ -6,10 +6,16 @@ authors = ["arcnmx"]
 description = "NVIDIA NVAPI FFI bindings"
 keywords = ["nvidia", "nvapi", "gtx"]
 
-documentation = "https://docs.rs/nvapi-sys/latest/nvapi_sys/"
+documentation = "https://docs.rs/nvapi-sys/"
 repository = "https://github.com/arcnmx/nvapi-rs"
 readme = "../README.md"
 license = "MIT"
+
+include = [
+	"/src/**/*.rs",
+	"/README*",
+	"/COPYING*",
+]
 
 [target.'cfg(windows)'.dependencies]
 winapi = { version = "^0.3.4", features = ["libloaderapi", "unknwnbase"] }
