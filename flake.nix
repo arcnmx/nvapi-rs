@@ -18,11 +18,12 @@
         mkShell, hostPlatform
       , enableRust ? true, cargo
       , rustTools ? [ ]
+      , nativeBuildInputs ? [ ]
       , generate
       }: mkShell {
         inherit rustTools;
-        nativeBuildInputs =
-          nixlib.optional enableRust cargo
+        nativeBuildInputs = nativeBuildInputs
+          ++ nixlib.optional enableRust cargo
           ++ [ generate ];
 
         shellHook = nixlib.optionalString hostPlatform.isLinux ''
@@ -35,7 +36,7 @@
         inherit (rust'stable) mkShell;
         enableRust = false;
       };
-      dev = { rust'unstable, rust-w64-overlay, outputs'devShells'plain }: let
+      dev = { rust'unstable, rust-w64-overlay, rust-w64, outputs'devShells'plain }: let
         channel = rust'unstable.override {
           channelOverlays = [ rust-w64-overlay ];
         };
@@ -43,6 +44,7 @@
         inherit (channel) mkShell;
         enableRust = false;
         rustTools = [ "rust-analyzer" ];
+        nativeBuildInputs = [ rust-w64.pkgs.stdenv.cc.bintools ];
       };
       default = { outputs'devShells }: outputs'devShells.plain;
     };
