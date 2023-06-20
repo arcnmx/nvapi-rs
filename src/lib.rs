@@ -1,5 +1,5 @@
 //#![deny(missing_docs)]
-#![doc(html_root_url = "http://docs.rs/nvapi/0.2.0")]
+#![doc(html_root_url = "https://docs.rs/nvapi/0.2.0")]
 
 pub use nvapi_sys as sys;
 

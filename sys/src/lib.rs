@@ -1,5 +1,5 @@
 #![allow(non_camel_case_types, non_snake_case)]
-#![doc(html_root_url = "http://docs.rs/nvapi-sys/0.2.0")]
+#![doc(html_root_url = "https://docs.rs/nvapi-sys/0.2.0")]
 
 #[macro_use]
 mod macros;

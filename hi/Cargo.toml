@@ -12,12 +12,17 @@ repository = "https://github.com/arcnmx/nvapi-rs"
 readme = "../README.md"
 license = "MIT"
 
+include = [
+	"/src/**/*.rs",
+	"/README*",
+	"/COPYING*",
+]
+
 [dependencies]
 nvapi = { version = "^0.2.0", path = "../", default-features = false }
 serde = { version = "^1.0.0", optional = true }
-serde_derive = { version = "^1.0.0", optional = true }
 once_cell = "^1.12.0"
 
 [features]
-serde_types = ["serde", "serde_derive", "nvapi/serde_types"]
-default = ["serde_types"]
+serde = ["dep:serde", "serde/derive", "nvapi/serde"]
+default = ["serde"]
