@@ -65,7 +65,9 @@ impl UtilizationDomain {
     }
 }
 
-nvversion! { @NV_GPU_DYNAMIC_PSTATES_INFO_EX(1) }
+nvversion! { _:
+    NV_GPU_DYNAMIC_PSTATES_INFO_EX(1)
+}
 
 nvapi! {
     pub type GPU_GetDynamicPstatesInfoExFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pDynamicPstatesInfoEx: *mut NV_GPU_DYNAMIC_PSTATES_INFO_EX) -> NvAPI_Status;
@@ -278,9 +280,11 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_GPU_PERF_PSTATES20_INFO_V1(1) }
-nvversion! { NV_GPU_PERF_PSTATES20_INFO_V2(2) }
-nvversion! { @=NV_GPU_PERF_PSTATES20_INFO NV_GPU_PERF_PSTATES20_INFO_V2(3) }
+nvversion! { NV_GPU_PERF_PSTATES20_INFO:
+    NV_GPU_PERF_PSTATES20_INFO_V2(3; @inherit(v1: NV_GPU_PERF_PSTATES20_INFO_V1)),
+    NV_GPU_PERF_PSTATES20_INFO_V2(2; @old),
+    NV_GPU_PERF_PSTATES20_INFO_V1(1)
+}
 
 nvapi! {
     pub type GPU_GetPstates20Fn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pPstatesInfo: *mut NV_GPU_PERF_PSTATES20_INFO) -> NvAPI_Status;

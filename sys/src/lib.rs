@@ -95,7 +95,7 @@ pub(crate) mod prelude_ {
     pub(crate) use crate::nvapi::*;
     pub(crate) use crate::handles::{self, NvPhysicalGpuHandle};
     pub(crate) use crate::status::NvAPI_Status;
-    pub(crate) use crate::version::{StructVersion, VersionedStruct};
+    pub(crate) use crate::version::VersionedStructField;
     pub(crate) use crate::{Array, BoolU32, NvVersion, ClockMask};
     pub(crate) type Padding<T> = Array<T>;
 }

@@ -19,8 +19,8 @@ pub(crate) mod prelude {
             error, nvapi_path, path_tail_is, result_stream2, sys_crate, sys_path,
         },
         proc_macro2::{Span, TokenStream},
-        quote::{quote, ToTokens},
-        std::ops::AddAssign,
+        quote::{quote, quote_spanned, ToTokens},
+        std::{ops::AddAssign, result::Result as StdResult},
         syn::{
             parse::{Parse, ParseStream, Parser},
             parse2 as parse, parse_quote,
@@ -30,9 +30,14 @@ pub(crate) mod prelude {
     };
 }
 
-#[proc_macro_derive(VersionedStruct, attributes(nv_version_field))]
+#[proc_macro_derive(VersionedStructField, attributes(nv_version_field))]
 pub fn derive_versioned_struct(input: TokenStream) -> TokenStream {
     result_stream(self::version::derive_versioned_struct(input.into()))
+}
+
+#[proc_macro]
+pub fn nvversion(input: TokenStream) -> TokenStream {
+    result_stream(self::version::nvversion(input.into()))
 }
 
 #[proc_macro_derive(NvInherit, attributes(nv_inherit))]

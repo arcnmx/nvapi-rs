@@ -652,7 +652,7 @@ impl PhysicalGpu {
 
         let index = match index {
             Some(index) => index,
-            None if <cooler::private::NV_GPU_GETCOOLER_SETTINGS as sys::version::StructVersion>::NVAPI_VERSION.version() < 4 =>
+            None if <cooler::private::NV_GPU_GETCOOLER_SETTINGS as sys::version::StructVersion::<4>>::NVAPI_VERSION.version() < 4 =>
                 cooler::private::NVAPI_COOLER_TARGET_ALL as _,
             None => 0,
         };

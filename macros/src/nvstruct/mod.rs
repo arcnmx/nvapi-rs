@@ -32,14 +32,14 @@ pub fn NvStruct(attr: TokenStream, input: TokenStream) -> Result<TokenStream> {
         _ => false,
     });
     let derives = match has_version {
-        true if !item.attrs.iter().any(has_derive("VersionedStruct")) => Some("VersionedStruct"),
+        true if !item.attrs.iter().any(has_derive("VersionedStructField")) => Some("VersionedStructField"),
         _ => None,
     };
 
     let derives: Punctuated<Path, Token![,]> = {
         // add missing derives if their related field attributes are found
         const ATTR_DERIVES: [(&'static str, &'static str); 2] = [
-            (NvVersionArgs::NAME, "VersionedStruct"),
+            (NvVersionArgs::NAME, "VersionedStructField"),
             (NvInheritArgs::NAME, "NvInherit"),
         ];
 

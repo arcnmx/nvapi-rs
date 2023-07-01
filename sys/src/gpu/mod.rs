@@ -251,7 +251,9 @@ nvstruct! {
     }
 }
 
-nvversion! { @=NV_BOARD_INFO NV_BOARD_INFO_V1(1) }
+nvversion! { NV_BOARD_INFO:
+    NV_BOARD_INFO_V1(1)
+}
 
 nvapi! {
     /// This API Retrieves the Board information (a unique GPU Board Serial Number) stored in the InfoROM.
@@ -315,8 +317,10 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_GPU_ARCH_INFO_V1(1) }
-nvversion! { @=NV_GPU_ARCH_INFO NV_GPU_ARCH_INFO_V1(2) }
+nvversion! { NV_GPU_ARCH_INFO:
+    NV_GPU_ARCH_INFO_V1(2),
+    NV_GPU_ARCH_INFO_V1(1; @old)
+}
 
 nvapi! {
     pub type GPU_GetArchInfo = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pGpuArchInfo: *mut NV_GPU_ARCH_INFO) -> NvAPI_Status;
@@ -680,8 +684,10 @@ nvstruct! {
     }
 }
 
-nvversion! { @=NV_DISPLAY_DRIVER_INFO NV_DISPLAY_DRIVER_INFO_V2(2) }
-nvversion! { NV_DISPLAY_DRIVER_INFO_V1(1) }
+nvversion! { NV_DISPLAY_DRIVER_INFO:
+    NV_DISPLAY_DRIVER_INFO_V2(2; @inherit(v1: NV_DISPLAY_DRIVER_INFO_V1)),
+    NV_DISPLAY_DRIVER_INFO_V1(1)
+}
 
 nvapi! {
     /// This API will return information related to the NVIDIA Display Driver.

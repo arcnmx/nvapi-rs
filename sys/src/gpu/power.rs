@@ -12,7 +12,9 @@ pub mod private {
         }
     }
 
-    nvversion! { @=NV_GPU_CLIENT_VOLT_RAILS_STATUS NV_GPU_CLIENT_VOLT_RAILS_STATUS_V1(1) = 76 }
+    nvversion! { NV_GPU_CLIENT_VOLT_RAILS_STATUS:
+        NV_GPU_CLIENT_VOLT_RAILS_STATUS_V1(1) = 76
+    }
 
     nvapi! {
         /// Pascal and later
@@ -28,7 +30,9 @@ pub mod private {
         }
     }
 
-    nvversion! { @=NV_GPU_CLIENT_VOLT_RAILS_CONTROL NV_GPU_CLIENT_VOLT_RAILS_CONTROL_V1(1) }
+    nvversion! { NV_GPU_CLIENT_VOLT_RAILS_CONTROL:
+        NV_GPU_CLIENT_VOLT_RAILS_CONTROL_V1(1)
+    }
 
     nvapi! {
         /// Pascal and later
@@ -85,9 +89,11 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V1(1) = 0x1c28 }
-    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V1(2) = 0x1c28 }
-    nvversion! { @=NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V3(3) = 0x15b0c }
+    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS:
+        NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V3(3) = 0x15b0c,
+        NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V1(2) = 0x1c28,
+        NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V1(1; @old) = 0x1c28
+    }
 
     nvapi! {
         /// Pascal and later
@@ -161,8 +167,10 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLIENT_POWER_POLICIES_INFO_V1(1) }
-    nvversion! { @=NV_GPU_CLIENT_POWER_POLICIES_INFO NV_GPU_CLIENT_POWER_POLICIES_INFO_V2(2) = 2248 }
+    nvversion! { NV_GPU_CLIENT_POWER_POLICIES_INFO:
+        NV_GPU_CLIENT_POWER_POLICIES_INFO_V2(2) = 2248,
+        NV_GPU_CLIENT_POWER_POLICIES_INFO_V1(1)
+    }
 
     nvapi! {
         pub unsafe fn NvAPI_GPU_ClientPowerPoliciesGetInfo(hPhysicalGPU: NvPhysicalGpuHandle, pPowerInfo: *mut NV_GPU_CLIENT_POWER_POLICIES_INFO) -> NvAPI_Status;
@@ -210,8 +218,10 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLIENT_POWER_POLICIES_STATUS_V1(1) }
-    nvversion! { @=NV_GPU_CLIENT_POWER_POLICIES_STATUS NV_GPU_CLIENT_POWER_POLICIES_STATUS_V2(2) = 1368 }
+    nvversion! { NV_GPU_CLIENT_POWER_POLICIES_STATUS:
+        NV_GPU_CLIENT_POWER_POLICIES_STATUS_V2(2) = 1368,
+        NV_GPU_CLIENT_POWER_POLICIES_STATUS_V1(1)
+    }
 
     nvapi! {
         pub unsafe fn NvAPI_GPU_ClientPowerPoliciesGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pPowerStatus: *mut NV_GPU_CLIENT_POWER_POLICIES_STATUS) -> NvAPI_Status;
@@ -237,7 +247,9 @@ pub mod private {
         }
     }
 
-    nvversion! { @=NV_GPU_CLIENT_POWER_TOPOLOGY_INFO NV_GPU_CLIENT_POWER_TOPOLOGY_INFO_V1(1) = 24 }
+    nvversion! { NV_GPU_CLIENT_POWER_TOPOLOGY_INFO:
+        NV_GPU_CLIENT_POWER_TOPOLOGY_INFO_V1(1) = 24
+    }
 
     nvapi! {
         pub unsafe fn NvAPI_GPU_ClientPowerTopologyGetInfo(hPhysicalGPU: NvPhysicalGpuHandle, pPowerTopo: *mut NV_GPU_CLIENT_POWER_TOPOLOGY_INFO) -> NvAPI_Status;
@@ -280,7 +292,9 @@ pub mod private {
         }
     }
 
-    nvversion! { @=NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_V1(1) = 72 }
+    nvversion! { NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS:
+        NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_V1(1) = 72
+    }
 
     nvapi! {
         pub unsafe fn NvAPI_GPU_ClientPowerTopologyGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pPowerTopo: *mut NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS) -> NvAPI_Status;
@@ -322,7 +336,9 @@ pub mod private {
         }
     }
 
-    nvversion! { @=NV_GPU_PERF_POLICIES_INFO_PARAMS NV_GPU_PERF_POLICIES_INFO_PARAMS_V1(1) = 76 }
+    nvversion! { NV_GPU_PERF_POLICIES_INFO_PARAMS:
+        NV_GPU_PERF_POLICIES_INFO_PARAMS_V1(1) = 76
+    }
 
     nvapi! {
         pub unsafe fn NvAPI_GPU_PerfPoliciesGetInfo(hPhysicalGPU: NvPhysicalGpuHandle, pPerfInfo: *mut NV_GPU_PERF_POLICIES_INFO_PARAMS) -> NvAPI_Status;
@@ -352,7 +368,9 @@ pub mod private {
         }
     }
 
-    nvversion! { @=NV_GPU_PERF_POLICIES_STATUS_PARAMS NV_GPU_PERF_POLICIES_STATUS_PARAMS_V1(1) = 0x550 }
+    nvversion! { NV_GPU_PERF_POLICIES_STATUS_PARAMS:
+        NV_GPU_PERF_POLICIES_STATUS_PARAMS_V1(1) = 0x550
+    }
 
     nvapi! {
         pub unsafe fn NvAPI_GPU_PerfPoliciesGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pPerfStatus: *mut NV_GPU_PERF_POLICIES_STATUS_PARAMS) -> NvAPI_Status;
@@ -370,7 +388,9 @@ pub mod private {
         }
     }
 
-    nvversion! { @=NV_VOLT_STATUS NV_VOLT_STATUS_V1(1) = 140 }
+    nvversion! { NV_VOLT_STATUS:
+        NV_VOLT_STATUS_V1(1) = 140
+    }
 
     nvapi! {
         /// Maxwell only
@@ -405,7 +425,9 @@ pub mod private {
         }
     }
 
-    nvversion! { @=NV_VOLT_TABLE NV_VOLT_TABLE_V1(1) = 0x40cc }
+    nvversion! { NV_VOLT_TABLE:
+        NV_VOLT_TABLE_V1(1) = 0x40cc
+    }
 
     nvapi! {
         /// Maxwell only

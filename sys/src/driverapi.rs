@@ -46,9 +46,11 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_DISPLAY_DRIVER_MEMORY_INFO_V1(1) }
-nvversion! { NV_DISPLAY_DRIVER_MEMORY_INFO_V2(2) }
-nvversion! { @=NV_DISPLAY_DRIVER_MEMORY_INFO NV_DISPLAY_DRIVER_MEMORY_INFO_V3(3) }
+nvversion! { NV_DISPLAY_DRIVER_MEMORY_INFO:
+    NV_DISPLAY_DRIVER_MEMORY_INFO_V3(3; @inherit(v2: NV_DISPLAY_DRIVER_MEMORY_INFO_V2)),
+    NV_DISPLAY_DRIVER_MEMORY_INFO_V2(2; @inherit(v1: NV_DISPLAY_DRIVER_MEMORY_INFO_V1)),
+    NV_DISPLAY_DRIVER_MEMORY_INFO_V1(1)
+}
 
 nvapi! {
     pub type GPU_GetMemoryInfoFn = extern "C" fn(hPhysicalGpu: handles::NvPhysicalGpuHandle, pMemoryInfo: *mut NV_DISPLAY_DRIVER_MEMORY_INFO) -> NvAPI_Status;
@@ -88,7 +90,9 @@ nvstruct! {
     }
 }
 
-nvversion! { @=NV_GPU_MEMORY_INFO_EX NV_GPU_MEMORY_INFO_EX_V1(1) }
+nvversion! { NV_GPU_MEMORY_INFO_EX:
+    NV_GPU_MEMORY_INFO_EX_V1(1)
+}
 
 nvapi! {
     pub type GPU_GetMemoryInfoExFn = extern "C" fn(hPhysicalGpu: handles::NvPhysicalGpuHandle, pMemoryInfo: *mut NV_GPU_MEMORY_INFO_EX) -> NvAPI_Status;

@@ -90,8 +90,11 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_GPU_THERMAL_SETTINGS_V1(1) }
-nvversion! { @=NV_GPU_THERMAL_SETTINGS NV_GPU_THERMAL_SETTINGS_V1(2) } // the only v2 difference is the _SENSOR struct uses i32 instead of u32 fields
+nvversion! { NV_GPU_THERMAL_SETTINGS:
+    // the only v2 difference is the _SENSOR struct uses i32 instead of u32 fields
+    NV_GPU_THERMAL_SETTINGS_V1(2),
+    NV_GPU_THERMAL_SETTINGS_V1(1; @old)
+}
 
 nvapi! {
     pub type GPU_GetThermalSettingsFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, sensorIndex: u32, pThermalSettings: *mut NV_GPU_THERMAL_SETTINGS) -> NvAPI_Status;
@@ -190,8 +193,10 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V2(2) }
-    nvversion! { @=NV_GPU_CLIENT_THERMAL_POLICIES_INFO NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V3(3) = 1400 }
+    nvversion! { NV_GPU_CLIENT_THERMAL_POLICIES_INFO:
+        NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V3(3) = 1400,
+        NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V2(2)
+    }
 
     nvapi! {
         pub unsafe fn NvAPI_GPU_ClientThermalPoliciesGetInfo(hPhysicalGPU: NvPhysicalGpuHandle, pThermalInfo: *mut NV_GPU_CLIENT_THERMAL_POLICIES_INFO) -> NvAPI_Status;
@@ -270,8 +275,10 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V2(2) }
-    nvversion! { @=NV_GPU_CLIENT_THERMAL_POLICIES_STATUS NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V3(3) = 1352 }
+    nvversion! { NV_GPU_CLIENT_THERMAL_POLICIES_STATUS:
+        NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V3(3) = 1352,
+        NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V2(2)
+    }
 
     nvapi! {
         pub unsafe fn NvAPI_GPU_ClientThermalPoliciesGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pThermalLimit: *mut NV_GPU_CLIENT_THERMAL_POLICIES_STATUS) -> NvAPI_Status;

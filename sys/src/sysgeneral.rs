@@ -53,10 +53,12 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_CHIPSET_INFO_v1(1) }
-nvversion! { NV_CHIPSET_INFO_v2(2) }
-nvversion! { NV_CHIPSET_INFO_v3(3) }
-nvversion! { @=NV_CHIPSET_INFO NV_CHIPSET_INFO_v4(4) }
+nvversion! { NV_CHIPSET_INFO:
+    NV_CHIPSET_INFO_v4(4; @inherit(v3: NV_CHIPSET_INFO_v3)),
+    NV_CHIPSET_INFO_v3(3; @inherit(v2: NV_CHIPSET_INFO_v2)),
+    NV_CHIPSET_INFO_v2(2; @inherit(v1: NV_CHIPSET_INFO_v1)),
+    NV_CHIPSET_INFO_v1(1)
+}
 
 nvapi! {
     pub type SYS_GetChipSetInfoFn = extern "C" fn(pChipSetInfo: *mut NV_CHIPSET_INFO) -> NvAPI_Status;

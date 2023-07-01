@@ -70,46 +70,9 @@ macro_rules! nvapi {
 }
 
 macro_rules! nvversion {
-    (@ $(=$name:ident)? $target:ident($ver:expr) $(= $sz:expr)?) => {
-        nvversion! { $(=$name)? $target($ver) $(=$sz)? }
-
-        impl StructVersion for $target {
-            const NVAPI_VERSION: NvVersion = <$target as StructVersion<{$ver}>>::NVAPI_VERSION;
-
-            fn versioned() -> Self {
-                <$target as StructVersion<{$ver}>>::versioned()
-            }
-        }
-
-        impl Default for $target {
-            fn default() -> Self {
-                StructVersion::<0>::versioned()
-            }
-        }
-    };
-    ($(=$name:ident)? $target:ident($ver:expr) $(= $sz:expr)?) => {
-        $(
-            pub type $name = $target;
-        )?
-
-        impl StructVersion<$ver> for $target {
-            const NVAPI_VERSION: NvVersion = NvVersion::with_struct::<$target>($ver);
-        }
-
-        $(
-            const _: () = assert!($sz == std::mem::size_of::<$target>());
-        )?
-    };
-    ($struct:ident(@.$id:ident)) => {
-        impl VersionedStruct for $v2 {
-            fn nvapi_version_mut(&mut self) -> &mut NvVersion {
-                &mut self.$id
-            }
-
-            fn nvapi_version(&self) -> NvVersion {
-                self.$id
-            }
+    ($($tt:tt)*) => {
+        nvapi_macros::nvversion! {
+            $($tt)*
         }
     };
 }
-
