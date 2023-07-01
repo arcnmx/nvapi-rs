@@ -76,6 +76,7 @@ nvstruct! {
 
 nvstruct! {
     /// Anonymous struct in NV_GPU_THERMAL_SETTINGS
+    #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
     pub struct NV_GPU_THERMAL_SETTINGS_SENSOR {
         /// internal, ADM1032, MAX6649...
         pub controller: NV_THERMAL_CONTROLLER,
@@ -90,8 +91,11 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_GPU_THERMAL_SETTINGS_V1(1) }
-nvversion! { @=NV_GPU_THERMAL_SETTINGS NV_GPU_THERMAL_SETTINGS_V1(2) } // the only v2 difference is the _SENSOR struct uses i32 instead of u32 fields
+nvversion! { NV_GPU_THERMAL_SETTINGS:
+    // the only v2 difference is the _SENSOR struct uses i32 instead of u32 fields
+    NV_GPU_THERMAL_SETTINGS_V1(2),
+    NV_GPU_THERMAL_SETTINGS_V1(1; @old)
+}
 
 nvapi! {
     pub type GPU_GetThermalSettingsFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, sensorIndex: u32, pThermalSettings: *mut NV_GPU_THERMAL_SETTINGS) -> NvAPI_Status;
@@ -123,6 +127,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
         pub struct NV_GPU_CLIENT_THERMAL_POLICIES_INFO_ENTRY_V2 {
             pub policy_id: NV_GPU_CLIENT_THERMAL_POLICIES_POLICY_ID,
             pub unknown: u32,
@@ -150,6 +155,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_CLIENT_THERMAL_POLICY_INFO_V3 {
             pub policy_id: NV_GPU_CLIENT_THERMAL_POLICIES_POLICY_ID,
             pub flags: u32,
@@ -190,8 +196,10 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V2(2) }
-    nvversion! { @=NV_GPU_CLIENT_THERMAL_POLICIES_INFO NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V3(3) = 1400 }
+    nvversion! { NV_GPU_CLIENT_THERMAL_POLICIES_INFO:
+        NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V3(3) = 1400,
+        NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V2(2)
+    }
 
     nvapi! {
         pub unsafe fn NvAPI_GPU_ClientThermalPoliciesGetInfo(hPhysicalGPU: NvPhysicalGpuHandle, pThermalInfo: *mut NV_GPU_CLIENT_THERMAL_POLICIES_INFO) -> NvAPI_Status;
@@ -200,6 +208,7 @@ pub mod private {
     pub const NVAPI_MAX_THERMAL_LIMIT_ENTRIES: usize = 4;
 
     nvstruct! {
+        #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
         pub struct NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_ENTRY_V2 {
             pub policy_id: NV_GPU_CLIENT_THERMAL_POLICIES_POLICY_ID,
             /// shifted 8 bits
@@ -270,8 +279,10 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V2(2) }
-    nvversion! { @=NV_GPU_CLIENT_THERMAL_POLICIES_STATUS NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V3(3) = 1352 }
+    nvversion! { NV_GPU_CLIENT_THERMAL_POLICIES_STATUS:
+        NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V3(3) = 1352,
+        NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V2(2)
+    }
 
     nvapi! {
         pub unsafe fn NvAPI_GPU_ClientThermalPoliciesGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pThermalLimit: *mut NV_GPU_CLIENT_THERMAL_POLICIES_STATUS) -> NvAPI_Status;
@@ -282,7 +293,7 @@ pub mod private {
     }
 
     nvstruct! {
-        #[derive(Default)]
+        #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
         pub struct NV_GPU_CLIENT_PFF_CURVE_POINT_V1 {
             pub enabled: BoolU32,
             /// uiT{1,2,3}Y
@@ -294,7 +305,7 @@ pub mod private {
     }
 
     nvstruct! {
-        #[derive(Default)]
+        #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
         pub struct NV_GPU_CLIENT_PFF_CURVE_V1 {
             pub points: Array<[NV_GPU_CLIENT_PFF_CURVE_POINT_V1; 3]>,
         }

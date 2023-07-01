@@ -249,7 +249,9 @@ nvstruct! {
     }
 }
 
-nvversion! { @=NV_BOARD_INFO NV_BOARD_INFO_V1(1) }
+nvversion! { NV_BOARD_INFO:
+    NV_BOARD_INFO_V1(1)
+}
 
 nvapi! {
     /// This API Retrieves the Board information (a unique GPU Board Serial Number) stored in the InfoROM.
@@ -313,8 +315,10 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_GPU_ARCH_INFO_V1(1) }
-nvversion! { @=NV_GPU_ARCH_INFO NV_GPU_ARCH_INFO_V1(2) }
+nvversion! { NV_GPU_ARCH_INFO:
+    NV_GPU_ARCH_INFO_V1(2),
+    NV_GPU_ARCH_INFO_V1(1; @old)
+}
 
 nvapi! {
     pub type GPU_GetArchInfo = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pGpuArchInfo: *mut NV_GPU_ARCH_INFO) -> NvAPI_Status;

@@ -1,11 +1,12 @@
 use crate::prelude_::*;
-use crate::gpu::clock;
+use crate::gpu::clock::{PublicClockId, NV_GPU_PUBLIC_CLOCK_ID, NVAPI_MAX_GPU_PERF_PSTATES, NVAPI_MAX_GPU_PERF_VOLTAGES};
 
 pub const NVAPI_MAX_GPU_PSTATE20_PSTATES: usize = 16;
 pub const NVAPI_MAX_GPU_PSTATE20_CLOCKS: usize = 8;
 pub const NVAPI_MAX_GPU_PSTATE20_BASE_VOLTAGES: usize = 4;
 
 nvstruct! {
+    #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
     pub struct NV_GPU_DYNAMIC_PSTATES_INFO_EX_UTILIZATION {
         /// Set if this utilization domain is present on this GPU
         pub bIsPresent: BoolU32,
@@ -55,17 +56,19 @@ nvenum_display! {
 }
 
 impl UtilizationDomain {
-    pub fn from_clock(c: clock::PublicClockId) -> Option<Self> {
+    pub fn from_clock(c: PublicClockId) -> Option<Self> {
         match c {
-            clock::PublicClockId::Graphics => Some(UtilizationDomain::Graphics),
-            clock::PublicClockId::Memory => Some(UtilizationDomain::FrameBuffer),
-            clock::PublicClockId::Video => Some(UtilizationDomain::VideoEngine),
+            PublicClockId::Graphics => Some(UtilizationDomain::Graphics),
+            PublicClockId::Memory => Some(UtilizationDomain::FrameBuffer),
+            PublicClockId::Video => Some(UtilizationDomain::VideoEngine),
             _ => None,
         }
     }
 }
 
-nvversion! { @NV_GPU_DYNAMIC_PSTATES_INFO_EX(1) }
+nvversion! { _:
+    NV_GPU_DYNAMIC_PSTATES_INFO_EX(1)
+}
 
 nvapi! {
     pub type GPU_GetDynamicPstatesInfoExFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pDynamicPstatesInfoEx: *mut NV_GPU_DYNAMIC_PSTATES_INFO_EX) -> NvAPI_Status;
@@ -101,8 +104,8 @@ nvenum! {
         NVAPI_GPU_PERF_PSTATE_P13 / P13 = 13,
         NVAPI_GPU_PERF_PSTATE_P14 / P14 = 14,
         NVAPI_GPU_PERF_PSTATE_P15 / P15 = 15,
-        NVAPI_GPU_PERF_PSTATE_UNDEFINED / Undefined = clock::NVAPI_MAX_GPU_PERF_PSTATES,
-        NVAPI_GPU_PERF_PSTATE_ALL / All = clock::NVAPI_MAX_GPU_PERF_PSTATES + 1,
+        NVAPI_GPU_PERF_PSTATE_UNDEFINED / Undefined = NVAPI_MAX_GPU_PERF_PSTATES,
+        NVAPI_GPU_PERF_PSTATE_ALL / All = NVAPI_MAX_GPU_PERF_PSTATES + 1,
     }
 }
 
@@ -121,7 +124,7 @@ nvenum! {
     pub enum NV_GPU_PERF_VOLTAGE_INFO_DOMAIN_ID / VoltageInfoDomain {
         NVAPI_GPU_PERF_VOLTAGE_INFO_DOMAIN_CORE / Core = 0,
         // 1 - 15?
-        NVAPI_GPU_PERF_VOLTAGE_INFO_DOMAIN_UNDEFINED / Undefined = clock::NVAPI_MAX_GPU_PERF_VOLTAGES,
+        NVAPI_GPU_PERF_VOLTAGE_INFO_DOMAIN_UNDEFINED / Undefined = NVAPI_MAX_GPU_PERF_VOLTAGES,
     }
 }
 
@@ -141,6 +144,7 @@ nvenum! {
 
 nvstruct! {
     /// Used to describe both voltage and frequency deltas
+    #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
     pub struct NV_GPU_PERF_PSTATES20_PARAM_DELTA {
         /// Value of parameter delta (in respective units [kHz, uV])
         pub value: i32,
@@ -153,9 +157,10 @@ nvstruct! {
 
 nvstruct! {
     /// Used to describe single clock entry
+    #[derive(Default)]
     pub struct NV_GPU_PSTATE20_CLOCK_ENTRY_V1 {
         /// ID of the clock domain
-        pub domainId: clock::NV_GPU_PUBLIC_CLOCK_ID,
+        pub domainId: NV_GPU_PUBLIC_CLOCK_ID,
         /// Clock type ID
         pub typeId: NV_GPU_PERF_PSTATE20_CLOCK_TYPE_ID,
         pub bIsEditable: BoolU32,
@@ -166,7 +171,7 @@ nvstruct! {
 }
 
 #[repr(C)]
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, Default)]
 pub struct NV_GPU_PSTATE20_CLOCK_ENTRY_DATA(NV_GPU_PSTATE20_CLOCK_ENTRY_RANGE);
 
 #[derive(Copy, Clone, Debug)]
@@ -197,6 +202,7 @@ impl NV_GPU_PSTATE20_CLOCK_ENTRY_DATA {
 }
 
 nvstruct! {
+    #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
     pub struct NV_GPU_PSTATE20_CLOCK_ENTRY_SINGLE {
         /// Clock frequency within given pstate in (kHz)
         pub freq_kHz: u32,
@@ -204,6 +210,7 @@ nvstruct! {
 }
 
 nvstruct! {
+    #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
     pub struct NV_GPU_PSTATE20_CLOCK_ENTRY_RANGE {
         /// Min clock frequency within given pstate in (kHz)
         pub minFreq_kHz: u32,
@@ -219,6 +226,7 @@ nvstruct! {
 }
 
 nvstruct! {
+    #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
     pub struct NV_GPU_PERF_PSTATE20_BASE_VOLTAGE_ENTRY_V1 {
         /// ID of the voltage domain
         pub domainId: NV_GPU_PERF_VOLTAGE_INFO_DOMAIN_ID,
@@ -232,6 +240,7 @@ nvstruct! {
 
 nvstruct! {
     /// Performance state (P-State) settings
+    #[derive(Default)]
     pub struct NV_GPU_PERF_PSTATES20_PSTATE {
         /// ID of the P-State
         pub pstateId: NV_GPU_PERF_PSTATE_ID,
@@ -276,11 +285,11 @@ nvstruct! {
         pub voltages: Array<[NV_GPU_PERF_PSTATE20_BASE_VOLTAGE_ENTRY_V1; NVAPI_MAX_GPU_PSTATE20_BASE_VOLTAGES]>,
     }
 }
-nvinherit! { NV_GPU_PERF_PSTATES20_INFO_V2(v1: NV_GPU_PERF_PSTATES20_INFO_V1) }
-
-nvversion! { NV_GPU_PERF_PSTATES20_INFO_V1(1) }
-nvversion! { NV_GPU_PERF_PSTATES20_INFO_V2(2) }
-nvversion! { @=NV_GPU_PERF_PSTATES20_INFO NV_GPU_PERF_PSTATES20_INFO_V2(3) }
+nvversion! { NV_GPU_PERF_PSTATES20_INFO:
+    NV_GPU_PERF_PSTATES20_INFO_V2(3; @inherit(v1: NV_GPU_PERF_PSTATES20_INFO_V1)),
+    NV_GPU_PERF_PSTATES20_INFO_V2(2; @old),
+    NV_GPU_PERF_PSTATES20_INFO_V1(1)
+}
 
 nvapi! {
     pub type GPU_GetPstates20Fn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pPstatesInfo: *mut NV_GPU_PERF_PSTATES20_INFO) -> NvAPI_Status;
@@ -303,9 +312,10 @@ nvapi! {
 /// Undocumented API
 pub mod private {
     use crate::prelude_::*;
+    use super::{NvPhysicalGpuHandle, NV_GPU_PERF_PSTATES20_INFO};
 
     nvapi! {
-        pub type GPU_SetPstates20Fn = extern "C" fn(hPhysicalGPU: super::NvPhysicalGpuHandle, pPstatesInfo: *const super::NV_GPU_PERF_PSTATES20_INFO) -> NvAPI_Status;
+        pub type GPU_SetPstates20Fn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pPstatesInfo: *const NV_GPU_PERF_PSTATES20_INFO) -> NvAPI_Status;
 
         /// Undocumented private API
         pub unsafe fn NvAPI_GPU_SetPstates20;

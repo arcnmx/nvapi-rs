@@ -134,8 +134,8 @@ pub fn nvapi_QueryInterface(id: u32) -> crate::Result<usize> {
 #[cfg(windows)]
 pub fn nvapi_QueryInterface(id: u32) -> crate::Result<usize> {
     use winapi::um::libloaderapi::{GetProcAddress, LoadLibraryA};
-    use std::mem;
     use std::os::raw::c_char;
+    use std::mem;
 
     unsafe {
         let ptr = match QUERY_INTERFACE_CACHE.load(Ordering::Relaxed) {

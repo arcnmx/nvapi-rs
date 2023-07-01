@@ -36,7 +36,7 @@ nvstruct! {
 
 impl NV_GPU_CLOCK_FREQUENCIES_V1 {
     pub fn ClockType(&self) -> NV_GPU_CLOCK_FREQUENCIES_CLOCK_TYPE {
-        (self.reserved & 3) as _
+        ((self.reserved & 3) as i32).into()
     }
 
     pub fn set_ClockType(&mut self, value: NV_GPU_CLOCK_FREQUENCIES_CLOCK_TYPE) {
@@ -44,9 +44,11 @@ impl NV_GPU_CLOCK_FREQUENCIES_V1 {
     }
 }
 
-nvversion! { NV_GPU_CLOCK_FREQUENCIES_V1(1) }
-nvversion! { NV_GPU_CLOCK_FREQUENCIES_V1(2) }
-nvversion! { @=NV_GPU_CLOCK_FREQUENCIES NV_GPU_CLOCK_FREQUENCIES_V1(3) }
+nvversion! { NV_GPU_CLOCK_FREQUENCIES:
+    NV_GPU_CLOCK_FREQUENCIES_V1(3),
+    NV_GPU_CLOCK_FREQUENCIES_V1(2; @old),
+    NV_GPU_CLOCK_FREQUENCIES_V1(1; @old)
+}
 
 nvenum! {
     /// Used in [NvAPI_GPU_GetAllClockFrequencies]\(\)
@@ -63,6 +65,7 @@ nvenum_display! {
 }
 
 nvstruct! {
+    #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
     pub struct NV_GPU_CLOCK_FREQUENCIES_DOMAIN {
         /// Set if this domain is present on this GPU
         pub bIsPresent: BoolU32,
@@ -88,12 +91,14 @@ nvapi! {
 /// Undocumented API
 pub mod private {
     use crate::prelude_::*;
+    use super::{NV_GPU_PUBLIC_CLOCK_ID, NVAPI_MAX_GPU_PUBLIC_CLOCKS, NVAPI_MAX_GPU_PERF_CLOCKS};
 
     // undocumented constants
     pub const NVAPI_MAX_USAGES_PER_GPU: usize = 8;
     pub const NVAPI_MAX_CLOCKS_PER_GPU: usize = 288;
 
     nvstruct! {
+        #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
         pub struct NV_USAGES_INFO_USAGE {
             pub bIsPresent: BoolU32,
             /// % 0 to 100 usage
@@ -111,7 +116,9 @@ pub mod private {
         }
     }
 
-    nvversion! { @=NV_USAGES_INFO NV_USAGES_INFO_V1(1) }
+    nvversion! { NV_USAGES_INFO:
+        NV_USAGES_INFO_V1(1)
+    }
 
     nvapi! {
         pub type GPU_GetUsagesFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pUsagesInfo: *mut NV_USAGES_INFO) -> NvAPI_Status;
@@ -127,7 +134,9 @@ pub mod private {
         }
     }
 
-    nvversion! { @=NV_CLOCKS_INFO NV_CLOCKS_INFO_V1(1) }
+    nvversion! { NV_CLOCKS_INFO:
+        NV_CLOCKS_INFO_V1(1)
+    }
 
     nvapi! {
         pub type GPU_GetAllClocksFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pClocksInfo: *mut NV_CLOCKS_INFO) -> NvAPI_Status;
@@ -151,6 +160,7 @@ pub mod private {
     pub type NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_CONTROL_PROG_V1 = i32;
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_CONTROL_V1 {
             pub clock_type: u32,
             pub unknown0: Padding<[u32; 4]>,
@@ -169,8 +179,10 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_V1(1) = 9248 }
-    nvversion! { @=NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_V1(2) }
+    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL:
+        NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_V1(2),
+        NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_V1(1; @old) = 9248
+    }
 
     nvapi! {
         /// Pascal and later
@@ -183,9 +195,10 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_ENTRY {
-            pub disabled: u32,
-            pub clockType: super::NV_GPU_PUBLIC_CLOCK_ID,
+            pub disabled: BoolU32,
+            pub clockType: NV_GPU_PUBLIC_CLOCK_ID,
             pub unknown0: Padding<[u32; 8]>,
             pub rangeMax: i32,
             pub rangeMin: i32,
@@ -201,11 +214,13 @@ pub mod private {
             pub version: NvVersion,
             pub mask: ClockMask<1>,
             pub zero: Padding<[u32; 8]>,
-            pub entries: Array<[NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_ENTRY; 32]>,
+            pub clocks: Array<[NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_ENTRY; NVAPI_MAX_GPU_PUBLIC_CLOCKS]>,
         }
     }
 
-    nvversion! { @=NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_V1(1) = 2344 }
+    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO:
+        NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_V1(1) = 2344
+    }
 
     nvapi! {
         /// Pascal only
@@ -213,6 +228,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK {
             /// 1 for mem
             pub memDelta: u32,
@@ -231,7 +247,9 @@ pub mod private {
         }
     }
 
-    nvversion! { @=NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_V1(1) = 6188 }
+    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO:
+        NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_V1(1) = 6188
+    }
 
     nvapi! {
         /// Pascal and later
@@ -266,6 +284,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_PERF_CLIENT_LIMITS_ENTRY {
             pub id: NV_PERF_CLIENT_LIMIT_ID, // entry index
             pub b: u32, // 0
@@ -273,7 +292,7 @@ pub mod private {
             pub d: u32, // 0
             /// voltage uV or freq kHz depending on `id`
             pub value: u32, // 0 unless set explicitly, seems to always get set on the last/highest entry only
-            pub clock_id: super::NV_GPU_PUBLIC_CLOCK_ID,
+            pub clock_id: NV_GPU_PUBLIC_CLOCK_ID,
         }
     }
 
@@ -283,7 +302,7 @@ pub mod private {
             pub version: NvVersion,
             pub flags: u32, // unknown, only see 0
             pub count: u32,
-            pub entries: Array<[NV_GPU_PERF_CLIENT_LIMITS_ENTRY; 0x20]>,
+            pub entries: Array<[NV_GPU_PERF_CLIENT_LIMITS_ENTRY; NVAPI_MAX_GPU_PERF_CLOCKS]>,
         }
     }
 
@@ -293,7 +312,9 @@ pub mod private {
         }
     }
 
-    nvversion! { @=NV_GPU_PERF_CLIENT_LIMITS NV_GPU_PERF_CLIENT_LIMITS_V2(2) = 0x30c }
+    nvversion! { NV_GPU_PERF_CLIENT_LIMITS:
+        NV_GPU_PERF_CLIENT_LIMITS_V2(2) = 0x30c
+    }
 
     nvapi! {
         /// Pascal only

@@ -6,6 +6,7 @@ use crate::sys;
 #[cfg(feature = "serde")]
 use serde::{Serialize, Deserialize};
 use log::trace;
+use crate::sys::BoolU32;
 use crate::sys::clock_mask::{ClockMask, ClockMaskIter};
 use crate::gpu::VfpInfo;
 use crate::types::{Kilohertz, Kilohertz2, KilohertzDelta, Kilohertz2Delta, Percentage, Percentage1000, Microvolts, Range, RawConversion};
@@ -176,7 +177,7 @@ impl RawConversion for clock::private::NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_ENTR
         trace!("convert_raw({:#?})", self);
         match *self {
             clock::private::NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_ENTRY {
-                disabled: 0, clockType, rangeMax, rangeMin, vfpIndexMin, vfpIndexMax,
+                disabled: BoolU32(0), clockType, rangeMax, rangeMin, vfpIndexMin, vfpIndexMax,
                 unknown0, unknown1, padding,
             } => Ok(ClockRange {
                 domain: ClockDomain::from_raw(clockType)?,
@@ -200,9 +201,9 @@ impl RawConversion for clock::private::NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO {
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
-        let domains = self.mask.index(&self.entries[..])
+        let domains = self.mask.index(&self.clocks[..])
             .map(|(_i, v)| v)
-            .filter(|v| v.disabled == 0)
+            .filter(|v| !v.disabled.get())
             .map(RawConversion::convert_raw)
             .collect::<Result<_, _>>()?;
         Ok(ClockDomainInfo {

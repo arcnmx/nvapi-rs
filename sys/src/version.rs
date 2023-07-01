@@ -1,4 +1,5 @@
-use core::mem::{MaybeUninit, size_of};
+use core::mem::size_of;
+use zerocopy::FromBytes;
 
 /// NvAPI Version Definition
 #[derive(Default, Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -15,9 +16,19 @@ impl NvVersion {
     }
 
     pub const fn new(size: usize, version: u16) -> Self {
-        //debug_assert!(size < 0x10000);
+        let size = size as u32;
+
+        // NOTE: version needs to contain upper bits of `size` when there's overflow
+        #[cfg(debug_assertions)]
+        match (size >> 16) as u16 {
+            0 => (),
+            size_shifted => {
+                assert!(version & size_shifted == size_shifted)
+            },
+        }
+
         Self {
-            data: size as u32 | (version as u32) << 16,
+            data: size & 0xffff | (version as u32) << 16,
         }
     }
 
@@ -67,19 +78,66 @@ pub const fn GET_NVAPI_SIZE(ver: u32) -> usize {
     NvVersion::with_version(ver).size()
 }
 
-pub trait VersionedStruct: Sized {
+pub trait VersionedStructField {
+    fn nvapi_version_ref(&self) -> &NvVersion;
     fn nvapi_version_mut(&mut self) -> &mut NvVersion;
+
+    fn nvapi_version_init<const VER: u16>(&mut self) where Self: StructVersion<VER> {
+        *self.nvapi_version_mut() = Self::NVAPI_VERSION;
+    }
+
+    fn new_versioned<const VER: u16>() -> Self where
+        Self: Sized + FromBytes + StructVersion<VER>,
+    {
+        let mut zero: Self = FromBytes::new_zeroed();
+        zero.init_version();
+        zero
+    }
+}
+
+impl VersionedStructField for NvVersion {
+    fn nvapi_version_ref(&self) -> &NvVersion {
+        self
+    }
+
+    fn nvapi_version_mut(&mut self) -> &mut NvVersion {
+        self
+    }
+}
+
+pub trait VersionedStruct {
     fn nvapi_version(&self) -> NvVersion;
 }
 
-pub trait StructVersion<const VER: u16 = 0>: VersionedStruct {
-    const NVAPI_VERSION: NvVersion;
+impl<T: VersionedStructField> VersionedStruct for T {
+    fn nvapi_version(&self) -> NvVersion {
+        *self.nvapi_version_ref()
+    }
+}
 
-    fn versioned() -> Self {
-        let mut zero = unsafe {
-            MaybeUninit::<Self>::zeroed().assume_init()
-        };
-        *zero.nvapi_version_mut() = Self::NVAPI_VERSION;
-        zero
+pub trait StructVersionInfo<const VER: u16> {
+    type Struct: StructVersion<VER, Storage=Self::Storage>;
+
+    type Storage: VersionedStructField;
+}
+
+pub trait StructVersion<const VER: u16>: VersionedStruct {
+    const NVAPI_VERSION: NvVersion;
+    type Storage: VersionedStructField;
+
+    fn init_version(&mut self) where Self: VersionedStructField {
+        self.nvapi_version_init::<VER>()
+    }
+
+    fn versioned() -> Self where Self: Sized + VersionedStructField + FromBytes {
+        VersionedStructField::new_versioned::<VER>()
+    }
+
+    fn as_storage_ptr(&self) -> *const Self::Storage {
+        self as *const _ as *const Self::Storage
+    }
+
+    fn as_storage_ptr_mut(&mut self) -> *mut Self::Storage {
+        self as *mut _ as *mut Self::Storage
     }
 }

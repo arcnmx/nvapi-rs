@@ -136,9 +136,11 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_I2C_INFO_V1(1) }
-nvversion! { NV_I2C_INFO_V2(2) }
-nvversion! { @=NV_I2C_INFO NV_I2C_INFO_V3(3) }
+nvversion! { NV_I2C_INFO:
+    NV_I2C_INFO_V3(3),
+    NV_I2C_INFO_V2(2),
+    NV_I2C_INFO_V1(1)
+}
 
 nvapi! {
     pub type NvAPI_I2CReadFn = extern "C" fn(hPhysicalGpu: NvPhysicalGpuHandle, pI2cInfo: *mut NV_I2C_INFO) -> NvAPI_Status;
@@ -233,7 +235,9 @@ pub mod private {
         }
     }
 
-    nvversion! { @=NV_I2C_INFO_EX NV_I2C_INFO_EX_V3(3) }
+    nvversion! { NV_I2C_INFO_EX:
+        NV_I2C_INFO_EX_V3(3)
+    }
 
     nvapi! {
         pub type NvAPI_I2CReadExFn = extern "C" fn(hPhysicalGpu: NvPhysicalGpuHandle, pI2cInfo: *mut NV_I2C_INFO_EX, pData: *mut u32) -> NvAPI_Status;

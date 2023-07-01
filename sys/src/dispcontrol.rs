@@ -132,7 +132,9 @@ nvstruct! {
     }
 }
 
-nvversion! { @=NV_DISPLAY_ID_INFO_DATA NV_DISPLAY_ID_INFO_DATA_V1(1) }
+nvversion! { NV_DISPLAY_ID_INFO_DATA:
+    NV_DISPLAY_ID_INFO_DATA_V1(1)
+}
 
 nvapi! {
     /// This API returns information related to the given displayId.
@@ -168,7 +170,9 @@ nvstruct! {
     }
 }
 
-nvversion! { @=NV_TARGET_INFO_DATA NV_TARGET_INFO_DATA_V1(1) }
+nvversion! { NV_TARGET_INFO_DATA:
+    NV_TARGET_INFO_DATA_V1(1)
+}
 
 nvapi! {
     /// This API returns displayId(s) corresponding to the given target.
@@ -190,7 +194,9 @@ nvstruct! {
     }
 }
 
-nvversion! { @=NV_GET_VRR_INFO NV_GET_VRR_INFO_V1(1) }
+nvversion! { NV_GET_VRR_INFO:
+    NV_GET_VRR_INFO_V1(1)
+}
 
 nvapi! {
     /// This API returns Variable Refresh Rate(VRR) information for the given display ID.

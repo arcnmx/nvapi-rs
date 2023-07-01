@@ -44,13 +44,13 @@ macro_rules! nvinherit {
     ) => {
         nvinherit! { struct $v2($id: $v1) }
 
-        impl VersionedStruct for $v2 {
+        impl VersionedStructField for $v2 {
             fn nvapi_version_mut(&mut self) -> &mut NvVersion {
-                self.$id.nvapi_version_mut()
+                VersionedStructField::nvapi_version_mut(&mut self.$id)
             }
 
-            fn nvapi_version(&self) -> NvVersion {
-                self.$id.nvapi_version()
+            fn nvapi_version_ref(&self) -> &NvVersion {
+                VersionedStructField::nvapi_version_ref(&self.$id)
             }
         }
     };
@@ -85,13 +85,13 @@ macro_rules! nvstruct {
             pub $id:ident: NvVersion,
             $($tt:tt)*)
         ) => {
-        impl VersionedStruct for $name {
+        impl VersionedStructField for $name {
             fn nvapi_version_mut(&mut self) -> &mut NvVersion {
                 &mut self.$id
             }
 
-            fn nvapi_version(&self) -> NvVersion {
-                self.$id
+            fn nvapi_version_ref(&self) -> &NvVersion {
+                &self.$id
             }
         }
     };
@@ -297,46 +297,133 @@ macro_rules! nvapi {
 }
 
 macro_rules! nvversion {
-    (@ $(=$name:ident)? $target:ident($ver:expr) $(= $sz:expr)?) => {
-        nvversion! { $(=$name)? $target($ver) $(=$sz)? }
-
-        impl StructVersion for $target {
-            const NVAPI_VERSION: NvVersion = <$target as StructVersion<{$ver}>>::NVAPI_VERSION;
-
-            fn versioned() -> Self {
-                <$target as StructVersion<{$ver}>>::versioned()
+    (_: $latest:ident($latest_ver:literal$($rest:tt)*) $($tt:tt)*) => {
+        nvversion! { @cont(_) $latest $latest($latest_ver) $latest($latest_ver$($rest)*) $($tt)* }
+    };
+    ($name:ident: $latest:ident($latest_ver:literal$($rest:tt)*) $($tt:tt)*) => {
+        nvversion! { @cont($name) $name $latest($latest_ver) $latest($latest_ver$($rest)*) $($tt)* }
+    };
+    (@cont($defname:tt) $name:ident $latest:ident($latest_ver:literal) $target:ident($ver:literal$(;$($rest:tt)+)?)$(= $sz:expr)?) => {
+        nvversion! { @impl StructVersion $target($ver) }
+        nvversion! { @rest($defname) $name $latest($latest_ver) $latest($latest_ver) $target($ver)($($($rest)*)?) }
+        nvversion! { @type($defname) $latest $target }
+    };
+    (@cont($defname:tt) $name:ident $latest:ident($latest_ver:literal) $($target:ident($ver:literal$(;$($rest:tt)+)?)$(= $sz:expr)?),+) => {
+        nvversion! { @find_oldest($defname)() $name $latest($latest_ver) $($target($ver$(;$($rest)+)?)$(= $sz)?),+ }
+    };
+    (@find_oldest($defname:tt)($($older:tt)*) $name:ident $latest:ident($latest_ver:literal) $target:ident($ver:literal$(;$($rest:tt)+)?)$(= $sz:expr)?, $($rest_:tt)*) => {
+        nvversion! { @find_oldest($defname)($($older)* $target($ver$(;$($rest)+)?)$(= $sz)?,) $name $latest($latest_ver) $($rest_)* }
+    };
+    (@find_oldest($defname:tt)($($older:tt)*) $name:ident $latest:ident($latest_ver:literal) $target:ident($ver:literal$(;$($rest:tt)+)?)$(= $sz:expr)?) => {
+        nvversion! { @find_oldest($defname)($($older)* $target($ver$(;$($rest)+)?)$(= $sz)?,)($target($ver)) $name $latest($latest_ver) }
+    };
+    (@find_oldest($defname:tt)($($target:ident($ver:literal$(;$($rest:tt)+)?)$(= $sz:expr)?,)+)($oldest:ident($oldest_ver:literal)) $name:ident $latest:ident($latest_ver:literal)) => {
+        $(
+            nvversion! { @impl StructVersion $target($ver) $latest($latest_ver) $oldest($oldest_ver) }
+            nvversion! { @rest($defname) $name $latest($latest_ver) $oldest($oldest_ver) $target($ver)($($($rest)*)?) }
+        )*
+        $(
+            impl StructVersionInfo<$ver> for $oldest {
+                type Struct = $target;
+                type Storage = $oldest;
             }
-        }
+        )*
+        nvversion! { @type($defname) $latest $oldest }
+    };
+    (@rest($defname:tt) $name:ident $latest:ident($latest_ver:literal) $oldest:ident($oldest_ver:literal) $target:ident($ver:literal)()) => {
+        nvversion! { @latest($defname) $target($ver) $oldest($oldest_ver) }
+    };
+    (@rest($defname:tt) $name:ident $latest:ident($latest_ver:literal) $oldest:ident($oldest_ver:literal) $target:ident($ver:literal)(@inherit($id:ident: $v1:ty)$($rest:tt)*)) => {
+        nvinherit! { $target($id: $v1) }
+        nvversion! { @rest($defname) $name $latest($latest_ver) $oldest($oldest_ver) $target($ver)($($rest)*) }
+    };
+    (@rest($defname:tt) $name:ident $latest:ident($latest_ver:literal) $oldest:ident($oldest_ver:literal) $target:ident($ver:literal)(@old)) => {
+        nvversion! { @old($defname) $target($ver) $latest($latest_ver) $oldest($oldest_ver) }
+    };
+    // @rest base case for latest version
+    (@latest($defname:tt) $target:ident($ver:literal) $oldest:ident($oldest_ver:literal)) => {
+        nvversion! { @impl Default $target($ver) }
+        //nvversion! { @impl StructVersion $target($ver) }
 
+        /*impl StructVersionInfo<$ver> for $target {
+            type Oldest = $oldest;
+            type Storage = $oldest;
+        }*/
+    };
+    // @rest base case for old versions
+    (@old($defname:tt) $target:ident($ver:literal) $latest:ident($latest_ver:literal) $oldest:ident($oldest_ver:literal)) => {
+    };
+    // this target is the latest version
+    /*(@impl StructVersion $target:ident($ver:literal)) => {
+        nvversion! { @impl StructVersion($ver)(NvVersion) $target(NvVersion::with_struct::<$target>($ver)) }
+    };*/
+    // this version is one of many
+    (@impl StructVersion $target:ident($ver:literal) $latest:ident($latest_ver:literal) $oldest:ident($oldest_ver:literal)) => {
+        nvversion! { @impl StructVersion($ver)($oldest) $target(NvVersion::with_struct::<$target>($ver)) }
+    };
+    /* this version is not the latest
+    (@impl StructVersion($t:literal) $target:ident($ver:literal) $latest:ident($latest_ver:literal)) => {
+        /*impl StructVersion<0> for $target {
+            const NVAPI_VERSION: crate::nvapi::NvVersion = <Self as StructVersion<$ver>>::NVAPI_VERSION;
+            type Storage = <Self as StructVersion<$ver>>::Storage;
+
+            /*
+            #[inline]
+            fn storage_ref(nv: &Self::Storage) -> Option<&Self> {
+                <Self as StructVersion<$ver>>::storage_ref(nv)
+            }
+
+            #[inline]
+            fn storage_mut(nv: &mut Self::Storage) -> Option<&mut Self> {
+                <Self as StructVersion<$ver>>::storage_mut(nv)
+            }*/
+        }*/
+    };*/
+    // there is just one known version, and this is it
+    (@impl StructVersion $target:ident($ver:literal)) => {
+        nvversion! { @impl StructVersion($ver)($target) $target(NvVersion::with_struct::<$target>($ver)) }
+
+        impl StructVersionInfo<$ver> for $target {
+            type Struct = Self;
+            type Storage = Self;
+        }
+    };
+    (@impl StructVersion($t:literal)($storage:ty) $target:ident($ver:expr)) => {
+        impl StructVersion<$t> for $target {
+            const NVAPI_VERSION: NvVersion = $ver;
+            type Storage = $storage;
+
+            /*
+            fn storage_ref(nv: &Self::Storage) -> Option<&Self> {
+                match VersionedStruct::nvapi_version(nv) {
+                    <Self as StructVersion<$t>>::NVAPI_VERSION => Some(unsafe {
+                        ::std::mem::transmute(nv)
+                    }),
+                    _ => None,
+                }
+            }
+
+            fn storage_mut(nv: &mut Self::Storage) -> Option<&mut Self> {
+                match VersionedStruct::nvapi_version(nv) {
+                    <Self as StructVersion<$t>>::NVAPI_VERSION => Some(unsafe {
+                        ::std::mem::transmute(nv)
+                    }),
+                    _ => None,
+                }
+            }*/
+        }
+    };
+    (@impl Default $target:ident($ver:literal)) => {
         impl Default for $target {
+            #[inline]
             fn default() -> Self {
-                StructVersion::<0>::versioned()
+                StructVersion::<$ver>::versioned()
             }
         }
     };
-    ($(=$name:ident)? $target:ident($ver:expr) $(= $sz:expr)?) => {
-        $(
-            pub type $name = $target;
-        )?
-
-        impl StructVersion<$ver> for $target {
-            const NVAPI_VERSION: NvVersion = NvVersion::with_struct::<$target>($ver);
-        }
-
-        $(
-            const _: () = assert!($sz == std::mem::size_of::<$target>());
-        )?
+    (@type(_) $($rest:tt)*) => {
     };
-    ($struct:ident(@.$id:ident)) => {
-        impl VersionedStruct for $v2 {
-            fn nvapi_version_mut(&mut self) -> &mut NvVersion {
-                &mut self.$id
-            }
-
-            fn nvapi_version(&self) -> NvVersion {
-                self.$id
-            }
-        }
+    (@type($name:ident) $latest:ident $oldest:ident) => {
+        pub type $name = $latest;
     };
 }
-

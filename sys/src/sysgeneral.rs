@@ -52,14 +52,12 @@ nvstruct! {
     }
 }
 
-nvinherit! { NV_CHIPSET_INFO_v2(v1: NV_CHIPSET_INFO_v1) }
-nvinherit! { NV_CHIPSET_INFO_v3(v2: NV_CHIPSET_INFO_v2) }
-nvinherit! { NV_CHIPSET_INFO_v4(v3: NV_CHIPSET_INFO_v3) }
-
-nvversion! { NV_CHIPSET_INFO_v1(1) }
-nvversion! { NV_CHIPSET_INFO_v2(2) }
-nvversion! { NV_CHIPSET_INFO_v3(3) }
-nvversion! { @=NV_CHIPSET_INFO NV_CHIPSET_INFO_v4(4) }
+nvversion! { NV_CHIPSET_INFO:
+    NV_CHIPSET_INFO_v4(4; @inherit(v3: NV_CHIPSET_INFO_v3)),
+    NV_CHIPSET_INFO_v3(3; @inherit(v2: NV_CHIPSET_INFO_v2)),
+    NV_CHIPSET_INFO_v2(2; @inherit(v1: NV_CHIPSET_INFO_v1)),
+    NV_CHIPSET_INFO_v1(1)
+}
 
 nvapi! {
     pub type SYS_GetChipSetInfoFn = extern "C" fn(pChipSetInfo: *mut NV_CHIPSET_INFO) -> NvAPI_Status;
@@ -136,10 +134,10 @@ nvstruct! {
     }
 }
 
-nvinherit! { NV_DISPLAY_DRIVER_INFO_V2(v1: NV_DISPLAY_DRIVER_INFO_V1) }
-
-nvversion! { @=NV_DISPLAY_DRIVER_INFO NV_DISPLAY_DRIVER_INFO_V2(2) }
-nvversion! { NV_DISPLAY_DRIVER_INFO_V1(1) }
+nvversion! { NV_DISPLAY_DRIVER_INFO:
+    NV_DISPLAY_DRIVER_INFO_V2(2; @inherit(v1: NV_DISPLAY_DRIVER_INFO_V1)),
+    NV_DISPLAY_DRIVER_INFO_V1(1)
+}
 
 nvapi! {
     /// This API will return information related to the NVIDIA Display Driver.

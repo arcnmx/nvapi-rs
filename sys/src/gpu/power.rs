@@ -1,6 +1,8 @@
 /// Undocumented API
 pub mod private {
     use crate::prelude_::*;
+    use crate::gpu::pstate::NV_GPU_PERF_VOLTAGE_INFO_DOMAIN_ID;
+    use crate::gpu::clock::NVAPI_MAX_GPU_PERF_VOLTAGES;
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_VOLT_RAILS_STATUS_V1 {
@@ -12,7 +14,9 @@ pub mod private {
         }
     }
 
-    nvversion! { @=NV_GPU_CLIENT_VOLT_RAILS_STATUS NV_GPU_CLIENT_VOLT_RAILS_STATUS_V1(1) = 76 }
+    nvversion! { NV_GPU_CLIENT_VOLT_RAILS_STATUS:
+        NV_GPU_CLIENT_VOLT_RAILS_STATUS_V1(1) = 76
+    }
 
     nvapi! {
         /// Pascal and later
@@ -28,7 +32,9 @@ pub mod private {
         }
     }
 
-    nvversion! { @=NV_GPU_CLIENT_VOLT_RAILS_CONTROL NV_GPU_CLIENT_VOLT_RAILS_CONTROL_V1(1) }
+    nvversion! { NV_GPU_CLIENT_VOLT_RAILS_CONTROL:
+        NV_GPU_CLIENT_VOLT_RAILS_CONTROL_V1(1)
+    }
 
     nvapi! {
         /// Pascal and later
@@ -41,13 +47,24 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
         pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINT {
             pub freq_kHz: u32,
             pub voltage_uV: u32,
         }
     }
 
+    impl NV_GPU_CLOCK_CLIENT_CLK_VF_POINT {
+        pub fn to_option(&self) -> Option<Self> {
+            match self {
+                Self { freq_kHz: 0, voltage_uV: 0 } => None,
+                &point => Some(point)
+            }
+        }
+    }
+
     nvstruct! {
+        #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
         pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V1 {
             pub clock_type: u32, // 0, 1 for idle mem values?
             pub point: NV_GPU_CLOCK_CLIENT_CLK_VF_POINT,
@@ -56,6 +73,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V3 {
             pub clock_type: u32, // 0, 1?
             pub point: NV_GPU_CLOCK_CLIENT_CLK_VF_POINT,
@@ -64,6 +82,13 @@ pub mod private {
             /// overclockedFrequencyKhz and millivoltage
             pub point_overclocked: NV_GPU_CLOCK_CLIENT_CLK_VF_POINT,
             pub unknown: Padding<[u32; 348/4 - (7 + 8)]>,
+        }
+    }
+
+    impl NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V3 {
+        pub fn point_configured(&self) -> NV_GPU_CLOCK_CLIENT_CLK_VF_POINT {
+            self.point_overclocked.to_option()
+                .unwrap_or(self.point)
         }
     }
 
@@ -85,9 +110,11 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V1(1) = 0x1c28 }
-    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V1(2) = 0x1c28 }
-    nvversion! { @=NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V3(3) = 0x15b0c }
+    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS:
+        NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V3(3) = 0x15b0c,
+        NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V1(2) = 0x1c28,
+        NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V1(1; @old) = 0x1c28
+    }
 
     nvapi! {
         /// Pascal and later
@@ -107,6 +134,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V1 {
             pub policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID,
             pub b: u32,
@@ -133,6 +161,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V2 {
             pub policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID,
             pub unknown0: Padding<[u32; 3]>,
@@ -161,14 +190,17 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLIENT_POWER_POLICIES_INFO_V1(1) }
-    nvversion! { @=NV_GPU_CLIENT_POWER_POLICIES_INFO NV_GPU_CLIENT_POWER_POLICIES_INFO_V2(2) = 2248 }
+    nvversion! { NV_GPU_CLIENT_POWER_POLICIES_INFO:
+        NV_GPU_CLIENT_POWER_POLICIES_INFO_V2(2) = 2248,
+        NV_GPU_CLIENT_POWER_POLICIES_INFO_V1(1)
+    }
 
     nvapi! {
         pub unsafe fn NvAPI_GPU_ClientPowerPoliciesGetInfo(hPhysicalGPU: NvPhysicalGpuHandle, pPowerInfo: *mut NV_GPU_CLIENT_POWER_POLICIES_INFO) -> NvAPI_Status;
     }
 
     nvstruct! {
+        #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
         pub struct NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1 {
             pub policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID,
             pub b: u32,
@@ -186,6 +218,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2 {
             pub policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID,
             pub unknown: Padding<[u32; 1]>,
@@ -210,8 +243,10 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLIENT_POWER_POLICIES_STATUS_V1(1) }
-    nvversion! { @=NV_GPU_CLIENT_POWER_POLICIES_STATUS NV_GPU_CLIENT_POWER_POLICIES_STATUS_V2(2) = 1368 }
+    nvversion! { NV_GPU_CLIENT_POWER_POLICIES_STATUS:
+        NV_GPU_CLIENT_POWER_POLICIES_STATUS_V2(2) = 1368,
+        NV_GPU_CLIENT_POWER_POLICIES_STATUS_V1(1)
+    }
 
     nvapi! {
         pub unsafe fn NvAPI_GPU_ClientPowerPoliciesGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pPowerStatus: *mut NV_GPU_CLIENT_POWER_POLICIES_STATUS) -> NvAPI_Status;
@@ -237,7 +272,9 @@ pub mod private {
         }
     }
 
-    nvversion! { @=NV_GPU_CLIENT_POWER_TOPOLOGY_INFO NV_GPU_CLIENT_POWER_TOPOLOGY_INFO_V1(1) = 24 }
+    nvversion! { NV_GPU_CLIENT_POWER_TOPOLOGY_INFO:
+        NV_GPU_CLIENT_POWER_TOPOLOGY_INFO_V1(1) = 24
+    }
 
     nvapi! {
         pub unsafe fn NvAPI_GPU_ClientPowerTopologyGetInfo(hPhysicalGPU: NvPhysicalGpuHandle, pPowerTopo: *mut NV_GPU_CLIENT_POWER_TOPOLOGY_INFO) -> NvAPI_Status;
@@ -258,6 +295,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_ENTRY {
             pub channel: NV_GPU_CLIENT_POWER_TOPOLOGY_CHANNEL_ID,
             pub unknown0: u32,
@@ -280,7 +318,9 @@ pub mod private {
         }
     }
 
-    nvversion! { @=NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_V1(1) = 72 }
+    nvversion! { NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS:
+        NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_V1(1) = 72
+    }
 
     nvapi! {
         pub unsafe fn NvAPI_GPU_ClientPowerTopologyGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pPowerTopo: *mut NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS) -> NvAPI_Status;
@@ -322,7 +362,9 @@ pub mod private {
         }
     }
 
-    nvversion! { @=NV_GPU_PERF_POLICIES_INFO_PARAMS NV_GPU_PERF_POLICIES_INFO_PARAMS_V1(1) = 76 }
+    nvversion! { NV_GPU_PERF_POLICIES_INFO_PARAMS:
+        NV_GPU_PERF_POLICIES_INFO_PARAMS_V1(1) = 76
+    }
 
     nvapi! {
         pub unsafe fn NvAPI_GPU_PerfPoliciesGetInfo(hPhysicalGPU: NvPhysicalGpuHandle, pPerfInfo: *mut NV_GPU_PERF_POLICIES_INFO_PARAMS) -> NvAPI_Status;
@@ -352,7 +394,9 @@ pub mod private {
         }
     }
 
-    nvversion! { @=NV_GPU_PERF_POLICIES_STATUS_PARAMS NV_GPU_PERF_POLICIES_STATUS_PARAMS_V1(1) = 0x550 }
+    nvversion! { NV_GPU_PERF_POLICIES_STATUS_PARAMS:
+        NV_GPU_PERF_POLICIES_STATUS_PARAMS_V1(1) = 0x550
+    }
 
     nvapi! {
         pub unsafe fn NvAPI_GPU_PerfPoliciesGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pPerfStatus: *mut NV_GPU_PERF_POLICIES_STATUS_PARAMS) -> NvAPI_Status;
@@ -370,7 +414,9 @@ pub mod private {
         }
     }
 
-    nvversion! { @=NV_VOLT_STATUS NV_VOLT_STATUS_V1(1) = 140 }
+    nvversion! { NV_VOLT_STATUS:
+        NV_VOLT_STATUS_V1(1) = 140
+    }
 
     nvapi! {
         /// Maxwell only
@@ -383,8 +429,9 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_VOLT_TABLE_ENTRY {
-            pub voltage_domain: u32,
+            pub voltage_domain: NV_GPU_PERF_VOLTAGE_INFO_DOMAIN_ID,
             pub voltage_uV: u32,
             pub unknown: Padding<[u32; 257]>,
         }
@@ -395,7 +442,7 @@ pub mod private {
             pub version: NvVersion,
             pub flags: u32,
             pub count: u32,
-            pub entries: Array<[NV_VOLT_TABLE_ENTRY; 16]>,
+            pub entries: Array<[NV_VOLT_TABLE_ENTRY; NVAPI_MAX_GPU_PERF_VOLTAGES]>,
         }
     }
 
@@ -405,7 +452,9 @@ pub mod private {
         }
     }
 
-    nvversion! { @=NV_VOLT_TABLE NV_VOLT_TABLE_V1(1) = 0x40cc }
+    nvversion! { NV_VOLT_TABLE:
+        NV_VOLT_TABLE_V1(1) = 0x40cc
+    }
 
     nvapi! {
         /// Maxwell only

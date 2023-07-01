@@ -72,12 +72,11 @@ impl NV_GSYNC_CAPABILITIES_V3 {
     }
 }
 
-nvinherit! { NV_GSYNC_CAPABILITIES_V2(v1: NV_GSYNC_CAPABILITIES_V1) }
-nvinherit! { NV_GSYNC_CAPABILITIES_V3(v2: NV_GSYNC_CAPABILITIES_V2) }
-
-nvversion! { NV_GSYNC_CAPABILITIES_V1(1) }
-nvversion! { NV_GSYNC_CAPABILITIES_V2(2) }
-nvversion! { @=NV_GSYNC_CAPABILITIES NV_GSYNC_CAPABILITIES_V3(3) }
+nvversion! { NV_GSYNC_CAPABILITIES:
+    NV_GSYNC_CAPABILITIES_V3(3; @inherit(v2: NV_GSYNC_CAPABILITIES_V2)),
+    NV_GSYNC_CAPABILITIES_V2(2; @inherit(v1: NV_GSYNC_CAPABILITIES_V1)),
+    NV_GSYNC_CAPABILITIES_V1(1)
+}
 
 nvapi! {
     pub type GSync_QueryCapabilitiesFn = extern "C" fn(hNvGSyncDevice: NvGSyncDeviceHandle, pNvGSyncCapabilities: *mut NV_GSYNC_CAPABILITIES) -> NvAPI_Status;
@@ -123,7 +122,9 @@ nvstruct! {
     }
 }
 
-nvversion! { @NV_GSYNC_GPU(1) }
+nvversion! { _:
+    NV_GSYNC_GPU(1)
+}
 
 nvstruct! {
     pub struct NV_GSYNC_DISPLAY {
@@ -142,7 +143,9 @@ nvstruct! {
     }
 }
 
-nvversion! { @NV_GSYNC_DISPLAY(1) }
+nvversion! { _:
+    NV_GSYNC_DISPLAY(1)
+}
 
 nvapi! {
     pub type GSync_GetTopologyFn = extern "C" fn(hNvGSyncDevice: NvGSyncDeviceHandle, gsyncGpuCount: *mut u32, gsyncGPUs: *mut NV_GSYNC_GPU, gsyncDisplayCount: u32, gsyncDisplays: *mut NV_GSYNC_DISPLAY) -> NvAPI_Status;
@@ -227,7 +230,9 @@ nvbits! {
     }
 }
 
-nvversion! { @NV_GSYNC_DELAY(1) }
+nvversion! { _:
+    NV_GSYNC_DELAY(1)
+}
 
 nvstruct! {
     /// Used in [NvAPI_GSync_GetControlParameters]\(\) and [NvAPI_GSync_SetControlParameters]\(\).
@@ -273,10 +278,10 @@ nvstruct! {
     }
 }
 
-nvinherit! { NV_GSYNC_CONTROL_PARAMS_V2(v1: NV_GSYNC_CONTROL_PARAMS_V1) }
-
-nvversion! { NV_GSYNC_CONTROL_PARAMS_V1(1) }
-nvversion! { @=NV_GSYNC_CONTROL_PARAMS NV_GSYNC_CONTROL_PARAMS_V2(2) }
+nvversion! { NV_GSYNC_CONTROL_PARAMS:
+    NV_GSYNC_CONTROL_PARAMS_V2(2; @inherit(v1: NV_GSYNC_CONTROL_PARAMS_V1)),
+    NV_GSYNC_CONTROL_PARAMS_V1(1)
+}
 
 nvapi! {
     pub type GSync_GetControlParametersFn = extern "C" fn(hNvGSyncDevice: NvGSyncDeviceHandle, pGsyncControls: *mut NV_GSYNC_CONTROL_PARAMS) -> NvAPI_Status;
@@ -323,7 +328,9 @@ nvstruct! {
     }
 }
 
-nvversion! { @NV_GSYNC_STATUS(1) }
+nvversion! { _:
+    NV_GSYNC_STATUS(1)
+}
 
 nvapi! {
     pub type GSync_GetSyncStatusFn = extern "C" fn(hNvGSyncDevice: NvGSyncDeviceHandle, hPhysicalGpu: NvPhysicalGpuHandle, status: *mut NV_GSYNC_STATUS) -> NvAPI_Status;
@@ -371,10 +378,10 @@ nvstruct! {
     }
 }
 
-nvinherit! { NV_GSYNC_STATUS_PARAMS_V2(v1: NV_GSYNC_STATUS_PARAMS_V1) }
-
-nvversion! { NV_GSYNC_STATUS_PARAMS_V1(1) }
-nvversion! { @=NV_GSYNC_STATUS_PARAMS NV_GSYNC_STATUS_PARAMS_V2(2) }
+nvversion! { NV_GSYNC_STATUS_PARAMS:
+    NV_GSYNC_STATUS_PARAMS_V2(2; @inherit(v1: NV_GSYNC_STATUS_PARAMS_V1)),
+    NV_GSYNC_STATUS_PARAMS_V1(1)
+}
 
 nvapi! {
     pub type GSync_GetStatusParametersFn = extern "C" fn(hNvGSyncDevice: NvGSyncDeviceHandle, pStatusParams: *mut NV_GSYNC_STATUS_PARAMS) -> NvAPI_Status;
