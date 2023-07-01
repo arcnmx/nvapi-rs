@@ -106,9 +106,10 @@ nvapi! {
 /// Undocumented API
 pub mod private {
     use crate::prelude_::*;
+    use super::NV_DISPLAY_DRIVER_MEMORY_INFO;
 
     nvapi! {
         /// This has a different offset than the NvAPI_GPU_GetMemoryInfo function despite both returning the same struct
-        pub unsafe fn NvAPI_GetDisplayDriverMemoryInfo(hPhysicalGpu: handles::NvPhysicalGpuHandle, pMemoryInfo: *mut super::NV_DISPLAY_DRIVER_MEMORY_INFO) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GetDisplayDriverMemoryInfo(hPhysicalGpu: handles::NvPhysicalGpuHandle, pMemoryInfo: *mut NV_DISPLAY_DRIVER_MEMORY_INFO) -> NvAPI_Status;
     }
 }

@@ -1,6 +1,8 @@
 /// Undocumented API
 pub mod private {
     use crate::prelude_::*;
+    use crate::gpu::pstate::NV_GPU_PERF_VOLTAGE_INFO_DOMAIN_ID;
+    use crate::gpu::clock::NVAPI_MAX_GPU_PERF_VOLTAGES;
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_VOLT_RAILS_STATUS_V1 {
@@ -45,13 +47,24 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
         pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINT {
             pub freq_kHz: u32,
             pub voltage_uV: u32,
         }
     }
 
+    impl NV_GPU_CLOCK_CLIENT_CLK_VF_POINT {
+        pub fn to_option(&self) -> Option<Self> {
+            match self {
+                Self { freq_kHz: 0, voltage_uV: 0 } => None,
+                &point => Some(point)
+            }
+        }
+    }
+
     nvstruct! {
+        #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
         pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V1 {
             pub clock_type: u32, // 0, 1 for idle mem values?
             pub point: NV_GPU_CLOCK_CLIENT_CLK_VF_POINT,
@@ -60,6 +73,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V3 {
             pub clock_type: u32, // 0, 1?
             pub point: NV_GPU_CLOCK_CLIENT_CLK_VF_POINT,
@@ -68,6 +82,13 @@ pub mod private {
             /// overclockedFrequencyKhz and millivoltage
             pub point_overclocked: NV_GPU_CLOCK_CLIENT_CLK_VF_POINT,
             pub unknown: Padding<[u32; 348/4 - (7 + 8)]>,
+        }
+    }
+
+    impl NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V3 {
+        pub fn point_configured(&self) -> NV_GPU_CLOCK_CLIENT_CLK_VF_POINT {
+            self.point_overclocked.to_option()
+                .unwrap_or(self.point)
         }
     }
 
@@ -113,6 +134,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V1 {
             pub policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID,
             pub b: u32,
@@ -139,6 +161,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V2 {
             pub policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID,
             pub unknown0: Padding<[u32; 3]>,
@@ -177,6 +200,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
         pub struct NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1 {
             pub policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID,
             pub b: u32,
@@ -194,6 +218,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2 {
             pub policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID,
             pub unknown: Padding<[u32; 1]>,
@@ -270,6 +295,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_ENTRY {
             pub channel: NV_GPU_CLIENT_POWER_TOPOLOGY_CHANNEL_ID,
             pub unknown0: u32,
@@ -403,8 +429,9 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_VOLT_TABLE_ENTRY {
-            pub voltage_domain: u32,
+            pub voltage_domain: NV_GPU_PERF_VOLTAGE_INFO_DOMAIN_ID,
             pub voltage_uV: u32,
             pub unknown: Padding<[u32; 257]>,
         }
@@ -415,7 +442,7 @@ pub mod private {
             pub version: NvVersion,
             pub flags: u32,
             pub count: u32,
-            pub entries: Array<[NV_VOLT_TABLE_ENTRY; 16]>,
+            pub entries: Array<[NV_VOLT_TABLE_ENTRY; NVAPI_MAX_GPU_PERF_VOLTAGES]>,
         }
     }
 

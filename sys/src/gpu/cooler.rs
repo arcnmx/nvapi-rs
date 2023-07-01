@@ -123,6 +123,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_GETCOOLER_SETTING_V1 {
             /// type of cooler - FAN, WATER, LIQUID_NO2...
             pub type_: NV_COOLER_TYPE,
@@ -166,6 +167,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_COOLER_TACHOMETER {
             /// current tachometer reading in RPM
             pub speedRPM: u32,
@@ -244,6 +246,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_SETCOOLER_LEVEL_COOLER {
             /// the new value % of the cooler
             pub currentLevel: u32,
@@ -294,6 +297,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_COOLER_POLICY_LEVEL {
             /// level indicator for a policy
             pub levelId: u32,
@@ -360,6 +364,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_CLIENT_FAN_ARBITER_INFO_V1 {
             pub unknown: u32,
             pub flags: NV_FAN_ARBITER_INFO_FLAGS,
@@ -400,6 +405,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_CLIENT_FAN_ARBITER_STATUS_V1 {
             pub unknown0: u32,
             pub unknown1: u32,
@@ -438,6 +444,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_CLIENT_FAN_ARBITER_CONTROL_V1 {
             pub arbiter_index: u32,
             pub flags: NV_FAN_ARBITER_CONTROL_FLAGS,
@@ -505,6 +512,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_CLIENT_FAN_COOLER_INFO_V1 {
             pub cooler_id: NV_GPU_CLIENT_FAN_COOLERS_COOLER_ID,
             pub tach_supported: BoolU32,
@@ -517,7 +525,7 @@ pub mod private {
     nvstruct! {
         pub struct NV_GPU_CLIENT_FAN_COOLERS_INFO_V1 {
             pub version: NvVersion,
-            pub flags: u32,
+            pub flags: BoolU32,
             pub count: u32,
             pub padding: Padding<[u32; 8]>,
             pub coolers: Array<[NV_GPU_CLIENT_FAN_COOLER_INFO_V1; 32]>, // offset 44
@@ -526,7 +534,7 @@ pub mod private {
 
     impl NV_GPU_CLIENT_FAN_COOLERS_INFO_V1 {
         pub fn valid(&self) -> bool {
-            self.flags & 1 != 0
+            self.flags.get()
         }
 
         pub fn coolers(&self) -> &[NV_GPU_CLIENT_FAN_COOLER_INFO_V1] {
@@ -545,6 +553,7 @@ pub mod private {
     }
 
     nvstruct! {
+        #[derive(Default)]
         pub struct NV_GPU_CLIENT_FAN_COOLER_STATUS_V1 {
             pub cooler_id: NV_GPU_CLIENT_FAN_COOLERS_COOLER_ID,
             pub tach_rpm: u32,
@@ -585,25 +594,25 @@ pub mod private {
         pub struct NV_GPU_CLIENT_FAN_COOLER_CONTROL_V1 {
             pub cooler_id: NV_GPU_CLIENT_FAN_COOLERS_COOLER_ID,
             pub level: u32,
-            pub flags: u32,
+            pub flags: BoolU32,
             pub padding: Padding<[u32; 8]>,
         }
     }
 
     impl NV_GPU_CLIENT_FAN_COOLER_CONTROL_V1 {
         pub fn manual(&self) -> bool {
-            self.flags & 1 != 0
+            self.flags.get()
         }
 
         pub fn set_manual(&mut self, manual: bool) {
-            self.flags = self.flags & 0xfffffffe | if manual { 1 } else { 0 }
+            self.flags.set(manual)
         }
     }
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_FAN_COOLERS_CONTROL_V1 {
             pub version: NvVersion,
-            pub flags: u32,
+            pub flags: BoolU32,
             pub count: u32,
             pub padding: Padding<[u32; 8]>,
             pub coolers: Array<[NV_GPU_CLIENT_FAN_COOLER_CONTROL_V1; 32]>,
@@ -612,11 +621,11 @@ pub mod private {
 
     impl NV_GPU_CLIENT_FAN_COOLERS_CONTROL_V1 {
         pub fn valid(&self) -> bool {
-            self.flags & 1 != 0
+            self.flags.get()
         }
 
         pub fn set_valid(&mut self, valid: bool) {
-            self.flags = self.flags & 0xfffffffe | if valid { 1 } else { 0 }
+            self.flags.set(valid)
         }
 
         pub fn coolers(&self) -> &[NV_GPU_CLIENT_FAN_COOLER_CONTROL_V1] {
