@@ -70,6 +70,7 @@ pub mod api {
         pub use crate::gpu::cooler::private::*;
         pub use crate::gpu::thermal::private::*;
         pub use crate::gpu::pstate::private::*;
+        pub use crate::driverapi::private::*;
         pub use crate::i2c::private::*;
     }
 }
