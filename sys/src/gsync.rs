@@ -147,6 +147,8 @@ nvstruct! {
     }
 }
 
+nvtag! { NV_GSYNC_DISPLAY.displayId: u32 / u32 @TaggedData }
+
 nvversion! { _(NvAPI_GSync_GetTopology):
     NV_GSYNC_DISPLAY(1)
 }

@@ -1,7 +1,7 @@
 /// Undocumented API
 pub mod private {
     use crate::prelude_::*;
-    use crate::gpu::pstate::NV_GPU_PERF_VOLTAGE_INFO_DOMAIN_ID;
+    use crate::gpu::pstate::{VoltageInfoDomain, NV_GPU_PERF_VOLTAGE_INFO_DOMAIN_ID};
     use crate::gpu::clock::NVAPI_MAX_GPU_PERF_VOLTAGES;
 
     nvstruct! {
@@ -166,6 +166,8 @@ pub mod private {
         }
     }
 
+    nvtag! { NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V1.policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID / PowerPolicyId @TaggedData }
+
     nvstruct! {
         pub struct NV_GPU_CLIENT_POWER_POLICIES_INFO_V1 {
             pub version: NvVersion,
@@ -189,6 +191,8 @@ pub mod private {
             pub padding: Padding<[u32; 560/4 - 11]>,
         }
     }
+
+    nvtag! { NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V2.policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID / PowerPolicyId @TaggedData }
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_POWER_POLICIES_INFO_V2 {
@@ -229,6 +233,8 @@ pub mod private {
         }
     }
 
+    nvtag! { NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1.policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID / PowerPolicyId @TaggedData }
+
     nvstruct! {
         pub struct NV_GPU_CLIENT_POWER_POLICIES_STATUS_V1 {
             pub version: NvVersion,
@@ -254,6 +260,8 @@ pub mod private {
             self.flags = self.flags & 0xfffffffe | if value { 1 } else { 0 }
         }
     }
+
+    nvtag! { NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2.policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID / PowerPolicyId @TaggedData }
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_POWER_POLICIES_STATUS_V2 {
@@ -335,6 +343,8 @@ pub mod private {
             pub unknown1: u32,
         }
     }
+
+    nvtag! { NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_ENTRY.channel: NV_GPU_CLIENT_POWER_TOPOLOGY_CHANNEL_ID / PowerTopologyChannelId @TaggedData }
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_V1 {
@@ -488,6 +498,7 @@ pub mod private {
             pub unknown: Padding<[u32; 257]>,
         }
     }
+    nvtag! { NV_VOLT_TABLE_ENTRY.voltage_domain@domain: NV_GPU_PERF_VOLTAGE_INFO_DOMAIN_ID / VoltageInfoDomain @TaggedData }
 
     nvstruct! {
         pub struct NV_VOLT_TABLE_V1 {

@@ -325,6 +325,7 @@ pub mod private {
             pub defaultLevel: u32,
         }
     }
+    nvtag! { NV_GPU_COOLER_POLICY_LEVEL.levelId: u32 / u32 @TaggedData }
 
     nvstruct! {
         pub struct NV_GPU_COOLER_POLICY_TABLE_V1 {
@@ -402,6 +403,7 @@ pub mod private {
             pub padding: Padding<[u32; 40/4-3]>,
         }
     }
+    nvtag! { NV_GPU_CLIENT_FAN_ARBITER_INFO_V1.arbiter_index: u32 / u32 @TaggedData }
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_FAN_ARBITERS_INFO_V1 {
@@ -439,6 +441,7 @@ pub mod private {
             pub unknown1: u32,
         }
     }
+    nvtag! { NV_GPU_CLIENT_FAN_ARBITER_STATUS_V1.unknown0: u32 / u32 @TaggedData }
 
     impl NV_GPU_CLIENT_FAN_ARBITER_STATUS_V1 {
         pub fn fan_stop_active(&self) -> bool {
@@ -482,6 +485,7 @@ pub mod private {
             pub flags: NV_FAN_ARBITER_CONTROL_FLAGS,
         }
     }
+    nvtag! { NV_GPU_CLIENT_FAN_ARBITER_CONTROL_V1.arbiter_index: u32 / u32 @TaggedData }
 
     nvbits! {
         pub enum NV_FAN_ARBITER_CONTROL_FLAGS / FanArbiterControlFlags {
@@ -555,6 +559,7 @@ pub mod private {
             pub padding: Padding<[u32; 8]>,
         }
     }
+    nvtag! { NV_GPU_CLIENT_FAN_COOLER_INFO_V1.cooler_id: NV_GPU_CLIENT_FAN_COOLERS_COOLER_ID / FanCoolerId @TaggedData }
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_FAN_COOLERS_INFO_V1 {
@@ -601,6 +606,7 @@ pub mod private {
             pub padding: Padding<[u32; 8]>,
         }
     }
+    nvtag! { NV_GPU_CLIENT_FAN_COOLER_STATUS_V1.cooler_id: NV_GPU_CLIENT_FAN_COOLERS_COOLER_ID / FanCoolerId @TaggedData }
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_FAN_COOLERS_STATUS_V1 {
@@ -640,6 +646,7 @@ pub mod private {
             pub padding: Padding<[u32; 8]>,
         }
     }
+    nvtag! { NV_GPU_CLIENT_FAN_COOLER_CONTROL_V1.cooler_id: NV_GPU_CLIENT_FAN_COOLERS_COOLER_ID / FanCoolerId @TaggedData }
 
     impl NV_GPU_CLIENT_FAN_COOLER_CONTROL_V1 {
         pub fn manual(&self) -> bool {

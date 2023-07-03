@@ -177,6 +177,7 @@ nvstruct! {
         pub data: NV_GPU_PSTATE20_CLOCK_ENTRY_DATA,
     }
 }
+nvtag! { NV_GPU_PSTATE20_CLOCK_ENTRY_V1.domainId: NV_GPU_PUBLIC_CLOCK_ID / PublicClockId @TaggedData }
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug, Default)]
@@ -232,6 +233,7 @@ nvstruct! {
         pub maxVoltage_uV: u32,
     }
 }
+nvtag! { NV_GPU_PSTATE20_CLOCK_ENTRY_RANGE.domainId: NV_GPU_PERF_VOLTAGE_INFO_DOMAIN_ID / VoltageInfoDomain @TaggedData }
 
 nvstruct! {
     #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
@@ -245,6 +247,7 @@ nvstruct! {
         pub voltDelta_uV: NV_GPU_PERF_PSTATES20_PARAM_DELTA,
     }
 }
+nvtag! { NV_GPU_PERF_PSTATE20_BASE_VOLTAGE_ENTRY_V1.domainId: NV_GPU_PERF_VOLTAGE_INFO_DOMAIN_ID / VoltageInfoDomain @TaggedData }
 
 nvstruct! {
     /// Performance state (P-State) settings
@@ -263,6 +266,7 @@ nvstruct! {
         pub baseVoltages: Array<[NV_GPU_PERF_PSTATE20_BASE_VOLTAGE_ENTRY_V1; NVAPI_MAX_GPU_PSTATE20_BASE_VOLTAGES]>,
     }
 }
+nvtag! { NV_GPU_PERF_PSTATES20_PSTATE.pstateId: NV_GPU_PERF_PSTATE_ID / PstateId @TaggedData }
 
 nvstruct! {
     /// Used in NvAPI_GPU_GetPstates20() interface call.

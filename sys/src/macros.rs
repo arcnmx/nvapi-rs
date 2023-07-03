@@ -1033,3 +1033,23 @@ macro_rules! nvversion {
         pub type $name = $latest;
     };
 }
+
+macro_rules! nvtag {
+    (@rest $name:ident.$field:ident: $repr:ident / $id:ident) => { };
+    (@rest $name:ident.$field:ident: $repr:ident / $id:ident @TaggedData) => {
+        impl crate::tagged::TaggedData for $name {
+            type Repr = $repr;
+            type Id = $id;
+
+            fn tag(&self) -> Self::Repr {
+                self.$field
+            }
+        }
+    };
+    ($name:ident.$field:ident@$accessor:ident: $repr:ident / $id:ident $($rest:tt)*) => {
+        nvtag! { @rest $name.$field: $repr / $id $($rest)* }
+    };
+    ($name:ident.$field:ident: $repr:ident / $id:ident $($rest:tt)*) => {
+        nvtag! { $name.$field@$field: $repr / $id $($rest)* }
+    };
+}

@@ -170,6 +170,8 @@ nvstruct! {
     }
 }
 
+nvtag! { NV_TARGET_INFO_DATA_V1.targetId: u32 / u32 @TaggedData }
+
 nvversion! { NV_TARGET_INFO_DATA(NvAPI_Disp_GetDisplayIdsFromTarget):
     NV_TARGET_INFO_DATA_V1(1)
 }

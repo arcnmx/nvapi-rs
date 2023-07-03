@@ -90,6 +90,7 @@ nvstruct! {
         pub target: NV_THERMAL_TARGET,
     }
 }
+nvtag! { NV_GPU_THERMAL_SETTINGS_SENSOR.target: NV_THERMAL_TARGET / ThermalTarget @TaggedData }
 
 nvversion! { NV_GPU_THERMAL_SETTINGS(NvAPI_GPU_GetThermalSettings):
     // the only v2 difference is the _SENSOR struct uses i32 instead of u32 fields
@@ -142,6 +143,8 @@ pub mod private {
         }
     }
 
+    nvtag! { NV_GPU_CLIENT_THERMAL_POLICIES_INFO_ENTRY_V2.policy_id: NV_GPU_CLIENT_THERMAL_POLICIES_POLICY_ID / ThermalPolicyId @TaggedData }
+
     nvstruct! {
         pub struct NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V2 {
             pub version: NvVersion,
@@ -179,6 +182,8 @@ pub mod private {
             self.flags == 1
         }
     }
+
+    nvtag! { NV_GPU_CLIENT_THERMAL_POLICY_INFO_V3.policy_id: NV_GPU_CLIENT_THERMAL_POLICIES_POLICY_ID / ThermalPolicyId @TaggedData }
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V3 {
@@ -224,6 +229,8 @@ pub mod private {
             pub pstate: crate::gpu::pstate::NV_GPU_PERF_PSTATE_ID,
         }
     }
+
+    nvtag! { NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_ENTRY_V2.policy_id: NV_GPU_CLIENT_THERMAL_POLICIES_POLICY_ID / ThermalPolicyId @TaggedData }
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V2 {
@@ -272,6 +279,8 @@ pub mod private {
             &self.pff_freqs[..count]
         }
     }
+
+    nvtag! { NV_GPU_CLIENT_THERMAL_POLICY_STATUS_V3.policy_id: NV_GPU_CLIENT_THERMAL_POLICIES_POLICY_ID / ThermalPolicyId @TaggedData }
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V3 {

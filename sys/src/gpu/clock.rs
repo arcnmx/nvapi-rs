@@ -95,7 +95,7 @@ nvapi! {
 /// Undocumented API
 pub mod private {
     use crate::prelude_::*;
-    use super::{NV_GPU_PUBLIC_CLOCK_ID, NVAPI_MAX_GPU_PUBLIC_CLOCKS, NVAPI_MAX_GPU_PERF_CLOCKS};
+    use super::{PublicClockId, NV_GPU_PUBLIC_CLOCK_ID, NVAPI_MAX_GPU_PUBLIC_CLOCKS, NVAPI_MAX_GPU_PERF_CLOCKS};
 
     // undocumented constants
     pub const NVAPI_MAX_USAGES_PER_GPU: usize = 8;
@@ -229,6 +229,8 @@ pub mod private {
         }
     }
 
+    nvtag! { NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_ENTRY.clockType@clock_type: NV_GPU_PUBLIC_CLOCK_ID / PublicClockId @TaggedData }
+
     nvstruct! {
         pub struct NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_V1 {
             pub version: NvVersion,
@@ -323,6 +325,8 @@ pub mod private {
             pub clock_id: NV_GPU_PUBLIC_CLOCK_ID,
         }
     }
+
+    nvtag! { NV_GPU_PERF_CLIENT_LIMITS_ENTRY.id: NV_PERF_CLIENT_LIMIT_ID / PerfLimitId @TaggedData }
 
     nvstruct! {
         // 2-030c: 0C 03 02 00 00 00 00 00 01 00 00 00 06 00 00 00
