@@ -29,7 +29,7 @@ impl PhysicalGpu {
 
     pub fn enumerate() -> crate::NvapiResult<Vec<Self>> {
         trace!("gpu.enumerate()");
-        let mut handles = [Default::default(); sys::types::NVAPI_MAX_PHYSICAL_GPUS];
+        let mut handles = [Default::default(); sys::NVAPI_MAX_PHYSICAL_GPUS];
         match unsafe { nvcall!(NvAPI_EnumPhysicalGPUs@get(&mut handles)) } {
             Err(crate::NvapiError { status: crate::Status::NvidiaDeviceNotFound, .. }) => Ok(Vec::new()),
             Ok(len) => Ok(handles[..len as usize].iter().cloned().map(PhysicalGpu).collect()),
@@ -652,7 +652,7 @@ impl PhysicalGpu {
 
         let index = match index {
             Some(index) => index,
-            None if <cooler::private::NV_GPU_GETCOOLER_SETTINGS as sys::nvapi::StructVersion>::NVAPI_VERSION.version() < 4 =>
+            None if <cooler::private::NV_GPU_GETCOOLER_SETTINGS as sys::version::StructVersion>::NVAPI_VERSION.version() < 4 =>
                 cooler::private::NVAPI_COOLER_TARGET_ALL as _,
             None => 0,
         };

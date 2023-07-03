@@ -12,7 +12,7 @@ pub trait RawConversion {
     fn convert_raw(&self) -> Result<Self::Target, Self::Error>;
 }
 
-impl<const N: usize> RawConversion for sys::types::NvString<N> {
+impl<const N: usize> RawConversion for sys::NvString<N> {
     type Target = String;
     type Error = Infallible;
 
