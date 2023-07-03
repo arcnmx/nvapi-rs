@@ -32,7 +32,7 @@ macro_rules! nv_declare_handle {
 
 macro_rules! nvstruct {
     ($($tt:tt)*) => {
-        #[$crate::types::NvStruct]
+        #[$crate::nvapi::NvStruct]
         $($tt)*
     };
 }
@@ -73,17 +73,17 @@ macro_rules! nvversion {
     (@ $(=$name:ident)? $target:ident($ver:expr) $(= $sz:expr)?) => {
         nvversion! { $(=$name)? $target($ver) $(=$sz)? }
 
-        impl crate::nvapi::StructVersion for $target {
-            const NVAPI_VERSION: crate::nvapi::NvVersion = <$target as crate::nvapi::StructVersion<{$ver}>>::NVAPI_VERSION;
+        impl StructVersion for $target {
+            const NVAPI_VERSION: NvVersion = <$target as StructVersion<{$ver}>>::NVAPI_VERSION;
 
             fn versioned() -> Self {
-                <$target as crate::nvapi::StructVersion<{$ver}>>::versioned()
+                <$target as StructVersion<{$ver}>>::versioned()
             }
         }
 
         impl Default for $target {
             fn default() -> Self {
-                crate::nvapi::StructVersion::<0>::versioned()
+                StructVersion::<0>::versioned()
             }
         }
     };
@@ -92,8 +92,8 @@ macro_rules! nvversion {
             pub type $name = $target;
         )?
 
-        impl crate::nvapi::StructVersion<$ver> for $target {
-            const NVAPI_VERSION: crate::nvapi::NvVersion = NvVersion::with_struct::<$target>($ver);
+        impl StructVersion<$ver> for $target {
+            const NVAPI_VERSION: NvVersion = NvVersion::with_struct::<$target>($ver);
         }
 
         $(
@@ -101,12 +101,12 @@ macro_rules! nvversion {
         )?
     };
     ($struct:ident(@.$id:ident)) => {
-        impl crate::nvapi::VersionedStruct for $v2 {
-            fn nvapi_version_mut(&mut self) -> &mut crate::nvapi::NvVersion {
+        impl VersionedStruct for $v2 {
+            fn nvapi_version_mut(&mut self) -> &mut NvVersion {
                 &mut self.$id
             }
 
-            fn nvapi_version(&self) -> crate::nvapi::NvVersion {
+            fn nvapi_version(&self) -> NvVersion {
                 self.$id
             }
         }

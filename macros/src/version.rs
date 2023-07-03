@@ -75,8 +75,8 @@ pub fn derive_versioned_struct(input: TokenStream) -> Result<TokenStream> {
     };
 
     let name = &input.ident;
-    let VersionedStructField = sys_path(["nvapi", "VersionedStruct"]);
-    let NvVersion = sys_path(["nvapi", "NvVersion"]);
+    let VersionedStructField = sys_path(["version", "VersionedStruct"]);
+    let NvVersion = sys_path(["version", "NvVersion"]);
 
     let (body, body_mut) = match version_field_id {
         Ok(version_field_id) => (

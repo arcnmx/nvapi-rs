@@ -6,7 +6,7 @@ use crate::sys;
 #[cfg(feature = "serde")]
 use serde::{Serialize, Deserialize};
 use log::trace;
-use crate::sys::types::{ClockMask, ClockMaskIter};
+use crate::sys::clock_mask::{ClockMask, ClockMaskIter};
 use crate::gpu::VfpInfo;
 use crate::types::{Kilohertz, Kilohertz2, KilohertzDelta, Kilohertz2Delta, Percentage, Percentage1000, Microvolts, Range, RawConversion};
 

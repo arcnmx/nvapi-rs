@@ -1,11 +1,80 @@
-use std::mem::{MaybeUninit, size_of};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::os::raw::c_void;
-use zerocopy::{FromBytes, AsBytes};
 use crate::status::{Status, NvAPI_Status};
-use crate::types;
+use crate::NvString;
 
-pub use nvapi_macros::VersionedStruct;
+pub use nvapi_macros::{NvStruct, NvInherit};
+
+pub const NVAPI_GENERIC_STRING_MAX: usize = 4096;
+pub const NVAPI_LONG_STRING_MAX: usize = 256;
+pub const NVAPI_SHORT_STRING_MAX: usize = 64;
+
+pub type NvAPI_String = NvString<NVAPI_GENERIC_STRING_MAX>;
+pub type NvAPI_LongString = NvString<NVAPI_LONG_STRING_MAX>;
+pub type NvAPI_ShortString = NvString<NVAPI_SHORT_STRING_MAX>;
+
+pub type NvBool = u8;
+
+pub const NV_TRUE: NvBool = 1;
+pub const NV_FALSE: NvBool = 0;
+
+nvstruct! {
+    pub struct NV_RECT {
+        pub left: u32,
+        pub top: u32,
+        pub right: u32,
+        pub bottom: u32,
+    }
+}
+
+nvstruct! {
+    pub struct NvSBox {
+        pub sX: i32,
+        pub sY: i32,
+        pub sWidth: i32,
+        pub sHeight: i32,
+    }
+}
+
+nvstruct! {
+    pub struct NvGUID {
+        pub data1: u32,
+        pub data2: u16,
+        pub data3: u16,
+        pub data4: [u8; 8],
+    }
+}
+
+pub type NvLUID = NvGUID;
+
+pub const NVAPI_MAX_PHYSICAL_GPUS: usize = 64;
+
+pub const NVAPI_MAX_PHYSICAL_BRIDGES: usize = 100;
+pub const NVAPI_PHYSICAL_GPUS: usize = 32;
+pub const NVAPI_MAX_LOGICAL_GPUS: usize = 64;
+pub const NVAPI_MAX_AVAILABLE_GPU_TOPOLOGIES: usize = 256;
+pub const NVAPI_MAX_AVAILABLE_SLI_GROUPS: usize = 265;
+pub const NVAPI_MAX_GPU_TOPOLOGIES: usize = NVAPI_MAX_PHYSICAL_GPUS;
+pub const NVAPI_MAX_GPU_PER_TOPOLOGY: usize = 8;
+pub const NVAPI_MAX_DISPLAY_HEADS: usize = 2;
+pub const NVAPI_ADVANCED_DISPLAY_HEADS: usize = 4;
+pub const NVAPI_MAX_DISPLAYS: usize = NVAPI_PHYSICAL_GPUS * NVAPI_ADVANCED_DISPLAY_HEADS;
+pub const NVAPI_MAX_ACPI_IDS: usize = 16;
+pub const NVAPI_MAX_VIEW_MODES: usize = 8;
+pub const NVAPI_MAX_HEADS_PER_GPU: usize = 32;
+
+/// Maximum heads, each with `NVAPI_DESKTOP_RES` resolution
+pub const NV_MAX_HEADS: usize = 4;
+/// Maximum number of input video streams, each with a `NVAPI_VIDEO_SRC_INFO`
+pub const NV_MAX_VID_STREAMS: usize = 4;
+/// Maximum number of output video profiles supported
+pub const NV_MAX_VID_PROFILES: usize = 4;
+
+pub const NVAPI_SYSTEM_MAX_DISPLAYS: usize = NVAPI_MAX_PHYSICAL_GPUS * NV_MAX_HEADS;
+
+pub const NVAPI_SYSTEM_MAX_HWBCS: usize = 128;
+pub const NVAPI_SYSTEM_HWBC_INVALID_ID: usize = 0xffffffff;
+pub const NVAPI_MAX_AUDIO_DEVICES: usize = 16;
 
 pub type QueryInterfaceFn = extern "C" fn(id: u32) -> *const c_void;
 
@@ -140,92 +209,16 @@ nvapi! {
 }
 
 nvapi! {
-    pub type GetErrorMessageFn = extern "C" fn(nr: NvAPI_Status, szDesc: *mut types::NvAPI_ShortString) -> NvAPI_Status;
+    pub type GetErrorMessageFn = extern "C" fn(nr: NvAPI_Status, szDesc: *mut NvAPI_ShortString) -> NvAPI_Status;
 
     /// This function converts an NvAPI error code into a null terminated string.
     pub unsafe fn NvAPI_GetErrorMessage;
 }
 
 nvapi! {
-    pub type GetInterfaceVersionStringFn = extern "C" fn(szDesc: *mut types::NvAPI_ShortString) -> NvAPI_Status;
+    pub type GetInterfaceVersionStringFn = extern "C" fn(szDesc: *mut NvAPI_ShortString) -> NvAPI_Status;
 
     /// This function returns a string describing the version of the NvAPI library.
     /// The contents of the string are human readable.  Do not assume a fixed format.
     pub unsafe fn NvAPI_GetInterfaceVersionString;
-}
-
-/// NvAPI Version Definition
-#[derive(Default, Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, FromBytes, AsBytes)]
-#[repr(transparent)]
-pub struct NvVersion {
-    pub data: u32,
-}
-
-impl NvVersion {
-    pub const fn with_version(data: u32) -> Self {
-        Self {
-            data,
-        }
-    }
-
-    pub const fn new(size: usize, version: u16) -> Self {
-        //debug_assert!(size < 0x10000);
-        Self {
-            data: size as u32 | (version as u32) << 16,
-        }
-    }
-
-    #[doc(alias = "MAKE_NVAPI_VERSION")]
-    pub const fn with_struct<T>(version: u16) -> Self {
-        Self::new(size_of::<T>(), version)
-    }
-
-    #[doc(alias = "GET_NVAPI_VERSION")]
-    pub const fn version(&self) -> u16 {
-        (self.data >> 16) as u16
-    }
-
-    #[doc(alias = "GET_NVAPI_SIZE")]
-    pub const fn size(&self) -> usize {
-        self.data as usize & 0xffff
-    }
-}
-
-impl From<u32> for NvVersion {
-    fn from(version: u32) -> Self {
-        Self::with_version(version)
-    }
-}
-
-impl From<NvVersion> for u32 {
-    fn from(ver: NvVersion) -> u32 {
-        ver.data
-    }
-}
-
-pub trait VersionedStruct: Sized {
-    fn nvapi_version_mut(&mut self) -> &mut NvVersion;
-    fn nvapi_version(&self) -> NvVersion;
-}
-
-impl VersionedStruct for NvVersion {
-    fn nvapi_version_mut(&mut self) -> &mut NvVersion {
-        self
-    }
-
-    fn nvapi_version(&self) -> NvVersion {
-        *self
-    }
-}
-
-pub trait StructVersion<const VER: u16 = 0>: VersionedStruct {
-    const NVAPI_VERSION: NvVersion;
-
-    fn versioned() -> Self {
-        let mut zero = unsafe {
-            MaybeUninit::<Self>::zeroed().assume_init()
-        };
-        *zero.nvapi_version_mut() = Self::NVAPI_VERSION;
-        zero
-    }
 }

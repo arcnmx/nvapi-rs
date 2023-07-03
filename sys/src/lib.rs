@@ -3,11 +3,15 @@
 
 #[macro_use]
 mod macros;
+mod boolu32;
+mod string;
 
 pub mod nvid;
 pub mod nvapi;
 pub mod status;
-pub mod types;
+pub mod array;
+pub mod version;
+pub mod clock_mask;
 
 /// NVAPI Handles - These handles are retrieved from various calls and passed in
 /// to others in NvAPI These are meant to be opaque types. Do not assume they
@@ -42,10 +46,14 @@ pub mod dx;
 
 pub mod dispcontrol;
 
-pub use nvid::Api;
-pub use nvapi::nvapi_QueryInterface;
-pub use types::*;
-pub use status::{NvAPI_Status, Status};
+pub use self::array::Array;
+pub use self::version::NvVersion;
+pub use self::boolu32::BoolU32;
+pub use self::string::NvString;
+pub use self::clock_mask::ClockMask;
+pub use self::nvid::Api;
+pub use self::nvapi::*;
+pub use self::status::{NvAPI_Status, Status};
 
 use std::error::Error as StdError;
 use std::{result, fmt};
@@ -84,11 +92,12 @@ pub mod api {
 }
 
 pub(crate) mod prelude_ {
-    pub(crate) use crate::types::*;
-    pub(crate) use crate::nvapi::{NvVersion, VersionedStruct};
+    pub(crate) use crate::nvapi::*;
     pub(crate) use crate::handles::{self, NvPhysicalGpuHandle};
     pub(crate) use crate::status::NvAPI_Status;
-    pub(crate) type Array<T> = Padding<T>;
+    pub(crate) use crate::version::{StructVersion, VersionedStruct};
+    pub(crate) use crate::{Array, BoolU32, NvVersion, ClockMask};
+    pub(crate) type Padding<T> = Array<T>;
 }
 
 /// The result of a fallible NVAPI call.

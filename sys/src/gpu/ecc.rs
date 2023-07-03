@@ -108,7 +108,7 @@ impl NV_GPU_ECC_CONFIGURATION_INFO {
     }
 
     pub fn isEnabledByDefault(&self) -> bool {
-        self.isEnabled.0 & 2 != 0
+        self.isEnabled.flags() & 2 != 0
     }
 }
 
