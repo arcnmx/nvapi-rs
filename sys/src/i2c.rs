@@ -136,7 +136,7 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_I2C_INFO:
+nvversion! { NV_I2C_INFO(NvAPI_I2CWrite, NvAPI_I2CRead):
     NV_I2C_INFO_V3(3),
     NV_I2C_INFO_V2(2),
     NV_I2C_INFO_V1(1)
@@ -243,7 +243,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_I2C_INFO_EX:
+    nvversion! { NV_I2C_INFO_EX(NvAPI_I2CWriteEx, NvAPI_I2CReadEx):
         NV_I2C_INFO_EX_V3(3)
     }
 

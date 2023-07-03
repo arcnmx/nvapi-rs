@@ -91,7 +91,7 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_GPU_THERMAL_SETTINGS:
+nvversion! { NV_GPU_THERMAL_SETTINGS(NvAPI_GPU_GetThermalSettings):
     // the only v2 difference is the _SENSOR struct uses i32 instead of u32 fields
     NV_GPU_THERMAL_SETTINGS_V1(2),
     NV_GPU_THERMAL_SETTINGS_V1(1; @old)
@@ -200,7 +200,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLIENT_THERMAL_POLICIES_INFO:
+    nvversion! { NV_GPU_CLIENT_THERMAL_POLICIES_INFO(NvAPI_GPU_ClientThermalPoliciesGetInfo):
         NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V3(3) = 1400,
         NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V2(2)
     }
@@ -287,7 +287,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLIENT_THERMAL_POLICIES_STATUS:
+    nvversion! { NV_GPU_CLIENT_THERMAL_POLICIES_STATUS(NvAPI_GPU_ClientThermalPoliciesGetStatus, NvAPI_GPU_ClientThermalPoliciesSetStatus):
         NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V3(3) = 1352,
         NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V2(2)
     }

@@ -52,7 +52,7 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_CHIPSET_INFO:
+nvversion! { NV_CHIPSET_INFO(NvAPI_SYS_GetChipSetInfo):
     NV_CHIPSET_INFO_v4(4; @inherit(v3: NV_CHIPSET_INFO_v3)),
     NV_CHIPSET_INFO_v3(3; @inherit(v2: NV_CHIPSET_INFO_v2)),
     NV_CHIPSET_INFO_v2(2; @inherit(v1: NV_CHIPSET_INFO_v1)),
@@ -134,7 +134,7 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_DISPLAY_DRIVER_INFO:
+nvversion! { NV_DISPLAY_DRIVER_INFO(NvAPI_SYS_GetDisplayDriverInfo):
     NV_DISPLAY_DRIVER_INFO_V2(2; @inherit(v1: NV_DISPLAY_DRIVER_INFO_V1)),
     NV_DISPLAY_DRIVER_INFO_V1(1)
 }

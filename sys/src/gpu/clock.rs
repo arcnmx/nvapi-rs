@@ -44,7 +44,7 @@ impl NV_GPU_CLOCK_FREQUENCIES_V1 {
     }
 }
 
-nvversion! { NV_GPU_CLOCK_FREQUENCIES:
+nvversion! { NV_GPU_CLOCK_FREQUENCIES(NvAPI_GPU_GetAllClockFrequencies):
     NV_GPU_CLOCK_FREQUENCIES_V1(3),
     NV_GPU_CLOCK_FREQUENCIES_V1(2; @old),
     NV_GPU_CLOCK_FREQUENCIES_V1(1; @old)
@@ -120,7 +120,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_USAGES_INFO:
+    nvversion! { NV_USAGES_INFO(NvAPI_GPU_GetUsages):
         NV_USAGES_INFO_V1(1)
     }
 
@@ -142,7 +142,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_CLOCKS_INFO:
+    nvversion! { NV_CLOCKS_INFO(NvAPI_GPU_GetAllClocks):
         NV_CLOCKS_INFO_V1(1)
     }
 
@@ -191,7 +191,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL:
+    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL(NvAPI_GPU_ClockClientClkVfPointsGetControl, NvAPI_GPU_ClockClientClkVfPointsSetControl):
         NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_V1(2),
         NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_V1(1; @old) = 9248
     }
@@ -238,7 +238,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO:
+    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO(NvAPI_GPU_ClockClientClkDomainsGetInfo):
         NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_V1(1) = 2344
     }
 
@@ -271,7 +271,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO:
+    nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO(NvAPI_GPU_ClockClientClkVfPointsGetInfo):
         NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_V1(1) = 6188
     }
 
@@ -340,7 +340,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_PERF_CLIENT_LIMITS:
+    nvversion! { NV_GPU_PERF_CLIENT_LIMITS(NvAPI_GPU_PerfClientLimitsGetStatus, NvAPI_GPU_PerfClientLimitsSetStatus):
         NV_GPU_PERF_CLIENT_LIMITS_V2(2) = 0x30c
     }
 

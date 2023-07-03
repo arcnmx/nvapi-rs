@@ -37,7 +37,7 @@ nvstruct! {
     }
 }
 
-nvversion! { _:
+nvversion! { _(NvAPI_GPU_GetECCStatusInfo):
     NV_GPU_ECC_STATUS_INFO(1)
 }
 
@@ -78,7 +78,7 @@ nvstruct! {
     }
 }
 
-nvversion! { _:
+nvversion! { _(NvAPI_GPU_GetECCErrorInfo):
     NV_GPU_ECC_ERROR_INFO(1)
 }
 
@@ -116,7 +116,7 @@ nvstruct! {
     }
 }
 
-nvversion! { _:
+nvversion! { _(NvAPI_GPU_GetECCConfigurationInfo):
     NV_GPU_ECC_CONFIGURATION_INFO(1) = 8
 }
 

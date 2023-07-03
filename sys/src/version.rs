@@ -1,5 +1,6 @@
 use core::mem::size_of;
 use zerocopy::FromBytes;
+use crate::nvid::Api;
 
 /// NvAPI Version Definition
 #[derive(Default, Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -123,6 +124,8 @@ pub trait StructVersionInfo<const VER: u16> {
 
 pub trait StructVersion<const VER: u16>: VersionedStruct {
     const NVAPI_VERSION: NvVersion;
+    const API: Api;
+    const API_SET: Option<Api>;
     type Storage: VersionedStructField;
 
     fn init_version(&mut self) where Self: VersionedStructField {

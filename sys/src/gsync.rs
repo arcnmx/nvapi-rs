@@ -72,7 +72,7 @@ impl NV_GSYNC_CAPABILITIES_V3 {
     }
 }
 
-nvversion! { NV_GSYNC_CAPABILITIES:
+nvversion! { NV_GSYNC_CAPABILITIES(NvAPI_GSync_QueryCapabilities):
     NV_GSYNC_CAPABILITIES_V3(3; @inherit(v2: NV_GSYNC_CAPABILITIES_V2)),
     NV_GSYNC_CAPABILITIES_V2(2; @inherit(v1: NV_GSYNC_CAPABILITIES_V1)),
     NV_GSYNC_CAPABILITIES_V1(1)
@@ -126,7 +126,7 @@ nvstruct! {
     }
 }
 
-nvversion! { _:
+nvversion! { _(NvAPI_GSync_GetTopology):
     NV_GSYNC_GPU(1)
 }
 
@@ -147,7 +147,7 @@ nvstruct! {
     }
 }
 
-nvversion! { _:
+nvversion! { _(NvAPI_GSync_GetTopology):
     NV_GSYNC_DISPLAY(1)
 }
 
@@ -234,7 +234,7 @@ nvbits! {
     }
 }
 
-nvversion! { _:
+nvversion! { _(NvAPI_GSync_AdjustSyncDelay):
     NV_GSYNC_DELAY(1)
 }
 
@@ -282,7 +282,7 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_GSYNC_CONTROL_PARAMS:
+nvversion! { NV_GSYNC_CONTROL_PARAMS(NvAPI_GSync_GetControlParameters, NvAPI_GSync_SetControlParameters):
     NV_GSYNC_CONTROL_PARAMS_V2(2; @inherit(v1: NV_GSYNC_CONTROL_PARAMS_V1)),
     NV_GSYNC_CONTROL_PARAMS_V1(1)
 }
@@ -344,7 +344,7 @@ nvstruct! {
     }
 }
 
-nvversion! { _:
+nvversion! { _(NvAPI_GSync_GetSyncStatus):
     NV_GSYNC_STATUS(1)
 }
 
@@ -398,7 +398,7 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_GSYNC_STATUS_PARAMS:
+nvversion! { NV_GSYNC_STATUS_PARAMS(NvAPI_GSync_GetStatusParameters):
     NV_GSYNC_STATUS_PARAMS_V2(2; @inherit(v1: NV_GSYNC_STATUS_PARAMS_V1)),
     NV_GSYNC_STATUS_PARAMS_V1(1)
 }

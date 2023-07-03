@@ -78,7 +78,7 @@ nvstruct! {
     }
 }
 
-nvversion! { _:
+nvversion! { _(NvAPI_GPU_GetAllDisplayIds, NvAPI_GPU_GetConnectedDisplayIds):
     NV_GPU_DISPLAYIDS(3),
     NV_GPU_DISPLAYIDS(1; @old)
 }

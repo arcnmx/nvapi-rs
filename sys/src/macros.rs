@@ -791,7 +791,7 @@ macro_rules! nvapi {
         nvapi! { @out(sv) $args_sv }
     };
     (@out(sv)($args_notsv:tt ($arg_sv:ident@SV: *mut $arg_sv_ty:ty))) => {
-        //$crate::nvapi::StructVersion::<VER>::$arg_sv.init_version();
+        //StructVersion::<VER>::$arg_sv.init_version();
         $arg_sv.init_version();
     };
     (@out(sv)($args_notsv:tt ($arg_sv:ident: *mut $arg_sv_ty:ty))) => {
@@ -828,7 +828,7 @@ macro_rules! nvapi {
                 nvapi! { @cstr $args_cstr }
                 unsafe {
                     self.nvapi($($arg),*)
-                        //.to_error_result($crate::nvid::Api::$fn)
+                        //.to_error_result(Api::$fn)
                         .to_result()
                         .map(|()| out)
                 }
@@ -859,7 +859,7 @@ macro_rules! nvapi {
                 let $sv_arg = nvapi!(@storage_ptr($sv_arg: *$sv_mut));
                 unsafe {
                     self.nvapi($($arg),*)
-                        //.to_error_result($crate::nvid::Api::$fn)
+                        //.to_error_result(Api::$fn)
                         .to_result()
                         .map(|()| out)
                 }
@@ -891,30 +891,30 @@ macro_rules! nvapi {
 }
 
 macro_rules! nvversion {
-    (_: $latest:ident($latest_ver:literal$($rest:tt)*) $($tt:tt)*) => {
-        nvversion! { @cont(_) $latest $latest($latest_ver) $latest($latest_ver$($rest)*) $($tt)* }
+    (_$(($($api:tt)*))?: $latest:ident($latest_ver:literal$($rest:tt)*) $($tt:tt)*) => {
+        nvversion! { @cont(_)($($($api)*)?) $latest $latest($latest_ver) $latest($latest_ver$($rest)*) $($tt)* }
     };
-    ($name:ident: $latest:ident($latest_ver:literal$($rest:tt)*) $($tt:tt)*) => {
-        nvversion! { @cont($name) $name $latest($latest_ver) $latest($latest_ver$($rest)*) $($tt)* }
+    ($name:ident$(($($api:tt)*))?: $latest:ident($latest_ver:literal$($rest:tt)*) $($tt:tt)*) => {
+        nvversion! { @cont($name)($($($api)*)?) $name $latest($latest_ver) $latest($latest_ver$($rest)*) $($tt)* }
     };
-    (@cont($defname:tt) $name:ident $latest:ident($latest_ver:literal) $target:ident($ver:literal$(;$($rest:tt)+)?)$(= $sz:expr)?) => {
-        nvversion! { @impl StructVersion $target($ver) }
-        nvversion! { @rest($defname) $name $latest($latest_ver) $latest($latest_ver) $target($ver)($($($rest)*)?) }
+    (@cont($defname:tt)$api:tt $name:ident $latest:ident($latest_ver:literal) $target:ident($ver:literal$(;$($rest:tt)+)?)$(= $sz:expr)?) => {
+        nvversion! { @impl StructVersion $target($ver)$api }
+        nvversion! { @rest($defname)$api $name $latest($latest_ver) $latest($latest_ver) $target($ver)($($($rest)*)?) }
         nvversion! { @type($defname) $latest $target }
     };
-    (@cont($defname:tt) $name:ident $latest:ident($latest_ver:literal) $($target:ident($ver:literal$(;$($rest:tt)+)?)$(= $sz:expr)?),+) => {
-        nvversion! { @find_oldest($defname)() $name $latest($latest_ver) $($target($ver$(;$($rest)+)?)$(= $sz)?),+ }
+    (@cont($defname:tt)$api:tt $name:ident $latest:ident($latest_ver:literal) $($target:ident($ver:literal$(;$($rest:tt)+)?)$(= $sz:expr)?),+) => {
+        nvversion! { @find_oldest($defname)$api() $name $latest($latest_ver) $($target($ver$(;$($rest)+)?)$(= $sz)?),+ }
     };
-    (@find_oldest($defname:tt)($($older:tt)*) $name:ident $latest:ident($latest_ver:literal) $target:ident($ver:literal$(;$($rest:tt)+)?)$(= $sz:expr)?, $($rest_:tt)*) => {
-        nvversion! { @find_oldest($defname)($($older)* $target($ver$(;$($rest)+)?)$(= $sz)?,) $name $latest($latest_ver) $($rest_)* }
+    (@find_oldest($defname:tt)$api:tt($($older:tt)*) $name:ident $latest:ident($latest_ver:literal) $target:ident($ver:literal$(;$($rest:tt)+)?)$(= $sz:expr)?, $($rest_:tt)*) => {
+        nvversion! { @find_oldest($defname)$api($($older)* $target($ver$(;$($rest)+)?)$(= $sz)?,) $name $latest($latest_ver) $($rest_)* }
     };
-    (@find_oldest($defname:tt)($($older:tt)*) $name:ident $latest:ident($latest_ver:literal) $target:ident($ver:literal$(;$($rest:tt)+)?)$(= $sz:expr)?) => {
-        nvversion! { @find_oldest($defname)($($older)* $target($ver$(;$($rest)+)?)$(= $sz)?,)($target($ver)) $name $latest($latest_ver) }
+    (@find_oldest($defname:tt)$api:tt($($older:tt)*) $name:ident $latest:ident($latest_ver:literal) $target:ident($ver:literal$(;$($rest:tt)+)?)$(= $sz:expr)?) => {
+        nvversion! { @find_oldest($defname)$api($($older)* $target($ver$(;$($rest)+)?)$(= $sz)?,)($target($ver)) $name $latest($latest_ver) }
     };
-    (@find_oldest($defname:tt)($($target:ident($ver:literal$(;$($rest:tt)+)?)$(= $sz:expr)?,)+)($oldest:ident($oldest_ver:literal)) $name:ident $latest:ident($latest_ver:literal)) => {
+    (@find_oldest($defname:tt)$api:tt($($target:ident($ver:literal$(;$($rest:tt)+)?)$(= $sz:expr)?,)+)($oldest:ident($oldest_ver:literal)) $name:ident $latest:ident($latest_ver:literal)) => {
         $(
-            nvversion! { @impl StructVersion $target($ver) $latest($latest_ver) $oldest($oldest_ver) }
-            nvversion! { @rest($defname) $name $latest($latest_ver) $oldest($oldest_ver) $target($ver)($($($rest)*)?) }
+            nvversion! { @impl StructVersion $target($ver)$api $latest($latest_ver) $oldest($oldest_ver) }
+            nvversion! { @rest($defname)$api $name $latest($latest_ver) $oldest($oldest_ver) $target($ver)($($($rest)*)?) }
         )*
         $(
             impl StructVersionInfo<$ver> for $oldest {
@@ -924,18 +924,18 @@ macro_rules! nvversion {
         )*
         nvversion! { @type($defname) $latest $oldest }
     };
-    (@rest($defname:tt) $name:ident $latest:ident($latest_ver:literal) $oldest:ident($oldest_ver:literal) $target:ident($ver:literal)()) => {
-        nvversion! { @latest($defname) $target($ver) $oldest($oldest_ver) }
+    (@rest($defname:tt)$api:tt $name:ident $latest:ident($latest_ver:literal) $oldest:ident($oldest_ver:literal) $target:ident($ver:literal)()) => {
+        nvversion! { @latest($defname)$api $target($ver) $oldest($oldest_ver) }
     };
-    (@rest($defname:tt) $name:ident $latest:ident($latest_ver:literal) $oldest:ident($oldest_ver:literal) $target:ident($ver:literal)(@inherit($id:ident: $v1:ty)$($rest:tt)*)) => {
+    (@rest($defname:tt)$api:tt $name:ident $latest:ident($latest_ver:literal) $oldest:ident($oldest_ver:literal) $target:ident($ver:literal)(@inherit($id:ident: $v1:ty)$($rest:tt)*)) => {
         nvinherit! { $target($id: $v1) }
-        nvversion! { @rest($defname) $name $latest($latest_ver) $oldest($oldest_ver) $target($ver)($($rest)*) }
+        nvversion! { @rest($defname)$api $name $latest($latest_ver) $oldest($oldest_ver) $target($ver)($($rest)*) }
     };
-    (@rest($defname:tt) $name:ident $latest:ident($latest_ver:literal) $oldest:ident($oldest_ver:literal) $target:ident($ver:literal)(@old)) => {
-        nvversion! { @old($defname) $target($ver) $latest($latest_ver) $oldest($oldest_ver) }
+    (@rest($defname:tt)$api:tt $name:ident $latest:ident($latest_ver:literal) $oldest:ident($oldest_ver:literal) $target:ident($ver:literal)(@old)) => {
+        nvversion! { @old($defname)$api $target($ver) $latest($latest_ver) $oldest($oldest_ver) }
     };
     // @rest base case for latest version
-    (@latest($defname:tt) $target:ident($ver:literal) $oldest:ident($oldest_ver:literal)) => {
+    (@latest($defname:tt)$api:tt $target:ident($ver:literal) $oldest:ident($oldest_ver:literal)) => {
         nvversion! { @impl Default $target($ver) }
         //nvversion! { @impl StructVersion $target($ver) }
 
@@ -945,20 +945,21 @@ macro_rules! nvversion {
         }*/
     };
     // @rest base case for old versions
-    (@old($defname:tt) $target:ident($ver:literal) $latest:ident($latest_ver:literal) $oldest:ident($oldest_ver:literal)) => {
+    (@old($defname:tt)$api:tt $target:ident($ver:literal) $latest:ident($latest_ver:literal) $oldest:ident($oldest_ver:literal)) => {
     };
     // this target is the latest version
     /*(@impl StructVersion $target:ident($ver:literal)) => {
         nvversion! { @impl StructVersion($ver)(NvVersion) $target(NvVersion::with_struct::<$target>($ver)) }
     };*/
     // this version is one of many
-    (@impl StructVersion $target:ident($ver:literal) $latest:ident($latest_ver:literal) $oldest:ident($oldest_ver:literal)) => {
-        nvversion! { @impl StructVersion($ver)($oldest) $target(NvVersion::with_struct::<$target>($ver)) }
+    (@impl StructVersion $target:ident($ver:literal)$api:tt $latest:ident($latest_ver:literal) $oldest:ident($oldest_ver:literal)) => {
+        nvversion! { @impl StructVersion($ver)($oldest)$api $target(NvVersion::with_struct::<$target>($ver)) }
     };
     /* this version is not the latest
     (@impl StructVersion($t:literal) $target:ident($ver:literal) $latest:ident($latest_ver:literal)) => {
         /*impl StructVersion<0> for $target {
-            const NVAPI_VERSION: crate::nvapi::NvVersion = <Self as StructVersion<$ver>>::NVAPI_VERSION;
+            const NVAPI_VERSION: NvVersion = <Self as StructVersion<$ver>>::NVAPI_VERSION;
+            const API: Option<Api> = <Self as StructVersion<$ver>>::API;
             type Storage = <Self as StructVersion<$ver>>::Storage;
 
             /*
@@ -974,17 +975,28 @@ macro_rules! nvversion {
         }*/
     };*/
     // there is just one known version, and this is it
-    (@impl StructVersion $target:ident($ver:literal)) => {
-        nvversion! { @impl StructVersion($ver)($target) $target(NvVersion::with_struct::<$target>($ver)) }
+    (@impl StructVersion $target:ident($ver:literal)$api:tt) => {
+        nvversion! { @impl StructVersion($ver)($target)$api $target(NvVersion::with_struct::<$target>($ver)) }
 
         impl StructVersionInfo<$ver> for $target {
             type Struct = Self;
             type Storage = Self;
         }
     };
-    (@impl StructVersion($t:literal)($storage:ty) $target:ident($ver:expr)) => {
+    (@impl StructVersion($t:literal)($storage:ty)() $target:ident($ver:expr)) => {
+        compile_error!("expected associated NvAPI")
+    };
+    (@impl StructVersion::API_SET($t:literal)($storage:ty)($api:ident, $api_set:ident) $target:ident($ver:expr)) => {
+        const API_SET: Option<Api> = Some(Api::$api_set);
+    };
+    (@impl StructVersion::API_SET($t:literal)($storage:ty)($api:ident) $target:ident($ver:expr)) => {
+        const API_SET: Option<Api> = None;
+    };
+    (@impl StructVersion($t:literal)($storage:ty)($api:ident$(, $api_:ident)*) $target:ident($ver:expr)) => {
         impl StructVersion<$t> for $target {
             const NVAPI_VERSION: NvVersion = $ver;
+            const API: Api = Api::$api;
+            nvversion! { @impl StructVersion::API_SET($t)($storage)($api$(, $api_)*) $target($ver) }
             type Storage = $storage;
 
             /*

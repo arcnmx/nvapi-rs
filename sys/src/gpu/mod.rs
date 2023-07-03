@@ -313,7 +313,7 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_BOARD_INFO:
+nvversion! { NV_BOARD_INFO(NvAPI_GPU_GetBoardInfo):
     NV_BOARD_INFO_V1(1)
 }
 
@@ -400,7 +400,7 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_GPU_ARCH_INFO:
+nvversion! { NV_GPU_ARCH_INFO(NvAPI_GPU_GetArchInfo):
     NV_GPU_ARCH_INFO_V1(2),
     NV_GPU_ARCH_INFO_V1(1; @old)
 }

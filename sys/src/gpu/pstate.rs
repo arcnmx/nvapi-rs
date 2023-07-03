@@ -66,7 +66,7 @@ impl UtilizationDomain {
     }
 }
 
-nvversion! { _:
+nvversion! { _(NvAPI_GPU_GetDynamicPstatesInfoEx):
     NV_GPU_DYNAMIC_PSTATES_INFO_EX(1)
 }
 
@@ -293,7 +293,7 @@ nvstruct! {
         pub voltages: Array<[NV_GPU_PERF_PSTATE20_BASE_VOLTAGE_ENTRY_V1; NVAPI_MAX_GPU_PSTATE20_BASE_VOLTAGES]>,
     }
 }
-nvversion! { NV_GPU_PERF_PSTATES20_INFO:
+nvversion! { NV_GPU_PERF_PSTATES20_INFO(NvAPI_GPU_GetPstates20, NvAPI_GPU_SetPstates20):
     NV_GPU_PERF_PSTATES20_INFO_V2(3; @inherit(v1: NV_GPU_PERF_PSTATES20_INFO_V1)),
     NV_GPU_PERF_PSTATES20_INFO_V2(2; @old),
     NV_GPU_PERF_PSTATES20_INFO_V1(1)

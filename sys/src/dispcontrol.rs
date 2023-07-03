@@ -132,7 +132,7 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_DISPLAY_ID_INFO_DATA:
+nvversion! { NV_DISPLAY_ID_INFO_DATA(NvAPI_Disp_GetDisplayIdInfo):
     NV_DISPLAY_ID_INFO_DATA_V1(1)
 }
 
@@ -170,7 +170,7 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_TARGET_INFO_DATA:
+nvversion! { NV_TARGET_INFO_DATA(NvAPI_Disp_GetDisplayIdsFromTarget):
     NV_TARGET_INFO_DATA_V1(1)
 }
 
@@ -194,7 +194,7 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_GET_VRR_INFO:
+nvversion! { NV_GET_VRR_INFO(NvAPI_Disp_GetVRRInfo):
     NV_GET_VRR_INFO_V1(1)
 }
 

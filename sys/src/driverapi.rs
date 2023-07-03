@@ -44,7 +44,7 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_DISPLAY_DRIVER_MEMORY_INFO:
+nvversion! { NV_DISPLAY_DRIVER_MEMORY_INFO(NvAPI_GPU_GetMemoryInfo):
     NV_DISPLAY_DRIVER_MEMORY_INFO_V3(3; @inherit(v2: NV_DISPLAY_DRIVER_MEMORY_INFO_V2)),
     NV_DISPLAY_DRIVER_MEMORY_INFO_V2(2; @inherit(v1: NV_DISPLAY_DRIVER_MEMORY_INFO_V1)),
     NV_DISPLAY_DRIVER_MEMORY_INFO_V1(1)
@@ -90,7 +90,7 @@ nvstruct! {
     }
 }
 
-nvversion! { NV_GPU_MEMORY_INFO_EX:
+nvversion! { NV_GPU_MEMORY_INFO_EX(NvAPI_GPU_GetMemoryInfoEx):
     NV_GPU_MEMORY_INFO_EX_V1(1)
 }
 

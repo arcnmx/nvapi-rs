@@ -233,7 +233,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_GETCOOLER_SETTINGS:
+    nvversion! { NV_GPU_GETCOOLER_SETTINGS(NvAPI_GPU_GetCoolerSettings):
         NV_GPU_GETCOOLER_SETTINGS_V4(4) = 1368,
         NV_GPU_GETCOOLER_SETTINGS_V3(3) = 1288,
         NV_GPU_GETCOOLER_SETTINGS_V1(1) = 152
@@ -272,7 +272,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_SETCOOLER_LEVEL:
+    nvversion! { NV_GPU_SETCOOLER_LEVEL(NvAPI_GPU_SetCoolerLevels):
         NV_GPU_SETCOOLER_LEVEL_V1(1)
     }
 
@@ -336,7 +336,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_COOLER_POLICY_TABLE:
+    nvversion! { NV_GPU_COOLER_POLICY_TABLE(NvAPI_GPU_GetCoolerPolicyTable, NvAPI_GPU_SetCoolerPolicyTable):
         NV_GPU_COOLER_POLICY_TABLE_V1(1)
     }
 
@@ -418,7 +418,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLIENT_FAN_ARBITERS_INFO:
+    nvversion! { NV_GPU_CLIENT_FAN_ARBITERS_INFO(NvAPI_GPU_ClientFanArbitersGetInfo):
         NV_GPU_CLIENT_FAN_ARBITERS_INFO_V1(1) = 1316
     }
 
@@ -461,7 +461,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLIENT_FAN_ARBITERS_STATUS:
+    nvversion! { NV_GPU_CLIENT_FAN_ARBITERS_STATUS(NvAPI_GPU_ClientFanArbitersGetStatus):
         NV_GPU_CLIENT_FAN_ARBITERS_STATUS_V1(1) = 292
     }
 
@@ -505,7 +505,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLIENT_FAN_ARBITERS_CONTROL:
+    nvversion! { NV_GPU_CLIENT_FAN_ARBITERS_CONTROL(NvAPI_GPU_ClientFanArbitersGetControl, NvAPI_GPU_ClientFanArbitersSetControl):
         NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_V1(1) = 292
     }
 
@@ -576,7 +576,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLIENT_FAN_COOLERS_INFO:
+    nvversion! { NV_GPU_CLIENT_FAN_COOLERS_INFO(NvAPI_GPU_ClientFanCoolersGetInfo):
         NV_GPU_CLIENT_FAN_COOLERS_INFO_V1(1) = 0x62c
     }
 
@@ -617,7 +617,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLIENT_FAN_COOLERS_STATUS:
+    nvversion! { NV_GPU_CLIENT_FAN_COOLERS_STATUS(NvAPI_GPU_ClientFanCoolersGetStatus):
         NV_GPU_CLIENT_FAN_COOLERS_STATUS_V1(1) = 0x6a8
     }
 
@@ -675,7 +675,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_GPU_CLIENT_FAN_COOLERS_CONTROL:
+    nvversion! { NV_GPU_CLIENT_FAN_COOLERS_CONTROL(NvAPI_GPU_ClientFanCoolersGetControl, NvAPI_GPU_ClientFanCoolersSetControl):
         NV_GPU_CLIENT_FAN_COOLERS_CONTROL_V1(1) = 0x5ac
     }
 
