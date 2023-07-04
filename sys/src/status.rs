@@ -1,7 +1,6 @@
-use std::{fmt, error};
+use std::{ops, fmt, error};
 use std::convert::Infallible;
 use crate::nvapi::NvAPI_GetErrorMessage;
-use crate::status_result;
 
 nvenum! {
     /// NvAPI Status Values
@@ -333,14 +332,99 @@ nvenum! {
     }
 }
 
+impl NvAPI_Status {
+    pub fn to_status(self) -> Status {
+        self.try_get().unwrap_or(Status::Error)
+    }
+
+    /// Treat `NVAPI_OK` as `Ok(())` and all else as an `Err(..)`.
+    pub const fn to_result(self) -> Result<(), Self> {
+        match self {
+            NVAPI_OK => Ok(()),
+            _ => Err(self),
+        }
+    }
+
+    /// Treat `NVAPI_OK` as `Ok(())` and all else as an `Err(..)`.
+    ///
+    /// See also: [`Self::to_result`]
+    pub fn to_status_result(self) -> Result<(), Status> {
+        self.to_result().map_err(Self::to_status)
+    }
+}
+
 impl Status {
     pub fn message(&self) -> crate::Result<String> {
         let mut message = Default::default();
-        status_result(unsafe {
-            NvAPI_GetErrorMessage(self.raw(), &mut message)
-        }).map(move |()| message.into())
+        unsafe {
+            NvAPI_GetErrorMessage(self.value(), &mut message)
+        }.to_status_result().map(move |()| message.into())
+    }
+
+    /// Treat `Status::Ok` as `Ok(())` and all else as an `Err(..)`.
+    pub const fn to_result(self) -> Result<(), Self> {
+        match self {
+            Self::Ok => Ok(()),
+            status => Err(status),
+        }
     }
 }
+
+impl ops::Deref for Status {
+    type Target = NvAPI_Status;
+
+    fn deref(&self) -> &Self::Target {
+        From::from(self)
+    }
+}
+
+impl From<Status> for Result<(), Status> {
+    fn from(status: Status) -> Self {
+        status.to_result()
+    }
+}
+
+impl From<NvAPI_Status> for Result<(), NvAPI_Status> {
+    fn from(status: NvAPI_Status) -> Self {
+        status.to_result()
+    }
+}
+
+impl From<Status> for Result<(), NvAPI_Status> {
+    fn from(status: Status) -> Self {
+        status.to_result()
+            .map_err(Into::into)
+    }
+}
+
+impl From<Result<(), Status>> for Status {
+    fn from(status: Result<(), Status>) -> Self {
+        match status {
+            Ok(()) => Status::Ok,
+            Err(status) => status,
+        }
+    }
+}
+
+impl From<Result<(), NvAPI_Status>> for NvAPI_Status {
+    fn from(status: Result<(), NvAPI_Status>) -> Self {
+        match status {
+            Ok(()) => NvAPI_Status::Ok,
+            Err(status) => status,
+        }
+    }
+}
+
+impl From<Result<(), Status>> for NvAPI_Status {
+    fn from(status: Result<(), Status>) -> Self {
+        match status {
+            Ok(()) => NvAPI_Status::Ok,
+            Err(status) => status.into(),
+        }
+    }
+}
+
+impl error::Error for NvAPI_Status { }
 
 impl error::Error for Status { }
 

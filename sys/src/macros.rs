@@ -109,15 +109,22 @@ macro_rules! nvenum {
         }
     ) => {
         $(#[$meta])*
-        pub type $enum = ::std::os::raw::c_int;
+        pub type $enum = crate::value::NvEnum<$enum_name>;
         $(
             $(#[$metai])*
             #[allow(overflowing_literals)]
-            pub const $symbol: $enum = $value as _;
+            pub const $symbol: $enum = $enum::with_repr($value as _);
         )*
 
+        #[allow(non_upper_case_globals)]
+        impl $enum {
+            $(
+                $(#[$metai])*
+                pub const $name: $enum = $symbol;
+            )*
+        }
+
         $(#[$meta])*
-        #[allow(overflowing_literals)]
         #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
         #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
         #[non_exhaustive]
@@ -125,14 +132,35 @@ macro_rules! nvenum {
         pub enum $enum_name {
             $(
                 $(#[$metai])*
-                $name = $symbol as _,
+                $name = $symbol.repr(),
             )*
         }
 
         impl $enum_name {
-            #[allow(overflowing_literals)]
-            pub fn from_raw(raw: $enum) -> ::std::result::Result<Self, crate::ArgumentRangeError> {
-                match raw {
+            pub const fn value(self) -> $enum {
+                $enum::with_repr(self.repr())
+            }
+
+            pub const fn repr(self) -> i32 {
+                self as _
+            }
+
+            pub fn values() -> impl Iterator<Item=Self> {
+                <Self as crate::value::NvValueData>::all_values().iter().copied()
+            }
+        }
+
+        impl crate::value::NvValueEnum for $enum_name {
+        }
+
+        impl crate::value::NvValueData for $enum_name {
+            const NAME: &'static str = stringify!($enum_name);
+            const C_NAME: &'static str = stringify!($enum);
+
+            type Repr = i32;
+
+            fn from_repr(raw: Self::Repr) -> ::std::result::Result<Self, crate::ArgumentRangeError> {
+                match $enum::with_repr(raw) {
                     $(
                         $symbol
                     )|* => Ok(unsafe { ::std::mem::transmute(raw) }),
@@ -140,30 +168,56 @@ macro_rules! nvenum {
                 }
             }
 
-            pub fn raw(&self) -> $enum {
-                *self as _
+            fn from_repr_ref(raw: &Self::Repr) -> ::std::result::Result<&Self, crate::ArgumentRangeError> {
+                Self::from_repr(*raw).map(|_| unsafe {
+                    std::mem::transmute(raw)
+                })
             }
 
-            pub fn values() -> impl Iterator<Item=Self> {
-                [
+            fn from_repr_mut(raw: &mut Self::Repr) -> ::std::result::Result<&mut Self, crate::ArgumentRangeError> {
+                Self::from_repr(*raw).map(|_| unsafe {
+                    std::mem::transmute(raw)
+                })
+            }
+
+            fn all_values() -> &'static [Self] {
+                &[
                     $(
                         $enum_name::$name
                     ),*
-                ].into_iter()
+                ]
+            }
+
+            fn repr(self) -> Self::Repr {
+                self as _
+            }
+
+            fn repr_ref(&self) -> &Self::Repr {
+                unsafe {
+                    std::mem::transmute(self)
+                }
             }
         }
 
-        impl Into<$enum> for $enum_name {
-            fn into(self) -> $enum {
-                self as _
+        impl Into<i32> for $enum_name {
+            fn into(self) -> i32 {
+                crate::value::NvValueData::repr(self)
+            }
+        }
+
+        impl TryFrom<i32> for $enum_name {
+            type Error = crate::ArgumentRangeError;
+
+            fn try_from(raw: i32) -> ::std::result::Result<Self, crate::ArgumentRangeError> {
+                crate::value::NvValueData::from_repr(raw)
             }
         }
 
         impl TryFrom<$enum> for $enum_name {
             type Error = crate::ArgumentRangeError;
 
-            fn try_from(raw: $enum) -> ::std::result::Result<Self, crate::ArgumentRangeError> {
-                Self::from_raw(raw)
+            fn try_from(value: $enum) -> ::std::result::Result<Self, crate::ArgumentRangeError> {
+                Self::try_from(value.value)
             }
         }
     };
@@ -180,21 +234,35 @@ macro_rules! nvbits {
         }
     ) => {
         $(#[$meta])*
-        pub type $enum = u32;
+        pub type $enum = crate::value::NvBits<$enum_name>;
         $(
             $(#[$($metai)*])*
-            pub const $symbol: $enum = $value as _;
+            pub const $symbol: u32 = $value as _;
         )*
+
+        impl TryFrom<$enum> for $enum_name {
+            type Error = crate::ArgumentRangeError;
+
+            fn try_from(value: $enum) -> ::std::result::Result<Self, crate::ArgumentRangeError> {
+                Self::try_from(value.value)
+            }
+        }
 
         bitflags::bitflags! {
             $(#[$meta])*
             #[derive(Default)]
             #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-            pub struct $enum_name: $enum {
+            pub struct $enum_name: u32 {
             $(
                 $(#[$($metai)*])*
                 const $name = $value;
             )*
+            }
+        }
+
+        impl $enum_name {
+            pub const fn value(self) -> $enum {
+                $enum::with_repr(self.bits())
             }
         }
 
@@ -212,17 +280,64 @@ macro_rules! nvbits {
             }
         }
 
-        impl TryFrom<$enum> for $enum_name {
-            type Error = crate::ArgumentRangeError;
-
-            fn try_from(v: $enum) -> Result<Self, Self::Error> {
-                Self::from_bits(v).ok_or(crate::ArgumentRangeError)
+        impl crate::value::NvValueBits for $enum_name {
+            fn from_repr_truncate(value: Self::Repr) -> Self {
+                Self::from_bits_truncate(value)
             }
         }
 
-        impl From<$enum_name> for $enum {
-            fn from(v: $enum_name) -> $enum {
-                v.bits()
+        impl crate::value::NvValueData for $enum_name {
+            const NAME: &'static str = stringify!($enum_name);
+            const C_NAME: &'static str = stringify!($enum);
+
+            type Repr = u32;
+
+            fn from_repr(raw: Self::Repr) -> ::std::result::Result<Self, crate::ArgumentRangeError> {
+                Self::from_bits(raw).ok_or(crate::ArgumentRangeError)
+            }
+
+            fn from_repr_ref(raw: &Self::Repr) -> ::std::result::Result<&Self, crate::ArgumentRangeError> {
+                Self::from_repr(*raw).map(|_| unsafe {
+                    std::mem::transmute(raw)
+                })
+            }
+
+            fn from_repr_mut(raw: &mut Self::Repr) -> ::std::result::Result<&mut Self, crate::ArgumentRangeError> {
+                Self::from_repr(*raw).map(|_| unsafe {
+                    std::mem::transmute(raw)
+                })
+            }
+
+            fn all_values() -> &'static [Self] {
+                &[
+                    $(
+                        $enum_name::$name
+                    ),*
+                ]
+            }
+
+            fn repr(self) -> Self::Repr {
+                self.bits()
+            }
+
+            fn repr_ref(&self) -> &Self::Repr {
+                unsafe {
+                    std::mem::transmute(self)
+                }
+            }
+        }
+
+        impl Into<u32> for $enum_name {
+            fn into(self) -> u32 {
+                crate::value::NvValueData::repr(self)
+            }
+        }
+
+        impl TryFrom<u32> for $enum_name {
+            type Error = crate::ArgumentRangeError;
+
+            fn try_from(raw: u32) -> ::std::result::Result<Self, crate::ArgumentRangeError> {
+                crate::value::NvValueData::from_repr(raw)
             }
         }
     };
@@ -277,7 +392,7 @@ macro_rules! nvapi {
 
             match crate::nvapi::query_interface(crate::nvid::Api::$fn.id(), &CACHE) {
                 Ok(ptr) => ::std::mem::transmute::<_, extern "C" fn($($arg: $arg_ty),*) -> $ret>(ptr)($($arg),*),
-                Err(e) => e.raw(),
+                Err(e) => e.value(),
             }
         }
     };

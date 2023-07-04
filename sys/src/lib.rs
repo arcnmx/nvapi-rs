@@ -9,6 +9,7 @@ mod string;
 pub mod nvid;
 pub mod nvapi;
 pub mod status;
+pub mod value;
 pub mod array;
 pub mod version;
 pub mod clock_mask;
@@ -54,6 +55,7 @@ pub use self::clock_mask::ClockMask;
 pub use self::nvid::Api;
 pub use self::nvapi::*;
 pub use self::status::{NvAPI_Status, Status};
+pub use self::value::{NvEnum, NvBits, NvValue};
 
 use std::error::Error as StdError;
 use std::{result, fmt};
@@ -102,14 +104,6 @@ pub(crate) mod prelude_ {
 
 /// The result of a fallible NVAPI call.
 pub type Result<T> = result::Result<T, Status>;
-
-/// Treat `NVAPI_OK` as `Ok(())` and all else as an `Err(..)`.
-pub fn status_result(status: NvAPI_Status) -> Result<()> {
-    match status {
-        status::NVAPI_OK => Ok(()),
-        status => Err(Status::from_raw(status).unwrap_or(Status::Error)),
-    }
-}
 
 /// Error type indicating a raw value is out of the range of known enum values.
 #[derive(Debug, Copy, Clone, Default)]

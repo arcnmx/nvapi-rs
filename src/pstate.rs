@@ -76,7 +76,7 @@ impl PStateSettings {
     pub fn from_raw(settings: &pstate::NV_GPU_PERF_PSTATES20_PSTATE, num_clocks: usize, num_base_voltages: usize) -> Result<Self, sys::ArgumentRangeError> {
         trace!("convert_raw({:#?}, {:?}, {:?})", settings, num_clocks, num_base_voltages);
         Ok(PStateSettings {
-            id: PState::from_raw(settings.pstateId)?,
+            id: PState::try_from(settings.pstateId)?,
             editable: settings.bIsEditable.get(),
             clocks: settings.clocks[..num_clocks].iter().map(RawConversion::convert_raw).collect::<Result<_, _>>()?,
             base_voltages: settings.baseVoltages[..num_base_voltages].iter().map(RawConversion::convert_raw).collect::<Result<_, _>>()?,
@@ -105,7 +105,7 @@ impl RawConversion for pstate::NV_GPU_PERF_PSTATE20_BASE_VOLTAGE_ENTRY_V1 {
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
         Ok(BaseVoltage {
-            voltage_domain: VoltageDomain::from_raw(self.domainId)?,
+            voltage_domain: VoltageDomain::try_from(self.domainId)?,
             editable: self.bIsEditable.get(),
             voltage: Microvolts(self.volt_uV),
             voltage_delta: match self.voltDelta_uV.convert_raw()? {
@@ -127,22 +127,22 @@ impl RawConversion for pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_V1 {
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
-        Ok(match self.data.get(pstate::PstateClockType::from_raw(self.typeId)?) {
+        Ok(match self.data.get(pstate::PstateClockType::try_from(self.typeId)?) {
             pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_DATA_VALUE::Single(single) => ClockEntry::Single {
-                domain: ClockDomain::from_raw(self.domainId)?,
+                domain: ClockDomain::try_from(self.domainId)?,
                 editable: self.bIsEditable.get(),
                 frequency_delta: self.freqDelta_kHz.convert_raw()?,
                 frequency: Kilohertz(single.freq_kHz),
             },
             pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_DATA_VALUE::Range(range) => ClockEntry::Range {
-                domain: ClockDomain::from_raw(self.domainId)?,
+                domain: ClockDomain::try_from(self.domainId)?,
                 editable: self.bIsEditable.get(),
                 frequency_delta: self.freqDelta_kHz.convert_raw()?,
                 frequency_range: Range {
                     min: Kilohertz(range.minFreq_kHz),
                     max: Kilohertz(range.maxFreq_kHz),
                 },
-                voltage_domain: VoltageDomain::from_raw(range.domainId)?,
+                voltage_domain: VoltageDomain::try_from(range.domainId)?,
                 voltage_range: Range {
                     min: Microvolts(range.minVoltage_uV),
                     max: Microvolts(range.maxVoltage_uV),
@@ -178,7 +178,7 @@ impl RawConversion for pstate::NV_GPU_DYNAMIC_PSTATES_INFO_EX {
             Ok(BTreeMap::new())
         } else {
             pstate::UtilizationDomain::values()
-                .map(|domain| (domain, &self.utilization[domain.raw() as usize]))
+                .map(|domain| (domain, &self.utilization[domain.repr() as usize]))
                 .filter(|&(_, util)| util.bIsPresent.get())
                 .map(|(id, util)| Percentage::from_raw(util.percentage).map(|p| (id, p)))
                 .collect()
