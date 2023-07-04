@@ -5,6 +5,7 @@ use once_cell::sync::OnceCell;
 use crate::{allowable_result, allowable_result_fallback};
 
 use nvapi::{self,
+    sys::value::NvValueData,
     ClockTable, VfpCurve, VfpEntry, Sensor, ThermalInfo, PowerInfoEntry,
     ClockFrequencyType, ClockEntry,
     BaseVoltage, PStates, ClockRange, VfpInfo,

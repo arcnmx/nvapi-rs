@@ -25,7 +25,7 @@ pub fn interface_version() -> crate::NvapiResult<String> {
 pub fn error_message(status: sys::Status) -> crate::NvapiResult<String> {
     trace!("error_message({:?})", status);
     unsafe {
-        nvcall!(NvAPI_GetErrorMessage@get(status.raw()) => into)
+        nvcall!(NvAPI_GetErrorMessage@get(status.value()) => into)
     }
 }
 

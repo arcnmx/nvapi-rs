@@ -173,7 +173,7 @@ impl NvApiBody {
 
                 let #res_ident = match #query_interface(#Api::#ident.id(), &CACHE) {
                     Ok(ptr) => #transmute::<_, extern "C" fn(#(#arg_idents_2: #arg_types_2),*) #res>(ptr)(#(#arg_idents_3),*),
-                    Err(e) => e.raw(),
+                    Err(e) => e.value(),
                 };
                 #log
                 #res_ident

@@ -373,12 +373,6 @@ pub mod private {
         }
     }
 
-    impl NV_GPU_CLIENT_FAN_ARBITER_INFO_V1 {
-        pub fn flags(&self) -> FanArbiterInfoFlags {
-            FanArbiterInfoFlags::from_bits_truncate(self.flags)
-        }
-    }
-
     nvstruct! {
         pub struct NV_GPU_CLIENT_FAN_ARBITERS_INFO_V1 {
             pub version: NvVersion,
@@ -455,12 +449,6 @@ pub mod private {
         pub enum NV_FAN_ARBITER_CONTROL_FLAGS / FanArbiterControlFlags {
             /// Fan stop enabled
             NV_FAN_ARBITER_CONTROL_FLAGS_FAN_STOP / FAN_STOP = 1,
-        }
-    }
-
-    impl NV_GPU_CLIENT_FAN_ARBITER_CONTROL_V1 {
-        pub fn flags(&self) -> FanArbiterControlFlags {
-            FanArbiterControlFlags::from_bits_truncate(self.flags)
         }
     }
 

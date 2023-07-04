@@ -62,6 +62,8 @@ impl NvBitsBody {
             value_ident,
             ..
         } = self;
+        let ident_str = ident.to_string();
+        let value_ident_str = value_ident.to_string();
         let struct_token = Struct {
             span: enum_token.span(),
         };
@@ -70,35 +72,48 @@ impl NvBitsBody {
         let consts = self.variants.iter().map(|v| v.output_const(repr));
 
         let variant_names_0 = self.variants.iter().map(|v| &v.ident);
+        let variant_names_1 = self.variants.iter().map(|v| &v.ident);
 
         let ArgumentRangeError = sys_path(["ArgumentRangeError"]);
         let Default = call_path_absolute(["core", "default", "Default"]);
+        let Iterator = call_path_absolute(["core", "iter", "Iterator"]);
+        let TryFrom = call_path_absolute(["core", "convert", "TryFrom"]);
+        let Into = call_path_absolute(["core", "convert", "Into"]);
         let Result = call_path_absolute(["core", "result", "Result"]);
+        let transmute = call_path_absolute(["core", "mem", "transmute"]);
         let serde = call_path_absolute(["serde"]);
+        let NvBits = sys_path(["value", "NvBits"]);
+        let NvValueBits = sys_path(["value", "NvValueBits"]);
+        let NvValueData = sys_path(["value", "NvValueData"]);
         quote! {
             #(#attrs)*
-            #vis type #value_ident = #repr;
+            #vis type #value_ident = #NvBits<#ident>;
 
             #(#consts)*
 
             bitflags::bitflags! {
                 #(#attrs)*
                 #[cfg_attr(feature = "serde", derive(#serde::Serialize, #serde::Deserialize))]
-                #[derive(#Default)]
-                #vis #struct_token #ident: #value_ident {
+                #[derive(#Default, #NvValueBits)]
+                #vis #struct_token #ident: #repr {
                     #(#flags)*
                 }
             }
 
-            impl TryFrom<#value_ident> for #ident {
+            impl #TryFrom<#value_ident> for #ident {
                 type Error = #ArgumentRangeError;
 
                 fn try_from(value: #value_ident) -> #Result<Self, #ArgumentRangeError> {
-                    #ident::from_bits(value).ok_or(#ArgumentRangeError)
+                    Self::try_from(value.value)
+                }
+            }
+            impl #ident {
+                pub const fn value(self) -> #value_ident {
+                    #value_ident::with_repr(self.bits())
                 }
             }
 
-            impl Iterator for #ident {
+            impl #Iterator for #ident {
                 type Item = Self;
 
                 fn next(&mut self) -> Option<Self::Item> {
@@ -112,9 +127,58 @@ impl NvBitsBody {
                 }
             }
 
-            impl From<#ident> for #value_ident {
-                fn from(v: #ident) -> #value_ident {
-                    v.bits()
+            impl #NvValueData for #ident {
+                const NAME: &'static str = #ident_str;
+                const C_NAME: &'static str = #value_ident_str;
+
+                type Repr = #repr;
+
+                fn from_repr(raw: Self::Repr) -> #Result<Self, #ArgumentRangeError> {
+                    Self::from_bits(raw).ok_or(#ArgumentRangeError)
+                }
+
+                fn from_repr_ref(raw: &Self::Repr) -> #Result<&Self, #ArgumentRangeError> {
+                    Self::from_repr(*raw).map(|_| unsafe {
+                        #transmute(raw)
+                    })
+                }
+
+                fn from_repr_mut(raw: &mut Self::Repr) -> #Result<&mut Self, #ArgumentRangeError> {
+                    Self::from_repr(*raw).map(|_| unsafe {
+                        #transmute(raw)
+                    })
+                }
+
+                fn all_values() -> &'static [Self] {
+                    &[
+                        #(
+                            #ident::#variant_names_1
+                        ),*
+                    ]
+                }
+
+                fn repr(self) -> Self::Repr {
+                    self.bits()
+                }
+
+                fn repr_ref(&self) -> &Self::Repr {
+                    unsafe {
+                        #transmute(self)
+                    }
+                }
+            }
+
+            impl #Into<#repr> for #ident {
+                fn into(self) -> #repr {
+                    #NvValueData::repr(self)
+                }
+            }
+
+            impl #TryFrom<#repr> for #ident {
+                type Error = #ArgumentRangeError;
+
+                fn try_from(raw: #repr) -> #Result<Self, #ArgumentRangeError> {
+                    #NvValueData::from_repr(raw)
                 }
             }
         }
@@ -185,4 +249,19 @@ impl Parse for NvBitsValue {
 pub fn nvbits(input: TokenStream) -> Result<TokenStream> {
     let body: NvBitsBody = parse(input)?;
     Ok(body.output())
+}
+
+pub fn derive_value_bits(input: TokenStream) -> Result<TokenStream> {
+    let input: DeriveInput = parse(input)?;
+
+    let ident = &input.ident;
+    let NvValueBits = sys_path(["value", "NvValueBits"]);
+
+    Ok(quote! {
+        impl #NvValueBits for #ident {
+            fn from_repr_truncate(value: Self::Repr) -> Self {
+                Self::from_bits_truncate(value)
+            }
+        }
+    })
 }

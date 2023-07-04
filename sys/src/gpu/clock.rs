@@ -40,7 +40,7 @@ impl NV_GPU_CLOCK_FREQUENCIES_V1 {
     }
 
     pub fn set_ClockType(&mut self, value: NV_GPU_CLOCK_FREQUENCIES_CLOCK_TYPE) {
-        self.reserved = (value as u32) & 3;
+        self.reserved = (value.repr() as u32) & 3;
     }
 }
 

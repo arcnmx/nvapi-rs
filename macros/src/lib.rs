@@ -60,9 +60,24 @@ pub fn nvenum_display(input: TokenStream) -> TokenStream {
     result_stream(self::value::nvenum_display(input.into()))
 }
 
+#[proc_macro_derive(NvValueEnum)]
+pub fn derive_value_enum(input: TokenStream) -> TokenStream {
+    result_stream(self::value::derive_value_enum(input.into()))
+}
+
 #[proc_macro]
 pub fn nvbits(input: TokenStream) -> TokenStream {
     result_stream(self::value::nvbits(input.into()))
+}
+
+#[proc_macro_derive(NvValueBits)]
+pub fn derive_value_bits(input: TokenStream) -> TokenStream {
+    result_stream(self::value::derive_value_bits(input.into()))
+}
+
+#[proc_macro_derive(NvValueData, attributes(nv_value_symbol))]
+pub fn derive_value_data(input: TokenStream) -> TokenStream {
+    result_stream(self::value::derive_value_data(input.into()))
 }
 
 #[proc_macro]

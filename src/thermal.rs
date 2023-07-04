@@ -27,13 +27,13 @@ impl RawConversion for thermal::NV_GPU_THERMAL_SETTINGS_SENSOR {
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
         Ok(Sensor {
-            controller: ThermalController::from_raw(self.controller)?,
+            controller: ThermalController::try_from(self.controller)?,
             default_temperature_range: Range {
                 min: Celsius(self.defaultMinTemp),
                 max: Celsius(self.defaultMaxTemp),
             },
             current_temperature: Celsius(self.currentTemp),
-            target: ThermalTarget::from_raw(self.target)?,
+            target: ThermalTarget::try_from(self.target)?,
         })
     }
 }
@@ -401,11 +401,11 @@ impl RawConversion for cooler::private::NV_GPU_GETCOOLER_SETTING_V1 {
         trace!("convert_raw({:#?})", self);
         Ok(Cooler {
             info: CoolerInfo {
-                kind: CoolerType::from_raw(self.type_)?,
-                target: CoolerTarget::from_raw(self.target)?,
-                controller: CoolerController::from_raw(self.controller)?,
-                control: CoolerControl::from_raw(self.controlType)?,
-                default_policy: CoolerPolicy::from_raw(self.defaultPolicy)?,
+                kind: CoolerType::try_from(self.type_)?,
+                target: CoolerTarget::try_from(self.target)?,
+                controller: CoolerController::try_from(self.controller)?,
+                control: CoolerControl::try_from(self.controlType)?,
+                default_policy: CoolerPolicy::try_from(self.defaultPolicy)?,
                 default_level_range: Some(Range {
                     min: Percentage::from_raw(self.defaultMinLevel)?,
                     max: Percentage::from_raw(self.defaultMaxLevel)?,
@@ -418,11 +418,11 @@ impl RawConversion for cooler::private::NV_GPU_GETCOOLER_SETTING_V1 {
                     max: Percentage::from_raw(self.currentMaxLevel)?,
                 },
                 current_level: Percentage::from_raw(self.currentLevel)?,
-                active: cooler::private::CoolerActivityLevel::from_raw(self.active)?.get(),
+                active: cooler::private::CoolerActivityLevel::try_from(self.active)?.get(),
                 current_tach: None,
             },
             control: CoolerSettings {
-                policy: CoolerPolicy::from_raw(self.currentPolicy)?,
+                policy: CoolerPolicy::try_from(self.currentPolicy)?,
                 level: Some(Percentage::from_raw(self.currentLevel)?),
             },
             unknown: 0,
@@ -589,7 +589,7 @@ impl RawConversion for cooler::private::NV_GPU_SETCOOLER_LEVEL_COOLER {
         trace!("convert_raw({:#?})", self);
         Ok(CoolerSettings {
             level: Some(Percentage::from_raw(self.currentLevel)?),
-            policy: CoolerPolicy::from_raw(self.currentPolicy)?,
+            policy: CoolerPolicy::try_from(self.currentPolicy)?,
         })
     }
 }
@@ -638,7 +638,7 @@ impl RawConversion for cooler::private::NV_GPU_COOLER_POLICY_TABLE {
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
         Ok(CoolerPolicyTable {
-            policy: CoolerPolicy::from_raw(self.policy)?,
+            policy: CoolerPolicy::try_from(self.policy)?,
             levels: self.policyCoolerLevel.iter().map(RawConversion::convert_raw).collect::<Result<_, _>>()?,
         })
     }
@@ -713,7 +713,7 @@ impl RawConversion for cooler::private::NV_GPU_CLIENT_FAN_ARBITER_CONTROL_V1 {
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
         Ok((self.arbiter_index, FanArbiterControl {
-            stop_fan: self.flags().contains(cooler::private::FanArbiterControlFlags::FAN_STOP),
+            stop_fan: self.flags.truncate().contains(cooler::private::FanArbiterControlFlags::FAN_STOP),
         }))
     }
 }

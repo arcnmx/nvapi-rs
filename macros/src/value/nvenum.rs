@@ -1,7 +1,9 @@
 use {
+    super::NvValueSymbol,
     crate::prelude::*,
     syn::{
-        braced, punctuated::Punctuated, token::Brace, ExprPath, Fields, MacroDelimiter, MetaList, Variant, Visibility,
+        braced, punctuated::Punctuated, token::Brace, ExprCall, ExprField, ExprPath, Fields, MacroDelimiter, MetaList,
+        Variant, Visibility,
     },
 };
 
@@ -62,67 +64,45 @@ impl NvEnumBody {
         } = self;
 
         let variants = self.variants.iter().map(|v| v.clone().into_variant());
-        let consts = self.variants.iter().map(|v| v.output_const(value_ident));
-        let variant_idents = self.variants.iter().map(|v| &v.ident);
-        let variant_symbols = self.variants.iter().map(|v| &v.symbol);
+        let consts = self.variants.iter().map(|v| v.output_const(ident));
+        let value_consts = self.variants.iter().map(|v| v.output_value_const(ident));
 
-        let transmute = call_path_absolute(["core", "mem", "transmute"]);
         let serde = call_path_absolute(["serde"]);
-        let Iterator = call_path_absolute(["core", "iter", "Iterator"]);
-        let Into = call_path_absolute(["core", "convert", "Into"]);
-        let TryFrom = call_path_absolute(["core", "convert", "TryFrom"]);
-        let Result = call_path_absolute(["core", "result", "Result"]);
-        let ArgumentRangeError = sys_path(["ArgumentRangeError"]);
+        let NvEnum = sys_path(["value", "NvEnum"]);
+        let NvEnum = quote!(#NvEnum::<#ident>);
+        let NvValueEnum = sys_path(["value", "NvValueEnum"]);
+        let NvValueData = sys_path(["value", "NvValueData"]);
+        let nv_value_symbol = call_ident(NvValueSymbol::NAME);
         quote! {
             #(#attrs)*
-            #vis type #value_ident = #repr;
+            #vis type #value_ident = #NvEnum;
 
             #(#consts)*
 
             #(#attrs)*
             #[cfg_attr(feature = "serde", derive(#serde::Serialize, #serde::Deserialize))]
             #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+            #[derive(#NvValueEnum, #NvValueData)]
             #[non_exhaustive]
             #[repr(#repr)]
+            #[#nv_value_symbol(#value_ident)]
             #vis #enum_token #ident {
                 #(#variants,)*
             }
 
             impl #ident {
-                pub fn from_raw(raw: #value_ident) -> #Result<Self, #ArgumentRangeError> {
-                    match raw {
-                        #(
-                            #variant_symbols
-                        )|* => Ok(unsafe { #transmute(raw) }),
-                        _ => Err(#ArgumentRangeError),
-                    }
+                pub const fn value(self) -> #NvEnum {
+                    #NvEnum::with_repr(self.repr())
                 }
 
-                pub fn raw(&self) -> #value_ident {
-                    *self as _
-                }
-
-                pub fn values() -> impl #Iterator<Item=Self> {
-                    [
-                        #(
-                            #ident::#variant_idents
-                        ),*
-                    ].into_iter()
+                pub const fn repr(self) -> #repr {
+                    self as #repr
                 }
             }
 
-            impl #Into<#value_ident> for #ident {
-                fn into(self) -> #value_ident {
-                    self as _
-                }
-            }
-
-            impl #TryFrom<#value_ident> for #ident {
-                type Error = #ArgumentRangeError;
-
-                fn try_from(raw: #value_ident) -> #Result<Self, #ArgumentRangeError> {
-                    Self::from_raw(raw)
-                }
+            #[allow(non_upper_case_globals)]
+            impl #NvEnum {
+                #(#value_consts)*
             }
         }
     }
@@ -141,6 +121,15 @@ impl NvEnumValue {
     pub fn into_variant(self) -> Variant {
         let mut attrs = self.attrs;
 
+        let nv_value_symbol = call_ident(NvValueSymbol::NAME);
+        if !attrs.iter().any(|a| a.path().is_ident(&nv_value_symbol)) {
+            let nv_value_symbol = call_attr(MetaList {
+                path: nv_value_symbol.into(),
+                delimiter: MacroDelimiter::Paren(Default::default()),
+                tokens: self.symbol.to_token_stream(),
+            });
+            attrs.push(nv_value_symbol);
+        }
         let has_doc_alias = false;
         if !has_doc_alias {
             let symbol = self.symbol.to_string();
@@ -152,12 +141,26 @@ impl NvEnumValue {
         }
         let has_symbol = true;
         let value = match has_symbol {
-            true => ExprPath {
-                attrs: Default::default(),
-                qself: None,
-                path: self.symbol.into(),
-            }
-            .into(),
+            true => {
+                let symbol_expr = ExprPath {
+                    attrs: Default::default(),
+                    qself: None,
+                    path: self.symbol.into(),
+                };
+                let method = ExprField {
+                    attrs: Default::default(),
+                    base: Box::new(symbol_expr.into()),
+                    dot_token: Default::default(),
+                    member: call_ident("repr").into(),
+                };
+                ExprCall {
+                    attrs: Default::default(),
+                    func: Box::new(method.into()),
+                    paren_token: Default::default(),
+                    args: Punctuated::new(),
+                }
+                .into()
+            },
             false => self.value,
         };
         Variant {
@@ -177,11 +180,27 @@ impl NvEnumValue {
             ..
         } = self;
 
-        let doc = format!("[`{enum_ident}::{ident}`]");
+        let NvEnum = sys_path(["value", "NvEnum"]);
+        let sys = sys_crate();
+        let doc = format!("[NvValue]({sys}::value::NvValue) wrapper of [`{enum_ident}::{ident}`]");
         quote! {
             #[doc = #doc]
             #[allow(overflowing_literals)]
-            pub const #symbol: #enum_ident #eq_token #value;
+            pub const #symbol: #NvEnum<#enum_ident> #eq_token #NvEnum::<#enum_ident>::with_repr(#value);
+        }
+    }
+
+    pub fn output_value_const(&self, enum_ident: &Ident) -> TokenStream {
+        let NvEnumValue {
+            ident,
+            symbol,
+            eq_token,
+            ..
+        } = self;
+
+        let NvEnum = sys_path(["value", "NvEnum"]);
+        quote! {
+            pub const #ident: #NvEnum<#enum_ident> #eq_token #symbol;
         }
     }
 }
@@ -332,4 +351,15 @@ pub fn nvenum(input: TokenStream) -> Result<TokenStream> {
 pub fn nvenum_display(input: TokenStream) -> Result<TokenStream> {
     let body: NvEnumDisplayBody = parse(input)?;
     Ok(body.output())
+}
+
+pub fn derive_value_enum(input: TokenStream) -> Result<TokenStream> {
+    let input: DeriveEnum = parse(input)?;
+
+    let ident = &input.ident;
+    let NvValueEnum = sys_path(["value", "NvValueEnum"]);
+
+    Ok(quote! {
+        impl #NvValueEnum for #ident {}
+    })
 }

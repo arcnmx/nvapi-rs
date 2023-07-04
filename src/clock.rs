@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 use std::convert::Infallible;
 use std::{iter, slice, fmt};
 use crate::sys::gpu::{clock, power};
-use crate::sys;
+use crate::sys::{self, value::NvValueData};
 #[cfg(feature = "serde")]
 use serde::{Serialize, Deserialize};
 use log::trace;
@@ -22,7 +22,7 @@ impl RawConversion for clock::NV_GPU_CLOCK_FREQUENCIES {
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
         Ok(ClockDomain::values().filter(|&c| c != ClockDomain::Undefined)
-            .map(|id| (id, &self.domain[id.raw() as usize]))
+            .map(|id| (id, &self.domain[id.repr() as usize]))
             .filter(|&(_, ref clock)| clock.bIsPresent.get())
             .map(|(id, clock)| (id, Kilohertz(clock.frequency)))
             .collect()
@@ -38,7 +38,7 @@ impl RawConversion for clock::private::NV_USAGES_INFO {
         trace!("convert_raw({:#?})", self);
         self.usages.iter().enumerate()
             .filter(|&(_, ref usage)| usage.bIsPresent.get())
-            .map(|(i, usage)| crate::pstate::UtilizationDomain::from_raw(i as _)
+            .map(|(i, usage)| crate::pstate::UtilizationDomain::try_from(i as i32)
                 .and_then(|i| Percentage::from_raw(usage.percentage).map(|p| (i, p)))
             ).collect()
     }
@@ -180,7 +180,7 @@ impl RawConversion for clock::private::NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_ENTR
                 disabled: BoolU32(0), clockType, rangeMax, rangeMin, vfpIndexMin, vfpIndexMax,
                 unknown0, unknown1, padding,
             } => Ok(ClockRange {
-                domain: ClockDomain::from_raw(clockType)?,
+                domain: ClockDomain::try_from(clockType)?,
                 range: Range {
                     max: Kilohertz2Delta(rangeMax),
                     min: Kilohertz2Delta(rangeMin),
@@ -590,7 +590,7 @@ impl ClockLockValue {
     }
 
     pub fn from_raw(raw: &clock::private::NV_GPU_PERF_CLIENT_LIMITS_ENTRY) -> Result<Option<Self>, sys::ArgumentRangeError> {
-        Ok(match clock::private::ClockLockMode::from_raw(raw.mode)? {
+        Ok(match clock::private::ClockLockMode::try_from(raw.mode)? {
             clock::private::ClockLockMode::None =>
                 None,
             clock::private::ClockLockMode::ManualVoltage =>
@@ -669,7 +669,7 @@ impl RawConversion for power::private::NV_GPU_PERF_POLICIES_INFO_PARAMS {
         // TODO: check padding
         Ok(PerfInfo {
             max_unknown: self.maxUnknown,
-            limits: PerfFlags::from_bits(self.limitSupport).ok_or(sys::ArgumentRangeError)?,
+            limits: self.limitSupport.try_get()?,
         })
     }
 }
@@ -693,7 +693,7 @@ impl RawConversion for power::private::NV_GPU_PERF_POLICIES_STATUS_PARAMS {
                 flags: 0, limits, zero0: 0, unknown, zero1: 0, ..
             } => Ok(PerfStatus {
                 unknown,
-                limits: PerfFlags::from_bits(limits).ok_or(sys::ArgumentRangeError)?,
+                limits: limits.try_get()?,
             }),
             _ => Err(sys::ArgumentRangeError),
         }

@@ -5,7 +5,7 @@ use crate::{Status, sys};
 use sys::ArgumentRangeError;
 
 pub fn status_result(nvid: sys::Api, status: sys::NvAPI_Status) -> Result<(), NvapiError> {
-    sys::status_result(status)
+    status.to_status_result()
         .map_err(|status| NvapiError::new(nvid, status))
 }
 
