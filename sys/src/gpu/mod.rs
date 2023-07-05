@@ -338,6 +338,7 @@ nvenum! {
         NV_GPU_ARCHITECTURE_GV110 / GV110 = 0x00000150,
         NV_GPU_ARCHITECTURE_TU100 / TU100 = 0x00000160,
         NV_GPU_ARCHITECTURE_GA100 / GA100 = 0x00000170,
+        NV_GPU_ARCHITECTURE_AD100 / AD100 = 0x00000180,
     }
 }
 
@@ -576,7 +577,18 @@ nvenum_display! {
     ArchitectureImplementationGA100 => _
 }
 
-pub type NV_GPU_ARCH_IMPLEMENTATION_ID = NV_GPU_ARCH_IMPLEMENTATION_ID_GA100;
+nvenum! {
+    pub enum NV_GPU_ARCH_IMPLEMENTATION_ID_AD100 / ArchitectureImplementationAD100 {
+        NV_GPU_ARCH_IMPLEMENTATION_AD102 / AD102 = 0x00000002,
+        NV_GPU_ARCH_IMPLEMENTATION_AD103 / AD103 = 0x00000003,
+        NV_GPU_ARCH_IMPLEMENTATION_AD104 / AD104 = 0x00000004,
+    }
+}
+nvenum_display! {
+    ArchitectureImplementationAD100 => _
+}
+
+pub type NV_GPU_ARCH_IMPLEMENTATION_ID = NV_GPU_ARCH_IMPLEMENTATION_ID_AD100;
 
 nvenum! {
     pub enum NV_GPU_CHIP_REVISION / ChipRevision {
