@@ -58,8 +58,7 @@ pub use self::nvapi::*;
 pub use self::status::{NvAPI_Status, Status};
 pub use self::value::{NvEnum, NvBits, NvValue};
 
-use std::error::Error as StdError;
-use std::{result, fmt};
+use std::{result, fmt, error};
 use std::convert::Infallible;
 
 pub mod api {
@@ -104,11 +103,17 @@ pub(crate) mod prelude_ {
 }
 
 /// The result of a fallible NVAPI call.
-pub type Result<T> = result::Result<T, Status>;
+pub type Result<T> = result::Result<T, NvAPI_Status>;
 
 /// Error type indicating a raw value is out of the range of known enum values.
-#[derive(Debug, Copy, Clone, Default)]
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ArgumentRangeError;
+
+impl ArgumentRangeError {
+    pub const fn to_status(self) -> Status {
+        Status::ArgumentExceedMaxSize
+    }
+}
 
 impl fmt::Display for ArgumentRangeError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -116,11 +121,17 @@ impl fmt::Display for ArgumentRangeError {
     }
 }
 
-impl StdError for ArgumentRangeError { }
+impl error::Error for ArgumentRangeError { }
 
 impl From<ArgumentRangeError> for Status {
-    fn from(_: ArgumentRangeError) -> Self {
-        Status::ArgumentExceedMaxSize
+    fn from(e: ArgumentRangeError) -> Self {
+        e.to_status()
+    }
+}
+
+impl From<ArgumentRangeError> for NvAPI_Status {
+    fn from(e: ArgumentRangeError) -> Self {
+        e.to_status().value()
     }
 }
 

@@ -9,6 +9,7 @@ use nvapi::{self,
     ClockFrequencyType, ClockEntry,
     BaseVoltage, PStates, ClockRange, VfpInfo,
     ThermalLimit, ThermalPolicyId, PffStatus,
+    Error, sys::ArgumentRangeError,
 };
 pub use nvapi::{
     PhysicalGpu,
@@ -167,8 +168,8 @@ impl Gpu {
     pub fn info(&self) -> nvapi::Result<GpuInfo> {
         let pstates = allowable_result(self.gpu.pstates())?;
         let (pstates, ov) = match pstates {
-            Ok(PStates { editable: _editable, pstates, overvolt }) => (pstates, overvolt),
-            Err(..) => (Default::default(), Default::default()),
+            Some(PStates { editable: _editable, pstates, overvolt }) => (pstates, overvolt),
+            None => (Default::default(), Default::default()),
         };
 
         Ok(GpuInfo {
@@ -176,9 +177,9 @@ impl Gpu {
             name: self.gpu.full_name()?,
             codename: self.gpu.short_name()?,
             bios_version: self.gpu.vbios_version_string()?,
-            driver_model: allowable_result(self.gpu.driver_model())?.ok(),
+            driver_model: allowable_result(self.gpu.driver_model())?,
             bus: allowable_result_fallback(self.gpu.bus_info(), Default::default())?,
-            memory: allowable_result(self.gpu.memory_info())?.ok(),
+            memory: allowable_result(self.gpu.memory_info())?,
             ecc: EccInfo {
                 enabled_by_default: allowable_result_fallback(
                     self.gpu.ecc_configuration().map(|(_enabled, enabled_by_default)| enabled_by_default),
@@ -201,32 +202,32 @@ impl Gpu {
             base_clocks: self.gpu.clock_frequencies(ClockFrequencyType::Base)?,
             boost_clocks: self.gpu.clock_frequencies(ClockFrequencyType::Boost)?,
             sensors: match allowable_result(self.gpu.thermal_settings(None))? {
-                Ok(s) => s.into_iter().map(From::from).collect(),
-                Err(..) => Default::default(),
+                Some(s) => s.into_iter().map(From::from).collect(),
+                None => Default::default(),
             },
             coolers: match allowable_result(self.gpu.cooler_info())? {
-                Ok(c) => c,
-                Err(e) => Default::default(),
+                Some(c) => c,
+                None => Default::default(),
             },
             perf: self.gpu.perf_info()?,
             sensor_limits: match allowable_result(self.gpu.thermal_limit_info())? {
-                Ok(l) => l.into_iter().map(From::from).collect(),
-                Err(..) => Default::default(),
+                Some(l) => l.into_iter().map(From::from).collect(),
+                None => Default::default(),
             },
             power_limits: match allowable_result(self.gpu.power_limit_info())? {
-                Ok(p) => p.entries.into_iter().map(From::from).collect(),
-                Err(..) => Default::default(),
+                Some(p) => p.entries.into_iter().map(From::from).collect(),
+                None => Default::default(),
             },
             pstate_limits: pstates.into_iter().map(|p| (p.id, p.clocks.into_iter().map(|p| (p.domain(), p.into())).collect())).collect(),
             overvolt_limits: ov.into_iter().map(From::from).collect(),
             vfp_limits: match allowable_result(self.gpu.vfp_ranges())? {
-                Ok(l) => l.domains.into_iter().map(|v| (v.domain, v.into())).collect(),
-                Err(..) => Default::default(),
+                Some(l) => l.domains.into_iter().map(|v| (v.domain, v.into())).collect(),
+                None => Default::default(),
             },
         })
     }
 
-    fn vfp_info(&self) -> nvapi::Result<nvapi::Result<&VfpInfo>> {
+    fn vfp_info(&self) -> nvapi::Result<Option<&VfpInfo>> {
         allowable_result(self.vfp_info.get_or_try_init(|| {
             self.gpu.vfp_info()
         }))
@@ -238,7 +239,7 @@ impl Gpu {
         Ok(GpuStatus {
             pstate: self.gpu.current_pstate()?,
             clocks: self.gpu.clock_frequencies(ClockFrequencyType::Current)?,
-            memory: allowable_result(self.gpu.memory_info())?.ok(),
+            memory: allowable_result(self.gpu.memory_info())?,
             pcie_lanes: match self.gpu.bus_type() {
                 Ok(BusType::PciExpress) => allowable_result_fallback(self.gpu.pcie_lanes().map(Some), None)?,
                 _ => None,
@@ -250,32 +251,32 @@ impl Gpu {
                 )?,
                 errors: allowable_result_fallback(self.gpu.ecc_errors(), Default::default())?,
             },
-            voltage: allowable_result(self.gpu.core_voltage())?.ok(),
-            voltage_domains: allowable_result(self.gpu.voltage_domains_status())?.ok(),
-            voltage_step: allowable_result(self.gpu.voltage_step())?.ok(),
-            voltage_table: allowable_result(self.gpu.voltage_table())?.ok(),
-            tachometer: allowable_result(self.gpu.tachometer())?.ok(),
+            voltage: allowable_result(self.gpu.core_voltage())?,
+            voltage_domains: allowable_result(self.gpu.voltage_domains_status())?,
+            voltage_step: allowable_result(self.gpu.voltage_step())?,
+            voltage_table: allowable_result(self.gpu.voltage_table())?,
+            tachometer: allowable_result(self.gpu.tachometer())?,
             utilization: self.gpu.dynamic_pstates_info()?,
             power: self.gpu.power_usage(self.gpu.power_usage_channels()?)?
                 .into_iter().map(|(ch, power)| (ch, power.into())).collect(),
             sensors: match allowable_result(self.gpu.thermal_settings(None))? {
-                Ok(s) => s.into_iter().map(|s| (From::from(s), s.current_temperature)).collect(),
-                Err(..) => Default::default(),
+                Some(s) => s.into_iter().map(|s| (From::from(s), s.current_temperature)).collect(),
+                None => Default::default(),
             },
             coolers: match allowable_result(self.gpu.cooler_status())? {
-                Ok(c) => c,
-                Err(e) => Default::default(),
+                Some(c) => c,
+                None => Default::default(),
             },
             perf: self.gpu.perf_status()?,
             vfp: match &vfp_info {
-                Ok(info) => allowable_result(self.gpu.vfp_curve(info))?.map(From::from).ok(),
-                Err(..) => None,
+                Some(info) => allowable_result(self.gpu.vfp_curve(info))?.map(From::from),
+                None => None,
             },
             vfp_locks: match allowable_result(self.gpu.vfp_locks(PerfLimitId::values()))? {
-                Ok(l) => l.into_iter().filter_map(|lock| lock.lock_value
+                Some(l) => l.into_iter().filter_map(|lock| lock.lock_value
                     .map(|value| (lock.limit, value))
                 ).collect(),
-                Err(..) => Default::default(),
+                None => Default::default(),
             },
         })
     }
@@ -284,31 +285,31 @@ impl Gpu {
         let vfp_info = self.vfp_info()?;
         let pstates = allowable_result(self.gpu.pstates())?;
         let (pstates, ov) = match pstates {
-            Ok(PStates { editable: _editable, pstates, overvolt }) => (pstates, overvolt),
-            Err(..) => (Default::default(), Default::default()),
+            Some(PStates { editable: _editable, pstates, overvolt }) => (pstates, overvolt),
+            None => (Default::default(), Default::default()),
         };
 
         Ok(GpuSettings {
-            voltage_boost: allowable_result(self.gpu.core_voltage_boost())?.ok(),
+            voltage_boost: allowable_result(self.gpu.core_voltage_boost())?,
             sensor_limits: match allowable_result(self.gpu.thermal_limit())? {
-                Ok(l) => l.into_iter().map(|l| SensorThrottle::from_limit(&l)).collect(),
-                Err(..) => Default::default(),
+                Some(l) => l.into_iter().map(|l| SensorThrottle::from_limit(&l)).collect(),
+                None => Default::default(),
             },
             power_limits: match allowable_result(self.gpu.power_limit())? {
-                Ok(l) => l.into_iter().map(|l| l.into()).collect(),
-                Err(..) => Default::default(),
+                Some(l) => l.into_iter().map(|l| l.into()).collect(),
+                None => Default::default(),
             },
             coolers: match allowable_result(self.gpu.cooler_control())? {
-                Ok(c) => c,
-                Err(e) => Default::default(),
+                Some(c) => c,
+                None => Default::default(),
             },
             vfp: match &vfp_info {
-                Ok(info) => allowable_result(self.gpu.vfp_table(info))?.map(From::from).ok(),
-                Err(..) => None,
+                Some(info) => allowable_result(self.gpu.vfp_table(info))?.map(From::from),
+                None => None,
             },
             vfp_locks: match allowable_result(self.gpu.vfp_locks(PerfLimitId::values()))? {
-                Ok(v) => v.into_iter().map(|lock| (lock.limit, lock)).collect(),
-                Err(..) => Default::default(),
+                Some(v) => v.into_iter().map(|lock| (lock.limit, lock)).collect(),
+                None => Default::default(),
             },
             pstate_deltas: pstates.into_iter().filter(|p| p.editable)
                 .map(|p| (p.id, p.clocks.into_iter().filter(|p| p.editable())
@@ -348,7 +349,7 @@ impl Gpu {
     }
 
     pub fn set_vfp<I: Iterator<Item=(usize, KilohertzDelta)>, M: Iterator<Item=(usize, KilohertzDelta)>>(&self, clock_deltas: I, mem_deltas: M) -> nvapi::Result<()> {
-        let info = self.vfp_info()??;
+        let info = self.vfp_info()?.ok_or(Error::from(ArgumentRangeError))?;
         self.gpu.set_vfp_table(info, clock_deltas.map(|(i, d)| (i, d.into())), mem_deltas.map(|(i, d)| (i, d.into())))
             .map_err(Into::into)
     }
@@ -365,7 +366,7 @@ impl Gpu {
         let gpu = match domain {
             ClockDomain::Graphics => true,
             ClockDomain::Memory => false,
-            _ => return Err(nvapi::sys::ArgumentRangeError.into()),
+            _ => return Err(ArgumentRangeError.into()),
         };
         self.gpu.set_vfp_locks([
             ClockLockEntry {
@@ -397,7 +398,7 @@ impl Gpu {
     pub fn reset_vfp(&self) -> nvapi::Result<()> {
         use std::iter;
 
-        let info = self.vfp_info()??;
+        let info = self.vfp_info()?.ok_or(Error::from(ArgumentRangeError))?;
         self.gpu.set_vfp_table(info, iter::empty(), iter::empty())
             .map_err(Into::into)
     }

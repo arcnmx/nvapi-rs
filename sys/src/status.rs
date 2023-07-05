@@ -358,7 +358,7 @@ impl Status {
         let mut message = Default::default();
         unsafe {
             NvAPI_GetErrorMessage(self.value(), &mut message)
-        }.to_status_result().map(move |()| message.into())
+        }.to_result().map(move |()| message.into())
     }
 
     /// Treat `Status::Ok` as `Ok(())` and all else as an `Err(..)`.
@@ -438,6 +438,12 @@ impl fmt::Display for Status {
 }
 
 impl From<Infallible> for Status {
+    fn from(e: Infallible) -> Self {
+        match e { }
+    }
+}
+
+impl From<Infallible> for NvAPI_Status {
     fn from(e: Infallible) -> Self {
         match e { }
     }

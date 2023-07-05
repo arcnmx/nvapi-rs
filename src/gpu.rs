@@ -31,7 +31,7 @@ impl PhysicalGpu {
         trace!("gpu.enumerate()");
         let mut handles = [Default::default(); sys::NVAPI_MAX_PHYSICAL_GPUS];
         match unsafe { nvcall!(NvAPI_EnumPhysicalGPUs@get(&mut handles)) } {
-            Err(crate::NvapiError { status: crate::Status::NvidiaDeviceNotFound, .. }) => Ok(Vec::new()),
+            Err(e) if e.status() == crate::Status::NvidiaDeviceNotFound => Ok(Vec::new()),
             Ok(len) => Ok(handles[..len as usize].iter().cloned().map(PhysicalGpu).collect()),
             Err(e) => Err(e),
         }
@@ -599,12 +599,12 @@ impl PhysicalGpu {
     pub fn cooler_info(&self) -> crate::Result<BTreeMap<crate::thermal::FanCoolerId, crate::thermal::CoolerInfo>> {
         trace!("gpu.cooler_info()");
 
-        let res = unsafe {
+        let res: crate::Result<_> = unsafe {
             nvcall!(NvAPI_GPU_ClientFanCoolersGetInfo@get(self.0) => raw)
         };
 
         match res {
-            Err(crate::Error::Nvapi(crate::NvapiError { status: crate::Status::NotSupported, .. })) => (),
+            Err(e) => e.allow_version_incompat()?,
             res => return res,
         }
 
@@ -616,12 +616,12 @@ impl PhysicalGpu {
     pub fn cooler_status(&self) -> crate::Result<BTreeMap<crate::thermal::FanCoolerId, crate::thermal::CoolerStatus>> {
         trace!("gpu.cooler_status()");
 
-        let res = unsafe {
+        let res: crate::Result<_> = unsafe {
             nvcall!(NvAPI_GPU_ClientFanCoolersGetStatus@get(self.0) => raw)
         };
 
         match res {
-            Err(crate::Error::Nvapi(crate::NvapiError { status: crate::Status::NotSupported, .. })) => (),
+            Err(e) => e.allow_version_incompat()?,
             res => return res,
         }
 
@@ -633,12 +633,12 @@ impl PhysicalGpu {
     pub fn cooler_control(&self) -> crate::Result<BTreeMap<crate::thermal::FanCoolerId, crate::thermal::CoolerSettings>> {
         trace!("gpu.cooler_status()");
 
-        let res = unsafe {
+        let res: crate::Result<_> = unsafe {
             nvcall!(NvAPI_GPU_ClientFanCoolersGetControl@get(self.0) => raw)
         };
 
         match res {
-            Err(crate::Error::Nvapi(crate::NvapiError { status: crate::Status::NotSupported, .. })) => (),
+            Err(e) => e.allow_version_incompat()?,
             res => return res,
         }
 
@@ -672,7 +672,7 @@ impl PhysicalGpu {
 
     pub fn cooler_settings(&self) -> crate::Result<BTreeMap<crate::thermal::FanCoolerId, crate::thermal::Cooler>> {
         match self.cooler_settings_() {
-            Err(crate::Error::Nvapi(crate::NvapiError { status: crate::Status::NotSupported, .. })) => (),
+            Err(e) => e.allow_version_incompat()?,
             res => return res,
         }
 
@@ -724,10 +724,12 @@ impl PhysicalGpu {
         };
 
         match res {
-            Err(crate::NvapiError { status: crate::Status::NotSupported, .. }) => unsafe {
-                nvcall!(NvAPI_GPU_SetCoolerLevels(self.0, cooler::private::NVAPI_COOLER_TARGET_ALL.repr() as _, &backup))
-            },
-            res => res,
+            Err(e) => e.allow_version_incompat()?,
+            res => return res,
+        }
+
+        unsafe {
+            nvcall!(NvAPI_GPU_SetCoolerLevels(self.0, cooler::private::NVAPI_COOLER_TARGET_ALL.repr() as _, &backup))
         }
     }
 
