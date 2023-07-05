@@ -388,9 +388,9 @@ macro_rules! nvapi {
     ) => {
         $(#[$meta])*
         pub unsafe fn $fn($($arg: $arg_ty),*) -> $ret {
-            static CACHE: ::std::sync::atomic::AtomicUsize = ::std::sync::atomic::AtomicUsize::new(0);
+            static CACHE: crate::apifn::NvapiFnCache = crate::apifn::NvapiFnCache::empty();
 
-            match crate::nvapi::query_interface(crate::nvid::Api::$fn.id(), &CACHE) {
+            match CACHE.query_ptr(crate::nvid::Api::$fn.id()) {
                 Ok(ptr) => ::std::mem::transmute::<_, extern "C" fn($($arg: $arg_ty),*) -> $ret>(ptr)($($arg),*),
                 Err(e) => e.value(),
             }

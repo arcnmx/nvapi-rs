@@ -1,5 +1,9 @@
+use std::mem::transmute;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::os::raw::c_void;
+use std::ffi::CStr;
+use std::ptr::NonNull;
+use std::io;
 use crate::status::{Status, NvAPI_Status};
 use crate::NvString;
 
@@ -76,14 +80,20 @@ pub const NVAPI_MAX_AUDIO_DEVICES: usize = 16;
 
 pub type QueryInterfaceFn = extern "C" fn(id: u32) -> *const c_void;
 
-#[cfg(all(windows, target_pointer_width = "32"))]
-pub const LIBRARY_NAME: &'static [u8; 10] = b"nvapi.dll\0";
-#[cfg(all(windows, target_pointer_width = "64"))]
-pub const LIBRARY_NAME: &'static [u8; 12] = b"nvapi64.dll\0";
-#[cfg(target_os = "linux")]
-pub const LIBRARY_NAME: &'static [u8; 19] = b"libnvidia-api.so.1\0";
+macro_rules! cstr {
+    ($s:expr) => {
+        unsafe { CStr::from_bytes_with_nul_unchecked(concat!($s, "\0").as_bytes()) }
+    };
+}
 
-pub const FN_NAME: &'static [u8; 21] = b"nvapi_QueryInterface\0";
+#[cfg(all(windows, target_pointer_width = "32"))]
+pub const LIBRARY_NAME: &'static CStr = cstr!("nvapi.dll");
+#[cfg(all(windows, target_pointer_width = "64"))]
+pub const LIBRARY_NAME: &'static CStr = cstr!("nvapi64.dll");
+#[cfg(target_os = "linux")]
+pub const LIBRARY_NAME: &'static CStr = cstr!("libnvidia-api.so.1");
+
+pub const FN_NAME: &'static CStr = cstr!("nvapi_QueryInterface");
 
 static QUERY_INTERFACE_CACHE: AtomicUsize = AtomicUsize::new(0);
 
@@ -91,87 +101,78 @@ pub unsafe fn set_query_interface(ptr: QueryInterfaceFn) {
     QUERY_INTERFACE_CACHE.store(ptr as usize, Ordering::Relaxed);
 }
 
-#[cfg(macos)]
-pub fn nvapi_QueryInterface(id: u32) -> crate::Result<usize> {
-    // TODO: Apparently nvapi is available for macOS?
-    Err(Status::LibraryNotFound)
-}
-
-// Since v525 NVIDIA drivers have libnvidia-api.so.1 which implements NVAPI but the implementation is still poor
-// (many functions are not there, like it's impossible to identify physical handler by pci slot etc)
-#[cfg(target_os = "linux")]
-pub fn nvapi_QueryInterface(id: u32) -> crate::Result<usize> {
-    use libc::{RTLD_LAZY, RTLD_LOCAL, dlopen, dlsym};
-    use std::os::raw::c_char;
-    use std::mem;
-
-    unsafe {
-        let ptr = match QUERY_INTERFACE_CACHE.load(Ordering::Relaxed) {
-            0 => {
-                let lib = dlopen(LIBRARY_NAME.as_ptr() as *const c_char, RTLD_LAZY | RTLD_LOCAL);
-                if lib.is_null() {
-                    Err(Status::LibraryNotFound)
-                } else {
-                    let ptr = dlsym(lib, FN_NAME.as_ptr() as *const c_char);
-                    if ptr.is_null() {
-                        Err(Status::LibraryNotFound)
-                    } else {
-                        QUERY_INTERFACE_CACHE.store(ptr as usize, Ordering::Relaxed);
-                        Ok(ptr as usize)
-                    }
-                }
-            },
-            ptr => Ok(ptr),
-        }?;
-
-        match mem::transmute::<_, QueryInterfaceFn>(ptr)(id) as usize {
-            0 => Err(Status::NoImplementation),
-            ptr => Ok(ptr),
-        }
+pub fn get_query_interface() -> Option<QueryInterfaceFn> {
+    match QUERY_INTERFACE_CACHE.load(Ordering::Relaxed) {
+        0 => None,
+        ptr => Some(unsafe { transmute::<_, QueryInterfaceFn>(ptr) }),
     }
 }
 
-#[cfg(windows)]
-pub fn nvapi_QueryInterface(id: u32) -> crate::Result<usize> {
-    use winapi::um::libloaderapi::{GetProcAddress, LoadLibraryA};
-    use std::os::raw::c_char;
-    use std::mem;
-
-    unsafe {
-        let ptr = match QUERY_INTERFACE_CACHE.load(Ordering::Relaxed) {
-            0 => {
-                let lib = LoadLibraryA(LIBRARY_NAME.as_ptr() as *const c_char);
-                if lib.is_null() {
-                    Err(Status::LibraryNotFound)
-                } else {
-                    let ptr = GetProcAddress(lib, FN_NAME.as_ptr() as *const c_char);
-                    if ptr.is_null() {
-                        Err(Status::LibraryNotFound)
-                    } else {
-                        QUERY_INTERFACE_CACHE.store(ptr as usize, Ordering::Relaxed);
-                        Ok(ptr as usize)
-                    }
-                }
-            },
-            ptr => Ok(ptr),
-        }?;
-
-        match mem::transmute::<_, QueryInterfaceFn>(ptr)(id) as usize {
-            0 => Err(Status::NoImplementation),
-            ptr => Ok(ptr),
-        }
-    }
-}
-
-pub(crate) fn query_interface(id: u32, cache: &AtomicUsize) -> crate::Result<usize> {
-    match cache.load(Ordering::Relaxed) {
-        0 => {
-            let value = nvapi_QueryInterface(id)?;
-            cache.store(value, Ordering::Relaxed);
-            Ok(value)
+pub fn load_query_interface() -> io::Result<QueryInterfaceFn> {
+    Ok(match get_query_interface() {
+        Some(query_interface) => query_interface,
+        None => {
+            let query_interface = resolve_query_interface()?;
+            unsafe { set_query_interface(query_interface) };
+            query_interface
         },
-        value => Ok(value),
+    })
+}
+
+pub fn resolve_query_interface() -> io::Result<QueryInterfaceFn> {
+    #[allow(unreachable_patterns)]
+    match () {
+        // Since NVIDIA driver version 525 libnvidia-api.so.1 implements NVAPI
+        // but the implementation is still poor (many functions are not implemented)
+        #[cfg(target_os = "linux")]
+        () => {
+            use libc::{RTLD_LAZY, RTLD_LOCAL, dlopen, dlsym};
+            use std::os::raw::c_char;
+
+            fn dlerror() -> io::Error {
+                use libc::dlerror;
+
+                let message = unsafe { CStr::from_ptr(dlerror()) };
+                let message: String = message.to_string_lossy().into();
+                io::Error::new(io::ErrorKind::NotFound, message)
+            }
+
+            let lib = unsafe { dlopen(LIBRARY_NAME.as_ptr() as *const c_char, RTLD_LAZY | RTLD_LOCAL) };
+            let lib = NonNull::new(lib).ok_or_else(|| dlerror())?;
+            let ptr = unsafe { dlsym(lib.as_ptr(), FN_NAME.as_ptr() as *const c_char) };
+            NonNull::new(ptr)
+                .ok_or_else(|| dlerror())
+                .map(|ptr| unsafe { transmute(ptr) })
+        },
+        #[cfg(windows)]
+        () => {
+            use winapi::um::libloaderapi::{GetProcAddress, LoadLibraryA};
+            use std::os::raw::c_char;
+
+            let lib = unsafe { LoadLibraryA(LIBRARY_NAME.as_ptr() as *const c_char) };
+            let lib = NonNull::new(lib).ok_or_else(|| io::Error::last_os_error())?;
+            let ptr = unsafe { GetProcAddress(lib.as_ptr(), FN_NAME.as_ptr() as *const c_char) };
+            NonNull::new(ptr)
+                .ok_or_else(|| io::Error::last_os_error())
+                .map(|ptr| unsafe { transmute(ptr) })
+        },
+        // TODO: Apparently nvapi is available for macOS?
+        () => Err(io::Error::new(io::ErrorKind::Unsupported, Status::LibraryNotFound)),
     }
+}
+
+pub fn nvapi_QueryInterface(id: u32) -> Result<NonNull<()>, Status> {
+    let query_interface = load_query_interface().map_err(|_e| {
+        #[cfg(feature = "log")] {
+            let fn_name = FN_NAME.to_str().unwrap();
+            let library_name = LIBRARY_NAME.to_str().unwrap();
+            log::warn!("failed to load {fn_name} from {library_name}: {_e:?}");
+        }
+        Status::LibraryNotFound
+    })?;
+
+    NonNull::new(query_interface(id) as *mut ())
+        .ok_or(Status::NoImplementation)
 }
 
 nvapi! {
