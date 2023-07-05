@@ -106,10 +106,6 @@ nvapi! {
     /// - `NVAPI_NVIDIA_DEVICE_NOT_FOUND`: no NVIDIA GPU driving a display was found
     /// - `NVAPI_EXPECTED_PHYSICAL_GPU_HANDLE`: hPhysicalGpu was not a physical GPU handle
     pub unsafe fn NvAPI_GPU_GetConnectedDisplayIds;
-
-    impl self {
-        pub fn GetConnectedDisplayIds;
-    }
 }
 
 nvapi! {
@@ -122,8 +118,73 @@ nvapi! {
     ///
     /// - `NVAPI_INSUFFICIENT_BUFFER`: When the input buffer(pDisplayIds) is less than the actual number of display IDs
     pub unsafe fn NvAPI_GPU_GetAllDisplayIds;
+}
 
-    impl self {
-        pub fn GetAllDisplayIds;
+fn check_display_id_version(display_ids: &mut [NV_GPU_DISPLAYIDS]) -> crate::Result<()> {
+    match display_ids {
+        [] => Ok(()),
+        [display_id, ..] => match display_id.version {
+            <NV_GPU_DISPLAYIDS as StructVersion<1>>::NVAPI_VERSION | <NV_GPU_DISPLAYIDS as StructVersion<3>>::NVAPI_VERSION => Ok(()),
+            _version => {
+                #[cfg(feature = "log")] {
+                    log::warn!("incorrectly initialized version for GetConnectedDisplayIds: {:?}", _version);
+                }
+                Err(NvAPI_Status::IncompatibleStructVersion)
+            },
+        },
+    }
+}
+
+impl NvPhysicalGpuHandle {
+    pub fn GetConnectedDisplayIds(self, display_ids: &mut [NV_GPU_DISPLAYIDS], flags: NV_GPU_CONNECTED_IDS_FLAG) -> crate::Result<usize> {
+        check_display_id_version(display_ids)?;
+        let mut count = display_ids.len() as u32;
+        unsafe {
+            self.NvAPI_GPU_GetConnectedDisplayIds(display_ids.as_mut_ptr(), &mut count, flags)
+        }.map(move |()| count as _)
+    }
+
+    pub fn GetConnectedDisplayIds3(self, flags: NV_GPU_CONNECTED_IDS_FLAG) -> crate::Result<Vec<NV_GPU_DISPLAYIDS>> {
+        let count = self.GetConnectedDisplayIds(&mut [], flags)?;
+        let mut data: Vec<NV_GPU_DISPLAYIDS> = vec![StructVersion::<3>::versioned(); count];
+        self.GetConnectedDisplayIds(&mut data, flags).map(move |count| {
+            data.truncate(count);
+            data
+        })
+    }
+
+    pub fn GetConnectedDisplayIds1(self, flags: NV_GPU_CONNECTED_IDS_FLAG) -> crate::Result<Vec<NV_GPU_DISPLAYIDS>> {
+        let count = self.GetConnectedDisplayIds(&mut [], flags)?;
+        let mut data: Vec<NV_GPU_DISPLAYIDS> = vec![StructVersion::<1>::versioned(); count];
+        self.GetConnectedDisplayIds(&mut data, flags).map(move |count| {
+            data.truncate(count);
+            data
+        })
+    }
+
+    pub fn GetAllDisplayIds(self, display_ids: &mut [NV_GPU_DISPLAYIDS]) -> crate::Result<usize> {
+        check_display_id_version(display_ids)?;
+        let mut count = display_ids.len() as u32;
+        unsafe {
+            self.NvAPI_GPU_GetAllDisplayIds(display_ids.as_mut_ptr(), &mut count)
+        }.map(move |()| count as _)
+    }
+
+    pub fn GetAllDisplayIds3(self) -> crate::Result<Vec<NV_GPU_DISPLAYIDS>> {
+        let count = self.GetAllDisplayIds(&mut [])?;
+        let mut data: Vec<NV_GPU_DISPLAYIDS> = vec![StructVersion::<3>::versioned(); count];
+        self.GetAllDisplayIds(&mut data).map(move |count| {
+            data.truncate(count);
+            data
+        })
+    }
+
+    pub fn GetAllDisplayIds1(self) -> crate::Result<Vec<NV_GPU_DISPLAYIDS>> {
+        let count = self.GetAllDisplayIds(&mut [])?;
+        let mut data: Vec<NV_GPU_DISPLAYIDS> = vec![StructVersion::<1>::versioned(); count];
+        self.GetAllDisplayIds(&mut data).map(move |count| {
+            data.truncate(count);
+            data
+        })
     }
 }
