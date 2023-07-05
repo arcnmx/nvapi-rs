@@ -343,7 +343,7 @@ impl VfpCurve {
     pub fn from_raw_v3(raw: &power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V3, info: &VfpInfo) -> crate::Result<Self> {
         Ok(Self {
             points: info.domains.domains.iter()
-                .map(|d| info.index(d.domain, &raw.entries[..])
+                .map(|d| info.index(d.domain, &raw.points[..])
                     .map(|(i, p)| p.convert_raw().map(|p| (i, VfpEntry::from_entry(p))))
                     .collect::<Result<Vec<_>, _>>()
                     .map(|p| (d.domain, p))
@@ -354,7 +354,7 @@ impl VfpCurve {
     pub fn from_raw_v1(raw: &power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V1, info: &VfpInfo) -> crate::Result<Self> {
         Ok(Self {
             points: info.domains.domains.iter()
-                .map(|d| info.index(d.domain, &raw.entries[..])
+                .map(|d| info.index(d.domain, &raw.points[..])
                     .map(|(i, p)| p.convert_raw().map(|p| (i, VfPoint::from_entry(p).into())))
                     .collect::<Result<Vec<_>, _>>()
                     .map(|p| (d.domain, p))

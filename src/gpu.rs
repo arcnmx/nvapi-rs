@@ -30,7 +30,7 @@ impl PhysicalGpu {
     pub fn enumerate() -> crate::NvapiResult<Vec<Self>> {
         trace!("gpu.enumerate()");
         sys::handles::NvPhysicalGpuHandle::EnumPhysicalGPUs().map(|handles|
-            handles.map(PhysicalGpu).collect()
+            handles.into_iter().map(PhysicalGpu).collect()
         ).map_err(|status| crate::NvapiError::new(status, sys::Api::NvAPI_EnumPhysicalGPUs))
     }
 
@@ -582,11 +582,7 @@ impl PhysicalGpu {
     pub fn set_thermal_limit<I: IntoIterator<Item=crate::thermal::ThermalLimit>>(&self, value: I) -> crate::NvapiResult<()> {
         trace!("gpu.set_thermal_limit()");
         let mut data = thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_STATUS::default();
-        for (entry, v) in data.entries.iter_mut().zip(value) {
-            trace!("gpu.set_thermal_limit({:?})", v);
-            *entry = v.to_raw();
-            data.count += 1;
-        }
+        data.set_policies(value.into_iter().map(|v| v.to_raw()));
 
         unsafe {
             nvcall!(NvAPI_GPU_ClientThermalPoliciesSetStatus(self.0, &data))

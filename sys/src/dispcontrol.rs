@@ -172,6 +172,10 @@ nvstruct! {
 
 nvtag! { NV_TARGET_INFO_DATA_V1.targetId: u32 / u32 @TaggedData }
 
+nventries! { NV_TARGET_INFO_DATA_V1.displayId[..displayIdCount]@(get_display_ids/set_display_ids/display_ids_mut):
+    [u32; NVAPI_MAX_DISPLAYS]
+}
+
 nvversion! { NV_TARGET_INFO_DATA(NvAPI_Disp_GetDisplayIdsFromTarget):
     NV_TARGET_INFO_DATA_V1(1)
 }

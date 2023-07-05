@@ -23,7 +23,7 @@ impl GSyncDevice {
     pub fn enumerate() -> crate::NvapiResult<Vec<Self>> {
         trace!("gsync.enumerate()");
         NvGSyncDeviceHandle::EnumSyncDevices().map(|handles|
-            handles.map(GSyncDevice::with_handle).collect()
+            handles.into_iter().map(GSyncDevice::with_handle).collect()
         ).map_err(|status| crate::NvapiError::new(status, Api::NvAPI_GSync_EnumSyncDevices))
     }
 

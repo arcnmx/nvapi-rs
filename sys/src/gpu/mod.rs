@@ -718,7 +718,7 @@ impl Default for ChipRevision {
 }
 
 impl NvPhysicalGpuHandle {
-    pub fn EnumPhysicalGPUs() -> crate::Result<impl Iterator<Item = NvPhysicalGpuHandle>> {
+    pub fn EnumPhysicalGPUs() -> crate::Result<Truncated<[NvPhysicalGpuHandle; NVAPI_MAX_PHYSICAL_GPUS]>> {
         use crate::nvid::NvAPI_EnumPhysicalGPUs;
 
         let res = match NvAPI_EnumPhysicalGPUs.call() {
@@ -726,7 +726,7 @@ impl NvPhysicalGpuHandle {
                 Ok(([Default::default(); NVAPI_MAX_PHYSICAL_GPUS], 0)),
             res => res,
         };
-        res.map(move |(handles, count)| handles.into_iter().take(count as usize))
+        res.map(move |(handles, count)| Truncated::new_with(handles, ..count as usize))
     }
 }
 

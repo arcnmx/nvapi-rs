@@ -108,7 +108,7 @@ impl RawConversion for thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V2 
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
-        self.entries().iter()
+        self.policies().iter()
             .map(RawConversion::convert_raw)
             .collect::<Result<_, _>>()
     }
@@ -120,7 +120,7 @@ impl RawConversion for thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V3 
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
-        self.entries().iter()
+        self.policies().iter()
             .map(RawConversion::convert_raw)
             .collect::<Result<_, _>>()
     }
@@ -209,7 +209,7 @@ impl RawConversion for thermal::private::NV_GPU_CLIENT_THERMAL_POLICY_STATUS_V3 
             pff: match self.has_pff() {
                 true => Some(PffStatus {
                     curve: self.pff_curve.convert_raw()?,
-                    values: self.pff_freqs().iter().map(|&c| Kilohertz(c as _)).collect(),
+                    values: self.pff_freqs().map(|c| Kilohertz(c as _)).collect(),
                 }),
                 false => None,
             }
@@ -223,7 +223,7 @@ impl RawConversion for thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
-        self.entries().iter()
+        self.policies().iter()
             .map(RawConversion::convert_raw)
             .collect::<Result<_, _>>()
     }
@@ -235,7 +235,7 @@ impl RawConversion for thermal::private::NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V
 
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
-        self.entries().iter()
+        self.policies().iter()
             .map(RawConversion::convert_raw)
             .collect::<Result<_, _>>()
     }
@@ -285,8 +285,8 @@ impl RawConversion for thermal::private::NV_GPU_CLIENT_PFF_CURVE_V1 {
     fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
         trace!("convert_raw({:#?})", self);
         Ok(PffCurve {
-            points: self.points().iter()
-                .map(RawConversion::convert_raw)
+            points: self.points()
+                .map(|(_i, ref p)| RawConversion::convert_raw(p))
                 .collect::<Result<_, _>>()?,
         })
     }

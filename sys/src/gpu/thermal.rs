@@ -74,6 +74,10 @@ nvstruct! {
     }
 }
 
+nventries! { NV_GPU_THERMAL_SETTINGS_V1.sensor[..count]@(get_sensor/set_sensor/sensor_mut):
+    [NV_GPU_THERMAL_SETTINGS_SENSOR; NVAPI_MAX_THERMAL_SENSORS_PER_GPU]
+}
+
 nvstruct! {
     /// Anonymous struct in NV_GPU_THERMAL_SETTINGS
     #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
@@ -151,14 +155,12 @@ pub mod private {
             pub count: u8,
             pub flags: u8,
             pub padding: Padding<[u8; 2]>,
-            pub entries: Array<[NV_GPU_CLIENT_THERMAL_POLICIES_INFO_ENTRY_V2; NVAPI_MAX_THERMAL_INFO_ENTRIES]>,
+            pub policies: Array<[NV_GPU_CLIENT_THERMAL_POLICIES_INFO_ENTRY_V2; NVAPI_MAX_THERMAL_INFO_ENTRIES]>,
         }
     }
 
-    impl NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V2 {
-        pub fn entries(&self) -> &[NV_GPU_CLIENT_THERMAL_POLICIES_INFO_ENTRY_V2] {
-            &self.entries[..self.count as usize]
-        }
+    nventries! { NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V2.policies[..count]@(get_policies/set_policies/policies_mut):
+        [NV_GPU_CLIENT_THERMAL_POLICIES_INFO_ENTRY_V2; NVAPI_MAX_THERMAL_INFO_ENTRIES]
     }
 
     nvstruct! {
@@ -191,18 +193,18 @@ pub mod private {
             pub flags: u8,
             pub count: u8,
             pub padding: Padding<[u8; 2]>,
-            pub entries: Array<[NV_GPU_CLIENT_THERMAL_POLICY_INFO_V3; NVAPI_MAX_THERMAL_INFO_ENTRIES]>,
+            pub policies: Array<[NV_GPU_CLIENT_THERMAL_POLICY_INFO_V3; NVAPI_MAX_THERMAL_INFO_ENTRIES]>,
         }
     }
 
     impl NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V3 {
-        pub fn entries(&self) -> &[NV_GPU_CLIENT_THERMAL_POLICY_INFO_V3] {
-            &self.entries[..self.count as usize]
-        }
-
         pub fn valid(&self) -> bool {
             self.flags & 1 != 0
         }
+    }
+
+    nventries! { NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V3.policies[..count]@(get_policies/set_policies/policies_mut):
+        [NV_GPU_CLIENT_THERMAL_POLICY_INFO_V3; NVAPI_MAX_THERMAL_INFO_ENTRIES]
     }
 
     nvversion! { NV_GPU_CLIENT_THERMAL_POLICIES_INFO(NvAPI_GPU_ClientThermalPoliciesGetInfo):
@@ -236,14 +238,12 @@ pub mod private {
         pub struct NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V2 {
             pub version: NvVersion,
             pub count: u32,
-            pub entries: Array<[NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_ENTRY_V2; NVAPI_MAX_THERMAL_LIMIT_ENTRIES]>,
+            pub policies: Array<[NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_ENTRY_V2; NVAPI_MAX_THERMAL_LIMIT_ENTRIES]>,
         }
     }
 
-    impl NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V2 {
-        pub fn entries(&self) -> &[NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_ENTRY_V2] {
-            &self.entries[..self.count as usize]
-        }
+    nventries! { NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V2.policies[..count]@(get_policies/set_policies/policies_mut):
+        [NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_ENTRY_V2; NVAPI_MAX_THERMAL_LIMIT_ENTRIES]
     }
 
     nvstruct! {
@@ -274,9 +274,10 @@ pub mod private {
             self.flags = if enabled { 1 } else { 0 }
         }
 
-        pub fn pff_freqs(&self) -> &[u32] {
-            let count = self.pff_curve.points().len();
-            &self.pff_freqs[..count]
+        pub fn pff_freqs<'a>(&'a self) -> impl Iterator<Item = u32> + 'a {
+            self.pff_curve.points().map(|(i, _)|
+                self.pff_freqs[i as usize]
+            )
         }
     }
 
@@ -286,14 +287,12 @@ pub mod private {
         pub struct NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V3 {
             pub version: NvVersion,
             pub count: u32,
-            pub entries: Array<[NV_GPU_CLIENT_THERMAL_POLICY_STATUS_V3; NVAPI_MAX_THERMAL_LIMIT_ENTRIES]>,
+            pub policies: Array<[NV_GPU_CLIENT_THERMAL_POLICY_STATUS_V3; NVAPI_MAX_THERMAL_LIMIT_ENTRIES]>,
         }
     }
 
-    impl NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V3 {
-        pub fn entries(&self) -> &[NV_GPU_CLIENT_THERMAL_POLICY_STATUS_V3] {
-            &self.entries[..self.count as usize]
-        }
+    nventries! { NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V3.policies[..count]@(get_policies/set_policies/policies_mut):
+        [NV_GPU_CLIENT_THERMAL_POLICY_STATUS_V3; NVAPI_MAX_THERMAL_LIMIT_ENTRIES]
     }
 
     nvversion! { NV_GPU_CLIENT_THERMAL_POLICIES_STATUS(NvAPI_GPU_ClientThermalPoliciesGetStatus, NvAPI_GPU_ClientThermalPoliciesSetStatus):
@@ -336,10 +335,9 @@ pub mod private {
         }
     }
 
-    impl NV_GPU_CLIENT_PFF_CURVE_V1 {
-        pub fn points(&self) -> &[NV_GPU_CLIENT_PFF_CURVE_POINT_V1] {
-            let count = self.points.iter().take_while(|p| p.enabled.get()).count();
-            &self.points[..count]
-        }
+    nventries! { NV_GPU_CLIENT_PFF_CURVE_V1.points
+        @filter(|point: &NV_GPU_CLIENT_PFF_CURVE_POINT_V1| point.enabled.get())
+        (into_points/set_points/points_mut):
+        [(i32, NV_GPU_CLIENT_PFF_CURVE_POINT_V1); 3]
     }
 }

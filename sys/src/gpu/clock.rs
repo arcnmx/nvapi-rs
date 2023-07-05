@@ -34,6 +34,12 @@ nvstruct! {
     }
 }
 
+nventries! { NV_GPU_CLOCK_FREQUENCIES_V1.domain
+    @filter(|clock: &NV_GPU_CLOCK_FREQUENCIES_DOMAIN| clock.bIsPresent.get())
+    (get_domain/set_domain/domain_mut):
+        [(NV_GPU_PUBLIC_CLOCK_ID, NV_GPU_CLOCK_FREQUENCIES_DOMAIN); NVAPI_MAX_GPU_PUBLIC_CLOCKS]
+}
+
 impl NV_GPU_CLOCK_FREQUENCIES_V1 {
     pub fn ClockType(&self) -> NV_GPU_CLOCK_FREQUENCIES_CLOCK_TYPE {
         ((self.reserved & 3) as i32).into()
@@ -95,6 +101,7 @@ nvapi! {
 /// Undocumented API
 pub mod private {
     use crate::prelude_::*;
+    use crate::gpu::pstate::NV_GPU_UTILIZATION_DOMAIN_ID;
     use super::{PublicClockId, NV_GPU_PUBLIC_CLOCK_ID, NVAPI_MAX_GPU_PUBLIC_CLOCKS, NVAPI_MAX_GPU_PERF_CLOCKS};
 
     // undocumented constants
@@ -118,6 +125,12 @@ pub mod private {
             /// (core_usage, memory_usage, video_engine_usage), probably indexed by NV_GPU_UTILIZATION_DOMAIN_ID
             pub usages: Array<[NV_USAGES_INFO_USAGE; NVAPI_MAX_USAGES_PER_GPU]>,
         }
+    }
+
+    nventries! { NV_USAGES_INFO_V1.usages
+        @filter(|usage: &NV_USAGES_INFO_USAGE| usage.bIsPresent.get())
+        (get_usages/set_usages/usages_mut):
+            [(NV_GPU_UTILIZATION_DOMAIN_ID, NV_USAGES_INFO_USAGE); NVAPI_MAX_USAGES_PER_GPU]
     }
 
     nvversion! { NV_USAGES_INFO(NvAPI_GPU_GetUsages):
@@ -191,6 +204,11 @@ pub mod private {
         }
     }
 
+    nventries! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_V1.points
+        @masked(.mask)(into_points/set_points/points_mut):
+        [NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_CONTROL_V1; 255]
+    }
+
     nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL(NvAPI_GPU_ClockClientClkVfPointsGetControl, NvAPI_GPU_ClockClientClkVfPointsSetControl):
         NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_V1(2),
         NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_V1(1; @old) = 9248
@@ -240,6 +258,17 @@ pub mod private {
         }
     }
 
+    nventries! { NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_V1.clocks
+        @filter(/*|clock| !clock.disabled.get()*/)(into_clocks/set_clocks/clocks_mut):
+        [(NV_GPU_PUBLIC_CLOCK_ID, NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_ENTRY); NVAPI_MAX_GPU_PUBLIC_CLOCKS]
+    }
+
+    impl NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_V1 {
+        pub fn mask<'a>(&'a self) -> impl Iterator<Item = NV_GPU_PUBLIC_CLOCK_ID> + 'a {
+            self.mask.iter().map(|tag| (tag as i32).into())
+        }
+    }
+
     nvversion! { NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO(NvAPI_GPU_ClockClientClkDomainsGetInfo):
         NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_V1(1) = 2344
     }
@@ -271,6 +300,11 @@ pub mod private {
             pub unknown: Padding<[u32; 8]>,
             pub clocks: Array<[NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK; 255]>,
         }
+    }
+
+    nventries! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_V1.clocks
+        @masked(.mask)(into_clocks/set_clocks/clocks_mut):
+        [NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK; 255]
     }
 
     nvversion! { NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO(NvAPI_GPU_ClockClientClkVfPointsGetInfo):
@@ -338,10 +372,8 @@ pub mod private {
         }
     }
 
-    impl NV_GPU_PERF_CLIENT_LIMITS_V2 {
-        pub fn entries(&self) -> &[NV_GPU_PERF_CLIENT_LIMITS_ENTRY] {
-            &self.entries[..self.count as usize]
-        }
+    nventries! { NV_GPU_PERF_CLIENT_LIMITS_V2.entries[..count]@(get_entries/set_entries/entries_mut):
+        [NV_GPU_PERF_CLIENT_LIMITS_ENTRY; NVAPI_MAX_GPU_PERF_CLOCKS]
     }
 
     nvversion! { NV_GPU_PERF_CLIENT_LIMITS(NvAPI_GPU_PerfClientLimitsGetStatus, NvAPI_GPU_PerfClientLimitsSetStatus):

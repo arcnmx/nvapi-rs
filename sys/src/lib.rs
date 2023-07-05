@@ -49,7 +49,7 @@ pub mod dx;
 
 pub mod dispcontrol;
 
-pub use self::array::Array;
+pub use self::array::{Array, Truncated};
 pub use self::version::NvVersion;
 pub use self::boolu32::BoolU32;
 pub use self::string::NvString;
@@ -110,7 +110,7 @@ pub(crate) mod prelude_ {
     pub(crate) use crate::status::NvAPI_Status;
     pub(crate) use crate::version::{StructVersion, StructVersionInfo, VersionedStructField};
     pub(crate) use crate::nvid::Api;
-    pub(crate) use crate::{Array, BoolU32, NvVersion, ClockMask};
+    pub(crate) use crate::{Array, Truncated, BoolU32, NvVersion, ClockMask};
     pub(crate) type Padding<T> = Array<T>;
 }
 

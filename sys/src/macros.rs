@@ -1033,6 +1033,54 @@ macro_rules! nvversion {
         pub type $name = $latest;
     };
 }
+macro_rules! nventries {
+    ($name:ident.$field:ident[..$count:ident]@($get:ident/$set:ident/$mut_:ident): [$item:ty; $len:expr]) => {
+        impl $name {
+            pub fn $get(self) -> Truncated<Array<[$item; $len]>, std::ops::RangeTo<usize>> {
+                self.$field.truncate_to(self.$count as usize)
+            }
+
+            pub fn $field(&self) -> Truncated<&Array<[$item; $len]>, std::ops::RangeTo<usize>> {
+                self.$field.truncate_to_ref(self.$count as usize)
+            }
+
+            pub fn $mut_(&mut self) -> Truncated<&mut Array<[$item; $len]>, std::ops::RangeTo<usize>> {
+                self.$field.truncate_to_mut(self.$count as usize)
+            }
+
+            pub fn $set<I: IntoIterator<Item=$item>>(&mut self, iter: I) {
+                self.$count = 0;
+                for (entry, item) in self.$field.iter_mut().zip(iter) {
+                    *entry = item;
+                    self.$count += 1;
+                }
+            }
+        }
+    };
+    ($name:ident.$field:ident@filter($($filter:expr)?)($get:ident/$set:ident/$mut_:ident): [($tag:ty, $item:ty); $len:expr]) => {
+        impl $name {
+            pub fn $field(&self) -> impl Iterator<Item = ($tag, $item)> {
+                let iter = self.$field.into_iter().enumerate();
+                $(let iter = iter.filter(|(_, item)| ($filter)(item));)?
+                iter.map(|(tag, item)| ((tag as i32).into(), item))
+            }
+        }
+    };
+    ($name:ident.$field:ident@masked(.$mask:ident$(@$masked:expr)?)($get:ident/$set:ident/$mut_:ident): [$item:ty; $len:expr]) => {
+        impl $name {
+            pub fn $field(&self) -> Truncated<&Array<[$item; $len]>, &ClockMask$(<$masked>)?> {
+                self.$field.truncated_ref(&self.$mask)
+            }
+
+            pub fn $get(self) -> impl Iterator<Item = $item> {
+                let $field = self.$field;
+                let $mask: Vec<_> = self.$mask.into_iter().collect();
+                $mask.into_iter()
+                    .map(move |i| *$field.get(i).unwrap())
+            }
+        }
+    };
+}
 
 macro_rules! nvtag {
     (@rest $name:ident.$field:ident: $repr:ident / $id:ident) => { };

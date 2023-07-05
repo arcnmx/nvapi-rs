@@ -34,6 +34,11 @@ impl NV_GPU_DYNAMIC_PSTATES_INFO_EX {
     }
 }
 
+nventries! { NV_GPU_DYNAMIC_PSTATES_INFO_EX.utilization@filter(|u: &NV_GPU_DYNAMIC_PSTATES_INFO_EX_UTILIZATION| u.bIsPresent.get())
+    (utilizations/set_utilizations/utilizations_mut):
+    [(NV_GPU_UTILIZATION_DOMAIN_ID, NV_GPU_DYNAMIC_PSTATES_INFO_EX_UTILIZATION); NVAPI_MAX_GPU_UTILIZATIONS]
+}
+
 nvenum! {
     /// Domain index into NV_GPU_DYNAMIC_PSTATES_INFO_EX.utilization.
     ///
@@ -284,6 +289,28 @@ nvstruct! {
         /// Valid index range is 0 to numPstates-1
         pub pstates: Array<[NV_GPU_PERF_PSTATES20_PSTATE; NVAPI_MAX_GPU_PSTATE20_PSTATES]>,
     }
+}
+
+impl NV_GPU_PERF_PSTATES20_INFO_V1 {
+    pub fn clocks<'a>(&'a self, pstate: &'a NV_GPU_PERF_PSTATES20_PSTATE) -> Truncated<&'a Array<[NV_GPU_PSTATE20_CLOCK_ENTRY_V1; NVAPI_MAX_GPU_PSTATE20_CLOCKS]>> {
+        pstate.clocks.truncated_ref(..self.numClocks as usize)
+    }
+
+    pub fn into_clocks(&self, pstate: NV_GPU_PERF_PSTATES20_PSTATE) -> Truncated<Array<[NV_GPU_PSTATE20_CLOCK_ENTRY_V1; NVAPI_MAX_GPU_PSTATE20_CLOCKS]>> {
+        pstate.clocks.truncated(..self.numClocks as usize)
+    }
+
+    pub fn base_voltages<'a>(&'a self, pstate: &'a NV_GPU_PERF_PSTATES20_PSTATE) -> Truncated<&'a Array<[NV_GPU_PERF_PSTATE20_BASE_VOLTAGE_ENTRY_V1; NVAPI_MAX_GPU_PSTATE20_BASE_VOLTAGES]>> {
+        pstate.baseVoltages.truncated_ref(..self.numBaseVoltages as usize)
+    }
+
+    pub fn into_base_voltages(&self, pstate: NV_GPU_PERF_PSTATES20_PSTATE) -> Truncated<Array<[NV_GPU_PERF_PSTATE20_BASE_VOLTAGE_ENTRY_V1; NVAPI_MAX_GPU_PSTATE20_BASE_VOLTAGES]>> {
+        pstate.baseVoltages.truncated(..self.numBaseVoltages as usize)
+    }
+}
+
+nventries! { NV_GPU_PERF_PSTATES20_INFO_V1.pstates[..numPstates]@(get_pstates/set_pstates/pstates_mut):
+    [NV_GPU_PERF_PSTATES20_PSTATE; NVAPI_MAX_GPU_PSTATE20_PSTATES]
 }
 
 nvstruct! {

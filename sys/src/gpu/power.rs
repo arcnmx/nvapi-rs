@@ -109,7 +109,21 @@ pub mod private {
             pub version: NvVersion,
             pub mask: ClockMask,
             pub unknown: Padding<[u32; 8]>,
-            pub entries: Array<[NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V1; 255]>,
+            pub points: Array<[NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V1; 255]>,
+        }
+    }
+
+    impl NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V1 {
+        pub fn points<'a>(&'a self) -> impl Iterator<Item=&'a NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V1> + 'a {
+            self.mask.iter()
+                .map(|i| self.points.get(i).unwrap())
+        }
+
+        pub fn into_points(self) -> impl Iterator<Item=NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V1> {
+            let points = self.points;
+            let mask: Vec<_> = self.mask.into_iter().collect();
+            mask.into_iter()
+                .map(move |i| *points.get(i).unwrap())
         }
     }
 
@@ -118,7 +132,21 @@ pub mod private {
             pub version: NvVersion,
             pub mask: ClockMask,
             pub unknown: Padding<[u8; 0x44]>,
-            pub entries: Array<[NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V3; 255]>,
+            pub points: Array<[NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V3; 255]>,
+        }
+    }
+
+    impl NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V3 {
+        pub fn points<'a>(&'a self) -> impl Iterator<Item=&'a NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V3> + 'a {
+            self.mask.iter()
+                .map(|i| self.points.get(i).unwrap())
+        }
+
+        pub fn into_points(self) -> impl Iterator<Item=NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V3> {
+            let points = self.points;
+            let mask: Vec<_> = self.mask.into_iter().collect();
+            mask.into_iter()
+                .map(move |i| *points.get(i).unwrap())
         }
     }
 
@@ -178,6 +206,10 @@ pub mod private {
         }
     }
 
+    nventries! { NV_GPU_CLIENT_POWER_POLICIES_INFO_V1.entries[..count]@(get_entries/set_entries/entries_mut):
+        [NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V1; 4]
+    }
+
     nvstruct! {
         #[derive(Default)]
         pub struct NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V2 {
@@ -204,10 +236,8 @@ pub mod private {
         }
     }
 
-    impl NV_GPU_CLIENT_POWER_POLICIES_INFO_V2 {
-        pub fn entries(&self) -> &[NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V2] {
-            &self.entries[..self.count as usize]
-        }
+    nventries! { NV_GPU_CLIENT_POWER_POLICIES_INFO_V2.entries[..count]@(get_entries/set_entries/entries_mut):
+        [NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V2; 4]
     }
 
     nvversion! { NV_GPU_CLIENT_POWER_POLICIES_INFO(NvAPI_GPU_ClientPowerPoliciesGetInfo):
@@ -233,6 +263,24 @@ pub mod private {
         }
     }
 
+    impl From<(NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID, u32)> for NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1 {
+        fn from((policy_id, power_target): (NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID, u32)) -> Self {
+            Self {
+                policy_id,
+                power_target,
+                b: 0,
+                d: 0,
+            }
+        }
+    }
+
+    impl From<NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2> for NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1 {
+        #[inline]
+        fn from(entry: NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2) -> Self {
+            (entry.policy_id, entry.power_target).into()
+        }
+    }
+
     nvtag! { NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1.policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID / PowerPolicyId @TaggedData }
 
     nvstruct! {
@@ -243,6 +291,10 @@ pub mod private {
         }
     }
 
+    nventries! { NV_GPU_CLIENT_POWER_POLICIES_STATUS_V1.entries[..count]@(get_entries/set_entries/entries_mut):
+        [NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1; 4]
+    }
+
     nvstruct! {
         #[derive(Default)]
         pub struct NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2 {
@@ -251,6 +303,25 @@ pub mod private {
             pub flags: u32,
             pub power_target: u32,
             pub padding: Padding<[u32; 340/4 - 4]>,
+        }
+    }
+
+    impl From<(NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID, u32)> for NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2 {
+        fn from((policy_id, power_target): (NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID, u32)) -> Self {
+            Self {
+                policy_id,
+                power_target,
+                flags: 0,
+                unknown: Default::default(),
+                padding: Default::default(),
+            }
+        }
+    }
+
+    impl From<NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1> for NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2 {
+        #[inline]
+        fn from(entry: NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1) -> Self {
+            (entry.policy_id, entry.power_target).into()
         }
     }
 
@@ -269,6 +340,10 @@ pub mod private {
             pub count: u32,
             pub entries: Array<[NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2; 4]>,
         }
+    }
+
+    nventries! { NV_GPU_CLIENT_POWER_POLICIES_STATUS_V2.entries[..count]@(get_entries/set_entries/entries_mut):
+        [NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2; 4]
     }
 
     nvversion! { NV_GPU_CLIENT_POWER_POLICIES_STATUS(NvAPI_GPU_ClientPowerPoliciesGetStatus, NvAPI_GPU_ClientPowerPoliciesSetStatus):
@@ -302,10 +377,8 @@ pub mod private {
         }
     }
 
-    impl NV_GPU_CLIENT_POWER_TOPOLOGY_INFO_V1 {
-        pub fn channels(&self) -> &[NV_GPU_CLIENT_POWER_TOPOLOGY_CHANNEL_ID] {
-            &self.channels[..self.count as usize]
-        }
+    nventries! { NV_GPU_CLIENT_POWER_TOPOLOGY_INFO_V1.channels[..count]@(get_channels/set_channels/channels_mut):
+        [NV_GPU_CLIENT_POWER_TOPOLOGY_CHANNEL_ID; 4]
     }
 
     nvversion! { NV_GPU_CLIENT_POWER_TOPOLOGY_INFO(NvAPI_GPU_ClientPowerTopologyGetInfo):
@@ -344,6 +417,17 @@ pub mod private {
         }
     }
 
+    impl From<NV_GPU_CLIENT_POWER_TOPOLOGY_CHANNEL_ID> for NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_ENTRY {
+        fn from(channel: NV_GPU_CLIENT_POWER_TOPOLOGY_CHANNEL_ID) -> Self {
+            Self {
+                channel,
+                power: 0,
+                unknown0: 0,
+                unknown1: 0,
+            }
+        }
+    }
+
     nvtag! { NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_ENTRY.channel: NV_GPU_CLIENT_POWER_TOPOLOGY_CHANNEL_ID / PowerTopologyChannelId @TaggedData }
 
     nvstruct! {
@@ -354,10 +438,8 @@ pub mod private {
         }
     }
 
-    impl NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_V1 {
-        pub fn entries(&self) -> &[NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_ENTRY] {
-            &self.entries[..self.count as usize]
-        }
+    nventries! { NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_V1.entries[..count]@(get_entries/set_entries/entries_mut):
+        [NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_ENTRY; 4]
     }
 
     nvversion! { NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS(NvAPI_GPU_ClientPowerTopologyGetStatus):
@@ -509,10 +591,8 @@ pub mod private {
         }
     }
 
-    impl NV_VOLT_TABLE_V1 {
-        pub fn entries(&self) -> &[NV_VOLT_TABLE_ENTRY] {
-            &self.entries[..self.count as usize]
-        }
+    nventries! { NV_VOLT_TABLE_V1.entries[..count]@(get_entries/set_entries/entries_mut):
+        [NV_VOLT_TABLE_ENTRY; NVAPI_MAX_GPU_PERF_VOLTAGES]
     }
 
     nvversion! { NV_VOLT_TABLE(NvAPI_GPU_GetVoltages):

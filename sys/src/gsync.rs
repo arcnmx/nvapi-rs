@@ -417,7 +417,7 @@ nvapi! {
 }
 
 impl NvGSyncDeviceHandle {
-    pub fn EnumSyncDevices() -> crate::Result<impl Iterator<Item = NvGSyncDeviceHandle>> {
+    pub fn EnumSyncDevices() -> crate::Result<Truncated<[NvGSyncDeviceHandle; NVAPI_MAX_GSYNC_DEVICES]>> {
         use crate::nvid::NvAPI_GSync_EnumSyncDevices;
 
         let res = match NvAPI_GSync_EnumSyncDevices.call() {
@@ -425,6 +425,6 @@ impl NvGSyncDeviceHandle {
                 Ok(([Default::default(); NVAPI_MAX_GSYNC_DEVICES], 0)),
             res => res,
         };
-        res.map(move |(handles, count)| handles.into_iter().take(count as usize))
+        res.map(move |(handles, count)| Truncated::new_with(handles, ..count as usize))
     }
 }

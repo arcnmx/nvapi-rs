@@ -160,14 +160,12 @@ pub mod private {
         pub struct NV_GPU_GETCOOLER_SETTINGS_V1 {
             pub version: NvVersion,
             pub count: u32,
-            pub cooler: Array<[NV_GPU_GETCOOLER_SETTING_V1; NVAPI_MAX_COOLERS_PER_GPU]>,
+            pub coolers: Array<[NV_GPU_GETCOOLER_SETTING_V1; NVAPI_MAX_COOLERS_PER_GPU]>,
         }
     }
 
-    impl NV_GPU_GETCOOLER_SETTINGS_V1 {
-        pub fn coolers(&self) -> &[NV_GPU_GETCOOLER_SETTING_V1] {
-            &self.cooler[..self.count as usize]
-        }
+    nventries! { NV_GPU_GETCOOLER_SETTINGS_V1.coolers[..count]@(get_coolers/set_coolers/coolers_mut):
+        [NV_GPU_GETCOOLER_SETTING_V1; NVAPI_MAX_COOLERS_PER_GPU]
     }
 
     nvstruct! {
@@ -200,14 +198,12 @@ pub mod private {
             pub version: NvVersion,
             /// number of associated coolers with the selected GPU
             pub count: u32,
-            pub cooler: Array<[NV_GPU_GETCOOLER_SETTING_V3; NVAPI_MAX_COOLERS_PER_GPU_VER3]>,
+            pub coolers: Array<[NV_GPU_GETCOOLER_SETTING_V3; NVAPI_MAX_COOLERS_PER_GPU_VER3]>,
         }
     }
 
-    impl NV_GPU_GETCOOLER_SETTINGS_V3 {
-        pub fn coolers(&self) -> &[NV_GPU_GETCOOLER_SETTING_V3] {
-            &self.cooler[..self.count as usize]
-        }
+    nventries! { NV_GPU_GETCOOLER_SETTINGS_V3.coolers[..count]@(get_coolers/set_coolers/coolers_mut):
+        [NV_GPU_GETCOOLER_SETTING_V3; NVAPI_MAX_COOLERS_PER_GPU_VER3]
     }
 
     nvstruct! {
@@ -223,14 +219,12 @@ pub mod private {
         pub struct NV_GPU_GETCOOLER_SETTINGS_V4 {
             pub version: NvVersion,
             pub count: u32,
-            pub cooler: Array<[NV_GPU_GETCOOLER_SETTING_V4; NVAPI_MAX_COOLERS_PER_GPU_VER4]>,
+            pub coolers: Array<[NV_GPU_GETCOOLER_SETTING_V4; NVAPI_MAX_COOLERS_PER_GPU_VER4]>,
         }
     }
 
-    impl NV_GPU_GETCOOLER_SETTINGS_V4 {
-        pub fn coolers(&self) -> &[NV_GPU_GETCOOLER_SETTING_V4] {
-            &self.cooler[..self.count as usize]
-        }
+    nventries! { NV_GPU_GETCOOLER_SETTINGS_V4.coolers[..count]@(get_coolers/set_coolers/coolers_mut):
+        [NV_GPU_GETCOOLER_SETTING_V4; NVAPI_MAX_COOLERS_PER_GPU_VER4]
     }
 
     nvversion! { NV_GPU_GETCOOLER_SETTINGS(NvAPI_GPU_GetCoolerSettings):
@@ -414,10 +408,8 @@ pub mod private {
         }
     }
 
-    impl NV_GPU_CLIENT_FAN_ARBITERS_INFO_V1 {
-        pub fn arbiters(&self) -> &[NV_GPU_CLIENT_FAN_ARBITER_INFO_V1] {
-            &self.arbiters[..self.count as usize]
-        }
+    nventries! { NV_GPU_CLIENT_FAN_ARBITERS_INFO_V1.arbiters[..count]@(get_arbiters/set_arbiters/arbiters_mut):
+        [NV_GPU_CLIENT_FAN_ARBITER_INFO_V1; 32]
     }
 
     nvversion! { NV_GPU_CLIENT_FAN_ARBITERS_INFO(NvAPI_GPU_ClientFanArbitersGetInfo):
@@ -458,10 +450,8 @@ pub mod private {
         }
     }
 
-    impl NV_GPU_CLIENT_FAN_ARBITERS_STATUS_V1 {
-        pub fn arbiters(&self) -> &[NV_GPU_CLIENT_FAN_ARBITER_STATUS_V1] {
-            &self.arbiters[..self.count as usize]
-        }
+    nventries! { NV_GPU_CLIENT_FAN_ARBITERS_STATUS_V1.arbiters[..count]@(get_arbiters/set_arbiters/arbiters_mut):
+        [NV_GPU_CLIENT_FAN_ARBITER_STATUS_V1; 32]
     }
 
     nvversion! { NV_GPU_CLIENT_FAN_ARBITERS_STATUS(NvAPI_GPU_ClientFanArbitersGetStatus):
@@ -503,10 +493,8 @@ pub mod private {
         }
     }
 
-    impl NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_V1 {
-        pub fn arbiters(&self) -> &[NV_GPU_CLIENT_FAN_ARBITER_CONTROL_V1] {
-            &self.arbiters[..self.count as usize]
-        }
+    nventries! { NV_GPU_CLIENT_FAN_ARBITERS_CONTROL_V1.arbiters[..count]@(get_arbiters/set_arbiters/arbiters_mut):
+        [NV_GPU_CLIENT_FAN_ARBITER_CONTROL_V1; 32]
     }
 
     nvversion! { NV_GPU_CLIENT_FAN_ARBITERS_CONTROL(NvAPI_GPU_ClientFanArbitersGetControl, NvAPI_GPU_ClientFanArbitersSetControl):
@@ -575,10 +563,10 @@ pub mod private {
         pub fn valid(&self) -> bool {
             self.flags.get()
         }
+    }
 
-        pub fn coolers(&self) -> &[NV_GPU_CLIENT_FAN_COOLER_INFO_V1] {
-            &self.coolers[..self.count as usize]
-        }
+    nventries! { NV_GPU_CLIENT_FAN_COOLERS_INFO_V1.coolers[..count]@(get_coolers/set_coolers/coolers_mut):
+        [NV_GPU_CLIENT_FAN_COOLER_INFO_V1; 32]
     }
 
     nvversion! { NV_GPU_CLIENT_FAN_COOLERS_INFO(NvAPI_GPU_ClientFanCoolersGetInfo):
@@ -617,10 +605,8 @@ pub mod private {
         }
     }
 
-    impl NV_GPU_CLIENT_FAN_COOLERS_STATUS_V1 {
-        pub fn coolers(&self) -> &[NV_GPU_CLIENT_FAN_COOLER_STATUS_V1] {
-            &self.coolers[..self.count as usize]
-        }
+    nventries! { NV_GPU_CLIENT_FAN_COOLERS_STATUS_V1.coolers[..count]@(get_coolers/set_coolers/coolers_mut):
+        [NV_GPU_CLIENT_FAN_COOLER_STATUS_V1; 32]
     }
 
     nvversion! { NV_GPU_CLIENT_FAN_COOLERS_STATUS(NvAPI_GPU_ClientFanCoolersGetStatus):
@@ -676,10 +662,10 @@ pub mod private {
         pub fn set_valid(&mut self, valid: bool) {
             self.flags.set(valid)
         }
+    }
 
-        pub fn coolers(&self) -> &[NV_GPU_CLIENT_FAN_COOLER_CONTROL_V1] {
-            &self.coolers[..self.count as usize]
-        }
+    nventries! { NV_GPU_CLIENT_FAN_COOLERS_CONTROL_V1.coolers[..count]@(get_coolers/set_coolers/coolers_mut):
+        [NV_GPU_CLIENT_FAN_COOLER_CONTROL_V1; 32]
     }
 
     nvversion! { NV_GPU_CLIENT_FAN_COOLERS_CONTROL(NvAPI_GPU_ClientFanCoolersGetControl, NvAPI_GPU_ClientFanCoolersSetControl):
