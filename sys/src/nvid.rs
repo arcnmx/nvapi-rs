@@ -1,37 +1,67 @@
-#![allow(non_camel_case_types)]
+#![allow(non_camel_case_types, non_upper_case_globals)]
 
-use std::mem;
+use std::mem::transmute;
+use std::marker::PhantomData;
+use crate::ArgumentRangeError;
+use crate::apifn::NvapiFn;
 
 macro_rules! nvapis {
     ($(
-        $(#[$($meta:meta)*])*
-        $name:ident = $id:expr,
+        /*$(#[$($meta:meta)*])*
+        $name:ident = $id:expr,*/
+        $name:tt = $id:expr,
     )*) => {
         #[repr(u32)]
         #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
         #[non_exhaustive]
         pub enum Api {
         $(
-            $(#[$($meta)*])*
             $name = $id,
         )*
         }
 
         impl Api {
-            pub fn from_id(id: u32) -> Result<Self, ()> {
+            pub const fn from_id(id: u32) -> Result<Self, ArgumentRangeError> {
                 match id {
                 $(
                     $id
-                )|* => Ok(unsafe { mem::transmute(id) }),
-                    _ => Err(()),
+                )|* => Ok(unsafe { transmute(id) }),
+                    _ => Err(ArgumentRangeError),
                 }
             }
 
-            pub fn id(&self) -> u32 {
-                *self as _
+            pub const fn id(self) -> u32 {
+                self as _
             }
         }
+
+        pub mod api {
+            $(
+                nvapis! { @named ($name)($name) }
+            )*
+        }
+
+        pub mod interface {
+            use crate::apifn::NvapiFn;
+            $(
+                pub type $name = NvapiFn<super::api::$name>;
+            )*
+        }
+
+        $(
+            pub static $name: self::interface::$name = NvapiFn::empty();
+        )*
     };
+    (@named ($name:ident)($value:expr)) => {
+        const $name: u32 = super::Api::$name.id();
+        pub type $name = super::ApiInterface<$value>;
+    };
+}
+
+pub use self::api::*;
+
+pub struct ApiInterface<const API: u32> {
+    _api: PhantomData<Api>,
 }
 
 nvapis! {
@@ -878,17 +908,17 @@ NvAPI_DirectD3D12GraphicsCommandList_Reset = 0x999c26d8,
 
 // source: gpu-z
 
-/// `Unknown(*mut { version = 0x00030038, count, .. })`
+// `Unknown(*mut { version = 0x00030038, count, .. })`
 Unknown_1629A173 = 0x1629a173,
-/// `Unknown(hDisplayHandle, *mut hGpu)` maybe?
+// `Unknown(hDisplayHandle, *mut hGpu)` maybe?
 Unknown_F1D2777B = 0xf1d2777b,
-/// `Unknown(hGpu, *mut u32, *mut u32)`
+// `Unknown(hGpu, *mut u32, *mut u32)`
 Unknown_8EFC0978 = 0x8efc0978,
-/// `Unknown(hGpu, *mut { version = 0x00010008, value })` seen `value = 0x703`
+// `Unknown(hGpu, *mut { version = 0x00010008, value })` seen `value = 0x703`
 Unknown_B7BCF50D = 0xb7bcf50d,
-/// `Unknown(*mut { version = 0x0002000c, count, ... })` might be handles?
+// `Unknown(*mut { version = 0x0002000c, count, ... })` might be handles?
 Unknown_36E39E6B = 0x36e39e6b,
-/// `GPU_GetRasterOperators(hGpu, *mut u32)`
+// `GPU_GetRasterOperators(hGpu, *mut u32)`
 Unknown_GetROPCount = 0xfdc129fa,
 
 }

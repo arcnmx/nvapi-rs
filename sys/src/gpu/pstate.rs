@@ -71,7 +71,7 @@ nvversion! { _:
 }
 
 nvapi! {
-    pub type GPU_GetDynamicPstatesInfoExFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pDynamicPstatesInfoEx: *mut NV_GPU_DYNAMIC_PSTATES_INFO_EX) -> NvAPI_Status;
+    pub type GPU_GetDynamicPstatesInfoExFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pDynamicPstatesInfoEx@StructVersionOut: *mut NV_GPU_DYNAMIC_PSTATES_INFO_EX) -> NvAPI_Status;
 
     /// This API retrieves the NV_GPU_DYNAMIC_PSTATES_INFO_EX structure for the specified physical GPU.
     ///
@@ -83,7 +83,11 @@ nvapi! {
     /// - frame buffer (FB)
     /// - video engine (VID)
     /// - bus interface (BUS)
-    pub unsafe fn NvAPI_GPU_GetDynamicPstatesInfoEx;
+    pub fn NvAPI_GPU_GetDynamicPstatesInfoEx;
+
+    impl self {
+        pub fn GetDynamicPstatesInfoEx;
+    }
 }
 
 nvenum! {
@@ -114,10 +118,14 @@ nvenum_display! {
 }
 
 nvapi! {
-    pub type GPU_GetCurrentPstateFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pCurrentPstate: *mut NV_GPU_PERF_PSTATE_ID) -> NvAPI_Status;
+    pub type GPU_GetCurrentPstateFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pCurrentPstate@out: *mut NV_GPU_PERF_PSTATE_ID) -> NvAPI_Status;
 
     /// This function retrieves the current performance state (P-State).
-    pub unsafe fn NvAPI_GPU_GetCurrentPstate;
+    pub fn NvAPI_GPU_GetCurrentPstate;
+
+    impl self {
+        pub fn GetCurrentPstate;
+    }
 }
 
 nvenum! {
@@ -292,7 +300,7 @@ nvversion! { NV_GPU_PERF_PSTATES20_INFO:
 }
 
 nvapi! {
-    pub type GPU_GetPstates20Fn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pPstatesInfo: *mut NV_GPU_PERF_PSTATES20_INFO) -> NvAPI_Status;
+    pub type GPU_GetPstates20Fn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pPstatesInfo@StructVersionOut: *mut NV_GPU_PERF_PSTATES20_INFO) -> NvAPI_Status;
 
     /// This API retrieves all performance states (P-States) 2.0 information.
     ///
@@ -306,7 +314,11 @@ nvapi! {
     /// - P8 - Basic HD video playback
     /// - P10 - DVD playback
     /// - P12 - Minimum idle power consumption
-    pub unsafe fn NvAPI_GPU_GetPstates20;
+    pub fn NvAPI_GPU_GetPstates20;
+
+    impl self {
+        pub fn GetPstates20;
+    }
 }
 
 /// Undocumented API
@@ -315,9 +327,13 @@ pub mod private {
     use super::{NvPhysicalGpuHandle, NV_GPU_PERF_PSTATES20_INFO};
 
     nvapi! {
-        pub type GPU_SetPstates20Fn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pPstatesInfo: *const NV_GPU_PERF_PSTATES20_INFO) -> NvAPI_Status;
+        pub type GPU_SetPstates20Fn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pPstatesInfo@StructVersion: *const NV_GPU_PERF_PSTATES20_INFO) -> NvAPI_Status;
 
         /// Undocumented private API
-        pub unsafe fn NvAPI_GPU_SetPstates20;
+        pub fn NvAPI_GPU_SetPstates20;
+
+        impl self {
+            pub fn SetPstates20;
+        }
     }
 }

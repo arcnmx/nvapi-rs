@@ -98,14 +98,18 @@ nvversion! { NV_GPU_THERMAL_SETTINGS:
 }
 
 nvapi! {
-    pub type GPU_GetThermalSettingsFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, sensorIndex: u32, pThermalSettings: *mut NV_GPU_THERMAL_SETTINGS) -> NvAPI_Status;
+    pub type GPU_GetThermalSettingsFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, sensorIndex: u32, pThermalSettings@StructVersionOut: *mut NV_GPU_THERMAL_SETTINGS) -> NvAPI_Status;
 
     /// This function retrieves the thermal information of all thermal sensors or specific thermal sensor associated with the selected GPU.
     ///
     /// Thermal sensors are indexed 0 to NVAPI_MAX_THERMAL_SENSORS_PER_GPU-1.
     /// - To retrieve specific thermal sensor info, set the sensorIndex to the required thermal sensor index.
     /// - To retrieve info for all sensors, set sensorIndex to NVAPI_THERMAL_TARGET_ALL.
-    pub unsafe fn NvAPI_GPU_GetThermalSettings;
+    pub fn NvAPI_GPU_GetThermalSettings;
+
+    impl self {
+        pub fn GetThermalSettings;
+    }
 }
 
 /// Undocumented API
@@ -202,7 +206,11 @@ pub mod private {
     }
 
     nvapi! {
-        pub unsafe fn NvAPI_GPU_ClientThermalPoliciesGetInfo(hPhysicalGPU: NvPhysicalGpuHandle, pThermalInfo: *mut NV_GPU_CLIENT_THERMAL_POLICIES_INFO) -> NvAPI_Status;
+        pub fn NvAPI_GPU_ClientThermalPoliciesGetInfo(hPhysicalGPU@self: NvPhysicalGpuHandle, pThermalInfo@StructVersionOut: *mut NV_GPU_CLIENT_THERMAL_POLICIES_INFO) -> NvAPI_Status;
+
+        impl self {
+            pub fn ClientThermalPoliciesGetInfo;
+        }
     }
 
     pub const NVAPI_MAX_THERMAL_LIMIT_ENTRIES: usize = 4;
@@ -285,11 +293,19 @@ pub mod private {
     }
 
     nvapi! {
-        pub unsafe fn NvAPI_GPU_ClientThermalPoliciesGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pThermalLimit: *mut NV_GPU_CLIENT_THERMAL_POLICIES_STATUS) -> NvAPI_Status;
+        pub fn NvAPI_GPU_ClientThermalPoliciesGetStatus(hPhysicalGPU@self: NvPhysicalGpuHandle, pThermalLimit@StructVersionOut: *mut NV_GPU_CLIENT_THERMAL_POLICIES_STATUS) -> NvAPI_Status;
+
+        impl self {
+            pub fn ClientThermalPoliciesGetStatus;
+        }
     }
 
     nvapi! {
-        pub unsafe fn NvAPI_GPU_ClientThermalPoliciesSetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pThermalLimit: *const NV_GPU_CLIENT_THERMAL_POLICIES_STATUS) -> NvAPI_Status;
+        pub fn NvAPI_GPU_ClientThermalPoliciesSetStatus(hPhysicalGPU@self: NvPhysicalGpuHandle, pThermalLimit@StructVersion: *const NV_GPU_CLIENT_THERMAL_POLICIES_STATUS) -> NvAPI_Status;
+
+        impl self {
+            pub fn ClientThermalPoliciesSetStatus;
+        }
     }
 
     nvstruct! {

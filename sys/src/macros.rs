@@ -18,6 +18,10 @@ macro_rules! nv_declare_handle {
                 $name(::std::ptr::null())
             }
         }
+
+        unsafe impl zerocopy::FromBytes for $name {
+            fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized { }
+        }
     };
 }
 
@@ -79,6 +83,12 @@ macro_rules! nvstruct {
         }
 
         nvstruct! { @int fields $name ($($tt)*) }
+
+        impl $name {
+            pub fn zeroed() -> Self {
+                zerocopy::FromBytes::new_zeroed()
+            }
+        }
     };
     (@int fields $name:ident (
             $(#[$meta:meta])*
@@ -382,32 +392,501 @@ macro_rules! nvenum_display {
 }
 
 macro_rules! nvapi {
+    // declare NvAPI fn
     (
         $(#[$meta:meta])*
-        pub unsafe fn $fn:ident($($arg:ident: $arg_ty:ty),*) -> $ret:ty;
-    ) => {
-        $(#[$meta])*
-        pub unsafe fn $fn($($arg: $arg_ty),*) -> $ret {
-            static CACHE: crate::apifn::NvapiFnCache = crate::apifn::NvapiFnCache::empty();
+        pub unsafe fn $fn:ident($($args:tt)*) -> $ret:ty;
 
-            match CACHE.query_ptr(crate::nvid::Api::$fn.id()) {
-                Ok(ptr) => ::std::mem::transmute::<_, extern "C" fn($($arg: $arg_ty),*) -> $ret>(ptr)($($arg),*),
-                Err(e) => e.value(),
-            }
+        $($rest_body:tt)*
+    ) => {
+        nvapi! { @entry
+            $(#[$meta])*
+            pub fn(unsafe) $fn($($args)*) -> $ret;
+
+            $($rest_body)*
         }
     };
     (
-        pub type $name:ident = extern "C" fn($($arg:ident: $arg_ty:ty),*) -> $ret:ty;
+        $(#[$meta:meta])*
+        pub fn $fn:ident($($args:tt)*) -> $ret:ty;
+
+        $($rest_body:tt)*
+    ) => {
+        nvapi! { @entry
+            $(#[$meta])*
+            pub fn() $fn($($args)*) -> $ret;
+
+            $($rest_body)*
+        }
+    };
+    (@entry
+        $(#[$meta:meta])*
+        pub fn($($unsafe:ident)?) $fn:ident($($args:tt)*) -> $ret:ty;
+
+        $($rest_body:tt)*
+    ) => {
+        nvapi! { @fn
+            $(#[$meta])*
+            pub unsafe fn $fn($($args)*) -> $ret;
+        }
+
+        nvapi! { @scan_args
+            $(#[$meta])*
+            (( // $rest (double-wrapped to avoid ambiguity when passing around
+                ($($rest_body)*) // body extra config provided by caller, to be parsed later as needed
+                ($($unsafe)?) // whether the fn (once processed for out/SV args) is safe or not
+            ))
+            fn $fn($($args)*) -> $ret;
+        }
+    };
+    // declare NvAPI fn with type alias
+    (
+        pub type $name:ident = extern "C" fn($($args:tt)*) -> $ret:ty;
 
         $(#[$meta:meta])*
         pub unsafe fn $fn:ident;
-    ) => {
-        pub type $name = extern "C" fn($($arg: $arg_ty),*) -> $ret;
 
+        $($rest_body:tt)*
+    ) => {
         nvapi! {
             $(#[$meta])*
-            pub unsafe fn $fn($($arg: $arg_ty),*) -> $ret;
+            pub unsafe fn $fn($($args)*) -> $ret;
+
+            $($rest_body)*
+            pub type fn $name;
         }
+    };
+    (
+        pub type $name:ident = extern "C" fn($($args:tt)*) -> $ret:ty;
+
+        $(#[$meta:meta])*
+        pub fn $fn:ident;
+
+        $($rest_body:tt)*
+    ) => {
+        nvapi! { @entry
+            $(#[$meta])*
+            pub fn() $fn($($args)*) -> $ret;
+
+            $($rest_body)*
+            pub type fn $name;
+        }
+    };
+    // implementation of a specific NvAPI fn
+    (@fn
+        $(#[$meta:meta])*
+        pub unsafe fn $fn:ident($($arg:ident$(@$($_:ident)*)?: $arg_ty:ty),*) -> $ret:ty;
+    ) => {
+        impl crate::apifn::NvapiInterface for crate::nvid::api::$fn {
+            const API: crate::nvid::Api = crate::nvid::Api::$fn;
+            type Fn = extern "C" fn($($arg: $arg_ty),*) -> $ret;
+
+            unsafe fn fn_from_ptr(ptr: std::ptr::NonNull<()>) -> Self::Fn {
+                std::mem::transmute(ptr)
+            }
+        }
+
+        $(#[$meta])*
+        #[inline]
+        pub unsafe fn $fn($($arg: $arg_ty),*) -> $ret {
+            $crate::nvid::$fn.nvapi($($arg),*)
+        }
+
+        impl crate::nvid::api::$fn {
+            $(#[$meta])*
+            #[inline]
+            pub unsafe fn nvapi($($arg: $arg_ty),*) -> $ret {
+                $fn($($arg),*)
+            }
+        }
+
+        impl crate::nvid::interface::$fn {
+            $(#[$meta])*
+            pub unsafe fn nvapi(&self $(, $arg: $arg_ty)*) -> $ret {
+                self.query_map(|interface| interface($($arg),*))
+            }
+        }
+    };
+    // scan through args for special tags on the argument ident:
+    // * @self exposes the api on a specific type
+    // * @out indicates that the input data isn't important
+    // * @StructVersion marks the argument as implementing `StructVersion`
+    (@scan_args
+        $(#[$meta:meta])* ($rest:tt)
+        fn $fn:ident($($args:tt)*) -> $ret:ty;
+    ) => {
+        nvapi! { @scan_args
+            $(#[$meta])* ($rest)
+            fn $fn($($args)*) -> $ret;
+            () // all (extern "C" args)
+            () // input args (omit outputs)
+            () // out args
+            () // cstr args
+            (
+                () // non-self args
+                () // self arg
+            )
+            (
+                () // non-StructVersion args
+                () // StructVersion arg
+            )
+        }
+    };
+    // @self
+    (@scan_args
+        $(#[$meta:meta])* ($rest:tt)
+        fn $fn:ident($arg:ident@self: $arg_ty:ty $(,$($args:tt)*)?) -> $ret:ty;
+        ($($args_all:tt)*) ($($args_input:tt)*)
+        ($($args_out:tt)*)
+        ($($args_cstr:tt)*)
+        (($($args_notself:tt)*) (/*args_self*/))
+        (($($args_notsv:tt)*) $($args_sv:tt)*)
+    ) => {
+        nvapi! { @scan_args
+            $(#[$meta])* ($rest)
+            fn $fn($($($args)*)?) -> $ret;
+            ($($args_all)* $arg: $arg_ty,)
+            ($($args_input)* $arg: $arg_ty,)
+            ($($args_out)*)
+            ($($args_cstr)*)
+            (($($args_notself)*) ($arg: $arg_ty))
+            (($($args_notsv)* $arg: $arg_ty,) $($args_sv)*)
+        }
+    };
+    // @out
+    (@scan_args
+        $(#[$meta:meta])* ($rest:tt)
+        fn $fn:ident($arg:ident@out: *mut $arg_ty:ty $(,$($args:tt)*)?) -> $ret:ty;
+        ($($args_all:tt)*) ($($args_input:tt)*)
+        ($($args_out:tt)*)
+        ($($args_cstr:tt)*)
+        (($($args_notself:tt)*) $($args_self:tt)*)
+        (($($args_notsv:tt)*) $($args_sv:tt)*)
+    ) => {
+        nvapi! { @scan_args
+            $(#[$meta])* ($rest)
+            fn $fn($($($args)*)?) -> $ret;
+            ($($args_all)* $arg: *mut $arg_ty,)
+            ($($args_input)*)
+            ($($args_out)* $arg: *mut $arg_ty,)
+            ($($args_cstr)*)
+            (($($args_notself)* /*$arg: *mut $arg_ty,*/) $($args_self)*)
+            (($($args_notsv)* /*$arg: *mut $arg_ty,*/) $($args_sv)*)
+        }
+    };
+    // @StructVersion: *const (input)
+    (@scan_args
+        $(#[$meta:meta])* ($rest:tt)
+        fn $fn:ident($arg:ident@StructVersion: *const $arg_ty:ty $(,$($args:tt)*)?) -> $ret:ty;
+        ($($args_all:tt)*) ($($args_input:tt)*)
+        ($($args_out:tt)*)
+        ($($args_cstr:tt)*)
+        (($($args_notself:tt)*) $($args_self:tt)*)
+        (($($args_notsv:tt)*) (/*args_sv*/))
+    ) => {
+        nvapi! { @scan_args
+            $(#[$meta])* ($rest)
+            fn $fn($($($args)*)?) -> $ret;
+            ($($args_all)* $arg: *const $arg_ty,)
+            ($($args_input)* $arg: &SV,)
+            ($($args_out)*)
+            ($($args_cstr)*)
+            (($($args_notself)* $arg: &SV,) $($args_self)*)
+            (($($args_notsv)* $arg: &SV,) ($arg: *const $arg_ty))
+        }
+    };
+    // @StructVersion: *mut (in/out)
+    (@scan_args
+        $(#[$meta:meta])* ($rest:tt)
+        fn $fn:ident($arg:ident@StructVersion: *mut $arg_ty:ty $(,$($args:tt)*)?) -> $ret:ty;
+        ($($args_all:tt)*) ($($args_input:tt)*)
+        ($($args_out:tt)*)
+        ($($args_cstr:tt)*)
+        (($($args_notself:tt)*) $($args_self:tt)*)
+        (($($args_notsv:tt)*) (/*args_sv*/))
+    ) => {
+        nvapi! { @scan_args
+            $(#[$meta])* ($rest)
+            fn $fn($($($args)*)?) -> $ret;
+            ($($args_all)* $arg: *mut $arg_ty,)
+            ($($args_input)* $arg: &mut SV,)
+            ($($args_out)*)
+            ($($args_cstr)*)
+            (($($args_notself)* $arg: &mut SV,) $($args_self)*)
+            (($($args_notsv)* $arg: &mut SV,) ($arg: *mut $arg_ty))
+        }
+    };
+    // @StructVersionOut
+    (@scan_args
+        $(#[$meta:meta])* ($rest:tt)
+        fn $fn:ident($arg:ident@StructVersionOut: *mut $arg_ty:ty $(,$($args:tt)*)?) -> $ret:ty;
+        ($($args_all:tt)*) ($($args_input:tt)*)
+        ($($args_out:tt)*)
+        ($($args_cstr:tt)*)
+        (($($args_notself:tt)*) $($args_self:tt)*)
+        (($($args_notsv:tt)*) (/*args_sv*/))
+    ) => {
+        nvapi! { @scan_args
+            $(#[$meta])* ($rest)
+            fn $fn($($($args)*)?) -> $ret;
+            ($($args_all)* $arg: *mut $arg_ty,)
+            ($($args_input)*)
+            ($($args_out)* $arg: *mut SV,)
+            ($($args_cstr)*)
+            (($($args_notself)*) $($args_self)*)
+            (($($args_notsv)*) ($arg@SV: *mut $arg_ty))
+        }
+    };
+    // C-strings
+    (@scan_args
+        $(#[$meta:meta])* ($rest:tt)
+        fn $fn:ident($arg:ident: *const c_char $(,$($args:tt)*)?) -> $ret:ty;
+        ($($args_all:tt)*) ($($args_input:tt)*)
+        ($($args_out:tt)*)
+        ($($args_cstr:tt)*)
+        (($($args_notself:tt)*) $($args_self:tt)*)
+        (($($args_notsv:tt)*) $($args_sv:tt)*)
+    ) => {
+        nvapi! { @scan_args
+            $(#[$meta])* ($rest)
+            fn $fn($($($args)*)?) -> $ret;
+            ($($args_all)* $arg: *const c_char,)
+            ($($args_input)* $arg: &std::ffi::CStr,)
+            ($($args_out)*)
+            ($($args_cstr)* $arg,)
+            (($($args_notself)* $arg: &std::ffi::CStr,) $($args_self)*)
+            (($($args_notsv)* $arg: &std::ffi::CStr,) $($args_sv)*)
+        }
+    };
+    // fallback regular args
+    (@scan_args
+        $(#[$meta:meta])* ($rest:tt)
+        fn $fn:ident($arg:ident: $arg_ty:ty $(,$($args:tt)*)?) -> $ret:ty;
+        ($($args_all:tt)*) ($($args_input:tt)*)
+        ($($args_out:tt)*)
+        ($($args_cstr:tt)*)
+        (($($args_notself:tt)*) $($args_self:tt)*)
+        (($($args_notsv:tt)*) $($args_sv:tt)*)
+    ) => {
+        nvapi! { @scan_args
+            $(#[$meta])* ($rest)
+            fn $fn($($($args)*)?) -> $ret;
+            ($($args_all)* $arg: $arg_ty,)
+            ($($args_input)* $arg: $arg_ty,)
+            ($($args_out)*)
+            ($($args_cstr)*)
+            (($($args_notself)* $arg: $arg_ty,) $($args_self)*)
+            (($($args_notsv)* $arg: $arg_ty,) $($args_sv)*)
+        }
+    };
+    // base case once all arguments are parsed
+    (@scan_args
+        $(#[$meta:meta])* ($rest:tt)
+        fn $fn:ident() -> $ret:ty;
+        $args_all:tt $args_input:tt
+        $args_out:tt
+        $args_cstr:tt
+        $args_self:tt
+        $args_sv:tt
+    ) => {
+        nvapi! { @parse_args(self)$args_self
+            $(#[$meta])* ($rest)
+            fn $fn() -> $ret;
+            $args_all $args_input $args_out $args_cstr $args_self $args_sv
+        }
+        nvapi! { @parse_args(StructVersion)$args_sv
+            $(#[$meta])* ($rest)
+            fn $fn() -> $ret;
+            $args_all $args_input $args_out $args_cstr $args_self $args_sv
+        }
+        nvapi! { @parse_args(rest)($rest)
+            $(#[$meta])* ($rest)
+            fn $fn() -> $ret;
+            $args_all $args_input $args_out $args_cstr $args_self $args_sv
+        }
+    };
+    // parse special args that have been separated via @scan_args
+    (@parse_args(self)($args_notself:tt ()) $($rest:tt)*) => { };
+    (@parse_args(self)($args_notself:tt $args_self:tt)
+        $(#[$meta:meta])* ((
+            (
+                impl self {
+                    pub fn $self_fn:ident;
+                }
+                $($rest_body:tt)*
+            )
+            $($rest:tt)*
+        )) $($rest_:tt)*
+    ) => {
+        nvapi! { @parse_args(self)($args_notself $args_self ($self_fn))
+            $(#[$meta])* ((
+                (
+                    $($rest_body)*
+                )
+              $($rest)*
+            ))
+            $($rest_)*
+        }
+    };
+    (@parse_args(self)($args_notself:tt $args_self:tt)
+        $(#[$meta:meta])* ($rest:tt)
+        fn $fn:ident() $($rest_:tt)*
+    ) => {
+        nvapi! { @parse_args(self)($args_notself $args_self ($fn))
+            $(#[$meta])* ($rest)
+            fn $fn()
+            $($rest_)*
+        }
+    };
+    (@parse_args(self)
+        (
+            ($($arg_notself:ident: $arg_notself_ty:ty,)*)
+            ($arg_self:ident: $self_ty:ty)
+            ($self_fn:ident)
+        )
+        $(#[$meta:meta])*
+        (($rest_body:tt ($($unsafe:ident)?) $($rest:tt)*))
+        fn $fn:ident() -> $ret:ty;
+        ($($arg:ident: $arg_ty:ty,)*)
+        ($($arg_input:ident: $arg_input_ty:ty,)*)
+        $args_out:tt
+        $args_cstr:tt
+        $args_self:tt
+        (($($arg_notsv:ident: $arg_notsv_ty:ty,)*) ($($arg_sv:ident$(@$arg_sv_out:ident)?: *$arg_sv_mut:tt $arg_sv_ty:ty)?))
+    ) => {
+        impl $self_ty {
+            $(#[$meta])*
+            #[allow(unused_unsafe)]
+            pub $($unsafe)? fn $self_fn$(<const VER: u16, SV: StructVersion<VER, Storage=$arg_sv_ty>>)?(self $(, $arg_notself: $arg_notself_ty)* /*$(, $arg_sv: &$arg_sv_mut SV)?*/)
+            -> $crate::Result<nvapi! { @out(return) $args_out }> where
+                $($($arg_sv_out: VersionedStructField + zerocopy::FromBytes,)?)?
+                $($arg_sv_ty: StructVersionInfo<VER, Struct=SV>,)?
+            {
+                let $arg_self = self;
+                unsafe {
+                    $crate::nvid::$fn.call($($arg_input),*)
+                }
+            }
+        }
+    };
+    (@storage_ptr($arg_sv:ident: *mut)) => {
+        $arg_sv.as_storage_ptr_mut()
+    };
+    (@storage_ptr($arg_sv:ident: *const)) => {
+        $arg_sv.as_storage_ptr()
+    };
+    (@out(let $out:ident)() $args_sv:tt) => {
+        let $out = ();
+    };
+    (@out(let $out:ident)($($arg_out:ident: *mut $arg_out_ty:ty,)*) $args_sv:tt) => {
+        #[allow(unused_parens)]
+        let mut $out: ($($arg_out_ty),*) = (
+            $(
+                <$arg_out_ty as zerocopy::FromBytes>::new_zeroed()
+            ),*
+        );
+        #[allow(unused_parens)]
+        let ($($arg_out),*) = &mut $out;
+
+        nvapi! { @out(sv) $args_sv }
+    };
+    (@out(sv)($args_notsv:tt ($arg_sv:ident@SV: *mut $arg_sv_ty:ty))) => {
+        //$crate::nvapi::StructVersion::<VER>::$arg_sv.init_version();
+        $arg_sv.init_version();
+    };
+    (@out(sv)($args_notsv:tt ($arg_sv:ident: *mut $arg_sv_ty:ty))) => {
+        //$crate::nvapi::StructVersion::<VER>::$arg_sv.init_version();
+        // TODO: assert version matches expected!!!
+    };
+    (@out(sv)($args_notsv:tt ())) => {
+    };
+    (@out(return)($arg_out:ident: *mut $arg_out_ty:ty,)) => {
+        $arg_out_ty
+    };
+    (@out(return)($($arg_out:ident: *mut $arg_out_ty:ty,)*)) => {
+        ($($arg_out_ty),*)
+    };
+    (@cstr($($arg_cstr:ident,)*)) => {
+        $(
+            let $arg_cstr = $arg_cstr.as_ptr();
+        )*
+    };
+    (@parse_args(StructVersion)($args_notsv:tt ())
+        $(#[$meta:meta])*
+        (($rest_body:tt ($($unsafe:ident)?) $($rest:tt)*))
+        fn $fn:ident() -> $ret:ty;
+        ($($arg:ident: $arg_ty:ty,)*)
+        ($($arg_input:ident: $arg_input_ty:ty,)*)
+        $args_out:tt
+        $args_cstr:tt
+        $args_self:tt $args_sv:tt
+    ) => {
+        impl crate::nvid::interface::$fn {
+            #[allow(unused_unsafe)]
+            pub $($unsafe)? fn call(&self $(, $arg_input: $arg_input_ty)*) -> $crate::Result<nvapi! { @out(return) $args_out }> {
+                nvapi! { @out(let out) $args_out $args_sv }
+                nvapi! { @cstr $args_cstr }
+                unsafe {
+                    self.nvapi($($arg),*)
+                        //.to_error_result($crate::nvid::Api::$fn)
+                        .to_result()
+                        .map(|()| out)
+                }
+            }
+        }
+    };
+    (@parse_args(StructVersion)
+        (
+            ($($arg_notsv:ident: $arg_notsv_ty:ty,)*)
+            ($sv_arg:ident$(@$sv_out:ident)?: *$sv_mut:tt $sv_ty:ty)
+        )
+        $(#[$meta:meta])*
+        (($rest_body:tt ($($unsafe:ident)?) $($rest:tt)*))
+        fn $fn:ident() -> $ret:ty;
+        ($($arg:ident: $arg_ty:ty,)*)
+        ($($arg_input:ident: $arg_input_ty:ty,)*)
+        $args_out:tt
+        $args_cstr:tt
+        ($args_self:tt ($($arg_self:ident: $arg_self_ty:ty)?)) $args_sv:tt
+    ) => {
+        impl crate::nvid::interface::$fn {
+            #[allow(unused_unsafe)]
+            pub $($unsafe)? fn call<const VER: u16, SV: StructVersion<VER, Storage=$sv_ty>>(&self $(, $arg_input: $arg_input_ty)*) -> $crate::Result<nvapi! { @out(return) $args_out }> where
+                $($sv_out: VersionedStructField + zerocopy::FromBytes)?
+            {
+                nvapi! { @out(let out) $args_out $args_sv }
+                nvapi! { @cstr $args_cstr }
+                let $sv_arg = nvapi!(@storage_ptr($sv_arg: *$sv_mut));
+                unsafe {
+                    self.nvapi($($arg),*)
+                        //.to_error_result($crate::nvid::Api::$fn)
+                        .to_result()
+                        .map(|()| out)
+                }
+            }
+        }
+    };
+    (@parse_args(rest)
+        ((
+            (
+                $(
+                    impl self { $($self_fn:tt)* }
+                )?
+                $(
+                    pub type fn $fn_typealias:ident;
+                )?
+            )
+            $($rest:tt)*
+        ))
+        $(#[$meta:meta])* ($rest_:tt)
+        fn $fn:ident() -> $ret:ty;
+        $args:tt $args_input:tt $args_out:tt $args_cstr:tt $args_self:tt $args_sv:tt
+    ) => {
+        nvapi! { @type fn $($fn_typealias)?$args -> $ret }
+    };
+    (@type fn ($($args:tt)*) $($rest:tt)*) => { };
+    (@type fn $fn_typealias:ident($($arg:ident: $arg_ty:ty,)*) -> $ret:ty) => {
+        pub type $fn_typealias = extern "C" fn($($arg: $arg_ty),*) -> $ret;
     };
 }
 

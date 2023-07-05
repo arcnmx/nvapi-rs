@@ -84,7 +84,7 @@ nvversion! { _:
 }
 
 nvapi! {
-    pub type GPU_GetConnectedDisplayIds = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pDisplayIds: *mut NV_GPU_DISPLAYIDS, pDisplayIdCount: *mut u32, flags: NV_GPU_CONNECTED_IDS_FLAG) -> NvAPI_Status;
+    pub type GPU_GetConnectedDisplayIds = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pDisplayIds: *mut NV_GPU_DISPLAYIDS, pDisplayIdCount: *mut u32, flags: NV_GPU_CONNECTED_IDS_FLAG) -> NvAPI_Status;
 
     /// Due to space limitation NvAPI_GPU_GetConnectedOutputs can return maximum 32 devices, but
     /// this is no longer true for DPMST. NvAPI_GPU_GetConnectedDisplayIds will return all
@@ -106,10 +106,14 @@ nvapi! {
     /// - `NVAPI_NVIDIA_DEVICE_NOT_FOUND`: no NVIDIA GPU driving a display was found
     /// - `NVAPI_EXPECTED_PHYSICAL_GPU_HANDLE`: hPhysicalGpu was not a physical GPU handle
     pub unsafe fn NvAPI_GPU_GetConnectedDisplayIds;
+
+    impl self {
+        pub fn GetConnectedDisplayIds;
+    }
 }
 
 nvapi! {
-    pub type GPU_GetAllDisplayIds = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pDisplayIds: *mut NV_GPU_DISPLAYIDS, pDisplayIdCount: *mut u32) -> NvAPI_Status;
+    pub type GPU_GetAllDisplayIds = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pDisplayIds: *mut NV_GPU_DISPLAYIDS, pDisplayIdCount: *mut u32) -> NvAPI_Status;
 
     /// This API returns display IDs for all possible outputs on the GPU.
     /// For DPMST connector, it will return display IDs for all the video sinks in the topology.
@@ -118,4 +122,8 @@ nvapi! {
     ///
     /// - `NVAPI_INSUFFICIENT_BUFFER`: When the input buffer(pDisplayIds) is less than the actual number of display IDs
     pub unsafe fn NvAPI_GPU_GetAllDisplayIds;
+
+    impl self {
+        pub fn GetAllDisplayIds;
+    }
 }

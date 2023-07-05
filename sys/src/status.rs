@@ -1,6 +1,5 @@
 use std::{ops, fmt, error};
 use std::convert::Infallible;
-use crate::nvapi::NvAPI_GetErrorMessage;
 
 nvenum! {
     /// NvAPI Status Values
@@ -355,10 +354,8 @@ impl NvAPI_Status {
 
 impl Status {
     pub fn message(&self) -> crate::Result<String> {
-        let mut message = Default::default();
-        unsafe {
-            NvAPI_GetErrorMessage(self.value(), &mut message)
-        }.to_result().map(move |()| message.into())
+        self.value().GetErrorMessage()
+            .map(Into::into)
     }
 
     /// Treat `Status::Ok` as `Ok(())` and all else as an `Err(..)`.

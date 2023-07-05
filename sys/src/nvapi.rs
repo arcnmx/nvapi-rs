@@ -180,7 +180,7 @@ nvapi! {
 
     /// This function initializes the NvAPI library (if not already initialized) but always increments the ref-counter.
     /// This must be called before calling other NvAPI_ functions.
-    pub unsafe fn NvAPI_Initialize;
+    pub fn NvAPI_Initialize;
 }
 
 nvapi! {
@@ -204,20 +204,24 @@ nvapi! {
     /// result in incrementing the refcount again and the user has to call NvAPI_Unload twice to
     /// unload the library. However, note that the implicit increment of the refcounter happens only once.
     /// If the client wants unload functionality, it is recommended to always call NvAPI_Initialize and NvAPI_Unload in pairs.
-    pub unsafe fn NvAPI_Unload;
+    pub fn NvAPI_Unload;
 }
 
 nvapi! {
-    pub type GetErrorMessageFn = extern "C" fn(nr: NvAPI_Status, szDesc: *mut NvAPI_ShortString) -> NvAPI_Status;
+    pub type GetErrorMessageFn = extern "C" fn(nr@self: NvAPI_Status, szDesc@out: *mut NvAPI_ShortString) -> NvAPI_Status;
 
     /// This function converts an NvAPI error code into a null terminated string.
-    pub unsafe fn NvAPI_GetErrorMessage;
+    pub fn NvAPI_GetErrorMessage;
+
+    impl self {
+        pub fn GetErrorMessage;
+    }
 }
 
 nvapi! {
-    pub type GetInterfaceVersionStringFn = extern "C" fn(szDesc: *mut NvAPI_ShortString) -> NvAPI_Status;
+    pub type GetInterfaceVersionStringFn = extern "C" fn(szDesc@out: *mut NvAPI_ShortString) -> NvAPI_Status;
 
     /// This function returns a string describing the version of the NvAPI library.
     /// The contents of the string are human readable.  Do not assume a fixed format.
-    pub unsafe fn NvAPI_GetInterfaceVersionString;
+    pub fn NvAPI_GetInterfaceVersionString;
 }

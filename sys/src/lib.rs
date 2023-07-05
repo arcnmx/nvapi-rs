@@ -62,24 +62,30 @@ use std::{result, fmt, error};
 use std::convert::Infallible;
 
 pub mod api {
-    pub use crate::handles::*;
-    #[cfg(windows)]
-    pub use crate::dx::*;
-    pub use crate::gpu::*;
-    pub use crate::gpu::display::*;
-    pub use crate::gpu::ecc::*;
-    pub use crate::gpu::power::*;
-    pub use crate::gpu::clock::*;
-    pub use crate::gpu::cooler::*;
-    pub use crate::gpu::thermal::*;
-    pub use crate::gpu::pstate::*;
-    pub use crate::gsync::*;
-    pub use crate::i2c::*;
-    pub use crate::driverapi::*;
-    pub use crate::sysgeneral::*;
-    pub use crate::vidio::*;
-    pub use crate::nvapi::*;
-    pub use self::private::*;
+    pub use self::public::*;
+
+    pub mod public {
+        pub use crate::handles::*;
+        #[cfg(windows)]
+        pub use crate::dx::*;
+        pub use crate::gpu::*;
+        pub use crate::gpu::display::*;
+        pub use crate::gpu::ecc::*;
+        pub use crate::gpu::power::*;
+        pub use crate::gpu::clock::*;
+        pub use crate::gpu::cooler::*;
+        pub use crate::gpu::thermal::*;
+        pub use crate::gpu::pstate::*;
+        pub use crate::gsync::*;
+        pub use crate::i2c::*;
+        pub use crate::driverapi::*;
+        pub use crate::sysgeneral::*;
+        pub use crate::dispcontrol::*;
+        pub use crate::vidio::*;
+        pub use crate::nvapi::*;
+
+        pub mod private { }
+    }
 
     pub mod private {
         pub use crate::gpu::private::*;
@@ -90,6 +96,10 @@ pub mod api {
         pub use crate::gpu::pstate::private::*;
         pub use crate::driverapi::private::*;
         pub use crate::i2c::private::*;
+    }
+    pub mod all {
+        pub use super::public::*;
+        pub use super::private::{self, *};
     }
 }
 

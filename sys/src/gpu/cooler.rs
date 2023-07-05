@@ -1,10 +1,14 @@
 use crate::prelude_::*;
 
 nvapi! {
-    pub type GPU_GetTachReadingFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pValue: *mut u32) -> NvAPI_Status;
+    pub type GPU_GetTachReadingFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pValue@out: *mut u32) -> NvAPI_Status;
 
     /// This API retrieves the fan speed tachometer reading for the specified physical GPU.
-    pub unsafe fn NvAPI_GPU_GetTachReading;
+    pub fn NvAPI_GPU_GetTachReading;
+
+    impl self {
+        pub fn GetTachReading;
+    }
 }
 
 /// Undocumented API
@@ -236,7 +240,7 @@ pub mod private {
     }
 
     nvapi! {
-        pub type GPU_GetCoolerSettingsFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolerIndex: u32, pCoolerInfo: *mut NV_GPU_GETCOOLER_SETTINGS) -> NvAPI_Status;
+        pub type GPU_GetCoolerSettingsFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, coolerIndex: u32, pCoolerInfo@StructVersion: *mut NV_GPU_GETCOOLER_SETTINGS) -> NvAPI_Status;
 
         /// Undocumented function.
         /// Retrieves the cooler information of all coolers or a specific cooler associated with the selected GPU.
@@ -244,7 +248,11 @@ pub mod private {
         /// Coolers are indexed 0 to NVAPI_MAX_COOLERS_PER_GPU-1.
         /// To retrieve specific cooler info set the coolerIndex to the appropriate cooler index.
         /// To retrieve info for all cooler set coolerIndex to NVAPI_COOLER_TARGET_ALL.
-        pub unsafe fn NvAPI_GPU_GetCoolerSettings;
+        pub fn NvAPI_GPU_GetCoolerSettings;
+
+        impl self {
+            pub fn GetCoolerSettings;
+        }
     }
 
     nvstruct! {
@@ -269,7 +277,7 @@ pub mod private {
     }
 
     nvapi! {
-        pub type GPU_SetCoolerLevelsFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolerIndex: u32, pCoolerLevels: *const NV_GPU_SETCOOLER_LEVEL) -> NvAPI_Status;
+        pub type GPU_SetCoolerLevelsFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, coolerIndex: u32, pCoolerLevels@StructVersion: *const NV_GPU_SETCOOLER_LEVEL) -> NvAPI_Status;
 
         /// Undocumented function.
         /// Set the cooler levels for all coolers or a specific cooler associated with the selected GPU.
@@ -283,11 +291,15 @@ pub mod private {
         ///
         /// NOTE: To lock the fan speed independent of the temperature or performance changes set the cooler currentPolicy to
         /// NVAPI_COOLER_POLICY_MANUAL else set it to the current policy retrieved from the GetCoolerSettings API.
-        pub unsafe fn NvAPI_GPU_SetCoolerLevels;
+        pub fn NvAPI_GPU_SetCoolerLevels;
+
+        impl self {
+            pub fn SetCoolerLevels;
+        }
     }
 
     nvapi! {
-        pub type GPU_RestoreCoolerSettingsFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolerIndex: *const u32, coolerCount: u32) -> NvAPI_Status;
+        pub type GPU_RestoreCoolerSettingsFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, coolerIndex: *const u32, coolerCount: u32) -> NvAPI_Status;
 
         /// Undocumented function.
         /// Restore the modified cooler settings to NVIDIA defaults.
@@ -296,6 +308,10 @@ pub mod private {
         ///
         /// coolerCount: Number of coolers to restore.
         pub unsafe fn NvAPI_GPU_RestoreCoolerSettings;
+
+        impl self {
+            pub fn RestoreCoolerSettings;
+        }
     }
 
     nvstruct! {
@@ -325,15 +341,19 @@ pub mod private {
     }
 
     nvapi! {
-        pub type GPU_GetCoolerPolicyTableFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolerIndex: u32, pCoolerTable: *mut NV_GPU_COOLER_POLICY_TABLE, count: *mut u32) -> NvAPI_Status;
+        pub type GPU_GetCoolerPolicyTableFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, coolerIndex: u32, pCoolerTable@StructVersionOut: *mut NV_GPU_COOLER_POLICY_TABLE, count@out: *mut u32) -> NvAPI_Status;
 
         /// Undocumented function.
         /// Retrieves the table of cooler and policy levels for the selected policy. Supported only for NVAPI_COOLER_POLICY_PERF.
-        pub unsafe fn NvAPI_GPU_GetCoolerPolicyTable;
+        pub fn NvAPI_GPU_GetCoolerPolicyTable;
+
+        impl self {
+            pub fn GetCoolerPolicyTable;
+        }
     }
 
     nvapi! {
-        pub type GPU_SetCoolerPolicyTableFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolerIndex: u32, pCoolerTable: *const NV_GPU_COOLER_POLICY_TABLE, count: u32) -> NvAPI_Status;
+        pub type GPU_SetCoolerPolicyTableFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, coolerIndex: u32, pCoolerTable@StructVersion: *const NV_GPU_COOLER_POLICY_TABLE, count: u32) -> NvAPI_Status;
 
         /// Undocumented function.
         /// Restore the modified cooler settings to NVIDIA defaults. Supported only for NVAPI_COOLER_POLICY_PERF.
@@ -341,11 +361,15 @@ pub mod private {
         /// pCoolerTable: Updated table of policy levels and associated cooler levels. Every non-zero policy level gets updated.
         ///
         /// count: Number of valid levels in the policy table.
-        pub unsafe fn NvAPI_GPU_SetCoolerPolicyTable;
+        pub fn NvAPI_GPU_SetCoolerPolicyTable;
+
+        impl self {
+            pub fn SetCoolerPolicyTable;
+        }
     }
 
     nvapi! {
-        pub type GPU_RestoreCoolerPolicyTableFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolerIndex: *const u32, coolerCount: u32, policy: NV_COOLER_POLICY) -> NvAPI_Status;
+        pub type GPU_RestoreCoolerPolicyTableFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, coolerIndex: *const u32, coolerCount: u32, policy: NV_COOLER_POLICY) -> NvAPI_Status;
 
         /// Undocumented function.
         /// Restores the perf table policy levels to the defaults.
@@ -354,6 +378,10 @@ pub mod private {
         ///
         /// coolerCount: Number of coolers to restore.
         pub unsafe fn NvAPI_GPU_RestoreCoolerPolicyTable;
+
+        impl self {
+            pub fn RestoreCoolerPolicyTable;
+        }
     }
 
     nvbits! {
@@ -395,9 +423,13 @@ pub mod private {
     }
 
     nvapi! {
-        pub type GPU_ClientFanArbitersGetInfoFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, arbiter: *mut NV_GPU_CLIENT_FAN_ARBITERS_INFO) -> NvAPI_Status;
+        pub type GPU_ClientFanArbitersGetInfoFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, arbiter@StructVersionOut: *mut NV_GPU_CLIENT_FAN_ARBITERS_INFO) -> NvAPI_Status;
 
-        pub unsafe fn NvAPI_GPU_ClientFanArbitersGetInfo;
+        pub fn NvAPI_GPU_ClientFanArbitersGetInfo;
+
+        impl self {
+            pub fn ClientFanArbitersGetInfo;
+        }
     }
 
     nvstruct! {
@@ -434,9 +466,13 @@ pub mod private {
     }
 
     nvapi! {
-        pub type GPU_ClientFanArbitersGetStatusFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, arbiter: *mut NV_GPU_CLIENT_FAN_ARBITERS_STATUS) -> NvAPI_Status;
+        pub type GPU_ClientFanArbitersGetStatusFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, arbiter@StructVersionOut: *mut NV_GPU_CLIENT_FAN_ARBITERS_STATUS) -> NvAPI_Status;
 
-        pub unsafe fn NvAPI_GPU_ClientFanArbitersGetStatus;
+        pub fn NvAPI_GPU_ClientFanArbitersGetStatus;
+
+        impl self {
+            pub fn ClientFanArbitersGetStatus;
+        }
     }
 
     nvstruct! {
@@ -474,15 +510,23 @@ pub mod private {
     }
 
     nvapi! {
-        pub type GPU_ClientFanArbitersGetControlFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, arbiter: *mut NV_GPU_CLIENT_FAN_ARBITERS_CONTROL) -> NvAPI_Status;
+        pub type GPU_ClientFanArbitersGetControlFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, arbiter@StructVersionOut: *mut NV_GPU_CLIENT_FAN_ARBITERS_CONTROL) -> NvAPI_Status;
 
-        pub unsafe fn NvAPI_GPU_ClientFanArbitersGetControl;
+        pub fn NvAPI_GPU_ClientFanArbitersGetControl;
+
+        impl self {
+            pub fn ClientFanArbitersGetControl;
+        }
     }
 
     nvapi! {
-        pub type GPU_ClientFanArbitersSetControlFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, arbiter: *const NV_GPU_CLIENT_FAN_ARBITERS_CONTROL) -> NvAPI_Status;
+        pub type GPU_ClientFanArbitersSetControlFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, arbiter@StructVersion: *const NV_GPU_CLIENT_FAN_ARBITERS_CONTROL) -> NvAPI_Status;
 
-        pub unsafe fn NvAPI_GPU_ClientFanArbitersSetControl;
+        pub fn NvAPI_GPU_ClientFanArbitersSetControl;
+
+        impl self {
+            pub fn ClientFanArbitersSetControl;
+        }
     }
 
     nvenum! {
@@ -537,9 +581,13 @@ pub mod private {
     }
 
     nvapi! {
-        pub type GPU_ClientFanCoolersGetInfoFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolers: *mut NV_GPU_CLIENT_FAN_COOLERS_INFO) -> NvAPI_Status;
+        pub type GPU_ClientFanCoolersGetInfoFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, coolers@StructVersionOut: *mut NV_GPU_CLIENT_FAN_COOLERS_INFO) -> NvAPI_Status;
 
-        pub unsafe fn NvAPI_GPU_ClientFanCoolersGetInfo;
+        pub fn NvAPI_GPU_ClientFanCoolersGetInfo;
+
+        impl self {
+            pub fn ClientFanCoolersGetInfo;
+        }
     }
 
     nvstruct! {
@@ -574,9 +622,13 @@ pub mod private {
     }
 
     nvapi! {
-        pub type GPU_ClientFanCoolersGetStatusFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolers: *mut NV_GPU_CLIENT_FAN_COOLERS_STATUS) -> NvAPI_Status;
+        pub type GPU_ClientFanCoolersGetStatusFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, coolers@StructVersionOut: *mut NV_GPU_CLIENT_FAN_COOLERS_STATUS) -> NvAPI_Status;
 
-        pub unsafe fn NvAPI_GPU_ClientFanCoolersGetStatus;
+        pub fn NvAPI_GPU_ClientFanCoolersGetStatus;
+
+        impl self {
+            pub fn ClientFanCoolersGetStatus;
+        }
     }
 
     nvstruct! {
@@ -628,14 +680,22 @@ pub mod private {
     }
 
     nvapi! {
-        pub type GPU_ClientFanCoolersGetControlFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolers: *mut NV_GPU_CLIENT_FAN_COOLERS_CONTROL) -> NvAPI_Status;
+        pub type GPU_ClientFanCoolersGetControlFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, coolers@StructVersionOut: *mut NV_GPU_CLIENT_FAN_COOLERS_CONTROL) -> NvAPI_Status;
 
-        pub unsafe fn NvAPI_GPU_ClientFanCoolersGetControl;
+        pub fn NvAPI_GPU_ClientFanCoolersGetControl;
+
+        impl self {
+            pub fn ClientFanCoolersGetControl;
+        }
     }
 
     nvapi! {
-        pub type GPU_ClientFanCoolersSetControlFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, coolers: *const NV_GPU_CLIENT_FAN_COOLERS_CONTROL) -> NvAPI_Status;
+        pub type GPU_ClientFanCoolersSetControlFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, coolers@StructVersion: *const NV_GPU_CLIENT_FAN_COOLERS_CONTROL) -> NvAPI_Status;
 
-        pub unsafe fn NvAPI_GPU_ClientFanCoolersSetControl;
+        pub fn NvAPI_GPU_ClientFanCoolersSetControl;
+
+        impl self {
+            pub fn ClientFanCoolersSetControl;
+        }
     }
 }

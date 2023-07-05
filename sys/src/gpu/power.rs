@@ -20,7 +20,11 @@ pub mod private {
 
     nvapi! {
         /// Pascal and later
-        pub unsafe fn NvAPI_GPU_ClientVoltRailsGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pVoltageStatus: *mut NV_GPU_CLIENT_VOLT_RAILS_STATUS) -> NvAPI_Status;
+        pub fn NvAPI_GPU_ClientVoltRailsGetStatus(hPhysicalGPU@self: NvPhysicalGpuHandle, pVoltageStatus@StructVersionOut: *mut NV_GPU_CLIENT_VOLT_RAILS_STATUS) -> NvAPI_Status;
+
+        impl self {
+            pub fn ClientVoltRailsGetStatus;
+        }
     }
 
     nvstruct! {
@@ -38,12 +42,20 @@ pub mod private {
 
     nvapi! {
         /// Pascal and later
-        pub unsafe fn NvAPI_GPU_ClientVoltRailsGetControl(hPhysicalGPU: NvPhysicalGpuHandle, pVoltboostPercent: *mut NV_GPU_CLIENT_VOLT_RAILS_CONTROL) -> NvAPI_Status;
+        pub fn NvAPI_GPU_ClientVoltRailsGetControl(hPhysicalGPU@self: NvPhysicalGpuHandle, pVoltboostPercent@StructVersionOut: *mut NV_GPU_CLIENT_VOLT_RAILS_CONTROL) -> NvAPI_Status;
+
+        impl self {
+            pub fn ClientVoltRailsGetControl;
+        }
     }
 
     nvapi! {
         /// Pascal and later
-        pub unsafe fn NvAPI_GPU_ClientVoltRailsSetControl(hPhysicalGPU: NvPhysicalGpuHandle, pVoltboostPercent: *const NV_GPU_CLIENT_VOLT_RAILS_CONTROL) -> NvAPI_Status;
+        pub fn NvAPI_GPU_ClientVoltRailsSetControl(hPhysicalGPU@self: NvPhysicalGpuHandle, pVoltboostPercent@StructVersion: *const NV_GPU_CLIENT_VOLT_RAILS_CONTROL) -> NvAPI_Status;
+
+        impl self {
+            pub fn ClientVoltRailsSetControl;
+        }
     }
 
     nvstruct! {
@@ -118,7 +130,11 @@ pub mod private {
 
     nvapi! {
         /// Pascal and later
-        pub unsafe fn NvAPI_GPU_ClockClientClkVfPointsGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pVfpCurve: *mut NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS) -> NvAPI_Status;
+        pub fn NvAPI_GPU_ClockClientClkVfPointsGetStatus(hPhysicalGPU@self: NvPhysicalGpuHandle, pVfpCurve@StructVersion: *mut NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS) -> NvAPI_Status;
+
+        impl self {
+            pub fn ClockClientClkVfPointsGetStatus;
+        }
     }
 
     nvenum! {
@@ -196,7 +212,11 @@ pub mod private {
     }
 
     nvapi! {
-        pub unsafe fn NvAPI_GPU_ClientPowerPoliciesGetInfo(hPhysicalGPU: NvPhysicalGpuHandle, pPowerInfo: *mut NV_GPU_CLIENT_POWER_POLICIES_INFO) -> NvAPI_Status;
+        pub fn NvAPI_GPU_ClientPowerPoliciesGetInfo(hPhysicalGPU@self: NvPhysicalGpuHandle, pPowerInfo@StructVersionOut: *mut NV_GPU_CLIENT_POWER_POLICIES_INFO) -> NvAPI_Status;
+
+        impl self {
+            pub fn ClientPowerPoliciesGetInfo;
+        }
     }
 
     nvstruct! {
@@ -249,11 +269,19 @@ pub mod private {
     }
 
     nvapi! {
-        pub unsafe fn NvAPI_GPU_ClientPowerPoliciesGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pPowerStatus: *mut NV_GPU_CLIENT_POWER_POLICIES_STATUS) -> NvAPI_Status;
+        pub fn NvAPI_GPU_ClientPowerPoliciesGetStatus(hPhysicalGPU@self: NvPhysicalGpuHandle, pPowerStatus@StructVersionOut: *mut NV_GPU_CLIENT_POWER_POLICIES_STATUS) -> NvAPI_Status;
+
+        impl self {
+            pub fn ClientPowerPoliciesGetStatus;
+        }
     }
 
     nvapi! {
-        pub unsafe fn NvAPI_GPU_ClientPowerPoliciesSetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pPowerStatus: *const NV_GPU_CLIENT_POWER_POLICIES_STATUS) -> NvAPI_Status;
+        pub fn NvAPI_GPU_ClientPowerPoliciesSetStatus(hPhysicalGPU@self: NvPhysicalGpuHandle, pPowerStatus@StructVersion: *const NV_GPU_CLIENT_POWER_POLICIES_STATUS) -> NvAPI_Status;
+
+        impl self {
+            pub fn ClientPowerPoliciesSetStatus;
+        }
     }
 
     nvstruct! {
@@ -277,7 +305,11 @@ pub mod private {
     }
 
     nvapi! {
-        pub unsafe fn NvAPI_GPU_ClientPowerTopologyGetInfo(hPhysicalGPU: NvPhysicalGpuHandle, pPowerTopo: *mut NV_GPU_CLIENT_POWER_TOPOLOGY_INFO) -> NvAPI_Status;
+        pub fn NvAPI_GPU_ClientPowerTopologyGetInfo(hPhysicalGPU@self: NvPhysicalGpuHandle, pPowerTopo@StructVersionOut: *mut NV_GPU_CLIENT_POWER_TOPOLOGY_INFO) -> NvAPI_Status;
+
+        impl self {
+            pub fn ClientPowerTopologyGetInfo;
+        }
     }
 
     nvenum! {
@@ -323,7 +355,11 @@ pub mod private {
     }
 
     nvapi! {
-        pub unsafe fn NvAPI_GPU_ClientPowerTopologyGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pPowerTopo: *mut NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS) -> NvAPI_Status;
+        pub fn NvAPI_GPU_ClientPowerTopologyGetStatus(hPhysicalGPU@self: NvPhysicalGpuHandle, pPowerTopo@StructVersion: *mut NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS) -> NvAPI_Status;
+
+        impl self {
+            pub fn ClientPowerTopologyGetStatus;
+        }
     }
 
     nvbits! {
@@ -367,7 +403,11 @@ pub mod private {
     }
 
     nvapi! {
-        pub unsafe fn NvAPI_GPU_PerfPoliciesGetInfo(hPhysicalGPU: NvPhysicalGpuHandle, pPerfInfo: *mut NV_GPU_PERF_POLICIES_INFO_PARAMS) -> NvAPI_Status;
+        pub fn NvAPI_GPU_PerfPoliciesGetInfo(hPhysicalGPU@self: NvPhysicalGpuHandle, pPerfInfo@StructVersionOut: *mut NV_GPU_PERF_POLICIES_INFO_PARAMS) -> NvAPI_Status;
+
+        impl self {
+            pub fn PerfPoliciesGetInfo;
+        }
     }
 
     nvstruct! {
@@ -399,7 +439,11 @@ pub mod private {
     }
 
     nvapi! {
-        pub unsafe fn NvAPI_GPU_PerfPoliciesGetStatus(hPhysicalGPU: NvPhysicalGpuHandle, pPerfStatus: *mut NV_GPU_PERF_POLICIES_STATUS_PARAMS) -> NvAPI_Status;
+        pub fn NvAPI_GPU_PerfPoliciesGetStatus(hPhysicalGPU@self: NvPhysicalGpuHandle, pPerfStatus@StructVersionOut: *mut NV_GPU_PERF_POLICIES_STATUS_PARAMS) -> NvAPI_Status;
+
+        impl self {
+            pub fn PerfPoliciesGetStatus;
+        }
     }
 
     nvstruct! {
@@ -420,12 +464,20 @@ pub mod private {
 
     nvapi! {
         /// Maxwell only
-        pub unsafe fn NvAPI_GPU_GetVoltageDomainsStatus(hPhysicalGPU: NvPhysicalGpuHandle, pVoltStatus: *mut NV_VOLT_STATUS) -> NvAPI_Status;
+        pub fn NvAPI_GPU_GetVoltageDomainsStatus(hPhysicalGPU@self: NvPhysicalGpuHandle, pVoltStatus@StructVersionOut: *mut NV_VOLT_STATUS) -> NvAPI_Status;
+
+        impl self {
+            pub fn GetVoltageDomainsStatus;
+        }
     }
 
     nvapi! {
         /// Maxwell only
-        pub unsafe fn NvAPI_GPU_GetVoltageStep(hPhysicalGPU: NvPhysicalGpuHandle, pVoltStep: *mut NV_VOLT_STATUS) -> NvAPI_Status;
+        pub fn NvAPI_GPU_GetVoltageStep(hPhysicalGPU@self: NvPhysicalGpuHandle, pVoltStep@StructVersionOut: *mut NV_VOLT_STATUS) -> NvAPI_Status;
+
+        impl self {
+            pub fn GetVoltageStep;
+        }
     }
 
     nvstruct! {
@@ -458,6 +510,10 @@ pub mod private {
 
     nvapi! {
         /// Maxwell only
-        pub unsafe fn NvAPI_GPU_GetVoltages(hPhysicalGPU: NvPhysicalGpuHandle, pVolts: *mut NV_VOLT_TABLE) -> NvAPI_Status;
+        pub fn NvAPI_GPU_GetVoltages(hPhysicalGPU@self: NvPhysicalGpuHandle, pVolts@StructVersionOut: *mut NV_VOLT_TABLE) -> NvAPI_Status;
+
+        impl self {
+            pub fn GetVoltages;
+        }
     }
 }

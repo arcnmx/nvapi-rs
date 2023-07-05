@@ -36,7 +36,7 @@ pub mod display;
 pub mod ecc;
 
 nvapi! {
-    pub type EnumPhysicalGPUsFn = extern "C" fn(nvGPUHandle: *mut [NvPhysicalGpuHandle; NVAPI_MAX_PHYSICAL_GPUS], pGpuCount: *mut u32) -> NvAPI_Status;
+    pub type EnumPhysicalGPUsFn = extern "C" fn(nvGPUHandle@out: *mut [NvPhysicalGpuHandle; NVAPI_MAX_PHYSICAL_GPUS], pGpuCount@out: *mut u32) -> NvAPI_Status;
 
     /// This function returns an array of physical GPU handles.
     /// Each handle represents a physical GPU present in the system.
@@ -54,60 +54,88 @@ nvapi! {
     /// the SBIOS VGA order is unchanged.
     ///
     /// For GPU handles in TCC MODE please use NvAPI_EnumTCCPhysicalGPUs()
-    pub unsafe fn NvAPI_EnumPhysicalGPUs;
+    pub fn NvAPI_EnumPhysicalGPUs;
 }
 
 nvapi! {
-    pub type GPU_GetFullNameFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, szName: *mut NvAPI_ShortString) -> NvAPI_Status;
+    pub type GPU_GetFullNameFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, szName@out: *mut NvAPI_ShortString) -> NvAPI_Status;
 
     /// This function retrieves the full GPU name as an ASCII string - for example, "Quadro FX 1400".
-    pub unsafe fn NvAPI_GPU_GetFullName;
+    pub fn NvAPI_GPU_GetFullName;
+
+    impl self {
+        pub fn GetFullName;
+    }
 }
 
 nvapi! {
-    pub type GPU_GetPhysicalFrameBufferSizeFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pSize: *mut u32) -> NvAPI_Status;
+    pub type GPU_GetPhysicalFrameBufferSizeFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pSize@out: *mut u32) -> NvAPI_Status;
 
     /// This function returns the physical size of framebuffer in KB.  This does NOT include any
     /// system RAM that may be dedicated for use by the GPU.
-    pub unsafe fn NvAPI_GPU_GetPhysicalFrameBufferSize;
+    pub fn NvAPI_GPU_GetPhysicalFrameBufferSize;
+
+    impl self {
+        pub fn GetPhysicalFrameBufferSize;
+    }
 }
 
 nvapi! {
-    pub type GPU_GetVirtualFrameBufferSizeFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pSize: *mut u32) -> NvAPI_Status;
+    pub type GPU_GetVirtualFrameBufferSizeFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pSize@out: *mut u32) -> NvAPI_Status;
 
     /// This function returns the virtual size of framebuffer in KB.  This includes the physical RAM plus any
     /// system RAM that has been dedicated for use by the GPU.
-    pub unsafe fn NvAPI_GPU_GetVirtualFrameBufferSize;
+    pub fn NvAPI_GPU_GetVirtualFrameBufferSize;
+
+    impl self {
+        pub fn GetVirtualFrameBufferSize;
+    }
 }
 
 nvapi! {
-    pub type GPU_GetVbiosRevision = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pBiosRevision: *mut u32) -> NvAPI_Status;
+    pub type GPU_GetVbiosRevision = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pBiosRevision@out: *mut u32) -> NvAPI_Status;
 
     /// This function returns the revision of the video BIOS associated with this GPU.
-    pub unsafe fn NvAPI_GPU_GetVbiosRevision;
+    pub fn NvAPI_GPU_GetVbiosRevision;
+
+    impl self {
+        pub fn GetVbiosRevision;
+    }
 }
 
 nvapi! {
-    pub type GPU_GetVbiosOEMRevision = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pBiosRevision: *mut u32) -> NvAPI_Status;
+    pub type GPU_GetVbiosOEMRevision = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pBiosRevision@out: *mut u32) -> NvAPI_Status;
 
     /// This function returns the OEM revision of the video BIOS associated with this GPU.
-    pub unsafe fn NvAPI_GPU_GetVbiosOEMRevision;
+    pub fn NvAPI_GPU_GetVbiosOEMRevision;
+
+    impl self {
+        pub fn GetVbiosOEMRevision;
+    }
 }
 
 nvapi! {
-    pub type GPU_GetVbiosVersionStringFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, szBiosRevision: *mut NvAPI_ShortString) -> NvAPI_Status;
+    pub type GPU_GetVbiosVersionStringFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, szBiosRevision@out: *mut NvAPI_ShortString) -> NvAPI_Status;
 
     /// This function returns the full video BIOS version string in the form of xx.xx.xx.xx.yy where
     /// - xx numbers come from NvAPI_GPU_GetVbiosRevision() and
     /// - yy comes from NvAPI_GPU_GetVbiosOEMRevision().
-    pub unsafe fn NvAPI_GPU_GetVbiosVersionString;
+    pub fn NvAPI_GPU_GetVbiosVersionString;
+
+    impl self {
+        pub fn GetVbiosVersionString;
+    }
 }
 
 nvapi! {
-    pub type GPU_GetPCIIdentifiersFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pDeviceId: *mut u32, pSubSystemId: *mut u32, pRevisionId: *mut u32, pExtDeviceId: *mut u32) -> NvAPI_Status;
+    pub type GPU_GetPCIIdentifiersFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pDeviceId@out: *mut u32, pSubSystemId@out: *mut u32, pRevisionId@out: *mut u32, pExtDeviceId@out: *mut u32) -> NvAPI_Status;
 
     /// This function returns the PCI identifiers associated with this GPU.
-    pub unsafe fn NvAPI_GPU_GetPCIIdentifiers;
+    pub fn NvAPI_GPU_GetPCIIdentifiers;
+
+    impl self {
+        pub fn GetPCIIdentifiers;
+    }
 }
 
 nvenum! {
@@ -129,12 +157,16 @@ nvenum_display! {
 }
 
 nvapi! {
-    pub type GPU_GetGPUTypeFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pGpuType: *mut NV_GPU_TYPE) -> NvAPI_Status;
+    pub type GPU_GetGPUTypeFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pGpuType@out: *mut NV_GPU_TYPE) -> NvAPI_Status;
 
     /// This function returns the GPU type (integrated or discrete).
     ///
     /// See [GpuType].
-    pub unsafe fn NvAPI_GPU_GetGPUType;
+    pub fn NvAPI_GPU_GetGPUType;
+
+    impl self {
+        pub fn GetGPUType;
+    }
 }
 
 nvenum! {
@@ -167,41 +199,61 @@ impl Default for BusType {
 }
 
 nvapi! {
-    pub type GPU_GetBusTypeFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pBusType: *mut NV_GPU_BUS_TYPE) -> NvAPI_Status;
+    pub type GPU_GetBusTypeFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pBusType@out: *mut NV_GPU_BUS_TYPE) -> NvAPI_Status;
 
     /// This function returns the type of bus associated with this GPU.
     ///
     /// See [BusType].
-    pub unsafe fn NvAPI_GPU_GetBusType;
+    pub fn NvAPI_GPU_GetBusType;
+
+    impl self {
+        pub fn GetBusType;
+    }
 }
 
 nvapi! {
-    pub type GPU_GetBusId = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pBusId: *mut u32) -> NvAPI_Status;
+    pub type GPU_GetBusId = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pBusId@out: *mut u32) -> NvAPI_Status;
 
     /// Returns the ID of the bus associated with this GPU.
-    pub unsafe fn NvAPI_GPU_GetBusId;
+    pub fn NvAPI_GPU_GetBusId;
+
+    impl self {
+        pub fn GetBusId;
+    }
 }
 
 nvapi! {
-    pub type GPU_GetBusSlotId = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pBusSlotId: *mut u32) -> NvAPI_Status;
+    pub type GPU_GetBusSlotId = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pBusSlotId@out: *mut u32) -> NvAPI_Status;
 
     /// Returns the ID of the bus slot associated with this GPU.
-    pub unsafe fn NvAPI_GPU_GetBusSlotId;
+    pub fn NvAPI_GPU_GetBusSlotId;
+
+    impl self {
+        pub fn GetBusSlotId;
+    }
 }
 
 nvapi! {
-    pub type GPU_GetIRQ = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pIRQ: *mut u32) -> NvAPI_Status;
+    pub type GPU_GetIRQ = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pIRQ@out: *mut u32) -> NvAPI_Status;
 
     /// This function returns the interrupt number associated with this GPU.
-    pub unsafe fn NvAPI_GPU_GetIRQ;
+    pub fn NvAPI_GPU_GetIRQ;
+
+    impl self {
+        pub fn GetIRQ;
+    }
 }
 
 nvapi! {
-    pub type GPU_GetCurrentPCIEDownstreamWidth = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pWidth: *mut u32) -> NvAPI_Status;
+    pub type GPU_GetCurrentPCIEDownstreamWidth = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pWidth@out: *mut u32) -> NvAPI_Status;
 
     /// This function returns the number of PCIE lanes being used for the PCIE interface
     /// downstream from the GPU.
-    pub unsafe fn NvAPI_GPU_GetCurrentPCIEDownstreamWidth;
+    pub fn NvAPI_GPU_GetCurrentPCIEDownstreamWidth;
+
+    impl self {
+        pub fn GetCurrentPCIEDownstreamWidth;
+    }
 }
 
 nvenum! {
@@ -218,26 +270,38 @@ nvenum_display! {
 }
 
 nvapi! {
-    pub type GPU_GetSystemTypeFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pSystemType: *mut NV_SYSTEM_TYPE) -> NvAPI_Status;
+    pub type GPU_GetSystemTypeFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pSystemType@out: *mut NV_SYSTEM_TYPE) -> NvAPI_Status;
 
     /// This function identifies whether the GPU is a notebook GPU or a desktop GPU.
-    pub unsafe fn NvAPI_GPU_GetSystemType;
+    pub fn NvAPI_GPU_GetSystemType;
+
+    impl self {
+        pub fn GetSystemType;
+    }
 }
 
 nvapi! {
-    pub type GPU_GetShaderSubPipeCountFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pCount: *mut u32) -> NvAPI_Status;
+    pub type GPU_GetShaderSubPipeCountFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pCount@out: *mut u32) -> NvAPI_Status;
 
     /// This function retrieves the number of Shader SubPipes on the GPU
     /// On newer architectures, this corresponds to the number of SM units
-    pub unsafe fn NvAPI_GPU_GetShaderSubPipeCount;
+    pub fn NvAPI_GPU_GetShaderSubPipeCount;
+
+    impl self {
+        pub fn GetShaderSubPipeCount;
+    }
 }
 
 nvapi! {
-    pub type GPU_GetGpuCoreCountFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pCount: *mut u32) -> NvAPI_Status;
+    pub type GPU_GetGpuCoreCountFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pCount@out: *mut u32) -> NvAPI_Status;
 
     /// Retrieves the total number of cores defined for a GPU.
     /// Returns 0 on architectures that don't define GPU cores.
-    pub unsafe fn NvAPI_GPU_GetGpuCoreCount;
+    pub fn NvAPI_GPU_GetGpuCoreCount;
+
+    impl self {
+        pub fn GetGpuCoreCount;
+    }
 }
 
 nvstruct! {
@@ -255,15 +319,24 @@ nvversion! { NV_BOARD_INFO:
 
 nvapi! {
     /// This API Retrieves the Board information (a unique GPU Board Serial Number) stored in the InfoROM.
-    pub unsafe fn NvAPI_GPU_GetBoardInfo(hPhysicalGpu: NvPhysicalGpuHandle, pBoardInfo: *mut NV_BOARD_INFO) -> NvAPI_Status;
+    pub fn NvAPI_GPU_GetBoardInfo(hPhysicalGpu@self: NvPhysicalGpuHandle, pBoardInfo@StructVersionOut: *mut NV_BOARD_INFO) -> NvAPI_Status;
+
+    impl self {
+        pub fn GetBoardInfo;
+    }
 }
 
 nvapi! {
-    pub type GPU_GetRamBusWidthFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pBusWidth: *mut u32) -> NvAPI_Status;
+    pub type GPU_GetRamBusWidthFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pRamBusWidth@out: *mut u32) -> NvAPI_Status;
 
     /// This function returns the width of the GPU's RAM memory bus.
-    pub unsafe fn NvAPI_GPU_GetRamBusWidth;
+    pub fn NvAPI_GPU_GetRamBusWidth;
+
+    impl self {
+        pub fn GetRamBusWidth;
+    }
 }
+
 
 nvbits! {
     /// Bit masks for knowing the exact reason for performance decrease
@@ -282,7 +355,11 @@ nvbits! {
 
 nvapi! {
     /// This function retrieves reasons for the current performance decrease.
-    pub unsafe fn NvAPI_GPU_GetPerfDecreaseInfo(hPhysicalGpu: NvPhysicalGpuHandle, pPerfDecrInfo: *mut NVAPI_GPU_PERF_DECREASE) -> NvAPI_Status;
+    pub fn NvAPI_GPU_GetPerfDecreaseInfo(hPhysicalGpu@self: NvPhysicalGpuHandle, pPerfDecrInfo@out: *mut NVAPI_GPU_PERF_DECREASE) -> NvAPI_Status;
+
+    impl self {
+        pub fn GetPerfDecreaseInfo;
+    }
 }
 
 nvbits! {
@@ -297,12 +374,20 @@ nvbits! {
 }
 
 nvapi! {
-    pub unsafe fn NvAPI_GPU_WorkstationFeatureSetup(hPhysicalGpu: NvPhysicalGpuHandle, featureEnableMask: NVAPI_GPU_WORKSTATION_FEATURE_MASK, featureDisableMask: NVAPI_GPU_WORKSTATION_FEATURE_MASK) -> NvAPI_Status;
+    pub fn NvAPI_GPU_WorkstationFeatureSetup(hPhysicalGpu@self: NvPhysicalGpuHandle, featureEnableMask: NVAPI_GPU_WORKSTATION_FEATURE_MASK, featureDisableMask: NVAPI_GPU_WORKSTATION_FEATURE_MASK) -> NvAPI_Status;
+
+    impl self {
+        pub fn WorkstationFeatureSetup;
+    }
 }
 
 nvapi! {
     /// This API queries the current set of workstation features.
-    pub unsafe fn NvAPI_GPU_WorkstationFeatureQuery(hPhysicalGpu: NvPhysicalGpuHandle, pConfiguredFeatureMask: *mut NVAPI_GPU_WORKSTATION_FEATURE_MASK, pConsistentFeatureMask: *mut NVAPI_GPU_WORKSTATION_FEATURE_MASK) -> NvAPI_Status;
+    pub fn NvAPI_GPU_WorkstationFeatureQuery(hPhysicalGpu@self: NvPhysicalGpuHandle, pConfiguredFeatureMask@out: *mut NVAPI_GPU_WORKSTATION_FEATURE_MASK, pConsistentFeatureMask@out: *mut NVAPI_GPU_WORKSTATION_FEATURE_MASK) -> NvAPI_Status;
+
+    impl self {
+        pub fn WorkstationFeatureQuery;
+    }
 }
 
 nvstruct! {
@@ -321,9 +406,13 @@ nvversion! { NV_GPU_ARCH_INFO:
 }
 
 nvapi! {
-    pub type GPU_GetArchInfo = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pGpuArchInfo: *mut NV_GPU_ARCH_INFO) -> NvAPI_Status;
+    pub type GPU_GetArchInfo = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pGpuArchInfo@StructVersionOut: *mut NV_GPU_ARCH_INFO) -> NvAPI_Status;
 
-    pub unsafe fn NvAPI_GPU_GetArchInfo;
+    pub fn NvAPI_GPU_GetArchInfo;
+
+    impl self {
+        pub fn GetArchInfo;
+    }
 }
 
 nvenum! {
@@ -635,9 +724,13 @@ pub mod private {
     pub const NVAPI_MAX_PROCESSES: usize = 128;
 
     nvapi! {
-        pub type GPU_GetShaderPipeCountFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pCount: *mut u32) -> NvAPI_Status;
+        pub type GPU_GetShaderPipeCountFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pCount@out: *mut u32) -> NvAPI_Status;
 
-        pub unsafe fn NvAPI_GPU_GetShaderPipeCount;
+        pub fn NvAPI_GPU_GetShaderPipeCount;
+
+        impl self {
+            pub fn GetShaderPipeCount;
+        }
     }
 
     nvenum! {
@@ -663,10 +756,14 @@ pub mod private {
     }
 
     nvapi! {
-        pub type GPU_GetRamTypeFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pMemType: *mut NV_GPU_RAM_TYPE) -> NvAPI_Status;
+        pub type GPU_GetRamTypeFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pMemType@out: *mut NV_GPU_RAM_TYPE) -> NvAPI_Status;
 
         /// Undocumented function.
-        pub unsafe fn NvAPI_GPU_GetRamType;
+        pub fn NvAPI_GPU_GetRamType;
+
+        impl self {
+            pub fn GetRamType;
+        }
     }
 
 
@@ -692,17 +789,25 @@ pub mod private {
     }
 
     nvapi! {
-        pub type GPU_GetRamMakerFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pRamMaker: *mut NV_GPU_RAM_MAKER) -> NvAPI_Status;
+        pub type GPU_GetRamMakerFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pRamMaker@out: *mut NV_GPU_RAM_MAKER) -> NvAPI_Status;
 
         /// Undocumented function.
-        pub unsafe fn NvAPI_GPU_GetRamMaker;
+        pub fn NvAPI_GPU_GetRamMaker;
+
+        impl self {
+            pub fn GetRamMaker;
+        }
     }
 
     nvapi! {
-        pub type GPU_GetRamBankCountFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pRamBankCount: *mut u32) -> NvAPI_Status;
+        pub type GPU_GetRamBankCountFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pRamBankCount@out: *mut u32) -> NvAPI_Status;
 
         /// Undocumented function.
-        pub unsafe fn NvAPI_GPU_GetRamBankCount;
+        pub fn NvAPI_GPU_GetRamBankCount;
+
+        impl self {
+            pub fn GetRamBankCount;
+        }
     }
 
     nvenum! {
@@ -731,14 +836,22 @@ pub mod private {
     }
 
     nvapi! {
-        pub type GPU_GetFoundryFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pFoundry: *mut NV_GPU_FOUNDRY) -> NvAPI_Status;
+        pub type GPU_GetFoundryFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pFoundry@out: *mut NV_GPU_FOUNDRY) -> NvAPI_Status;
 
         /// Undocumented function.
-        pub unsafe fn NvAPI_GPU_GetFoundry;
+        pub fn NvAPI_GPU_GetFoundry;
+
+        impl self {
+            pub fn GetFoundry;
+        }
     }
 
     nvapi! {
-        pub unsafe fn NvAPI_GPU_GetFBWidthAndLocation(hPhysicalGpu: NvPhysicalGpuHandle, pWidth: *mut u32, pLocation: *mut u32) -> NvAPI_Status;
+        pub fn NvAPI_GPU_GetFBWidthAndLocation(hPhysicalGpu@self: NvPhysicalGpuHandle, pWidth@out: *mut u32, pLocation@out: *mut u32) -> NvAPI_Status;
+
+        impl self {
+            pub fn GetFBWidthAndLocation;
+        }
     }
 
     nvenum! {
@@ -783,18 +896,34 @@ pub mod private {
     }
 
     nvapi! {
-        pub unsafe fn NvAPI_GetGPUIDfromPhysicalGPU(hPhysicalGpu: NvPhysicalGpuHandle, gpuid: *mut u32) -> NvAPI_Status;
+        pub fn NvAPI_GetGPUIDfromPhysicalGPU(hPhysicalGpu@self: NvPhysicalGpuHandle, gpuid@out: *mut u32) -> NvAPI_Status;
+
+        impl self {
+            pub fn GetGPUID;
+        }
     }
 
     nvapi! {
-        pub unsafe fn NvAPI_GPU_GetShortName(hPhysicalGpu: NvPhysicalGpuHandle, pName: *mut NvAPI_ShortString) -> NvAPI_Status;
+        pub fn NvAPI_GPU_GetShortName(hPhysicalGpu@self: NvPhysicalGpuHandle, pName@out: *mut NvAPI_ShortString) -> NvAPI_Status;
+
+        impl self {
+            pub fn GetShortName;
+        }
     }
 
     nvapi! {
-        pub unsafe fn NvAPI_GPU_GetPartitionCount(hPhysicalGpu: NvPhysicalGpuHandle, pPartitionCount: *mut u32) -> NvAPI_Status;
+        pub fn NvAPI_GPU_GetPartitionCount(hPhysicalGpu@self: NvPhysicalGpuHandle, pPartitionCount@out: *mut u32) -> NvAPI_Status;
+
+        impl self {
+            pub fn GetPartitionCount;
+        }
     }
 
     nvapi! {
-        pub unsafe fn NvAPI_GetDriverModel(hPhysicalGpu: NvPhysicalGpuHandle, pDriverModel: *mut u32) -> NvAPI_Status;
+        pub fn NvAPI_GetDriverModel(hPhysicalGpu@self: NvPhysicalGpuHandle, pDriverModel@out: *mut u32) -> NvAPI_Status;
+
+        impl self {
+            pub fn GetDriverModel;
+        }
     }
 }

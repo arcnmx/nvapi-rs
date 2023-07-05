@@ -42,10 +42,14 @@ nvversion! { _:
 }
 
 nvapi! {
-    pub type GPU_GetECCStatusInfoFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pECCStatusInfo: *mut NV_GPU_ECC_STATUS_INFO) -> NvAPI_Status;
+    pub type GPU_GetECCStatusInfoFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pECCStatusInfo@StructVersionOut: *mut NV_GPU_ECC_STATUS_INFO) -> NvAPI_Status;
 
     /// This function returns ECC memory status information.
-    pub unsafe fn NvAPI_GPU_GetECCStatusInfo;
+    pub fn NvAPI_GPU_GetECCStatusInfo;
+
+    impl self {
+        pub fn GetECCStatusInfo;
+    }
 }
 
 nvstruct! {
@@ -79,17 +83,25 @@ nvversion! { _:
 }
 
 nvapi! {
-    pub type GPU_GetECCErrorInfoFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pECCErrorInfo: *mut NV_GPU_ECC_ERROR_INFO) -> NvAPI_Status;
+    pub type GPU_GetECCErrorInfoFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pECCErrorInfo@StructVersionOut: *mut NV_GPU_ECC_ERROR_INFO) -> NvAPI_Status;
 
     /// This function returns ECC memory error information.
-    pub unsafe fn NvAPI_GPU_GetECCErrorInfo;
+    pub fn NvAPI_GPU_GetECCErrorInfo;
+
+    impl self {
+        pub fn GetECCErrorInfo;
+    }
 }
 
 nvapi! {
-    pub type GPU_ResetECCErrorInfoFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, bResetCurrent: u8, bResetAggregate: u8) -> NvAPI_Status;
+    pub type GPU_ResetECCErrorInfoFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, bResetCurrent: u8, bResetAggregate: u8) -> NvAPI_Status;
 
     /// This function resets ECC memory error counters.
-    pub unsafe fn NvAPI_GPU_ResetECCErrorInfo;
+    pub fn NvAPI_GPU_ResetECCErrorInfo;
+
+    impl self {
+        pub fn ResetECCErrorInfo;
+    }
 }
 
 nvstruct! {
@@ -119,15 +131,23 @@ impl NV_GPU_ECC_CONFIGURATION_INFO {
 }
 
 nvapi! {
-    pub type GPU_GetECCConfigurationInfoFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pECCConfigurationInfo: *mut NV_GPU_ECC_CONFIGURATION_INFO) -> NvAPI_Status;
+    pub type GPU_GetECCConfigurationInfoFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, pECCConfigurationInfo@StructVersionOut: *mut NV_GPU_ECC_CONFIGURATION_INFO) -> NvAPI_Status;
 
     /// This function returns ECC memory configuration information.
-    pub unsafe fn NvAPI_GPU_GetECCConfigurationInfo;
+    pub fn NvAPI_GPU_GetECCConfigurationInfo;
+
+    impl self {
+        pub fn GetECCConfigurationInfo;
+    }
 }
 
 nvapi! {
-    pub type GPU_SetECCConfigurationFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, bEnable: u8, bEnableImmediately: bool) -> NvAPI_Status;
+    pub type GPU_SetECCConfigurationFn = extern "C" fn(hPhysicalGPU@self: NvPhysicalGpuHandle, bEnable: u8, bEnableImmediately: bool) -> NvAPI_Status;
 
     /// This function updates the ECC memory configuration setting.
-    pub unsafe fn NvAPI_GPU_SetECCConfiguration;
+    pub fn NvAPI_GPU_SetECCConfiguration;
+
+    impl self {
+        pub fn SetECCConfiguration;
+    }
 }

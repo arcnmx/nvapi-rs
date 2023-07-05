@@ -20,7 +20,7 @@ macro_rules! nvcall {
     };
     ($nvapi:ident($($arg:expr),*$(,)?) $($tt:tt)*) => {
         {
-            nvcall!(@post ($crate::status_result($crate::sys::Api::$nvapi, $crate::sys::api::$nvapi($($arg,)*))) $($tt)*)
+            nvcall!(@post ($crate::status_result($crate::sys::Api::$nvapi, $crate::sys::api::all::$nvapi($($arg,)*))) $($tt)*)
         }
     };
     (@post ($res:expr) => into $($tt:tt)*) => {

@@ -6,7 +6,7 @@ use std::os::raw::c_char;
 pub(crate) type LUID = (u32, i32);
 
 nvapi! {
-    pub type EnumNvidiaDisplayHandleFn = extern "C" fn(thisEnum: u32, pNvDispHandle: *mut handles::NvDisplayHandle) -> NvAPI_Status;
+    pub type EnumNvidiaDisplayHandleFn = extern "C" fn(thisEnum: u32, pNvDispHandle@out: *mut handles::NvDisplayHandle) -> NvAPI_Status;
 
     /// This function returns the handle of the NVIDIA display specified by the enum
     /// index (thisEnum). The client should keep enumerating until it
@@ -14,11 +14,11 @@ nvapi! {
     ///
     /// Note: Display handles can get invalidated on a modeset, so the calling applications need to
     /// renum the handles after every modeset.
-    pub unsafe fn NvAPI_EnumNvidiaDisplayHandle;
+    pub fn NvAPI_EnumNvidiaDisplayHandle;
 }
 
 nvapi! {
-    pub type EnumNvidiaUnAttachedDisplayHandleFn = extern "C" fn(thisEnum: u32, pNvUnAttachedDispHandle: *mut handles::NvUnAttachedDisplayHandle) -> NvAPI_Status;
+    pub type EnumNvidiaUnAttachedDisplayHandleFn = extern "C" fn(thisEnum: u32, pNvUnAttachedDispHandle@out: *mut handles::NvUnAttachedDisplayHandle) -> NvAPI_Status;
 
     /// This function returns the handle of the NVIDIA unattached display specified by the enum
     /// index (thisEnum). The client should keep enumerating until it
@@ -26,23 +26,23 @@ nvapi! {
     ///
     /// Note: Display handles can get invalidated on a modeset, so the calling applications need to
     /// renum the handles after every modeset.
-    pub unsafe fn NvAPI_EnumNvidiaUnAttachedDisplayHandle;
+    pub fn NvAPI_EnumNvidiaUnAttachedDisplayHandle;
 }
 
 nvapi! {
-    pub type GetAssociatedNvidiaDisplayHandleFn = extern "C" fn(szDisplayName: *const c_char, pNvDispHandle: *mut handles::NvDisplayHandle) -> NvAPI_Status;
+    pub type GetAssociatedNvidiaDisplayHandleFn = extern "C" fn(szDisplayName: *const c_char, pNvDispHandle@out: *mut handles::NvDisplayHandle) -> NvAPI_Status;
 
     /// This function returns the handle of the NVIDIA display that is associated
     /// with the given display "name" (such as "\\.\DISPLAY1").
-    pub unsafe fn NvAPI_GetAssociatedNvidiaDisplayHandle;
+    pub fn NvAPI_GetAssociatedNvidiaDisplayHandle;
 }
 
 nvapi! {
-    pub type DISP_GetAssociatedUnAttachedNvidiaDisplayHandleFn = extern "C" fn(szDisplayName: *const c_char, pNvUnAttachedDispHandle: *mut handles::NvDisplayHandle) -> NvAPI_Status;
+    pub type DISP_GetAssociatedUnAttachedNvidiaDisplayHandleFn = extern "C" fn(szDisplayName: *const c_char, pNvUnAttachedDispHandle@out: *mut handles::NvDisplayHandle) -> NvAPI_Status;
 
     /// This function returns the handle of an unattached NVIDIA display that is
     /// associated with the given display name (such as "\\DISPLAY1").
-    pub unsafe fn NvAPI_DISP_GetAssociatedUnAttachedNvidiaDisplayHandle;
+    pub fn NvAPI_DISP_GetAssociatedUnAttachedNvidiaDisplayHandle;
 }
 
 nvenum! {
@@ -62,7 +62,7 @@ nvenum_display! {
 
 nvapi! {
     /// This API sets colorspace of the source identified by the process id of the caller
-    pub unsafe fn NvAPI_Disp_SetSourceColorSpace(displayId: u32, colorSpaceType: NV_COLORSPACE_TYPE) -> NvAPI_Status;
+    pub fn NvAPI_Disp_SetSourceColorSpace(displayId: u32, colorSpaceType: NV_COLORSPACE_TYPE) -> NvAPI_Status;
 }
 
 pub const NV_SOURCE_PID_CURRENT: u64 = 0;
@@ -71,7 +71,7 @@ nvapi! {
     /// This API gets colorspace of the source identified by the process id.
     ///
     /// Set `sourcePID` = [NV_SOURCE_PID_CURRENT] to use the process id of the caller.
-    pub unsafe fn NvAPI_Disp_GetSourceColorSpace(displayId: u32, pColorSpaceType: *mut NV_COLORSPACE_TYPE, sourcePID: u64) -> NvAPI_Status;
+    pub fn NvAPI_Disp_GetSourceColorSpace(displayId: u32, pColorSpaceType@out: *mut NV_COLORSPACE_TYPE, sourcePID: u64) -> NvAPI_Status;
 }
 
 nvenum! {
@@ -90,12 +90,12 @@ nvapi! {
     /// This API sets display output mode and returns the display output mode used by the OS before the API call.
     ///
     /// Only one application at a time can override OS display output mode.
-    pub unsafe fn NvAPI_Disp_SetOutputMode(displayId: u32, pDisplayMode: *mut NV_DISPLAY_OUTPUT_MODE) -> NvAPI_Status;
+    pub fn NvAPI_Disp_SetOutputMode(displayId: u32, pDisplayMode: &mut NV_DISPLAY_OUTPUT_MODE) -> NvAPI_Status;
 }
 
 nvapi! {
     /// This API gets display output mode.
-    pub unsafe fn NvAPI_Disp_GetOutputMode(displayId: u32, pDisplayMode: *mut NV_DISPLAY_OUTPUT_MODE) -> NvAPI_Status;
+    pub fn NvAPI_Disp_GetOutputMode(displayId: u32, pDisplayMode@out: *mut NV_DISPLAY_OUTPUT_MODE) -> NvAPI_Status;
 }
 
 nvenum! {
@@ -111,12 +111,12 @@ nvenum_display! {
 
 nvapi! {
     /// This API sets HDR tonemapping method for the display
-    pub unsafe fn NvAPI_Disp_SetHdrToneMapping(displayId: u32, hdrTonemapping: NV_HDR_TONEMAPPING_METHOD) -> NvAPI_Status;
+    pub fn NvAPI_Disp_SetHdrToneMapping(displayId: u32, hdrTonemapping: NV_HDR_TONEMAPPING_METHOD) -> NvAPI_Status;
 }
 
 nvapi! {
     /// This API gets HDR tonemapping method for the display.
-    pub unsafe fn NvAPI_Disp_GetHdrToneMapping(displayId: u32, pHdrTonemapping: *mut NV_HDR_TONEMAPPING_METHOD) -> NvAPI_Status;
+    pub fn NvAPI_Disp_GetHdrToneMapping(displayId: u32, pHdrTonemapping@out: *mut NV_HDR_TONEMAPPING_METHOD) -> NvAPI_Status;
 }
 
 nvstruct! {
@@ -144,7 +144,7 @@ nvapi! {
     /// If the displayId is part of a display grid (Mosaic/Surround), then every displayId that is part of the same display grid
     /// outputs the same (adapterId, targetId) pair, and no other displayId outputs this pair.
     /// Otherwise, the (adapterId, targetId) pair is unique to this displayId.
-    pub unsafe fn NvAPI_Disp_GetDisplayIdInfo(displayId: u32, pDisplayIdInfoData: *mut NV_DISPLAY_ID_INFO_DATA) -> NvAPI_Status;
+    pub fn NvAPI_Disp_GetDisplayIdInfo(displayId: u32, pDisplayIdInfoData@StructVersionOut: *mut NV_DISPLAY_ID_INFO_DATA) -> NvAPI_Status;
 }
 
 nvstruct! {
@@ -181,7 +181,7 @@ nvapi! {
     /// that is part of the display grid. Otherwise, it contains exactly one displayId.
     ///
     /// These displayId values are unique to this (targetId, adapterId) pair.
-    pub unsafe fn NvAPI_Disp_GetDisplayIdsFromTarget(displayId: u32, pTargetInfoData: *mut NV_TARGET_INFO_DATA) -> NvAPI_Status;
+    pub fn NvAPI_Disp_GetDisplayIdsFromTarget(displayId: u32, pTargetInfoData@StructVersionOut: *mut NV_TARGET_INFO_DATA) -> NvAPI_Status;
 }
 
 nvstruct! {
@@ -200,5 +200,5 @@ nvversion! { NV_GET_VRR_INFO:
 
 nvapi! {
     /// This API returns Variable Refresh Rate(VRR) information for the given display ID.
-    pub unsafe fn NvAPI_Disp_GetVRRInfo(displayId: u32, pVrrInfo: *mut NV_GET_VRR_INFO) -> NvAPI_Status;
+    pub fn NvAPI_Disp_GetVRRInfo(displayId: u32, pVrrInfo@StructVersionOut: *mut NV_GET_VRR_INFO) -> NvAPI_Status;
 }

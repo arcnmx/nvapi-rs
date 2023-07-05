@@ -60,25 +60,25 @@ nvversion! { NV_CHIPSET_INFO:
 }
 
 nvapi! {
-    pub type SYS_GetChipSetInfoFn = extern "C" fn(pChipSetInfo: *mut NV_CHIPSET_INFO) -> NvAPI_Status;
+    pub type SYS_GetChipSetInfoFn = extern "C" fn(pChipSetInfo@StructVersionOut: *mut NV_CHIPSET_INFO) -> NvAPI_Status;
 
     /// This API returns display driver version and driver-branch string.
-    pub unsafe fn NvAPI_SYS_GetChipSetInfo;
+    pub fn NvAPI_SYS_GetChipSetInfo;
 }
 
 nvapi! {
     /// This API converts a Physical GPU handle and output ID to a display ID.
-    pub unsafe fn NvAPI_SYS_GetDisplayIdFromGpuAndOutputId(hPhysicalGpu: handles::NvPhysicalGpuHandle, outputId: u32, displayId: *mut u32) -> NvAPI_Status;
+    pub fn NvAPI_SYS_GetDisplayIdFromGpuAndOutputId(hPhysicalGpu: NvPhysicalGpuHandle, outputId: u32, displayId@out: *mut u32) -> NvAPI_Status;
 }
 
 nvapi! {
     /// This API converts a display ID to a Physical GPU handle and output ID.
-    pub unsafe fn NvAPI_SYS_GetGpuAndOutputIdFromDisplayId(displayId: u32, hPhysicalGpu: *mut handles::NvPhysicalGpuHandle, outputId: *mut u32) -> NvAPI_Status;
+    pub fn NvAPI_SYS_GetGpuAndOutputIdFromDisplayId(displayId: u32, hPhysicalGpu@out: *mut NvPhysicalGpuHandle, outputId: *mut u32) -> NvAPI_Status;
 }
 
 nvapi! {
     /// This API retrieves the Physical GPU handle of the connected display
-    pub unsafe fn NvAPI_SYS_GetPhysicalGpuFromDisplayId(displayId: u32, hPhysicalGpu: *mut handles::NvPhysicalGpuHandle) -> NvAPI_Status;
+    pub fn NvAPI_SYS_GetPhysicalGpuFromDisplayId(displayId: u32, hPhysicalGpu@out: *mut NvPhysicalGpuHandle) -> NvAPI_Status;
 }
 
 nvbits! {
@@ -146,5 +146,5 @@ nvapi! {
     /// only one driver type can be available in system.
     ///
     /// If NVAPI is unable to get the information of particular driver type, we report all flags as 0 (Unknown).
-    pub unsafe fn NvAPI_SYS_GetDisplayDriverInfo(pDriverInfo: *mut NV_DISPLAY_DRIVER_INFO) -> NvAPI_Status;
+    pub fn NvAPI_SYS_GetDisplayDriverInfo(pDriverInfo@StructVersionOut: *mut NV_DISPLAY_DRIVER_INFO) -> NvAPI_Status;
 }

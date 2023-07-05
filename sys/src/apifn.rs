@@ -1,8 +1,10 @@
+use std::marker::PhantomData;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::ptr::{self, NonNull};
 use std::fmt;
 use crate::nvapi::nvapi_QueryInterface;
 use crate::status::Status;
+use crate::nvid::Api;
 
 #[derive(Default)]
 #[repr(transparent)]
@@ -40,6 +42,11 @@ impl NvapiFnCache {
             Some(v) => Ok(v),
         }
     }
+
+    pub unsafe fn query<F: NvapiInterface>(&self) -> Result<F::Fn, Status> {
+        self.query_ptr(F::API.id())
+            .map(|ptr| F::fn_from_ptr(ptr))
+    }
 }
 
 impl fmt::Debug for NvapiFnCache {
@@ -48,4 +55,54 @@ impl fmt::Debug for NvapiFnCache {
             .field(&self.get())
             .finish()
     }
+}
+
+#[derive(Debug)]
+pub struct NvapiFn<I> {
+    cache: NvapiFnCache,
+    _nvapi: PhantomData<I>,
+}
+
+impl<I> NvapiFn<I> {
+    pub const fn empty() -> Self {
+        Self {
+            cache: NvapiFnCache::empty(),
+            _nvapi: PhantomData,
+        }
+    }
+
+    pub const unsafe fn cache_ref(&self) -> &NvapiFnCache {
+        &self.cache
+    }
+}
+
+impl<I: NvapiInterface> NvapiFn<I> {
+    pub fn query(&self) -> Result<I::Fn, Status> {
+        unsafe {
+            self.cache.query::<I>()
+        }
+    }
+
+    pub fn query_map<R, F: FnOnce(I::Fn) -> R>(&self, f: F) -> R where
+        Status: Into<R>,
+    {
+        let interface = match self.query() {
+            Ok(i) => i,
+            Err(e) => return e.into(),
+        };
+        f(interface)
+    }
+}
+
+impl<I> Default for NvapiFn<I> {
+    fn default() -> Self {
+        Self::empty()
+    }
+}
+
+pub trait NvapiInterface {
+    const API: Api;
+    type Fn: Copy;
+
+    unsafe fn fn_from_ptr(ptr: NonNull<()>) -> Self::Fn;
 }

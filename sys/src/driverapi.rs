@@ -1,10 +1,10 @@
 use crate::prelude_::*;
 
 nvapi! {
-    pub type SYS_GetDriverAndBranchVersionFn = extern "C" fn(pDriverVersion: *mut u32, szBuildBranchString: *mut NvAPI_ShortString) -> NvAPI_Status;
+    pub type SYS_GetDriverAndBranchVersionFn = extern "C" fn(pDriverVersion@out: *mut u32, szBuildBranchString@out: *mut NvAPI_ShortString) -> NvAPI_Status;
 
     /// This API returns display driver version and driver-branch string.
-    pub unsafe fn NvAPI_SYS_GetDriverAndBranchVersion;
+    pub fn NvAPI_SYS_GetDriverAndBranchVersion;
 }
 
 nvstruct! {
@@ -51,12 +51,16 @@ nvversion! { NV_DISPLAY_DRIVER_MEMORY_INFO:
 }
 
 nvapi! {
-    pub type GPU_GetMemoryInfoFn = extern "C" fn(hPhysicalGpu: handles::NvPhysicalGpuHandle, pMemoryInfo: *mut NV_DISPLAY_DRIVER_MEMORY_INFO) -> NvAPI_Status;
+    pub type GPU_GetMemoryInfoFn = extern "C" fn(hPhysicalGpu@self: handles::NvPhysicalGpuHandle, pMemoryInfo@StructVersionOut: *mut NV_DISPLAY_DRIVER_MEMORY_INFO) -> NvAPI_Status;
 
     /// This function retrieves the available driver memory footprint for the specified GPU.
     /// If the GPU is in TCC Mode, only dedicatedVideoMemory will be returned in pMemoryInfo (NV_DISPLAY_DRIVER_MEMORY_INFO).
     #[deprecated = "Do not use this function - it is deprecated in release 520. Instead, use NvAPI_GPU_GetMemoryInfoEx"]
-    pub unsafe fn NvAPI_GPU_GetMemoryInfo;
+    pub fn NvAPI_GPU_GetMemoryInfo;
+
+    impl self {
+        pub fn GetMemoryInfo;
+    }
 }
 
 nvstruct! {
@@ -91,12 +95,16 @@ nvversion! { NV_GPU_MEMORY_INFO_EX:
 }
 
 nvapi! {
-    pub type GPU_GetMemoryInfoExFn = extern "C" fn(hPhysicalGpu: handles::NvPhysicalGpuHandle, pMemoryInfo: *mut NV_GPU_MEMORY_INFO_EX) -> NvAPI_Status;
+    pub type GPU_GetMemoryInfoExFn = extern "C" fn(hPhysicalGpu@self: handles::NvPhysicalGpuHandle, pMemoryInfo@StructVersionOut: *mut NV_GPU_MEMORY_INFO_EX) -> NvAPI_Status;
 
     /// This function retrieves the available driver memory footprint for the specified GPU.
     ///
     /// If the GPU is in TCC Mode, only dedicatedVideoMemory will be returned in pMemoryInfo (NV_GPU_MEMORY_INFO_EX)
-    pub unsafe fn NvAPI_GPU_GetMemoryInfoEx;
+    pub fn NvAPI_GPU_GetMemoryInfoEx;
+
+    impl self {
+        pub fn GetMemoryInfoEx;
+    }
 }
 
 /// Undocumented API
@@ -106,6 +114,10 @@ pub mod private {
 
     nvapi! {
         /// This has a different offset than the NvAPI_GPU_GetMemoryInfo function despite both returning the same struct
-        pub unsafe fn NvAPI_GetDisplayDriverMemoryInfo(hPhysicalGpu: handles::NvPhysicalGpuHandle, pMemoryInfo: *mut NV_DISPLAY_DRIVER_MEMORY_INFO) -> NvAPI_Status;
+        pub fn NvAPI_GetDisplayDriverMemoryInfo(hPhysicalGpu@self: handles::NvPhysicalGpuHandle, pMemoryInfo@StructVersionOut: *mut NV_DISPLAY_DRIVER_MEMORY_INFO) -> NvAPI_Status;
+
+        impl self {
+            pub fn GetDisplayDriverMemoryInfo;
+        }
     }
 }

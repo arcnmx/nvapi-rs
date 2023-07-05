@@ -143,7 +143,7 @@ nvversion! { NV_I2C_INFO:
 }
 
 nvapi! {
-    pub type NvAPI_I2CReadFn = extern "C" fn(hPhysicalGpu: NvPhysicalGpuHandle, pI2cInfo: *mut NV_I2C_INFO) -> NvAPI_Status;
+    pub type NvAPI_I2CReadFn = extern "C" fn(hPhysicalGpu@self: NvPhysicalGpuHandle, pI2cInfo@StructVersion: *mut NV_I2C_INFO) -> NvAPI_Status;
 
     /// This function reads the data buffer from the I2C port.
     /// The I2C request must be for a DDC port: pI2cInfo->bIsDDCPort = 1.
@@ -165,10 +165,14 @@ nvapi! {
     /// - `NVAPI_INVALID_ARGUMENT`: argument does not meet specified requirements
     /// - `NVAPI_ARGUMENT_EXCEED_MAX_SIZE`: an argument exceeds the maximum
     pub unsafe fn NvAPI_I2CRead;
+
+    impl self {
+        pub fn I2CRead;
+    }
 }
 
 nvapi! {
-    pub type NvAPI_I2CWriteFn = extern "C" fn(hPhysicalGpu: NvPhysicalGpuHandle, pI2cInfo: *mut NV_I2C_INFO) -> NvAPI_Status;
+    pub type NvAPI_I2CWriteFn = extern "C" fn(hPhysicalGpu@self: NvPhysicalGpuHandle, pI2cInfo@StructVersion: *mut NV_I2C_INFO) -> NvAPI_Status;
 
     /// This function writes the data buffer to the I2C port.
     ///
@@ -190,6 +194,10 @@ nvapi! {
     /// - `NVAPI_INVALID_ARGUMENT`: Argument does not meet specified requirements
     /// - `NVAPI_ARGUMENT_EXCEED_MAX_SIZE`: exceeds the maximum
     pub unsafe fn NvAPI_I2CWrite;
+
+    impl self {
+        pub fn I2CWrite;
+    }
 }
 
 /// Undocumented API
@@ -240,16 +248,24 @@ pub mod private {
     }
 
     nvapi! {
-        pub type NvAPI_I2CReadExFn = extern "C" fn(hPhysicalGpu: NvPhysicalGpuHandle, pI2cInfo: *mut NV_I2C_INFO_EX, pData: *mut u32) -> NvAPI_Status;
+        pub type NvAPI_I2CReadExFn = extern "C" fn(hPhysicalGpu@self: NvPhysicalGpuHandle, pI2cInfo@StructVersion: *mut NV_I2C_INFO_EX, pData: *mut u32) -> NvAPI_Status;
 
         /// Undocumented function. `pData` is often `{ 1, 0 }`?
         pub unsafe fn NvAPI_I2CReadEx;
+
+        impl self {
+            pub fn I2CReadEx;
+        }
     }
 
     nvapi! {
-        pub type NvAPI_I2CWriteExFn = extern "C" fn(hPhysicalGpu: NvPhysicalGpuHandle, pI2cInfo: *mut NV_I2C_INFO_EX, pData: *mut u32) -> NvAPI_Status;
+        pub type NvAPI_I2CWriteExFn = extern "C" fn(hPhysicalGpu@self: NvPhysicalGpuHandle, pI2cInfo@StructVersion: *mut NV_I2C_INFO_EX, pData: *mut u32) -> NvAPI_Status;
 
         /// Undocumented function. `pData` is often `{ 1, 0 }`?
         pub unsafe fn NvAPI_I2CWriteEx;
+
+        impl self {
+            pub fn I2CWriteEx;
+        }
     }
 }

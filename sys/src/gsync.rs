@@ -4,12 +4,12 @@ use handles::{NvGSyncDeviceHandle, NvPhysicalGpuHandle};
 pub const NVAPI_MAX_GSYNC_DEVICES: usize = 4;
 
 nvapi! {
-    pub type GSync_EnumSyncDevicesFn = extern "C" fn(nvGSyncHandles: *mut [NvGSyncDeviceHandle; NVAPI_MAX_GSYNC_DEVICES], gsyncCount: *mut u32) -> NvAPI_Status;
+    pub type GSync_EnumSyncDevicesFn = extern "C" fn(nvGSyncHandles@out: *mut [NvGSyncDeviceHandle; NVAPI_MAX_GSYNC_DEVICES], gsyncCount@out: *mut u32) -> NvAPI_Status;
 
     /// This API returns an array of Sync device handles.
     ///
     /// A Sync device handle represents a single Sync device on the system.
-    pub unsafe fn NvAPI_GSync_EnumSyncDevices;
+    pub fn NvAPI_GSync_EnumSyncDevices;
 }
 
 /// GSync board ID 0x358
@@ -79,10 +79,14 @@ nvversion! { NV_GSYNC_CAPABILITIES:
 }
 
 nvapi! {
-    pub type GSync_QueryCapabilitiesFn = extern "C" fn(hNvGSyncDevice: NvGSyncDeviceHandle, pNvGSyncCapabilities: *mut NV_GSYNC_CAPABILITIES) -> NvAPI_Status;
+    pub type GSync_QueryCapabilitiesFn = extern "C" fn(hNvGSyncDevice@self: NvGSyncDeviceHandle, pNvGSyncCapabilities@StructVersionOut: *mut NV_GSYNC_CAPABILITIES) -> NvAPI_Status;
 
     /// This API returns the capabilities of the Sync device.
-    pub unsafe fn NvAPI_GSync_QueryCapabilities;
+    pub fn NvAPI_GSync_QueryCapabilities;
+
+    impl self {
+        pub fn QueryCapabilities;
+    }
 }
 
 nvenum! {
@@ -284,17 +288,25 @@ nvversion! { NV_GSYNC_CONTROL_PARAMS:
 }
 
 nvapi! {
-    pub type GSync_GetControlParametersFn = extern "C" fn(hNvGSyncDevice: NvGSyncDeviceHandle, pGsyncControls: *mut NV_GSYNC_CONTROL_PARAMS) -> NvAPI_Status;
+    pub type GSync_GetControlParametersFn = extern "C" fn(hNvGSyncDevice@self: NvGSyncDeviceHandle, pGsyncControls@StructVersionOut: *mut NV_GSYNC_CONTROL_PARAMS) -> NvAPI_Status;
 
     /// This API queries for sync control parameters as defined in [NV_GSYNC_CONTROL_PARAMS].
-    pub unsafe fn NvAPI_GSync_GetControlParameters;
+    pub fn NvAPI_GSync_GetControlParameters;
+
+    impl self {
+        pub fn GetControlParameters;
+    }
 }
 
 nvapi! {
-    pub type GSync_SetControlParametersFn = extern "C" fn(hNvGSyncDevice: NvGSyncDeviceHandle, pGsyncControls: *mut NV_GSYNC_CONTROL_PARAMS) -> NvAPI_Status;
+    pub type GSync_SetControlParametersFn = extern "C" fn(hNvGSyncDevice@self: NvGSyncDeviceHandle, pGsyncControls@StructVersion: *mut NV_GSYNC_CONTROL_PARAMS) -> NvAPI_Status;
 
     /// This API sets control parameters as defined in [NV_GSYNC_CONTROL_PARAMS].
-    pub unsafe fn NvAPI_GSync_SetControlParameters;
+    pub fn NvAPI_GSync_SetControlParameters;
+
+    impl self {
+        pub fn SetControlParameters;
+    }
 }
 
 nvenum! {
@@ -306,12 +318,16 @@ nvenum! {
 }
 
 nvapi! {
-    pub type GSync_AdjustSyncDelayFn = extern "C" fn(hNvGSyncDevice: NvGSyncDeviceHandle, delayType: NVAPI_GSYNC_DELAY_TYPE, pGsyncDelay: *mut NV_GSYNC_DELAY, syncSteps: *mut u32) -> NvAPI_Status;
+    pub type GSync_AdjustSyncDelayFn = extern "C" fn(hNvGSyncDevice@self: NvGSyncDeviceHandle, delayType: NVAPI_GSYNC_DELAY_TYPE, pGsyncDelay@StructVersion: *mut NV_GSYNC_DELAY, syncSteps@out: *mut u32) -> NvAPI_Status;
 
     /// This API adjusts the skew and startDelay to the closest possible values.
     ///
     /// Use this API before calling [NvAPI_GSync_SetControlParameters] for skew or startDelay.
-    pub unsafe fn NvAPI_GSync_AdjustSyncDelay;
+    pub fn NvAPI_GSync_AdjustSyncDelay;
+
+    impl self {
+        pub fn AdjustSyncDelay;
+    }
 }
 
 nvstruct! {
@@ -333,10 +349,14 @@ nvversion! { _:
 }
 
 nvapi! {
-    pub type GSync_GetSyncStatusFn = extern "C" fn(hNvGSyncDevice: NvGSyncDeviceHandle, hPhysicalGpu: NvPhysicalGpuHandle, status: *mut NV_GSYNC_STATUS) -> NvAPI_Status;
+    pub type GSync_GetSyncStatusFn = extern "C" fn(hNvGSyncDevice@self: NvGSyncDeviceHandle, hPhysicalGpu: NvPhysicalGpuHandle, status@StructVersionOut: *mut NV_GSYNC_STATUS) -> NvAPI_Status;
 
     /// This API queries the sync status of a GPU - timing, stereosync and sync signal availability.
-    pub unsafe fn NvAPI_GSync_GetSyncStatus;
+    pub fn NvAPI_GSync_GetSyncStatus;
+
+    impl self {
+        pub fn GetSyncStatus;
+    }
 }
 
 pub const NVAPI_MAX_RJ45_PER_GSYNC: usize = 2;
@@ -384,8 +404,12 @@ nvversion! { NV_GSYNC_STATUS_PARAMS:
 }
 
 nvapi! {
-    pub type GSync_GetStatusParametersFn = extern "C" fn(hNvGSyncDevice: NvGSyncDeviceHandle, pStatusParams: *mut NV_GSYNC_STATUS_PARAMS) -> NvAPI_Status;
+    pub type GSync_GetStatusParametersFn = extern "C" fn(hNvGSyncDevice@self: NvGSyncDeviceHandle, pStatusParams@StructVersionOut: *mut NV_GSYNC_STATUS_PARAMS) -> NvAPI_Status;
 
     /// This API queries for sync status parameters as defined in [NV_GSYNC_STATUS_PARAMS].
-    pub unsafe fn NvAPI_GSync_GetStatusParameters;
+    pub fn NvAPI_GSync_GetStatusParameters;
+
+    impl self {
+        pub fn GetStatusParameters;
+    }
 }
