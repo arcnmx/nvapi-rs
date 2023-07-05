@@ -158,9 +158,8 @@ impl NvApiBody {
         let arg_types_1 = arg_types.clone();
         let arg_types_2 = arg_types.clone();
 
-        let query_interface = sys_path(["nvapi", "query_interface"]);
         let Api = sys_path(["nvid", "Api"]);
-        let AtomicUsize = call_path_absolute(["core", "sync", "atomic", "AtomicUsize"]);
+        let NvapiFnCache = sys_path(["apifn", "NvapiFnCache"]);
         let transmute = call_path_absolute(["core", "mem", "transmute"]);
 
         let res_ident = call_ident("nvapi_res");
@@ -169,9 +168,9 @@ impl NvApiBody {
         quote! {
             #(#attrs)*
             pub unsafe fn #ident(#(#arg_idents_1: #arg_types_1),*) #res {
-                static CACHE: #AtomicUsize = #AtomicUsize::new(0);
+                static CACHE: #NvapiFnCache = #NvapiFnCache::empty();
 
-                let #res_ident = match #query_interface(#Api::#ident.id(), &CACHE) {
+                let #res_ident = match CACHE.query_ptr(#Api::#ident.id()) {
                     Ok(ptr) => #transmute::<_, extern "C" fn(#(#arg_idents_2: #arg_types_2),*) #res>(ptr)(#(#arg_idents_3),*),
                     Err(e) => e.value(),
                 };

@@ -10,6 +10,7 @@ pub mod nvid;
 pub mod nvapi;
 pub mod status;
 pub mod value;
+pub mod apifn;
 pub mod array;
 pub mod version;
 pub mod clock_mask;
