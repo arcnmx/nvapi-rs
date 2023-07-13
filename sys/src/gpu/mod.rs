@@ -717,6 +717,19 @@ impl Default for ChipRevision {
     }
 }
 
+impl NvPhysicalGpuHandle {
+    pub fn EnumPhysicalGPUs() -> crate::Result<impl Iterator<Item = NvPhysicalGpuHandle>> {
+        use crate::nvid::NvAPI_EnumPhysicalGPUs;
+
+        let res = match NvAPI_EnumPhysicalGPUs.call() {
+            Err(NvAPI_Status::NvidiaDeviceNotFound) =>
+                Ok(([Default::default(); NVAPI_MAX_PHYSICAL_GPUS], 0)),
+            res => res,
+        };
+        res.map(move |(handles, count)| handles.into_iter().take(count as usize))
+    }
+}
+
 /// Undocumented API
 pub mod private {
     use crate::prelude_::*;

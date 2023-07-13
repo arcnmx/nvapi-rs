@@ -29,12 +29,9 @@ impl PhysicalGpu {
 
     pub fn enumerate() -> crate::NvapiResult<Vec<Self>> {
         trace!("gpu.enumerate()");
-        let mut handles = [Default::default(); sys::NVAPI_MAX_PHYSICAL_GPUS];
-        match unsafe { nvcall!(NvAPI_EnumPhysicalGPUs@get(&mut handles)) } {
-            Err(e) if e.status() == crate::Status::NvidiaDeviceNotFound => Ok(Vec::new()),
-            Ok(len) => Ok(handles[..len as usize].iter().cloned().map(PhysicalGpu).collect()),
-            Err(e) => Err(e),
-        }
+        sys::handles::NvPhysicalGpuHandle::EnumPhysicalGPUs().map(|handles|
+            handles.map(PhysicalGpu).collect()
+        ).map_err(|status| crate::NvapiError::new(status, sys::Api::NvAPI_EnumPhysicalGPUs))
     }
 
     pub fn tachometer(&self) -> crate::NvapiResult<u32> {
