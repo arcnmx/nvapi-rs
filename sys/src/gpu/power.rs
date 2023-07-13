@@ -179,7 +179,7 @@ pub mod private {
 
     nvstruct! {
         #[derive(Default)]
-        pub struct NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V1 {
+        pub struct NV_GPU_CLIENT_POWER_POLICY_INFO_V1 {
             pub policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID,
             pub b: u32,
             pub c: u32,
@@ -194,7 +194,7 @@ pub mod private {
         }
     }
 
-    nvtag! { NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V1.policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID / PowerPolicyId @TaggedData }
+    nvtag! { NV_GPU_CLIENT_POWER_POLICY_INFO_V1.policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID / PowerPolicyId @TaggedData }
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_POWER_POLICIES_INFO_V1 {
@@ -202,17 +202,17 @@ pub mod private {
             pub valid: u8,
             pub count: u8,
             pub padding: Padding<[u8; 2]>,
-            pub entries: Array<[NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V1; 4]>,
+            pub entries: Array<[NV_GPU_CLIENT_POWER_POLICY_INFO_V1; 4]>,
         }
     }
 
     nventries! { NV_GPU_CLIENT_POWER_POLICIES_INFO_V1.entries[..count]@(get_entries/set_entries/entries_mut):
-        [NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V1; 4]
+        [NV_GPU_CLIENT_POWER_POLICY_INFO_V1; 4]
     }
 
     nvstruct! {
         #[derive(Default)]
-        pub struct NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V2 {
+        pub struct NV_GPU_CLIENT_POWER_POLICY_INFO_V2 {
             pub policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID,
             pub unknown0: Padding<[u32; 3]>,
             pub min_power: u32,
@@ -224,7 +224,7 @@ pub mod private {
         }
     }
 
-    nvtag! { NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V2.policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID / PowerPolicyId @TaggedData }
+    nvtag! { NV_GPU_CLIENT_POWER_POLICY_INFO_V2.policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID / PowerPolicyId @TaggedData }
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_POWER_POLICIES_INFO_V2 {
@@ -232,12 +232,12 @@ pub mod private {
             pub valid: u8,
             pub count: u8,
             pub padding: Padding<[u8; 2]>,
-            pub entries: Array<[NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V2; 4]>,
+            pub entries: Array<[NV_GPU_CLIENT_POWER_POLICY_INFO_V2; 4]>,
         }
     }
 
     nventries! { NV_GPU_CLIENT_POWER_POLICIES_INFO_V2.entries[..count]@(get_entries/set_entries/entries_mut):
-        [NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V2; 4]
+        [NV_GPU_CLIENT_POWER_POLICY_INFO_V2; 4]
     }
 
     nvversion! { NV_GPU_CLIENT_POWER_POLICIES_INFO(NvAPI_GPU_ClientPowerPoliciesGetInfo):
@@ -255,7 +255,7 @@ pub mod private {
 
     nvstruct! {
         #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
-        pub struct NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1 {
+        pub struct NV_GPU_CLIENT_POWER_POLICY_STATUS_V1 {
             pub policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID,
             pub b: u32,
             pub power_target: u32,
@@ -263,7 +263,7 @@ pub mod private {
         }
     }
 
-    impl From<(NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID, u32)> for NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1 {
+    impl From<(NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID, u32)> for NV_GPU_CLIENT_POWER_POLICY_STATUS_V1 {
         fn from((policy_id, power_target): (NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID, u32)) -> Self {
             Self {
                 policy_id,
@@ -274,30 +274,30 @@ pub mod private {
         }
     }
 
-    impl From<NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2> for NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1 {
+    impl From<NV_GPU_CLIENT_POWER_POLICY_STATUS_V2> for NV_GPU_CLIENT_POWER_POLICY_STATUS_V1 {
         #[inline]
-        fn from(entry: NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2) -> Self {
+        fn from(entry: NV_GPU_CLIENT_POWER_POLICY_STATUS_V2) -> Self {
             (entry.policy_id, entry.power_target).into()
         }
     }
 
-    nvtag! { NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1.policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID / PowerPolicyId @TaggedData }
+    nvtag! { NV_GPU_CLIENT_POWER_POLICY_STATUS_V1.policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID / PowerPolicyId @TaggedData }
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_POWER_POLICIES_STATUS_V1 {
             pub version: NvVersion,
             pub count: u32,
-            pub entries: Array<[NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1; 4]>,
+            pub entries: Array<[NV_GPU_CLIENT_POWER_POLICY_STATUS_V1; 4]>,
         }
     }
 
     nventries! { NV_GPU_CLIENT_POWER_POLICIES_STATUS_V1.entries[..count]@(get_entries/set_entries/entries_mut):
-        [NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1; 4]
+        [NV_GPU_CLIENT_POWER_POLICY_STATUS_V1; 4]
     }
 
     nvstruct! {
         #[derive(Default)]
-        pub struct NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2 {
+        pub struct NV_GPU_CLIENT_POWER_POLICY_STATUS_V2 {
             pub policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID,
             pub unknown: Padding<[u32; 1]>,
             pub flags: u32,
@@ -306,7 +306,7 @@ pub mod private {
         }
     }
 
-    impl From<(NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID, u32)> for NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2 {
+    impl From<(NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID, u32)> for NV_GPU_CLIENT_POWER_POLICY_STATUS_V2 {
         fn from((policy_id, power_target): (NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID, u32)) -> Self {
             Self {
                 policy_id,
@@ -318,32 +318,32 @@ pub mod private {
         }
     }
 
-    impl From<NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1> for NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2 {
+    impl From<NV_GPU_CLIENT_POWER_POLICY_STATUS_V1> for NV_GPU_CLIENT_POWER_POLICY_STATUS_V2 {
         #[inline]
-        fn from(entry: NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1) -> Self {
+        fn from(entry: NV_GPU_CLIENT_POWER_POLICY_STATUS_V1) -> Self {
             (entry.policy_id, entry.power_target).into()
         }
     }
 
-    impl NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2 {
+    impl NV_GPU_CLIENT_POWER_POLICY_STATUS_V2 {
         /// Unsure what this is but flag should be cleared for SetStatus, maybe?
         pub fn set_flag(&mut self, value: bool) {
             self.flags = self.flags & 0xfffffffe | if value { 1 } else { 0 }
         }
     }
 
-    nvtag! { NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2.policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID / PowerPolicyId @TaggedData }
+    nvtag! { NV_GPU_CLIENT_POWER_POLICY_STATUS_V2.policy_id: NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID / PowerPolicyId @TaggedData }
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_POWER_POLICIES_STATUS_V2 {
             pub version: NvVersion,
             pub count: u32,
-            pub entries: Array<[NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2; 4]>,
+            pub entries: Array<[NV_GPU_CLIENT_POWER_POLICY_STATUS_V2; 4]>,
         }
     }
 
     nventries! { NV_GPU_CLIENT_POWER_POLICIES_STATUS_V2.entries[..count]@(get_entries/set_entries/entries_mut):
-        [NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2; 4]
+        [NV_GPU_CLIENT_POWER_POLICY_STATUS_V2; 4]
     }
 
     nvversion! { NV_GPU_CLIENT_POWER_POLICIES_STATUS(NvAPI_GPU_ClientPowerPoliciesGetStatus, NvAPI_GPU_ClientPowerPoliciesSetStatus):

@@ -149,3 +149,22 @@ impl fmt::Display for Error {
         }
     }
 }
+
+#[doc(hidden)]
+pub trait NvapiResultExt<T> {
+    fn with_api(self, api: Api) -> Result<T, NvapiError>;
+}
+
+impl<T, E> NvapiResultExt<T> for Result<T, E> where
+    E: Into<NvAPI_Status>,
+{
+    fn with_api(self, api: Api) -> Result<T, NvapiError> {
+        self.map_err(|e| NvapiError::new(e.into(), api))
+    }
+}
+
+impl<T> NvapiResultExt<T> for ArgumentRangeError {
+    fn with_api(self, api: Api) -> Result<T, NvapiError> {
+        Err(NvapiError::new(self.into(), api))
+    }
+}

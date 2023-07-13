@@ -1,56 +1,51 @@
 #[cfg(feature = "serde")]
 use serde::{Serialize, Deserialize};
-use std::convert::Infallible;
-use crate::sys;
-use crate::types::RawConversion;
-use log::trace;
+use crate::{types::NvData, sys};
+use sys::nvid as nvapi;
+use sys::NvAPI_ShortString;
+use crate::{Api, NvapiResult, NvapiResultExt};
 
-pub fn driver_version() -> crate::NvapiResult<(u32, String)> {
-    trace!("driver_version()");
-    let mut version = 0;
-    unsafe {
-        nvcall!(NvAPI_SYS_GetDriverAndBranchVersion@get(&mut version))
-            .map(|str| (version, str.into()))
-    }
+pub fn driver_version() -> NvapiResult<(u32, String)> {
+    nvapi::NvAPI_SYS_GetDriverAndBranchVersion.call()
+        .with_api(Api::NvAPI_SYS_GetDriverAndBranchVersion)
+        .map(|(version, str)| (version, str.into()))
 }
 
-pub fn interface_version() -> crate::NvapiResult<String> {
-    trace!("interface_version()");
-    unsafe {
-        nvcall!(NvAPI_GetInterfaceVersionString@get())
-            .map(|str| str.into())
-    }
+pub fn interface_version() -> NvapiResult<String> {
+    nvapi::NvAPI_GetInterfaceVersionString.call()
+        .with_api(Api::NvAPI_GetInterfaceVersionString)
+        .map(Into::into)
 }
 
-pub fn error_message(status: sys::Status) -> crate::NvapiResult<String> {
-    trace!("error_message({:?})", status);
-    unsafe {
-        nvcall!(NvAPI_GetErrorMessage@get(status.value()) => into)
-    }
+pub fn initialize() -> NvapiResult<()> {
+    nvapi::NvAPI_Initialize.call()
+        .with_api(Api::NvAPI_Initialize)
 }
 
-pub fn initialize() -> crate::NvapiResult<()> {
-    trace!("initialize()");
-    unsafe {
-        nvcall!(NvAPI_Initialize())
-    }
+pub fn unload() -> NvapiResult<()> {
+    nvapi::NvAPI_Unload.call()
+        .with_api(Api::NvAPI_Unload)
 }
 
-pub fn unload() -> crate::NvapiResult<()> {
-    trace!("unload()");
-    unsafe {
-        nvcall!(NvAPI_Unload())
-    }
+pub fn chipset_info() -> NvapiResult<ChipsetInfo> {
+    let res = nvapi::NvAPI_SYS_GetChipSetInfo.call::<4, ChipsetInfoV4>()
+        .with_api(Api::NvAPI_SYS_GetChipSetInfo)
+        .map(Into::into);
+    allow_version_compat!(try res);
+    let res = nvapi::NvAPI_SYS_GetChipSetInfo.call::<3, ChipsetInfoV3>()
+        .with_api(Api::NvAPI_SYS_GetChipSetInfo)
+        .map(Into::into);
+    allow_version_compat!(try res);
+    let res = nvapi::NvAPI_SYS_GetChipSetInfo.call::<2, ChipsetInfoV2>()
+        .with_api(Api::NvAPI_SYS_GetChipSetInfo)
+        .map(Into::into);
+    allow_version_compat!(try res);
+    nvapi::NvAPI_SYS_GetChipSetInfo.call::<1, ChipsetInfoV1>()
+        .with_api(Api::NvAPI_SYS_GetChipSetInfo)
+        .map(Into::into)
 }
 
-pub fn chipset_info() -> crate::Result<<sys::sysgeneral::NV_CHIPSET_INFO as RawConversion>::Target> {
-    trace!("gpu.chipset_info()");
-
-    unsafe {
-        nvcall!(NvAPI_SYS_GetChipSetInfo@get() => raw)
-    }
-}
-
+/*
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Default, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub struct ChipsetId {
@@ -72,67 +67,138 @@ pub struct ChipsetIds {
 pub struct ChipsetInfo {
     pub chipset: ChipsetIds,
     pub host_bridge: ChipsetIds,
+}*/
+
+nvwrap! {
+    pub type ChipsetInfoV1 = NvData<sys::sysgeneral::NV_CHIPSET_INFO_v1> {
+        pub vendor: u32 {
+            @sys(vendorId),
+        },
+        pub device: u32 {
+            @sys(deviceId),
+        },
+        pub vendor_name: NvAPI_ShortString {
+            @sys(szVendorName),
+        },
+        pub name: NvAPI_ShortString {
+            @sys(szChipsetName),
+        },
+    };
 }
 
-impl RawConversion for sys::sysgeneral::NV_CHIPSET_INFO_v1 {
-    type Target = ChipsetId;
-    type Error = Infallible;
+nvwrap! {
+    pub type ChipsetInfoV2 = NvData<sys::sysgeneral::NV_CHIPSET_INFO_v2> {
+        /*
+        #[deprecated]
+        pub flags: u32 {
+            @sys,
+        },*/
+    };
 
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        Ok(ChipsetId {
-            vendor: self.vendorId,
-            vendor_name: self.szVendorName.into(),
-            device: self.deviceId,
-            name: self.szChipsetName.into(),
-        })
+    impl @Deref(v1: ChipsetInfoV1) for ChipsetInfoV2 { }
+}
+
+nvwrap! {
+    pub type ChipsetInfoV3 = NvData<sys::sysgeneral::NV_CHIPSET_INFO_v3> {
+        pub subsystem_vendor: u32 {
+            @sys(subSysVendorId),
+        },
+        pub subsystem_device: u32 {
+            @sys(subSysDeviceId),
+        },
+        pub subsystem_vendor_name: NvAPI_ShortString {
+            @sys(szSubSysVendorName),
+        },
+    };
+
+    impl @Deref(v2: ChipsetInfoV2) for ChipsetInfoV3 { }
+}
+
+nvwrap! {
+    pub type ChipsetInfoV4 = NvData<sys::sysgeneral::NV_CHIPSET_INFO_v4> {
+        pub host_bridge_vendor: u32 {
+            @sys(HBvendorId),
+        },
+        pub host_bridge_device: u32 {
+            @sys(HBdeviceId),
+        },
+        pub host_bridge_subsystem_vendor: u32 {
+            @sys(HBsubSysVendorId),
+        },
+        pub host_bridge_subsystem_device: u32 {
+            @sys(HBsubSysDeviceId),
+        },
+    };
+
+    impl @Deref(v3: ChipsetInfoV3) for ChipsetInfoV4 { }
+}
+
+nvwrap! {
+    pub enum ChipsetInfo {
+        V4(ChipsetInfoV4),
+        V3(ChipsetInfoV3),
+        V2(ChipsetInfoV2),
+        V1(ChipsetInfoV1),
+    }
+
+    impl @Deref(ChipsetInfoV1) for ChipsetInfo { }
+}
+
+/*impl<'a> From<&'a sys::sysgeneral::NV_CHIPSET_INFO_v1> for ChipsetId {
+    fn from(info: &'a sys::sysgeneral::NV_CHIPSET_INFO_v1) -> Self {
+        ChipsetId {
+            vendor: info.vendorId,
+            vendor_name: info.szVendorName.into(),
+            device: info.deviceId,
+            name: info.szChipsetName.into(),
+        }
+    }
+}*/
+
+/*impl<'a> From<&'a sys::sysgeneral::NV_CHIPSET_INFO_v2> for ChipsetId {
+    fn from(info: &'a sys::sysgeneral::NV_CHIPSET_INFO_v2) -> Self {
+        info.v1.into()
     }
 }
 
-impl RawConversion for sys::sysgeneral::NV_CHIPSET_INFO_v2 {
-    type Target = ChipsetId;
-    type Error = Infallible;
+nvconv! { sys::sysgeneral::NV_CHIPSET_INFO_v1 as ChipsetId | @From }
+nvconv! { sys::sysgeneral::NV_CHIPSET_INFO_v2 as ChipsetId | @From }
 
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        self.v1.convert_raw()
-    }
-}
-
-impl RawConversion for sys::sysgeneral::NV_CHIPSET_INFO_v3 {
-    type Target = ChipsetIds;
-    type Error = Infallible;
-
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        Ok(ChipsetIds {
-            system: self.v2.convert_raw()?,
+impl<'a> From<&'a sys::sysgeneral::NV_CHIPSET_INFO_v3> for ChipsetIds {
+    fn from(info: &'a sys::sysgeneral::NV_CHIPSET_INFO_v3) -> Self {
+        ChipsetIds {
+            system: info.v2.into(),
             subsystem: ChipsetId {
-                vendor: self.subSysVendorId,
-                vendor_name: self.szSubSysVendorName.into(),
-                device: self.subSysDeviceId,
+                vendor: info.subSysVendorId,
+                vendor_name: info.szSubSysVendorName.into(),
+                device: info.subSysDeviceId,
                 .. Default::default()
             },
-        })
+        }
     }
 }
 
-impl RawConversion for sys::sysgeneral::NV_CHIPSET_INFO_v4 {
-    type Target = ChipsetInfo;
-    type Error = Infallible;
+nvconv! { sys::sysgeneral::NV_CHIPSET_INFO_v3 as ChipsetIds | @From }
 
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        Ok(ChipsetInfo {
-            chipset: self.v3.convert_raw()?,
+impl<'a> From<&'a sys::sysgeneral::NV_CHIPSET_INFO_v4> for ChipsetInfo {
+    fn from(info: &'a sys::sysgeneral::NV_CHIPSET_INFO_v4) -> Self {
+        ChipsetInfo {
+            chipset: info.v3.into(),
             host_bridge: ChipsetIds {
                 system: ChipsetId {
-                    vendor: self.HBvendorId,
-                    device: self.HBdeviceId,
+                    vendor: info.HBvendorId,
+                    device: info.HBdeviceId,
                     .. Default::default()
                 },
                 subsystem: ChipsetId {
-                    vendor: self.HBsubSysVendorId,
-                    device: self.HBsubSysDeviceId,
+                    vendor: info.HBsubSysVendorId,
+                    device: info.HBsubSysDeviceId,
                     .. Default::default()
                 },
             },
-        })
+        }
     }
 }
+
+nvconv! { sys::sysgeneral::NV_CHIPSET_INFO_v4 as ChipsetInfo | @From }
+*/

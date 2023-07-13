@@ -1,187 +1,314 @@
-use std::collections::BTreeMap;
-use std::convert::Infallible;
-use log::trace;
+use std::marker::PhantomData;
+
 use crate::sys::gpu::pstate;
-use crate::sys;
-use crate::types::{Microvolts, MicrovoltsDelta, Kilohertz, KilohertzDelta, Percentage, Range, Delta, RawConversion};
+use crate::types::{Microvolts, MicrovoltsDelta, Kilohertz, KilohertzDelta, Percentage, Range, NvData, NvValue, Tagged};
 use crate::clock::ClockDomain;
 
-pub use sys::gpu::pstate::{PstateId as PState, VoltageInfoDomain as VoltageDomain, UtilizationDomain};
+pub use crate::sys::gpu::pstate::{PstateId as PState, VoltageInfoDomain as VoltageDomain, UtilizationDomain};
 
-#[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
-pub struct PStateSettings {
-    pub id: PState,
-    pub editable: bool,
-    pub clocks: Vec<ClockEntry>,
-    pub base_voltages: Vec<BaseVoltage>,
+nvwrap! {
+    pub enum PStateSettings {
+        V1(PStateSettingsV1 {
+            @type = NvData<pstate::NV_GPU_PERF_PSTATES20_PSTATE> {
+                pub id: PState {
+                    @get fn(&self) {
+                        self.sys().pstateId.get()
+                    },
+                },
+                pub editable: bool {
+                    @get fn(&self) {
+                        self.sys().bIsEditable.get()
+                    },
+                },
+                pub clocks: Vec<ClockEntry> {},
+                pub base_voltages: Vec<BaseVoltage> {},
+            /*
+            clocks: settings.clocks[..num_clocks].iter().map(TryFrom::try_from).collect::<Result<_, _>>()?,
+            base_voltages: settings.baseVoltages[..num_base_voltages].iter().map(TryFrom::try_from).collect::<Result<_, _>>()?,*/
+            },
+        }),
+    }
+
+    impl @TaggedData for PStateSettings { }
+
+    impl PStateSettings {
+        pub fn id(&self) -> PState;
+    }
 }
 
-#[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
-pub struct PStates {
-    pub editable: bool,
-    pub pstates: Vec<PStateSettings>,
+nvwrap! {
+    pub type PStatesV2 = NvData<pstate::NV_GPU_PERF_PSTATES20_INFO_V2> {
+    };
+
+    impl @Deref(v1: PStatesV1) for PStatesV2 { }
+}
+
+nvwrap! {
+    pub enum PStates {
+        V2(PStatesV2),
+        V1(PStatesV1 {
+            @type = NvData<pstate::NV_GPU_PERF_PSTATES20_INFO_V1> {
+                pub editable: bool {
+                    @get fn(&self) {
+                        self.sys().bIsEditable.get()
+                    },
+                },
+                pub pstates: @iter(PStateSettingsV1) {
+                    @into fn into_pstates(self) {
+                        self.sys().get_pstates().into_iter().map(Into::into)
+                    },
+                },
+    /*pub pstates: Vec<PStateSettings>,
     pub overvolt: Vec<BaseVoltage>,
-}
-
-#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
-pub enum ClockEntry {
-    Single {
-        domain: ClockDomain,
-        editable: bool,
-        frequency_delta: Delta<KilohertzDelta>,
-        frequency: Kilohertz,
-    },
-    Range {
-        domain: ClockDomain,
-        editable: bool,
-        frequency_delta: Delta<KilohertzDelta>,
-        frequency_range: Range<Kilohertz>,
-        voltage_domain: VoltageDomain,
-        voltage_range: Range<Microvolts>,
-    },
-}
-
-impl ClockEntry {
-    pub fn domain(&self) -> ClockDomain {
-        match *self {
-            ClockEntry::Single { domain, .. } => domain,
-            ClockEntry::Range { domain, .. } => domain,
-        }
+        let pstates = info.pstates
+            .get(..info.numPstates as usize)
+            .ok_or(sys::ArgumentRangeError)?
+            .iter().map(|ps| PStateSettings::from_raw(ps, info.numClocks as _, info.numBaseVoltages as _))
+            .collect::<Result<_, _>>()?;
+        let overvolt = info.voltages
+            .get(..info.numVoltages as usize)
+            .ok_or(sys::ArgumentRangeError)?
+            .iter().map(TryInto::try_into).collect::<Result<_, _>>()?;
+*/
+            },
+        }),
     }
 
-    pub fn editable(&self) -> bool {
-        match *self {
-            ClockEntry::Single { editable, .. } => editable,
-            ClockEntry::Range { editable, .. } => editable,
-        }
-    }
+    impl @StructVersion for PStates { }
+    impl @IntoIterator(into_pstates() -> PStateSettings) for PStates { }
+    impl @Deref(PStatesV1) for PStates { }
 
-    pub fn frequency_delta(&self) -> Delta<KilohertzDelta> {
-        match *self {
-            ClockEntry::Single { frequency_delta, .. } => frequency_delta,
-            ClockEntry::Range { frequency_delta, .. } => frequency_delta,
-        }
+    impl PStates {
+        pub fn into_pstates(@iter self) -> PStateSettings;
     }
 }
 
-#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
-pub struct BaseVoltage {
-    pub voltage_domain: VoltageDomain,
-    pub editable: bool,
-    pub voltage: Microvolts,
-    pub voltage_delta: Delta<MicrovoltsDelta>,
-}
+impl PStatesV1 {
+    pub fn clocks<'a>(&'a self, pstate: &'a PStateSettingsV1) -> impl Iterator<Item = &'a ClockEntryV1> + 'a {
+        self.sys().clocks(pstate.sys()).into_iter()
+            .map(From::from)
+    }
 
-impl PStateSettings {
-    pub fn from_raw(settings: &pstate::NV_GPU_PERF_PSTATES20_PSTATE, num_clocks: usize, num_base_voltages: usize) -> Result<Self, sys::ArgumentRangeError> {
-        trace!("convert_raw({:#?}, {:?}, {:?})", settings, num_clocks, num_base_voltages);
-        Ok(PStateSettings {
-            id: PState::try_from(settings.pstateId)?,
-            editable: settings.bIsEditable.get(),
-            clocks: settings.clocks[..num_clocks].iter().map(RawConversion::convert_raw).collect::<Result<_, _>>()?,
-            base_voltages: settings.baseVoltages[..num_base_voltages].iter().map(RawConversion::convert_raw).collect::<Result<_, _>>()?,
-        })
+    pub fn base_voltages<'a>(&'a self, pstate: &'a PStateSettingsV1) -> impl Iterator<Item = &'a BaseVoltageV1> + 'a {
+        self.sys().base_voltages(pstate.sys()).into_iter()
+            .map(From::from)
     }
 }
 
-impl RawConversion for pstate::NV_GPU_PERF_PSTATES20_INFO_V2 {
-    type Target = PStates;
-    type Error = sys::ArgumentRangeError;
-
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        Ok(PStates {
-            editable: self.bIsEditable.get(),
-            pstates: self.pstates[..self.numPstates as usize].iter().map(|ps| PStateSettings::from_raw(ps, self.numClocks as _, self.numBaseVoltages as _)).collect::<Result<_, _>>()?,
-            overvolt: self.voltages[..self.numVoltages as usize].iter().map(RawConversion::convert_raw).collect::<Result<_, _>>()?,
-        })
-    }
-}
-
-impl RawConversion for pstate::NV_GPU_PERF_PSTATE20_BASE_VOLTAGE_ENTRY_V1 {
-    type Target = BaseVoltage;
-    type Error = sys::ArgumentRangeError;
-
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        Ok(BaseVoltage {
-            voltage_domain: VoltageDomain::try_from(self.domainId)?,
-            editable: self.bIsEditable.get(),
-            voltage: Microvolts(self.volt_uV),
-            voltage_delta: match self.voltDelta_uV.convert_raw()? {
-                Delta { value, range } => Delta {
-                    value: MicrovoltsDelta(value.0),
-                    range: Range {
-                        min: MicrovoltsDelta(range.min.0),
-                        max: MicrovoltsDelta(range.max.0),
+nvwrap! {
+    pub enum BaseVoltage {
+        V1(BaseVoltageV1 {
+            @type = NvData<pstate::NV_GPU_PERF_PSTATE20_BASE_VOLTAGE_ENTRY_V1> {
+                pub id: NvValue<VoltageDomain> {
+                    @sys(domainId),
+                },
+                pub editable: bool {
+                    @sys@BoolU32(bIsEditable),
+                },
+                pub voltage: Microvolts {
+                    @sys(volt_uV),
+                },
+                pub delta: PStateDeltaV1 {
+                    @sys(voltDelta_uV),
+                },
+                pub voltage_delta: Delta<MicrovoltsDelta> {
+                    @get fn(&self) {
+                        Delta::new(self.delta().into())
                     },
                 },
             },
-        })
+        }),
+    }
+
+    impl @TaggedData for BaseVoltage { }
+
+    impl BaseVoltage {
+        pub fn id(&self) -> NvValue<VoltageDomain>;
+        pub fn editable(&self) -> bool;
+        pub fn voltage(&self) -> Microvolts;
+        pub fn voltage_delta(&self) -> Delta<MicrovoltsDelta>;
     }
 }
 
-impl RawConversion for pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_V1 {
-    type Target = ClockEntry;
-    type Error = sys::ArgumentRangeError;
-
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        Ok(match self.data.get(pstate::PstateClockType::try_from(self.typeId)?) {
-            pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_DATA_VALUE::Single(single) => ClockEntry::Single {
-                domain: ClockDomain::try_from(self.domainId)?,
-                editable: self.bIsEditable.get(),
-                frequency_delta: self.freqDelta_kHz.convert_raw()?,
-                frequency: Kilohertz(single.freq_kHz),
-            },
-            pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_DATA_VALUE::Range(range) => ClockEntry::Range {
-                domain: ClockDomain::try_from(self.domainId)?,
-                editable: self.bIsEditable.get(),
-                frequency_delta: self.freqDelta_kHz.convert_raw()?,
-                frequency_range: Range {
-                    min: Kilohertz(range.minFreq_kHz),
-                    max: Kilohertz(range.maxFreq_kHz),
-                },
-                voltage_domain: VoltageDomain::try_from(range.domainId)?,
-                voltage_range: Range {
-                    min: Microvolts(range.minVoltage_uV),
-                    max: Microvolts(range.maxVoltage_uV),
+nvwrap! {
+    pub enum ClockEntryData {
+        Single(ClockEntrySingleV1 {
+            @type = NvData<pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_SINGLE> {
+                pub frequency: Kilohertz {
+                    @sys(freq_kHz),
                 },
             },
-        })
-    }
-}
-
-impl RawConversion for pstate::NV_GPU_PERF_PSTATES20_PARAM_DELTA {
-    type Target = Delta<KilohertzDelta>;
-    type Error = Infallible;
-
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        Ok(Delta {
-            value: KilohertzDelta(self.value),
-            range: Range {
-                min: KilohertzDelta(self.min),
-                max: KilohertzDelta(self.max),
+        }),
+        Range(ClockEntryRangeV1 {
+            @type = NvData<pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_RANGE> {
+                pub frequency_range: Range<Kilohertz> {
+                    @get fn(&self) {
+                        Range {
+                            min: Kilohertz(self.sys().minFreq_kHz),
+                            max: Kilohertz(self.sys().maxFreq_kHz),
+                        }
+                    },
+                },
+                pub voltage_domain: NvValue<VoltageDomain> {
+                    @sys(domainId),
+                },
+                pub voltage_range: Range<Microvolts> {
+                    @get fn(&self) {
+                        Range {
+                            min: Microvolts(self.sys().minVoltage_uV),
+                            max: Microvolts(self.sys().maxVoltage_uV),
+                        }
+                    },
+                },
             },
-        })
+        }),
     }
 }
 
-impl RawConversion for pstate::NV_GPU_DYNAMIC_PSTATES_INFO_EX {
-    type Target = BTreeMap<pstate::UtilizationDomain, Percentage>;
-    type Error = sys::ArgumentRangeError;
-
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        if self.flag_enabled() {
-            Ok(BTreeMap::new())
-        } else {
-            pstate::UtilizationDomain::values()
-                .map(|domain| (domain, &self.utilization[domain.repr() as usize]))
-                .filter(|&(_, util)| util.bIsPresent.get())
-                .map(|(id, util)| Percentage::from_raw(util.percentage).map(|p| (id, p)))
-                .collect()
+impl From<pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_DATA_VALUE> for ClockEntryData {
+    fn from(value: pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_DATA_VALUE) -> Self {
+        match value {
+            pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_DATA_VALUE::Single(data) => ClockEntrySingleV1::from(data).into(),
+            pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_DATA_VALUE::Range(data) => ClockEntryRangeV1::from(data).into(),
         }
+    }
+}
+
+nvwrap! {
+    pub enum ClockEntry {
+        V1(ClockEntryV1 {
+            @type = NvData<pstate::NV_GPU_PSTATE20_CLOCK_ENTRY_V1> {
+                pub id: NvValue<ClockDomain> {
+                    @sys(domainId),
+                },
+                pub editable: bool {
+                    @sys@BoolU32(bIsEditable),
+                },
+                pub delta: PStateDeltaV1 {
+                    @sys(freqDelta_kHz),
+                },
+                pub frequency_delta: Delta<KilohertzDelta> {
+                    @get fn(&self) {
+                        Delta::new(self.delta().into())
+                    },
+                },
+                pub data: ClockEntryData {
+                    @get fn(&self) {
+                        self.sys().data.get(self.sys().typeId.get()).into()
+                    },
+                },
+            },
+        }),
+    }
+
+    impl @TaggedData for ClockEntry { }
+
+    impl ClockEntry {
+        pub fn id(&self) -> NvValue<ClockDomain>;
+        pub fn editable(&self) -> bool;
+        pub fn frequency_delta(&self) -> Delta<KilohertzDelta>;
+        pub fn data(&self) -> ClockEntryData;
+    }
+}
+
+nvwrap! {
+    pub enum PStateDelta {
+        V1(PStateDeltaV1 {
+            @type = NvData<pstate::NV_GPU_PERF_PSTATES20_PARAM_DELTA> {
+                pub value: i32 {
+                    @sys,
+                },
+                pub range: Range<i32> {
+                    @get fn(&self) {
+                        Range {
+                            min: self.sys().min,
+                            max: self.sys().max,
+                        }
+                    },
+                },
+            },
+        }),
+    }
+
+    impl PStateDelta {
+        pub fn value(&self) -> i32;
+        pub fn range(&self) -> Range<i32>;
+    }
+}
+
+pub struct Delta<T> {
+    pub data: PStateDelta,
+    _unit: PhantomData<T>,
+}
+
+impl<T> Delta<T> {
+    pub const fn new(data: PStateDelta) -> Self {
+        Self {
+            data,
+            _unit: PhantomData,
+        }
+    }
+}
+
+impl<T: From<i32>> Delta<T> {
+    pub fn value(&self) -> T {
+        self.data.value().into()
+    }
+
+    pub fn range(&self) -> Range<T> {
+        self.data.range().map(Into::into)
+    }
+}
+
+impl Delta<KilohertzDelta> {
+    pub fn frequency(&self) -> KilohertzDelta {
+        self.value()
+    }
+}
+
+impl Delta<MicrovoltsDelta> {
+    pub fn voltage(&self) -> MicrovoltsDelta {
+        self.value()
+    }
+}
+
+nvwrap! {
+    pub enum Utilization {
+        V1(UtilizationV1 {
+            @type = NvData<pstate::NV_GPU_DYNAMIC_PSTATES_INFO_EX_UTILIZATION> {
+                pub usage: Percentage {
+                    @get fn(&self) {
+                        Percentage(self.sys().percentage)
+                    },
+                },
+            },
+        }),
+    }
+
+    impl @TaggedFrom(NvValue<UtilizationDomain>) for Utilization { }
+
+    impl Utilization {
+        pub fn usage(&self) -> Percentage;
+    }
+}
+
+nvwrap! {
+    pub enum Utilizations {
+        V1(UtilizationsV1 {
+            @type = NvData<pstate::NV_GPU_DYNAMIC_PSTATES_INFO_EX> {
+                pub utilizations: @iter(Tagged<NvValue<UtilizationDomain>, UtilizationV1>) {
+                    @into fn into_utilizations(self) {
+                        self.sys().utilization().map(Tagged::from)
+                    },
+                },
+            },
+        }),
+    }
+
+    impl @StructVersion for Utilizations { }
+    impl @IntoIterator(into_utilizations() -> Tagged<NvValue<UtilizationDomain>, Utilization>) for Utilizations { }
+
+    impl Utilizations {
+        pub fn into_utilizations(@iter self) -> Tagged<NvValue<UtilizationDomain>, Utilization>;
     }
 }

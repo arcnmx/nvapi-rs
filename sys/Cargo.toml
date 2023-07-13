@@ -30,5 +30,5 @@ serde = { version = "1", features = ["derive"], optional = true }
 zerocopy = "0.6"
 
 [features]
-default = ["serde"]
+default = []
 serde = ["dep:serde"]

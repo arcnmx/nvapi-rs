@@ -1,29 +1,106 @@
+use std::mem::transmute;
 use std::ops::RangeInclusive;
-use std::{fmt, ops};
-use std::convert::Infallible;
+use std::collections::BTreeMap;
+use std::{fmt, ops, cmp, iter};
 #[cfg(feature = "serde")]
 use serde::{Serialize, Deserialize};
-use crate::sys;
+use crate::sys::{ArgumentRangeError, tagged::TaggedData};
+use crate::sys::version::{VersionedStructField, VersionedStruct, StructVersion, NvVersion};
+use crate::sys::nvid::Api;
+
+pub use crate::sys::{BoolU32, NvValue};
+pub use crate::sys::value::{NvValueEnum, NvValueBits, NvValueData};
 
 pub trait RawConversion {
     type Target;
     type Error;
-
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error>;
 }
 
-impl<const N: usize> RawConversion for sys::NvString<N> {
-    type Target = String;
-    type Error = Infallible;
+macro_rules! unit_wrapper {
+    (
+        $(#[$meta:meta])*
+        pub struct $name:ident($repr:ty);
+    ) => {
+        $(#[$meta])*
+        #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+        #[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
+        pub struct $name(pub(crate) $repr);
 
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        Ok(self.to_string_lossy().into_owned())
-    }
+        impl $name {
+            pub const fn new(value: $repr) -> Self {
+                Self(value)
+            }
+
+            pub const fn value(self) -> $repr {
+                self.0
+            }
+
+            pub const fn value_ref(&self) -> &$repr {
+                &self.0
+            }
+
+            pub fn value_mut(&mut self) -> &mut $repr {
+                &mut self.0
+            }
+        }
+
+        impl From<$repr> for $name {
+            fn from(v: $repr) -> Self {
+                $name(v)
+            }
+        }
+
+        impl From<$name> for $repr {
+            fn from(v: $name) -> Self {
+                v.0
+            }
+        }
+
+        impl<'a> From<&'a $name> for $name {
+            fn from(v: &'a $name) -> Self {
+                *v
+            }
+        }
+
+        impl<'a> From<&'a $name> for &'a $repr {
+            fn from(v: &'a $name) -> Self {
+                v.value_ref()
+            }
+        }
+
+        impl<'a> From<&'a mut $name> for &'a mut $repr {
+            fn from(v: &'a mut $name) -> Self {
+                v.value_mut()
+            }
+        }
+
+        impl<'a> From<&'a $repr> for &'a $name {
+            fn from(v: &'a $repr) -> Self {
+                unsafe {
+                    transmute(v)
+                }
+            }
+        }
+
+        impl<'a> From<&'a mut $repr> for &'a mut $name {
+            fn from(v: &'a mut $repr) -> Self {
+                unsafe {
+                    transmute(v)
+                }
+            }
+        }
+
+        impl fmt::Debug for $name {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                fmt::Display::fmt(self, f)
+            }
+        }
+    };
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
-pub struct Celsius(pub i32);
+unit_wrapper! {
+    pub struct Celsius(i32);
+}
 
 impl fmt::Display for Celsius {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -31,15 +108,9 @@ impl fmt::Display for Celsius {
     }
 }
 
-impl fmt::Debug for Celsius {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(self, f)
-    }
+unit_wrapper! {
+    pub struct Rpm(u32);
 }
-
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
-pub struct Rpm(pub u32);
 
 impl fmt::Display for Rpm {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -47,32 +118,20 @@ impl fmt::Display for Rpm {
     }
 }
 
-impl fmt::Debug for Rpm {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(self, f)
-    }
-}
-
-/// Nvidia encodes temperature as `<< 8` for some reason sometimes.
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
-pub struct CelsiusShifted(pub i32);
-
-impl fmt::Display for CelsiusShifted {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}C", self.get())
-    }
-}
-
-impl fmt::Debug for CelsiusShifted {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(self, f)
-    }
+unit_wrapper! {
+    /// Nvidia encodes temperature as `<< 8` for some reason sometimes.
+    pub struct CelsiusShifted(i32);
 }
 
 impl CelsiusShifted {
     pub fn get(&self) -> i32 {
         self.0 >> 8
+    }
+}
+
+impl fmt::Display for CelsiusShifted {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}C", self.get())
     }
 }
 
@@ -88,9 +147,21 @@ impl From<Celsius> for CelsiusShifted {
     }
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
-pub struct Microvolts(pub u32);
+impl From<u32> for CelsiusShifted {
+    fn from(c: u32) -> Self {
+        CelsiusShifted(c.try_into().expect("valid temperature value"))
+    }
+}
+
+impl From<CelsiusShifted> for u32 {
+    fn from(c: CelsiusShifted) -> Self {
+        c.0.try_into().expect("positive temperature value")
+    }
+}
+
+unit_wrapper! {
+    pub struct Microvolts(u32);
+}
 
 impl fmt::Display for Microvolts {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -103,15 +174,9 @@ impl fmt::Display for Microvolts {
     }
 }
 
-impl fmt::Debug for Microvolts {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(self, f)
-    }
+unit_wrapper! {
+    pub struct MicrovoltsDelta(i32);
 }
-
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
-pub struct MicrovoltsDelta(pub i32);
 
 impl fmt::Display for MicrovoltsDelta {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -124,20 +189,8 @@ impl fmt::Display for MicrovoltsDelta {
     }
 }
 
-impl fmt::Debug for MicrovoltsDelta {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(self, f)
-    }
-}
-
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
-pub struct Kilohertz(pub u32);
-
-impl From<u32> for Kilohertz {
-    fn from(p: u32) -> Self {
-        Kilohertz(p)
-    }
+unit_wrapper! {
+    pub struct Kilohertz(u32);
 }
 
 impl fmt::Display for Kilohertz {
@@ -152,12 +205,6 @@ impl fmt::Display for Kilohertz {
                 write!(f, "{} MHz", value)
             }
         }
-    }
-}
-
-impl fmt::Debug for Kilohertz {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(self, f)
     }
 }
 
@@ -185,9 +232,9 @@ impl ops::Add<KilohertzDelta> for Kilohertz {
     }
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
-pub struct Kilohertz2(pub u32);
+unit_wrapper! {
+    pub struct Kilohertz2(u32);
+}
 
 impl Kilohertz2 {
     pub fn get(&self) -> u32 {
@@ -207,12 +254,6 @@ impl From<Kilohertz> for Kilohertz2 {
     }
 }
 
-impl From<u32> for Kilohertz2 {
-    fn from(p: u32) -> Self {
-        Kilohertz2(p)
-    }
-}
-
 impl fmt::Display for Kilohertz2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let v = self.get();
@@ -229,20 +270,8 @@ impl fmt::Display for Kilohertz2 {
     }
 }
 
-impl fmt::Debug for Kilohertz2 {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(self, f)
-    }
-}
-
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
-pub struct KilohertzDelta(pub i32);
-
-impl From<i32> for KilohertzDelta {
-    fn from(p: i32) -> Self {
-        KilohertzDelta(p)
-    }
+unit_wrapper! {
+    pub struct KilohertzDelta(i32);
 }
 
 impl fmt::Display for KilohertzDelta {
@@ -257,12 +286,6 @@ impl fmt::Display for KilohertzDelta {
                 write!(f, "{} MHz", value)
             }
         }
-    }
-}
-
-impl fmt::Debug for KilohertzDelta {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(self, f)
     }
 }
 
@@ -298,14 +321,8 @@ impl ops::Div<i32> for KilohertzDelta {
     }
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
-pub struct Kilohertz2Delta(pub i32);
-
-impl From<i32> for Kilohertz2Delta {
-    fn from(p: i32) -> Self {
-        Kilohertz2Delta(p)
-    }
+unit_wrapper! {
+    pub struct Kilohertz2Delta(i32);
 }
 
 impl Kilohertz2Delta {
@@ -342,15 +359,9 @@ impl fmt::Display for Kilohertz2Delta {
     }
 }
 
-impl fmt::Debug for Kilohertz2Delta {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(self, f)
-    }
+unit_wrapper! {
+    pub struct Kibibytes(u32);
 }
-
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
-pub struct Kibibytes(pub u32);
 
 impl ops::Sub for Kibibytes {
     type Output = Kibibytes;
@@ -382,15 +393,18 @@ impl fmt::Display for Kibibytes {
     }
 }
 
-impl fmt::Debug for Kibibytes {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(self, f)
-    }
+unit_wrapper! {
+    pub struct Percentage(u32);
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
-pub struct Percentage(pub u32);
+impl Percentage {
+    pub fn from_raw(v: u32) -> Result<Self, ArgumentRangeError> {
+        match v {
+            v @ 0..=100 => Ok(Percentage(v)),
+            _ => Err(ArgumentRangeError),
+        }
+    }
+}
 
 impl fmt::Display for Percentage {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -398,24 +412,15 @@ impl fmt::Display for Percentage {
     }
 }
 
-impl fmt::Debug for Percentage {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(self, f)
-    }
+unit_wrapper! {
+    pub struct Percentage1000(u32);
 }
 
-impl Percentage {
-    pub fn from_raw(v: u32) -> Result<Self, sys::ArgumentRangeError> {
-        match v {
-            v @ 0..=100 => Ok(Percentage(v)),
-            _ => Err(sys::ArgumentRangeError),
-        }
+impl Percentage1000 {
+    pub fn get(&self) -> u32 {
+        self.0 / 1000
     }
 }
-
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
-pub struct Percentage1000(pub u32);
 
 impl fmt::Display for Percentage1000 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -425,18 +430,6 @@ impl fmt::Display for Percentage1000 {
         } else {
             write!(f, "{}%", value)
         }
-    }
-}
-
-impl fmt::Debug for Percentage1000 {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(self, f)
-    }
-}
-
-impl Percentage1000 {
-    pub fn get(&self) -> u32 {
-        self.0 / 1000
     }
 }
 
@@ -454,9 +447,35 @@ impl From<Percentage> for Percentage1000 {
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
+#[repr(C)]
 pub struct Range<T> {
     pub min: T,
     pub max: T,
+}
+
+impl<T> Range<T> {
+    pub const fn new(min: T, max: T) -> Self {
+        Self {
+            min,
+            max,
+        }
+    }
+
+    pub const fn with_ref(minmax: &[T; 2]) -> &Self {
+        unsafe {
+            transmute(minmax)
+        }
+    }
+
+    pub fn with_mut(minmax: &mut [T; 2]) -> &mut Self {
+        unsafe {
+            transmute(minmax)
+        }
+    }
+
+    pub fn map<O, F: Fn(T) -> O>(self, f: F) -> Range<O> {
+        Range::new(f(self.min), f(self.max))
+    }
 }
 
 impl<T: fmt::Display> fmt::Display for Range<T> {
@@ -491,9 +510,284 @@ impl<T> Range<T> {
     }
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+/*#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
 pub struct Delta<T> {
     pub value: T,
     pub range: Range<T>,
+}*/
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
+pub struct Tagged<I, T> {
+    pub tag: I,
+    pub value: T,
+}
+
+impl<I, T> Tagged<I, T> {
+    pub const fn new(tag: I, value: T) -> Self {
+        Self {
+            tag,
+            value,
+        }
+    }
+
+    pub fn into_tuple(self) -> (I, T) {
+        (self.tag, self.value)
+    }
+
+    pub fn into_value(self) -> T {
+        self.value
+    }
+}
+
+impl<I, T> FromIterator<Tagged<I, T>> for BTreeMap<I, T> where
+    BTreeMap<I, T>: FromIterator<(I, T)>,
+{
+    fn from_iter<II: IntoIterator<Item = Tagged<I, T>>>(iter: II) -> Self {
+        Self::from_iter(iter.into_iter().map(Tagged::into_tuple))
+    }
+}
+
+impl<I, T> FromIterator<Tagged<I, T>> for Vec<T> where
+    Vec<T>: FromIterator<T>,
+{
+    fn from_iter<II: IntoIterator<Item = Tagged<I, T>>>(iter: II) -> Self {
+        Self::from_iter(iter.into_iter().map(Tagged::into_value))
+    }
+}
+
+impl<T: TaggedData> Tagged<T::Repr, T> {
+    pub fn with_value(value: T) -> Self {
+        Self {
+            tag: value.tag(),
+            value,
+        }
+    }
+}
+
+impl<T: TaggedData> Tagged<T::Id, T> {
+    pub fn try_with_value(value: T) -> Result<Self, <T::Repr as TryInto<T::Id>>::Error> {
+        value.tag().try_into().map(|tag| Self {
+            tag,
+            value,
+        })
+    }
+}
+
+impl<I: Copy + cmp::Ord, T> TaggedData for Tagged<I, T> {
+    type Repr = I;
+    type Id = I;
+
+    fn tag(&self) -> Self::Repr {
+        self.tag
+    }
+}
+
+impl<I, T> Into<(I, T)> for Tagged<I, T> {
+    fn into(self) -> (I, T) {
+        self.into_tuple()
+    }
+}
+
+impl<I, II: Into<I>, T, TI: Into<T>> From<(II, TI)> for Tagged<I, T> {
+    fn from(tuple: (II, TI)) -> Self {
+        Self {
+            tag: tuple.0.into(),
+            value: tuple.1.into(),
+        }
+    }
+}
+
+impl<I, T> ops::Deref for Tagged<I, T> {
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        &self.value
+    }
+}
+
+impl<I, T> ops::DerefMut for Tagged<I, T> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.value
+    }
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
+pub struct Map<I: Ord, T> {
+    pub values: BTreeMap<I, T>,
+}
+
+/*impl<I, T> ops::Deref for Mapped<I, T> {
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        &self.values
+    }
+}
+
+impl<I, T> ops::DerefMut for Tagged<I, T> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.values
+    }
+}*/
+impl<I: Ord, T> FromIterator<Tagged<I, T>> for Map<I, T> {
+    fn from_iter<II: IntoIterator<Item = Tagged<I, T>>>(iter: II) -> Self {
+        Self {
+            values: iter.into_iter().map(|tag| (tag.tag, tag.value)).collect(),
+        }
+    }
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
+pub struct List<T> {
+    pub values: Vec<T>,
+}
+
+pub trait TaggedIterator: Sized + IntoIterator {
+    fn tagged(self) -> iter::Map<<Self as IntoIterator>::IntoIter, fn(<Self as IntoIterator>::Item) -> (<<Self as IntoIterator>::Item as TaggedData>::Id, <Self as IntoIterator>::Item)> where
+        <Self as IntoIterator>::Item: TaggedData,
+        <<Self as IntoIterator>::Item as TaggedData>::Repr: fmt::Debug,
+    {
+        fn map_tagged<T: TaggedData>(value: T) -> (T::Id, T) where
+            T::Repr: fmt::Debug,
+        {
+            let tag = value.tag();
+            let id = match tag.try_into() {
+                Ok(id) => id,
+                Err(..) => panic!("unknown nvapi enum value {:?}", tag),
+            };
+            (id, value)
+        }
+        self.into_iter().map(map_tagged::<<Self as IntoIterator>::Item>)
+    }
+
+    fn into_vec(self) -> Vec<<Self as IntoIterator>::Item> {
+        self.into_iter().collect()
+    }
+
+    fn into_map(self) -> BTreeMap<<<Self as IntoIterator>::Item as TaggedData>::Id, <Self as IntoIterator>::Item> where
+        <Self as IntoIterator>::Item: TaggedData,
+        <<Self as IntoIterator>::Item as TaggedData>::Repr: fmt::Debug,
+    {
+        self.tagged().into_iter().collect()
+    }
+}
+
+impl<T: IntoIterator> TaggedIterator for T { }
+
+pub(crate) type MappedList<T> = Vec<T>;
+
+#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, PartialOrd, Ord, Hash, zerocopy::FromBytes)]
+#[repr(transparent)]
+pub struct NvData<T> {
+    sys: T,
+}
+
+impl<T> NvData<T> {
+    pub const fn with_sys(sys: T) -> Self {
+        Self {
+            sys,
+        }
+    }
+
+    pub const fn with_sys_ref(sys: &T) -> &Self {
+        unsafe {
+            transmute(sys)
+        }
+    }
+
+    pub fn with_sys_mut(sys: &mut T) -> &mut Self {
+        unsafe {
+            transmute(sys)
+        }
+    }
+
+    pub const fn sys(&self) -> &T {
+        &self.sys
+    }
+
+    pub fn sys_mut(&mut self) -> &mut T {
+        &mut self.sys
+    }
+
+    pub fn into_sys(self) -> T {
+        self.sys
+    }
+}
+
+impl<T> TaggedData for NvData<T> where T: TaggedData {
+    type Repr = <T as TaggedData>::Repr;
+    type Id = <T as TaggedData>::Id;
+
+    fn tag(&self) -> Self::Repr {
+        <T as TaggedData>::tag(self.sys())
+    }
+}
+
+impl<T: VersionedStructField> VersionedStructField for NvData<T> {
+    fn nvapi_version_ref(&self) -> &NvVersion {
+        self.sys().nvapi_version_ref()
+    }
+
+    fn nvapi_version_mut(&mut self) -> &mut NvVersion {
+        self.sys_mut().nvapi_version_mut()
+    }
+}
+
+impl<const N: u16, T: StructVersion<N>> StructVersion<N> for NvData<T> where
+    Self: VersionedStruct,
+{
+    const NVAPI_VERSION: NvVersion = T::NVAPI_VERSION;
+    const API: Api = T::API;
+    const API_SET: Option<Api> = T::API_SET;
+    type Storage = T::Storage;
+
+    /*fn storage_ref(storage: &Self::Storage) -> Option<&Self> {
+        T::storage_ref(storage).map(Self::with_sys_ref)
+    }
+
+    fn storage_mut(storage: &mut Self::Storage) -> Option<&mut Self> {
+        T::storage_mut(storage).map(Self::with_sys_mut)
+    }*/
+}
+
+impl<T> From<T> for NvData<T> {
+    fn from(sys: T) -> Self {
+        Self::with_sys(sys)
+    }
+}
+
+impl<'a, T> From<&'a T> for &'a NvData<T> {
+    fn from(sys: &'a T) -> Self {
+        NvData::with_sys_ref(sys)
+    }
+}
+
+impl<'a, T> From<&'a mut T> for &'a mut NvData<T> {
+    fn from(sys: &'a mut T) -> Self {
+        NvData::with_sys_mut(sys)
+    }
+}
+
+pub trait IsNvData: self::sealed::Sealed {
+    type Data;
+
+    fn sys(&self) -> &Self::Data;
+}
+
+impl<T> IsNvData for NvData<T> {
+    type Data = T;
+
+    fn sys(&self) -> &Self::Data {
+        NvData::<T>::sys(self)
+    }
+}
+
+impl<T> self::sealed::Sealed for NvData<T> { }
+
+pub(crate) mod sealed {
+    pub trait Sealed { }
 }

@@ -1,48 +1,109 @@
-use std::collections::BTreeMap;
-use std::convert::Infallible;
-use std::{iter, slice, fmt};
 use crate::sys::gpu::{clock, power};
-use crate::sys;
 #[cfg(feature = "serde")]
 use serde::{Serialize, Deserialize};
-use log::trace;
-use crate::sys::BoolU32;
-use crate::sys::clock_mask::{ClockMask, ClockMaskIter};
-use crate::gpu::VfpInfo;
-use crate::types::{Kilohertz, Kilohertz2, KilohertzDelta, Kilohertz2Delta, Percentage, Percentage1000, Microvolts, Range, RawConversion};
+use crate::pstate::UtilizationDomain;
+use crate::types::{Kilohertz, KilohertzDelta, Percentage, Percentage1000, Microvolts, Range, NvData, NvValue, Tagged};
 
-pub use sys::gpu::clock::PublicClockId as ClockDomain;
-pub use sys::gpu::clock::private::PerfLimitId;
-pub use sys::gpu::power::private::{PerfFlags, PowerTopologyChannelId};
+pub use crate::sys::ClockMask;
+pub use crate::sys::gpu::clock::PublicClockId as ClockDomain;
+pub use crate::sys::gpu::pstate::VoltageInfoDomain as VoltageDomain;
+pub use crate::sys::gpu::clock::private::{PerfLimitId, ClockLockMode};
+pub use crate::sys::gpu::power::private::{PerfFlags, PowerTopologyChannelId as PowerTopologyChannel, PowerPolicyId};
 
-impl RawConversion for clock::NV_GPU_CLOCK_FREQUENCIES {
-    type Target = BTreeMap<ClockDomain, Kilohertz>;
-    type Error = Infallible;
+nvwrap! {
+    pub type ClockFrequencyV1 = NvData<clock::NV_GPU_CLOCK_FREQUENCIES_DOMAIN> {
+        pub frequency: Kilohertz {
+            @get fn(&self) {
+                Kilohertz(self.sys().frequency)
+            },
+        },
+    };
+}
 
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        Ok(ClockDomain::values().filter(|&c| c != ClockDomain::Undefined)
-            .map(|id| (id, &self.domain[id.repr() as usize]))
-            .filter(|&(_, ref clock)| clock.bIsPresent.get())
-            .map(|(id, clock)| (id, Kilohertz(clock.frequency)))
-            .collect()
-        )
+pub type ClockFrequency = ClockFrequencyV1;
+
+nvwrap! {
+    pub enum ClockFrequencies {
+        V1(ClockFrequenciesV1 {
+            @type = NvData<clock::NV_GPU_CLOCK_FREQUENCIES_V1> {
+                pub clock_type@set(set_clock_type): NvValue<clock::ClockFrequencyType> {
+                    @get fn(&self) {
+                        self.sys().ClockType()
+                    },
+                    @set fn self value {
+                        self.sys_mut().set_ClockType(value)
+                    },
+                },
+                pub frequencies: @iter(Tagged<NvValue<ClockDomain>, ClockFrequencyV1>) {
+                    @into fn into_frequencies(self) {
+                        self.into_sys().domain().map(Tagged::from)
+                    },
+                },
+            },
+        }),
+    }
+
+    impl @StructVersion for ClockFrequencies { }
+    impl @IntoIterator(into_frequencies() -> Tagged<NvValue<ClockDomain>, ClockFrequency>) for ClockFrequencies { }
+
+    impl ClockFrequencies {
+        pub fn into_frequencies(@iter self) -> Tagged<NvValue<ClockDomain>, ClockFrequency>;
     }
 }
 
-impl RawConversion for clock::private::NV_USAGES_INFO {
-    type Target = BTreeMap<crate::pstate::UtilizationDomain, Percentage>;
-    type Error = sys::ArgumentRangeError;
+nvwrap! {
+    pub enum Usage {
+        V1(UsageV1 {
+            @type = NvData<clock::private::NV_USAGES_INFO_USAGE> {
+                pub percentage: Percentage {
+                    @get fn(&self) {
+                        Percentage(self.sys().percentage)
+                    },
+                },
+            },
+        }),
+    }
 
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        self.usages.iter().enumerate()
+    impl @TaggedFrom(NvValue<UtilizationDomain>) for Usage { }
+
+    impl Usage {
+        pub fn percentage(&self) -> Percentage;
+    }
+}
+
+nvwrap! {
+    pub enum Usages {
+        V1(UsagesV1 {
+            @type = NvData<clock::private::NV_USAGES_INFO_V1> {
+                pub utilization: @iter(Tagged<NvValue<UtilizationDomain>, UsageV1>) {
+                    @into fn into_utilizations(self) {
+                        self.into_sys().usages().map(Tagged::from)
+                    },
+                },
+            },
+        }),
+    }
+
+    impl @StructVersion for Usages { }
+    impl @IntoIterator(into_utilizations() -> Tagged<NvValue<UtilizationDomain>, Usage>) for Usages { }
+
+    impl Usages {
+        pub fn into_utilizations(@iter self) -> Tagged<NvValue<UtilizationDomain>, Usage>;
+    }
+}
+
+/*nvconv! {
+    fn try_from(info: &clock::private::NV_USAGES_INFO_V1) -> Result<Utilization, sys::ArgumentRangeError> {
+        let utilization = info.usages.iter().enumerate()
             .filter(|&(_, ref usage)| usage.bIsPresent.get())
-            .map(|(i, usage)| crate::pstate::UtilizationDomain::try_from(i as i32)
+            .map(|(i, usage)| crate::pstate::UtilizationDomain::from_repr(i as _)
                 .and_then(|i| Percentage::from_raw(usage.percentage).map(|p| (i, p)))
-            ).collect()
+            ).collect::<Result<_, _>>()?;
+        Ok(Self {
+            utilization,
+        })
     }
-}
+}*/
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
@@ -52,19 +113,7 @@ pub enum VfpMaskType {
     Unknown,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
-pub struct VfpMask {
-    pub mask: ClockMask,
-    pub types: Vec<VfpMaskType>,
-}
-
-impl VfpMask {
-    pub fn iter(&self) -> <&Self as IntoIterator>::IntoIter {
-        self.into_iter()
-    }
-}
-
+/*
 impl<'a> IntoIterator for &'a VfpMask {
     type Item = (usize, VfpMaskType);
     type IntoIter = iter::Zip<ClockMaskIter<'a>, iter::Cloned<slice::Iter<'a, VfpMaskType>>>;
@@ -73,691 +122,756 @@ impl<'a> IntoIterator for &'a VfpMask {
         self.mask.iter().zip(self.types.iter().cloned())
     }
 }
+*/
 
-impl RawConversion for clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK {
-    type Target = VfpMaskType;
-    type Error = sys::ArgumentRangeError;
-
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        match *self {
-            clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK {
-                memDelta: 1, gpuDelta: 0, unknown,
-            } => Ok(VfpMaskType::Memory),
-            clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK {
-                memDelta: 0, gpuDelta: 1, unknown,
-            } => Ok(VfpMaskType::Graphics),
-            clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK {
-                memDelta: 0, gpuDelta: 0, unknown,
-            } => Ok(VfpMaskType::Unknown),
-            _ => Err(sys::ArgumentRangeError),
-        }
-    }
-}
-
-impl RawConversion for clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO {
-    type Target = VfpMask;
-    type Error = sys::ArgumentRangeError;
-
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        // TODO: validate everything else is 0!
-
-        Ok(VfpMask {
-            mask: self.mask,
-            types: self.mask.iter()
-                .filter_map(|i| self.clocks.get(i))
-                .map(RawConversion::convert_raw)
-                .collect::<Result<_, _>>()?,
-        })
-    }
-}
-
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
-pub struct ClockTable {
-    pub delta_points: BTreeMap<ClockDomain, Vec<(usize, KilohertzDelta)>>,
-}
-
-impl ClockTable {
-    pub fn from_raw(raw: &clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL, info: &VfpInfo) -> crate::Result<Self> {
-        Ok(Self {
-            delta_points: info.domains.domains.iter()
-                .map(|d| info.index(d.domain, &raw.points[..])
-                    .map(|(i, p)| p.convert_raw().map(|p| (i, p))).collect::<Result<_, _>>()
-                    .map(|p| (d.domain, p))
-                ).collect::<Result<_, _>>()?,
-        })
-    }
-}
-
-impl RawConversion for clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_CONTROL_V1 {
-    type Target = KilohertzDelta;
-    type Error = sys::ArgumentRangeError;
-
-    #[allow(non_snake_case)]
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        match *self {
-            clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_CONTROL_V1 {
-                clock_type, freqDeltaKHz, unknown0, unknown1,
-            } => Ok(freqDeltaKHz.into()),
-            _ => Err(sys::ArgumentRangeError),
-        }
-    }
-}
-
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
-pub struct ClockRange {
-    pub domain: ClockDomain,
-    pub range: Range<Kilohertz2Delta>,
-    pub vfp_index: Range<usize>,
-}
-
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
-pub struct ClockDomainInfo {
-    pub domains: Vec<ClockRange>,
-}
-
-impl ClockDomainInfo {
-    pub fn get(&self, domain: ClockDomain) -> Option<&ClockRange> {
-        self.domains.iter()
-            .find(|d| d.domain == domain)
-    }
-}
-
-impl RawConversion for clock::private::NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_ENTRY {
-    type Target = ClockRange;
-    type Error = sys::ArgumentRangeError;
-
-    #[allow(non_snake_case)]
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        match *self {
-            clock::private::NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_ENTRY {
-                disabled: BoolU32(0), clockType, rangeMax, rangeMin, vfpIndexMin, vfpIndexMax,
-                unknown0, unknown1, padding,
-            } => Ok(ClockRange {
-                domain: ClockDomain::try_from(clockType)?,
-                range: Range {
-                    max: Kilohertz2Delta(rangeMax),
-                    min: Kilohertz2Delta(rangeMin),
+nvwrap! {
+    pub enum VfpMaskClock {
+        V1(VfpMaskClockV1 {
+            @type = NvData<clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK> {
+                pub kind: Option<VfpMaskType> {
+                    @get fn(&self) {
+                        match self.sys() {
+                            clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK {
+                                memDelta: 1, gpuDelta: 0, unknown: _,
+                            } => Some(VfpMaskType::Memory),
+                            clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK {
+                                memDelta: 0, gpuDelta: 1, unknown: _,
+                            } => Some(VfpMaskType::Graphics),
+                            clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_CLOCK {
+                                memDelta: 0, gpuDelta: 0, unknown: _,
+                            } => Some(VfpMaskType::Unknown),
+                            _ => None,
+                        }
+                    },
                 },
-                vfp_index: Range {
-                    min: vfpIndexMin as usize,
-                    max: vfpIndexMax as usize,
-                },
-            }),
-            _ => Err(sys::ArgumentRangeError),
-        }
+            },
+        }),
     }
 }
 
-impl RawConversion for clock::private::NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO {
-    type Target = ClockDomainInfo;
-    type Error = sys::ArgumentRangeError;
+nvwrap! {
+    pub enum VfpMask {
+        V1(VfpMaskV1 {
+            @type = NvData<clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_INFO_V1> {
+                pub mask: ClockMask {
+                    @get fn(&self) {
+                        self.sys().mask
+                    },
+                },
+                pub clocks: @iter(VfpMaskClockV1) {
+                    @into fn into_clocks(self) {
+                        self.into_sys().into_clocks().map(Into::into)
+                    },
+                },
+            },
+        }),
+    }
 
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        let domains = self.mask.index(&self.clocks[..])
+    impl @StructVersion for VfpMask { }
+    impl @IntoIterator(into_clocks() -> VfpMaskClock) for VfpMask { }
+
+    impl VfpMask {
+        pub fn into_clocks(@iter self) -> VfpMaskClock;
+    }
+}
+
+nvwrap! {
+    pub enum ClockTablePoint {
+        V1(ClockTablePointV1 {
+            @type = NvData<clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_CONTROL_V1> {
+                pub unknown: u32 {
+                    @get fn(&self) {
+                        self.sys().clock_type
+                    },
+                },
+                pub offset: KilohertzDelta {
+                    @get fn(&self) {
+                        self.sys().freqDeltaKHz.into()
+                    },
+                },
+            },
+        }),
+    }
+
+    impl ClockTablePoint {
+        pub fn offset(&self) -> KilohertzDelta;
+    }
+}
+
+nvwrap! {
+    pub enum ClockTable {
+        V1(ClockTableV1 {
+            @type = NvData<clock::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_CONTROL_V1> {
+                pub mask: ClockMask {
+                    @get fn(&self) {
+                        self.sys().mask
+                    },
+                },
+                pub points: @iter(ClockTablePointV1) {
+                    @into fn into_points(self) {
+                        self.into_sys().into_points().map(Into::into)
+                    },
+                },
+            },
+        }),
+    }
+
+    impl @StructVersion for ClockTable { }
+    impl @IntoIterator(into_points() -> ClockTablePoint) for ClockTable { }
+
+    impl ClockTable {
+        pub fn into_points(@iter self) -> ClockTablePoint;
+    }
+}
+
+nvwrap! {
+    pub enum ClockRange {
+        V1(ClockRangeV1 {
+            @type = NvData<clock::private::NV_GPU_CLOCK_CLIENT_CLK_DOMAIN_INFO> {
+                pub domain: NvValue<ClockDomain> {
+                    @sys(clockType),
+                },
+                pub range: Range<KilohertzDelta> {
+                    @get fn(&self) {
+                        Range {
+                            max: KilohertzDelta(self.sys().rangeMax),
+                            min: KilohertzDelta(self.sys().rangeMin),
+                        }
+                    },
+                },
+                pub index_range: Range<usize> {
+                    @get fn(&self) {
+                        Range {
+                            min: self.sys().vfpIndexMin as usize,
+                            max: self.sys().vfpIndexMax as usize,
+                        }
+                    },
+                },
+            },
+        }),
+    }
+
+    impl @TaggedData for ClockRange { }
+    impl @TaggedFrom(NvValue<ClockDomain>) for ClockRange { }
+}
+
+nvwrap! {
+    pub enum VfpDomains {
+        V1(VfpDomainsV1 {
+            @type = NvData<clock::private::NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_V1> {
+                pub domains: @iter(Tagged<NvValue<ClockDomain>, ClockRangeV1>) {
+                    @into fn into_domains(self) {
+                        self.into_sys().clocks().map(Tagged::from)
+                    },
+                },
+            },
+        }),
+    }
+
+    impl @StructVersion for VfpDomains { }
+    impl @IntoIterator(into_domains() -> Tagged<NvValue<ClockDomain>, ClockRange>) for VfpDomains { }
+
+    impl VfpDomains {
+        pub fn into_domains(@iter self) -> Tagged<NvValue<ClockDomain>, ClockRange>;
+    }
+        /*let domains = info.mask.index(&info.entries[..])
             .map(|(_i, v)| v)
-            .filter(|v| !v.disabled.get())
-            .map(RawConversion::convert_raw)
-            .collect::<Result<_, _>>()?;
-        Ok(ClockDomainInfo {
-            domains,
-        })
-    }
+            .filter(|v| v.disabled == 0)
+            .map(TryInto::try_into)
+            .collect::<Result<_, _>>()?;*/
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Default, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
-pub struct VfPoint<T> {
-    pub frequency: T,
-    pub voltage: Microvolts,
-}
-
-impl<T: Default + PartialEq> VfPoint<T> {
-    pub fn is_empty(&self) -> bool {
-        self.voltage.0 == 0 && self.frequency == Default::default()
-    }
-}
-
-impl<T> VfPoint<T> {
-    pub fn from_entry<U>(e: VfPoint<U>) -> Self where T: From<U> {
-        VfPoint {
-            frequency: e.frequency.into(),
-            voltage: e.voltage,
-        }
-    }
-}
-
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Default, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
-pub struct VfpEntry<K> {
-    /// 1 for idle values / low pstates? only populated for memory clocks
-    pub unknown: u32,
-    pub current: VfPoint<K>,
-    pub default: VfPoint<K>,
-    pub overclocked: VfPoint<K>,
-}
-
-impl<T> VfpEntry<T> {
-    pub fn from_entry<K>(e: VfpEntry<K>) -> Self where T: From<K> {
-        VfpEntry {
-            unknown: e.unknown,
-            current: VfPoint::from_entry(e.current),
-            default: VfPoint::from_entry(e.default),
-            overclocked: VfPoint::from_entry(e.overclocked),
-        }
-    }
-}
-
-impl<T: Default + PartialEq> VfpEntry<T> {
-    pub fn configured(&self) -> &VfPoint<T> {
-        match self.overclocked.is_empty() {
-            false => &self.overclocked,
-            true => &self.current,
-        }
-    }
-
-    pub fn default(&self) -> Option<&VfPoint<T>> {
-        match self.default.is_empty() {
-            false => Some(&self.default),
-            true => None,
-        }
-    }
-}
-
-impl<T: Default> From<VfPoint<T>> for VfpEntry<T> {
-    fn from(current: VfPoint<T>) -> Self {
-        Self {
-            unknown: 0,
-            current,
-            default: Default::default(),
-            overclocked: Default::default(),
-        }
-    }
-}
-
-impl RawConversion for power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINT {
-    type Target = VfPoint<u32>;
-    type Error = Infallible;
-
-    #[allow(non_snake_case)]
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        Ok(VfPoint {
-            frequency: self.freq_kHz,
-            voltage: Microvolts(self.voltage_uV),
-        })
-    }
-}
-
-impl RawConversion for power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V1 {
-    type Target = VfPoint<u32>;
-    type Error = sys::ArgumentRangeError;
-
-    #[allow(non_snake_case)]
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        match *self {
-            power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V1 {
-                clock_type, point, unknown,
-            } => point.convert_raw().map_err(Into::into),
-            _ => Err(sys::ArgumentRangeError),
-        }
-    }
-}
-
-impl RawConversion for power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V3 {
-    type Target = VfpEntry<u32>;
-    type Error = sys::ArgumentRangeError;
-
-    #[allow(non_snake_case)]
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        match *self {
-            power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V3 {
-                clock_type, point, point_default, point_overclocked, ..
-            } => Ok(VfpEntry {
-                unknown: clock_type,
-                current: point.convert_raw()?,
-                default: point_default.convert_raw()?,
-                overclocked: point_overclocked.convert_raw()?,
-            }),
-            _ => Err(sys::ArgumentRangeError),
-        }
-    }
-}
-
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
-pub struct VfpCurve {
-    pub points: BTreeMap<ClockDomain, Vec<(usize, VfpEntry<Kilohertz>)>>,
-}
-
-impl VfpCurve {
-    pub fn from_raw_v3(raw: &power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V3, info: &VfpInfo) -> crate::Result<Self> {
-        Ok(Self {
-            points: info.domains.domains.iter()
-                .map(|d| info.index(d.domain, &raw.points[..])
-                    .map(|(i, p)| p.convert_raw().map(|p| (i, VfpEntry::from_entry(p))))
-                    .collect::<Result<Vec<_>, _>>()
-                    .map(|p| (d.domain, p))
-                ).collect::<Result<_, _>>()?
-        })
-    }
-
-    pub fn from_raw_v1(raw: &power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V1, info: &VfpInfo) -> crate::Result<Self> {
-        Ok(Self {
-            points: info.domains.domains.iter()
-                .map(|d| info.index(d.domain, &raw.points[..])
-                    .map(|(i, p)| p.convert_raw().map(|p| (i, VfPoint::from_entry(p).into())))
-                    .collect::<Result<Vec<_>, _>>()
-                    .map(|p| (d.domain, p))
-                ).collect::<Result<_, _>>()?
-        })
-    }
-
-    pub fn from_raw(raw: &power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS, info: &VfpInfo) -> crate::Result<Self> {
-        Self::from_raw_v3(raw, info)
-    }
-}
-
-impl RawConversion for power::private::NV_GPU_CLIENT_VOLT_RAILS_STATUS_V1 {
-    type Target = Microvolts;
-    type Error = sys::ArgumentRangeError;
-
-    #[allow(non_snake_case)]
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        match *self {
-            power::private::NV_GPU_CLIENT_VOLT_RAILS_STATUS_V1 {
-                version: _, flags: 0, ref zero,
-                value_uV, ref unknown,
-            } if zero.all_zero() && unknown.all_zero() => Ok(Microvolts(value_uV)),
-            _ => Err(sys::ArgumentRangeError),
-        }
-    }
-}
-
-impl RawConversion for power::private::NV_GPU_CLIENT_VOLT_RAILS_CONTROL_V1 {
-    type Target = Percentage;
-    type Error = sys::ArgumentRangeError;
-
-    #[allow(non_snake_case)]
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        match *self {
-            power::private::NV_GPU_CLIENT_VOLT_RAILS_CONTROL {
-                version: _, percent, ref unknown,
-            } if unknown.all_zero() => Percentage::from_raw(percent),
-            _ => Err(sys::ArgumentRangeError),
-        }
-    }
-}
-
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
-pub struct PowerInfoEntry {
-    pub policy_id: power::private::NV_GPU_CLIENT_POWER_POLICIES_POLICY_ID,
-    pub range: Range<Percentage1000>,
-    pub default_limit: Percentage1000,
-}
-
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
-pub struct PowerInfo {
-    pub valid: bool,
-    pub entries: Vec<PowerInfoEntry>,
-}
-
-impl RawConversion for power::private::NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V1 {
-    type Target = PowerInfoEntry;
-    type Error = sys::ArgumentRangeError;
-
-    #[allow(non_snake_case)]
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        match *self {
-            power::private::NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V1 {
-                policy_id, min_power, def_power, max_power,
-                ..
-            } => Ok(PowerInfoEntry {
-                policy_id: policy_id.try_into()?,
-                range: Range {
-                    min: Percentage1000(min_power),
-                    max: Percentage1000(max_power),
+nvwrap! {
+    pub enum VfPoint {
+        V1(VfPointV1 {
+            @type = NvData<power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINT> {
+                pub frequency: Kilohertz {
+                    @get fn(&self) {
+                        Kilohertz(self.sys().freq_kHz)
+                    },
                 },
-                default_limit: Percentage1000(def_power),
-            }),
-            _ => Err(sys::ArgumentRangeError),
-        }
-    }
-}
-
-impl RawConversion for power::private::NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V2 {
-    type Target = PowerInfoEntry;
-    type Error = sys::ArgumentRangeError;
-
-    #[allow(non_snake_case)]
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        match *self {
-            power::private::NV_GPU_CLIENT_POWER_POLICIES_INFO_ENTRY_V2 {
-                policy_id, min_power, def_power, max_power,
-                ..
-            } => Ok(PowerInfoEntry {
-                policy_id: policy_id.try_into()?,
-                range: Range {
-                    min: Percentage1000(min_power),
-                    max: Percentage1000(max_power),
+                pub voltage: Microvolts {
+                    @get fn(&self) {
+                        Microvolts(self.sys().voltage_uV)
+                    },
                 },
-                default_limit: Percentage1000(def_power),
-            }),
-            _ => Err(sys::ArgumentRangeError),
+            },
+        }),
+    }
+
+    impl VfPoint {
+        pub fn frequency(&self) -> Kilohertz;
+        pub fn voltage(&self) -> Microvolts;
+    }
+}
+
+nvwrap! {
+    pub enum VfpEntry {
+        V3(VfpEntryV3 {
+            @type = NvData<power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V3> {
+                pub unknown: u32 {
+                    @get fn(&self) {
+                        self.sys().clock_type
+                    },
+                },
+                pub point: VfPointV1 {
+                    @get fn(&self) {
+                        self.sys().point.into()
+                    },
+                },
+                pub default_point: Option<VfPointV1> {
+                    @get fn(&self) {
+                        self.sys().point_default.to_option().map(Into::into)
+                    },
+                },
+                pub overclocked_point: Option<VfPointV1> {
+                    @get fn(&self) {
+                        self.sys().point_overclocked.to_option().map(Into::into)
+                    },
+                },
+            },
+        }),
+        V1(VfpEntryV1 {
+            @type = NvData<power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINT_STATUS_V1> {
+                pub unknown: u32 {
+                    @get fn(&self) {
+                        self.sys().clock_type
+                    },
+                },
+                pub point: VfPointV1 {
+                    @get fn(&self) {
+                        self.sys().point.into()
+                    },
+                },
+            },
+        }),
+    }
+
+    impl VfpEntry {
+        // 1 for idle values / low pstates? only populated for memory clocks
+        pub fn unknown(&self) -> u32;
+        pub fn point(&self) -> VfPoint;
+    }
+}
+
+impl VfpEntry {
+    pub fn default_point(&self) -> Option<VfPoint> {
+        match self {
+            Self::V3(entry) => entry.default_point().map(Into::into),
+            Self::V1(..) => None,
         }
     }
-}
 
-impl RawConversion for power::private::NV_GPU_CLIENT_POWER_POLICIES_INFO {
-    type Target = PowerInfo;
-    type Error = sys::ArgumentRangeError;
-
-    #[allow(non_snake_case)]
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        Ok(PowerInfo {
-            valid: self.valid != 0,
-            entries: self.entries().iter().map(RawConversion::convert_raw).collect::<Result<_, _>>()?,
-        })
-    }
-}
-
-impl RawConversion for power::private::NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_ENTRY {
-    type Target = (PowerTopologyChannelId, Percentage1000);
-    type Error = sys::ArgumentRangeError;
-
-    #[allow(non_snake_case)]
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        match *self {
-            power::private::NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_ENTRY {
-                channel, power, unknown0, unknown1,
-            } => Ok((channel.try_into()?, Percentage1000(power))),
-            _ => Err(sys::ArgumentRangeError),
+    pub fn overclocked_point(&self) -> Option<VfPoint> {
+        match self {
+            Self::V3(entry) => entry.overclocked_point().map(Into::into),
+            Self::V1(..) => None,
         }
     }
-}
 
-impl RawConversion for power::private::NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS {
-    type Target = BTreeMap<PowerTopologyChannelId, Percentage1000>;
-    type Error = sys::ArgumentRangeError;
-
-    #[allow(non_snake_case)]
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        self.entries().iter().map(RawConversion::convert_raw).collect()
+    pub fn configured_point(&self) -> VfPoint {
+        self.overclocked_point().unwrap_or(self.point())
     }
 }
 
-impl RawConversion for power::private::NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1 {
-    type Target = Percentage1000;
-    type Error = sys::ArgumentRangeError;
+nvwrap! {
+    pub enum VfpCurve {
+        V3(VfpCurveV3 {
+            @type = NvData<power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V3> {
+                pub mask: ClockMask {
+                    @get fn(&self) {
+                        self.sys().mask
+                    },
+                },
+                pub points: @iter(VfpEntryV3) {
+                    @into fn into_points(self) {
+                        self.into_sys().into_points().map(Into::into)
+                    },
+                },
+            },
+        }),
+        V1(VfpCurveV1 {
+            @type = NvData<power::private::NV_GPU_CLOCK_CLIENT_CLK_VF_POINTS_STATUS_V1> {
+                pub mask: ClockMask {
+                    @get fn(&self) {
+                        self.sys().mask
+                    },
+                },
+                pub points: @iter(VfpEntryV1) {
+                    @into fn into_points(self) {
+                        self.into_sys().into_points().map(Into::into)
+                    },
+                },
+            },
+        }),
+    }
 
-    #[allow(non_snake_case)]
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        match *self {
-            power::private::NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V1 {
-                policy_id, power_target, ..
-            } => Ok(Percentage1000(power_target)),
-            _ => Err(sys::ArgumentRangeError),
-        }
+    impl @StructVersion for VfpCurve { }
+    impl @IntoIterator(into_points() -> VfpEntry) for VfpCurve { }
+
+    impl VfpCurve {
+        pub fn mask(&self) -> ClockMask;
+        pub fn into_points(@iter self) -> VfpEntry;
     }
 }
 
-impl RawConversion for power::private::NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2 {
-    type Target = Percentage1000;
-    type Error = sys::ArgumentRangeError;
+nvwrap! {
+    pub enum VoltageRails {
+        V1(VoltageRailsV1 {
+            @type = NvData<power::private::NV_GPU_CLIENT_VOLT_RAILS_STATUS_V1> {
+                pub voltage: Microvolts {
+                    @sys(value_uV),
+                },
+            },
+        }),
+    }
 
-    #[allow(non_snake_case)]
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        match *self {
-            power::private::NV_GPU_CLIENT_POWER_POLICIES_STATUS_ENTRY_V2 {
-                policy_id, power_target, ..
-            } => Ok(Percentage1000(power_target)),
-            _ => Err(sys::ArgumentRangeError),
-        }
+    impl VoltageRails {
+        pub fn voltage(&self) -> Microvolts;
     }
 }
 
-impl RawConversion for power::private::NV_GPU_CLIENT_POWER_TOPOLOGY_INFO {
-    type Target = Vec<PowerTopologyChannelId>;
-    type Error = sys::ArgumentRangeError;
+nvwrap! {
+    pub enum VoltageSettings {
+        V1(VoltageSettingsV1 {
+            @type = NvData<power::private::NV_GPU_CLIENT_VOLT_RAILS_CONTROL_V1> {
+                pub core_voltage_boost@mut(core_voltage_boost_mut)@set(set_core_voltage_boost): Percentage {
+                    @sys(percent),
+                },
+            },
+        }),
+    }
 
-    #[allow(non_snake_case)]
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        self.channels().iter().copied()
-            .map(|raw| raw.try_into())
-            .collect()
+    impl VoltageSettings {
+        pub fn core_voltage_boost(&self) -> Percentage;
     }
 }
 
-impl RawConversion for power::private::NV_GPU_CLIENT_POWER_POLICIES_STATUS {
-    type Target = Vec<Percentage1000>;
-    type Error = sys::ArgumentRangeError;
+nvwrap! {
+    pub enum PowerInfoEntry {
+        V2(PowerInfoEntryV2 {
+            @type = NvData<power::private::NV_GPU_CLIENT_POWER_POLICY_INFO_V2> {
+                pub policy: NvValue<PowerPolicyId> {
+                    @sys(policy_id),
+                },
+                pub range: Range<Percentage1000> {
+                    @get fn(&self) {
+                        Range {
+                            min: Percentage1000(self.sys().min_power),
+                            max: Percentage1000(self.sys().max_power),
+                        }
+                    },
+                },
+                pub default_limit: Percentage1000 {
+                    @sys(def_power),
+                },
+            },
+        }),
+        V1(PowerInfoEntryV1 {
+            @type = NvData<power::private::NV_GPU_CLIENT_POWER_POLICY_INFO_V1> {
+                pub policy: NvValue<PowerPolicyId> {
+                    @sys(policy_id),
+                },
+                pub range: Range<Percentage1000> {
+                    @get fn(&self) {
+                        Range {
+                            min: Percentage1000(self.sys().min_power),
+                            max: Percentage1000(self.sys().max_power),
+                        }
+                    },
+                },
+                pub default_limit: Percentage1000 {
+                    @sys(def_power),
+                },
+            },
+        }),
+    }
 
-    #[allow(non_snake_case)]
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        self.entries[..self.count as usize].iter().map(RawConversion::convert_raw).collect()
+    impl @TaggedData for PowerInfoEntry { }
+
+    impl PowerInfoEntry {
+        pub fn policy(&self) -> NvValue<PowerPolicyId>;
+        pub fn range(&self) -> Range<Percentage1000>;
+        pub fn default_limit(&self) -> Percentage1000;
     }
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+nvwrap! {
+    pub enum PowerInfo {
+        V2(PowerInfoV2 {
+            @type = NvData<power::private::NV_GPU_CLIENT_POWER_POLICIES_INFO_V2> {
+                pub valid: bool {
+                    @get fn(&self) {
+                        self.sys().valid != 0
+                    },
+                },
+                pub entries: @iter(PowerInfoEntryV2) {
+                    @into fn into_entries(self) {
+                        self.into_sys().get_entries().into_iter().map(Into::into)
+                    },
+                },
+            },
+        }),
+        V1(PowerInfoV1 {
+            @type = NvData<power::private::NV_GPU_CLIENT_POWER_POLICIES_INFO_V1> {
+                pub valid: bool {
+                    @get fn(&self) {
+                        self.sys().valid != 0
+                    },
+                },
+                pub entries: @iter(PowerInfoEntryV1) {
+                    @into fn into_entries(self) {
+                        self.into_sys().get_entries().into_iter().map(Into::into)
+                    },
+                },
+            },
+        }),
+    }
+
+    impl @StructVersion for PowerInfo { }
+    impl @IntoIterator(into_entries() -> PowerInfoEntry) for PowerInfo { }
+
+    impl PowerInfo {
+        pub fn into_entries(@iter self) -> PowerInfoEntry;
+    }
+}
+
+nvwrap! {
+    pub enum PowerStatus {
+        V1(PowerStatusV1 {
+            @type = NvData<power::private::NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_ENTRY> {
+                pub channel: NvValue<PowerTopologyChannel> {
+                    @sys,
+                },
+                pub power: Percentage1000 {
+                    @sys,
+                },
+            },
+        }),
+    }
+
+    impl @TaggedData for PowerStatus { }
+
+    impl PowerStatus {
+        pub fn channel(&self) -> NvValue<PowerTopologyChannel>;
+        pub fn power(&self) -> Percentage1000;
+    }
+}
+
+nvwrap! {
+    pub enum PowerTopology {
+        V1(PowerTopologyV1 {
+            @type = NvData<power::private::NV_GPU_CLIENT_POWER_TOPOLOGY_STATUS_V1> {
+                pub entries: @iter(PowerStatusV1) {
+                    @into fn into_entries(self) {
+                        self.into_sys().get_entries().into_iter().map(Into::into)
+                    },
+                },
+            },
+        }),
+    }
+
+    impl @StructVersion for PowerTopology { }
+    impl @IntoIterator(into_entries() -> PowerStatus) for PowerTopology { }
+
+    impl PowerTopology {
+        pub fn into_entries(@iter self) -> PowerStatus;
+    }
+}
+
+nvwrap! {
+    pub enum PowerChannels {
+        V1(PowerChannelsV1 {
+            @type = NvData<power::private::NV_GPU_CLIENT_POWER_TOPOLOGY_INFO_V1> {
+                pub channels: @iter(NvValue<PowerTopologyChannel>) {
+                    @into fn into_channels(self) {
+                        self.into_sys().get_channels().into_iter()
+                    },
+                },
+            },
+        }),
+    }
+
+    impl @StructVersion for PowerChannels { }
+    impl @IntoIterator(into_channels() -> NvValue<PowerTopologyChannel>) for PowerChannels { }
+
+    impl PowerChannels {
+        pub fn into_channels(@iter self) -> NvValue<PowerTopologyChannel>;
+    }
+}
+
+nvwrap! {
+    pub enum PowerPolicyStatus {
+        V2(PowerPolicyStatusV2 {
+            @type = NvData<power::private::NV_GPU_CLIENT_POWER_POLICY_STATUS_V2> {
+                pub policy: NvValue<PowerPolicyId> {
+                    @sys(policy_id),
+                },
+                pub power_target: Percentage1000 {
+                    @sys,
+                },
+            },
+        }),
+        V1(PowerPolicyStatusV1 {
+            @type = NvData<power::private::NV_GPU_CLIENT_POWER_POLICY_STATUS_V1> {
+                pub policy: NvValue<PowerPolicyId> {
+                    @sys(policy_id),
+                },
+                pub power_target: Percentage1000 {
+                    @sys,
+                },
+            },
+        }),
+    }
+
+    impl @TaggedData for PowerPolicyStatus { }
+
+    impl PowerPolicyStatus {
+        pub fn policy(&self) -> NvValue<PowerPolicyId>;
+        pub fn power_target(&self) -> Percentage1000;
+    }
+}
+
+nvwrap! {
+    pub enum PowerPolicies {
+        V2(PowerPoliciesV2 {
+            @type = NvData<power::private::NV_GPU_CLIENT_POWER_POLICIES_STATUS_V2> {
+                pub entries: @iter(PowerPolicyStatusV2) {
+                    @into fn into_entries(self) {
+                        self.into_sys().get_entries().into_iter().map(Into::into)
+                    },
+                },
+            },
+        }),
+        V1(PowerPoliciesV1 {
+            @type = NvData<power::private::NV_GPU_CLIENT_POWER_POLICIES_STATUS_V1> {
+                pub entries: @iter(PowerPolicyStatusV1) {
+                    @into fn into_entries(self) {
+                        self.into_sys().get_entries().into_iter().map(Into::into)
+                    },
+                },
+            },
+        }),
+    }
+
+    impl @StructVersion for PowerPolicies { }
+    impl @IntoIterator(into_entries() -> PowerPolicyStatus) for PowerPolicies { }
+
+    impl PowerPolicies {
+        pub fn into_entries(@iter self) -> PowerPolicyStatus;
+    }
+}
+
+nvwrap! {
+    pub enum ClockLockEntry {
+        V2(ClockLockEntryV2 {
+            @type = NvData<clock::private::NV_GPU_PERF_CLIENT_LIMIT> {
+                pub id@mut(id_mut)@set(set_id): NvValue<PerfLimitId> {
+                    @sys,
+                },
+                pub domain@mut(domain_mut)@set(set_domain): NvValue<ClockDomain> {
+                    @sys(clock_id),
+                },
+                pub mode@mut(mode_mut)@set(set_mode): NvValue<ClockLockMode> {
+                    @sys,
+                },
+                pub value@set(set_value): Option<u32> {
+                    @get fn(&self) {
+                        match self.mode() {
+                            NvValue::<ClockLockMode>::None => None,
+                            _ => Some(self.sys().value),
+                        }
+                    },
+                    @set fn self value {
+                        let sys = self.sys_mut();
+                        sys.value = match value {
+                            Some(value) => value,
+                            None => {
+                                sys.mode = ClockLockMode::None.into();
+                                0
+                            },
+                        };
+                    },
+                },
+                pub voltage@set(set_voltage): Option<Microvolts> {
+                    @get fn(&self) {
+                        match self.mode() {
+                            NvValue::<ClockLockMode>::ManualVoltage => self.value().map(Microvolts),
+                            _ => None,
+                        }
+                    },
+                    @set fn(&mut self, voltage: Microvolts) {
+                        let sys = self.sys_mut();
+                        sys.mode = ClockLockMode::ManualVoltage.into();
+                        sys.value = voltage.0;
+                    },
+                },
+                pub frequency@set(set_frequency): Option<Kilohertz> {
+                    @get fn(&self) {
+                        match self.mode() {
+                            NvValue::<ClockLockMode>::ManualFrequency => self.value().map(Kilohertz),
+                            _ => None,
+                        }
+                    },
+                    @set fn(&mut self, frequency: Kilohertz) {
+                        let sys = self.sys_mut();
+                        sys.mode = ClockLockMode::ManualFrequency.into();
+                        sys.value = frequency.0;
+                    },
+                },
+            },
+        }),
+    }
+
+    impl @TaggedData for ClockLockEntry { }
+
+    impl ClockLockEntry {
+        pub fn id(&self) -> NvValue<PerfLimitId>;
+        pub fn domain(&self) -> NvValue<ClockDomain>;
+        pub fn mode(&self) -> NvValue<ClockLockMode>;
+        pub fn value(&self) -> Option<u32>;
+        pub fn voltage(&self) -> Option<Microvolts>;
+        pub fn frequency(&self) -> Option<Kilohertz>;
+    }
+}
+
+nvwrap! {
+    pub enum ClockLimits {
+        V2(ClockLimitsV2 {
+            @type = NvData<clock::private::NV_GPU_PERF_CLIENT_LIMITS_V2> {
+                pub entries: @iter(ClockLockEntryV2) {
+                    @into fn into_entries(self) {
+                        self.into_sys().get_entries().into_iter().map(Into::into)
+                    },
+                },
+            },
+        }),
+    }
+
+    impl @StructVersion for ClockLimits { }
+    impl @IntoIterator(into_entries() -> ClockLockEntry) for ClockLimits { }
+
+    impl ClockLimits {
+        pub fn into_entries(@iter self) -> ClockLockEntry;
+    }
+}
+
+/*#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
 pub enum ClockLockValue {
     Frequency(Kilohertz),
     Voltage(Microvolts),
-}
+}*/
 
-impl ClockLockValue {
-    pub fn value(&self) -> u32 {
-        match self {
-            ClockLockValue::Frequency(v) => v.0,
-            ClockLockValue::Voltage(v) => v.0,
-        }
+/*impl fmt::Display for ClockLockValue*/
+
+nvwrap! {
+    pub enum PerfInfo {
+        V1(PerfInfoV1 {
+            @type = NvData<power::private::NV_GPU_PERF_POLICIES_INFO_PARAMS_V1> {
+                pub max_unknown: u32 {
+                    @get fn(&self) {
+                        self.sys().maxUnknown
+                    },
+                },
+                pub limits: PerfFlags {
+                    @get fn(&self) {
+                        self.sys().limitSupport.truncate()
+                    },
+                },
+            },
+        }),
     }
 
-    pub fn voltage(&self) -> Option<Microvolts> {
-        match self {
-            &ClockLockValue::Voltage(v) => Some(v),
-            _ => None,
-        }
-    }
+    impl @StructVersion for PerfInfo { }
 
-    pub fn frequency(&self) -> Option<Kilohertz> {
-        match self {
-            &ClockLockValue::Frequency(v) => Some(v),
-            _ => None,
-        }
-    }
-
-    pub fn from_raw(raw: &clock::private::NV_GPU_PERF_CLIENT_LIMITS_ENTRY) -> Result<Option<Self>, sys::ArgumentRangeError> {
-        Ok(match clock::private::ClockLockMode::try_from(raw.mode)? {
-            clock::private::ClockLockMode::None =>
-                None,
-            clock::private::ClockLockMode::ManualVoltage =>
-                Some(ClockLockValue::Voltage(Microvolts(raw.value))),
-            clock::private::ClockLockMode::ManualFrequency =>
-                Some(ClockLockValue::Frequency(Kilohertz(raw.value))),
-            _ => return Err(sys::ArgumentRangeError),
-        })
+    impl PerfInfo {
+        pub fn limits(&self) -> PerfFlags;
     }
 }
 
-impl fmt::Display for ClockLockValue {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            ClockLockValue::Voltage(v) => fmt::Display::fmt(v, f),
-            ClockLockValue::Frequency(v) => fmt::Display::fmt(v, f),
-        }
+//limits: PerfFlags::from_bits(info.limitSupport).ok_or(sys::ArgumentRangeError)?,
+
+nvwrap! {
+    pub enum PerfStatus {
+        V1(PerfStatusV1 {
+            @type = NvData<power::private::NV_GPU_PERF_POLICIES_STATUS_PARAMS_V1> {
+                pub unknown: u32 {
+                    @get fn(&self) {
+                        self.sys().unknown
+                    },
+                },
+                pub limits: PerfFlags {
+                    @get fn(&self) {
+                        self.sys().limits.truncate()
+                    },
+                },
+            },
+        }),
+    }
+
+    impl @StructVersion for PerfStatus { }
+
+    impl PerfStatus {
+        pub fn limits(&self) -> PerfFlags;
     }
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
-pub struct ClockLockEntry {
-    pub limit: PerfLimitId,
-    pub lock_value: Option<ClockLockValue>,
-    pub clock: ClockDomain,
-}
+nvwrap! {
+    pub enum VoltageEntry {
+        V1(VoltageEntryV1 {
+            @type = NvData<power::private::NV_VOLT_TABLE_ENTRY> {
+                pub domain: NvValue<VoltageDomain> {
+                    @sys(voltage_domain),
+                },
+                pub voltage: Microvolts {
+                    @sys(voltage_uV),
+                },
+            },
+        }),
+    }
 
-impl RawConversion for clock::private::NV_GPU_PERF_CLIENT_LIMITS_ENTRY {
-    type Target = ClockLockEntry;
-    type Error = sys::ArgumentRangeError;
+    impl @TaggedData for VoltageEntry { }
 
-    #[allow(non_snake_case)]
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        match *self {
-            clock::private::NV_GPU_PERF_CLIENT_LIMITS_ENTRY {
-                id, mode, value, clock_id, ..
-            } => Ok(ClockLockEntry {
-                limit: id.try_into()?,
-                clock: clock_id.try_into()?,
-                lock_value: ClockLockValue::from_raw(self)?,
-            }),
-            _ => Err(sys::ArgumentRangeError),
-        }
+    impl VoltageEntry {
+        pub fn domain(&self) -> NvValue<VoltageDomain>;
+        pub fn voltage(&self) -> Microvolts;
     }
 }
 
-impl RawConversion for clock::private::NV_GPU_PERF_CLIENT_LIMITS {
-    type Target = Vec<ClockLockEntry>;
-    type Error = sys::ArgumentRangeError;
+nvwrap! {
+    pub enum VoltageTable {
+        V1(VoltageTableV1 {
+            @type = NvData<power::private::NV_VOLT_TABLE_V1> {
+                pub entries: @iter(VoltageEntryV1) {
+                    @into fn into_entries(self) {
+                        self.into_sys().get_entries().into_iter().map(Into::into)
+                    },
+                },
+            },
+        }),
+    }
 
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        if self.flags != 0 {
-            Err(sys::ArgumentRangeError)
-        } else {
-            self.entries().iter().map(RawConversion::convert_raw).collect()
-        }
+    impl @StructVersion for VoltageTable { }
+    impl @IntoIterator(into_entries() -> VoltageEntry) for VoltageTable { }
+
+    impl VoltageTable {
+        pub fn into_entries(@iter self) -> VoltageEntry;
     }
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
-pub struct PerfInfo {
-    pub max_unknown: u32,
-    pub limits: PerfFlags,
-}
-
-impl RawConversion for power::private::NV_GPU_PERF_POLICIES_INFO_PARAMS {
-    type Target = PerfInfo;
-    type Error = sys::ArgumentRangeError;
-
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        // TODO: check padding
-        Ok(PerfInfo {
-            max_unknown: self.maxUnknown,
-            limits: self.limitSupport.try_get()?,
-        })
+nvwrap! {
+    pub enum VoltageStatus {
+        V1(VoltageStatusV1 {
+            @type = NvData<power::private::NV_VOLT_STATUS_V1> {
+                pub voltage: Microvolts {
+                    @get fn(&self) {
+                        Microvolts(self.sys().value_uV)
+                    },
+                },
+            },
+        }),
     }
-}
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
-pub struct PerfStatus {
-    pub unknown: u32,
-    pub limits: PerfFlags,
-}
-
-impl RawConversion for power::private::NV_GPU_PERF_POLICIES_STATUS_PARAMS {
-    type Target = PerfStatus;
-    type Error = sys::ArgumentRangeError;
-
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        // TODO: check padding
-        match *self {
-            power::private::NV_GPU_PERF_POLICIES_STATUS_PARAMS {
-                flags: 0, limits, zero0: 0, unknown, zero1: 0, ..
-            } => Ok(PerfStatus {
-                unknown,
-                limits: limits.try_get()?,
-            }),
-            _ => Err(sys::ArgumentRangeError),
-        }
-    }
-}
-
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
-pub struct VoltageEntry {
-    pub voltage: Microvolts,
-}
-
-impl RawConversion for power::private::NV_VOLT_TABLE_ENTRY {
-    type Target = VoltageEntry;
-    type Error = Infallible;
-
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        Ok(VoltageEntry {
-            voltage: Microvolts(self.voltage_uV),
-        })
-    }
-}
-
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
-pub struct VoltageTable {
-    pub flags: u32,
-    pub entries: Vec<VoltageEntry>,
-}
-
-impl RawConversion for power::private::NV_VOLT_TABLE {
-    type Target = VoltageTable;
-    type Error = sys::ArgumentRangeError;
-
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        Ok(VoltageTable {
-            flags: self.flags,
-            entries: self.entries().iter().map(RawConversion::convert_raw).collect::<Result<_, _>>()?,
-        })
-    }
-}
-
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
-pub struct VoltageStatus {
-    pub flags: u32,
-    pub unknown0: u32,
-    pub voltage: Microvolts,
-    pub count: u32,
-}
-
-impl RawConversion for power::private::NV_VOLT_STATUS {
-    type Target = VoltageStatus;
-    type Error = sys::ArgumentRangeError;
-
-    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
-        trace!("convert_raw({:#?})", self);
-        Ok(VoltageStatus {
-            flags: self.flags,
-            count: self.count,
-            unknown0: self.unknown,
-            voltage: Microvolts(self.value_uV),
-        })
-    }
+    impl @StructVersion for VoltageStatus { }
 }

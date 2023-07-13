@@ -313,6 +313,12 @@ nvstruct! {
     }
 }
 
+impl Into<[u8; 16]> for NV_BOARD_INFO_V1 {
+    fn into(self) -> [u8; 16] {
+        self.BoardNum.data
+    }
+}
+
 nvversion! { NV_BOARD_INFO(NvAPI_GPU_GetBoardInfo):
     NV_BOARD_INFO_V1(1)
 }

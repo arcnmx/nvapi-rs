@@ -234,7 +234,7 @@ pub mod private {
 
     nvstruct! {
         #[derive(Default)]
-        pub struct NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_ENTRY {
+        pub struct NV_GPU_CLOCK_CLIENT_CLK_DOMAIN_INFO {
             pub disabled: BoolU32,
             pub clockType: NV_GPU_PUBLIC_CLOCK_ID,
             pub unknown0: Padding<[u32; 8]>,
@@ -247,20 +247,20 @@ pub mod private {
         }
     }
 
-    nvtag! { NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_ENTRY.clockType@clock_type: NV_GPU_PUBLIC_CLOCK_ID / PublicClockId @TaggedData }
+    nvtag! { NV_GPU_CLOCK_CLIENT_CLK_DOMAIN_INFO.clockType@clock_type: NV_GPU_PUBLIC_CLOCK_ID / PublicClockId @TaggedData }
 
     nvstruct! {
         pub struct NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_V1 {
             pub version: NvVersion,
             pub mask: ClockMask<1>,
             pub zero: Padding<[u32; 8]>,
-            pub clocks: Array<[NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_ENTRY; NVAPI_MAX_GPU_PUBLIC_CLOCKS]>,
+            pub clocks: Array<[NV_GPU_CLOCK_CLIENT_CLK_DOMAIN_INFO; NVAPI_MAX_GPU_PUBLIC_CLOCKS]>,
         }
     }
 
     nventries! { NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_V1.clocks
         @filter(/*|clock| !clock.disabled.get()*/)(into_clocks/set_clocks/clocks_mut):
-        [(NV_GPU_PUBLIC_CLOCK_ID, NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_ENTRY); NVAPI_MAX_GPU_PUBLIC_CLOCKS]
+        [(NV_GPU_PUBLIC_CLOCK_ID, NV_GPU_CLOCK_CLIENT_CLK_DOMAIN_INFO); NVAPI_MAX_GPU_PUBLIC_CLOCKS]
     }
 
     impl NV_GPU_CLOCK_CLIENT_CLK_DOMAINS_INFO_V1 {
@@ -349,7 +349,7 @@ pub mod private {
 
     nvstruct! {
         #[derive(Default)]
-        pub struct NV_GPU_PERF_CLIENT_LIMITS_ENTRY {
+        pub struct NV_GPU_PERF_CLIENT_LIMIT {
             pub id: NV_PERF_CLIENT_LIMIT_ID, // entry index
             pub b: u32, // 0
             pub mode: NV_GPU_CLOCK_LOCK_MODE, // 0 = default, 3 = manual voltage
@@ -360,7 +360,7 @@ pub mod private {
         }
     }
 
-    nvtag! { NV_GPU_PERF_CLIENT_LIMITS_ENTRY.id: NV_PERF_CLIENT_LIMIT_ID / PerfLimitId @TaggedData }
+    nvtag! { NV_GPU_PERF_CLIENT_LIMIT.id: NV_PERF_CLIENT_LIMIT_ID / PerfLimitId @TaggedData }
 
     nvstruct! {
         // 2-030c: 0C 03 02 00 00 00 00 00 01 00 00 00 06 00 00 00
@@ -368,12 +368,12 @@ pub mod private {
             pub version: NvVersion,
             pub flags: u32, // unknown, only see 0
             pub count: u32,
-            pub entries: Array<[NV_GPU_PERF_CLIENT_LIMITS_ENTRY; NVAPI_MAX_GPU_PERF_CLOCKS]>,
+            pub entries: Array<[NV_GPU_PERF_CLIENT_LIMIT; NVAPI_MAX_GPU_PERF_CLOCKS]>,
         }
     }
 
     nventries! { NV_GPU_PERF_CLIENT_LIMITS_V2.entries[..count]@(get_entries/set_entries/entries_mut):
-        [NV_GPU_PERF_CLIENT_LIMITS_ENTRY; NVAPI_MAX_GPU_PERF_CLOCKS]
+        [NV_GPU_PERF_CLIENT_LIMIT; NVAPI_MAX_GPU_PERF_CLOCKS]
     }
 
     nvversion! { NV_GPU_PERF_CLIENT_LIMITS(NvAPI_GPU_PerfClientLimitsGetStatus, NvAPI_GPU_PerfClientLimitsSetStatus):

@@ -916,12 +916,12 @@ macro_rules! nvversion {
             nvversion! { @impl StructVersion $target($ver)$api $latest($latest_ver) $oldest($oldest_ver) }
             nvversion! { @rest($defname)$api $name $latest($latest_ver) $oldest($oldest_ver) $target($ver)($($($rest)*)?) }
         )*
-        $(
+        /*$(
             impl StructVersionInfo<$ver> for $oldest {
                 type Struct = $target;
                 type Storage = $oldest;
             }
-        )*
+        )**/
         nvversion! { @type($defname) $latest $oldest }
     };
     (@rest($defname:tt)$api:tt $name:ident $latest:ident($latest_ver:literal) $oldest:ident($oldest_ver:literal) $target:ident($ver:literal)()) => {
@@ -954,6 +954,11 @@ macro_rules! nvversion {
     // this version is one of many
     (@impl StructVersion $target:ident($ver:literal)$api:tt $latest:ident($latest_ver:literal) $oldest:ident($oldest_ver:literal)) => {
         nvversion! { @impl StructVersion($ver)($oldest)$api $target(NvVersion::with_struct::<$target>($ver)) }
+
+        impl StructVersionInfo<$ver> for $oldest {
+            type Struct = $target;
+            type Storage = $oldest;
+        }
     };
     /* this version is not the latest
     (@impl StructVersion($t:literal) $target:ident($ver:literal) $latest:ident($latest_ver:literal)) => {
@@ -1030,7 +1035,7 @@ macro_rules! nvversion {
     (@type(_) $($rest:tt)*) => {
     };
     (@type($name:ident) $latest:ident $oldest:ident) => {
-        pub type $name = $latest;
+        pub type $name = $oldest;
     };
 }
 macro_rules! nventries {

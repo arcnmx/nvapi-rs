@@ -23,10 +23,11 @@ include = [
 nvapi-sys = { version = "0.2", path = "sys", default-features = false }
 serde = { version = "1", features = ["derive"], optional = true }
 i2c = { version = "0.1", optional = true }
-log = "0.4"
+log = { version = "0.4", optional = true }
+zerocopy = "0.6"
 
 [features]
-default = ["serde"]
+default = []
 serde = ["dep:serde", "nvapi-sys/serde"]
 
 [workspace]

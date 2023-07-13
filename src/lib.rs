@@ -29,7 +29,7 @@ pub use gsync::*;
 #[cfg(feature = "i2c")]
 pub use i2c_impl::*;
 
-pub use sys::Status;
+pub use sys::{Status, Api, ArgumentRangeError};
 /// The result of a fallible NVAPI call.
 pub type Result<T> = std::result::Result<T, Error>;
 /// The result of a fallible NVAPI call.

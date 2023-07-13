@@ -25,4 +25,4 @@ once_cell = "^1.12.0"
 
 [features]
 serde = ["dep:serde", "nvapi/serde"]
-default = ["serde"]
+default = []

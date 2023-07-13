@@ -43,6 +43,7 @@ dependencies = [
  "log",
  "nvapi-sys",
  "serde",
+ "zerocopy",
 ]
 
 [[package]]

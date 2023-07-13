@@ -137,7 +137,7 @@ pub mod private {
 
     nvstruct! {
         #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
-        pub struct NV_GPU_CLIENT_THERMAL_POLICIES_INFO_ENTRY_V2 {
+        pub struct NV_GPU_CLIENT_THERMAL_POLICY_INFO_V2 {
             pub policy_id: NV_GPU_CLIENT_THERMAL_POLICIES_POLICY_ID,
             pub unknown: u32,
             pub minTemp: i32,
@@ -147,7 +147,7 @@ pub mod private {
         }
     }
 
-    nvtag! { NV_GPU_CLIENT_THERMAL_POLICIES_INFO_ENTRY_V2.policy_id: NV_GPU_CLIENT_THERMAL_POLICIES_POLICY_ID / ThermalPolicyId @TaggedData }
+    nvtag! { NV_GPU_CLIENT_THERMAL_POLICY_INFO_V2.policy_id: NV_GPU_CLIENT_THERMAL_POLICIES_POLICY_ID / ThermalPolicyId @TaggedData }
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V2 {
@@ -155,12 +155,12 @@ pub mod private {
             pub count: u8,
             pub flags: u8,
             pub padding: Padding<[u8; 2]>,
-            pub policies: Array<[NV_GPU_CLIENT_THERMAL_POLICIES_INFO_ENTRY_V2; NVAPI_MAX_THERMAL_INFO_ENTRIES]>,
+            pub policies: Array<[NV_GPU_CLIENT_THERMAL_POLICY_INFO_V2; NVAPI_MAX_THERMAL_INFO_ENTRIES]>,
         }
     }
 
     nventries! { NV_GPU_CLIENT_THERMAL_POLICIES_INFO_V2.policies[..count]@(get_policies/set_policies/policies_mut):
-        [NV_GPU_CLIENT_THERMAL_POLICIES_INFO_ENTRY_V2; NVAPI_MAX_THERMAL_INFO_ENTRIES]
+        [NV_GPU_CLIENT_THERMAL_POLICY_INFO_V2; NVAPI_MAX_THERMAL_INFO_ENTRIES]
     }
 
     nvstruct! {
@@ -224,7 +224,7 @@ pub mod private {
 
     nvstruct! {
         #[derive(Hash, PartialOrd, Ord, PartialEq, Eq, Default)]
-        pub struct NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_ENTRY_V2 {
+        pub struct NV_GPU_CLIENT_THERMAL_POLICY_STATUS_V2 {
             pub policy_id: NV_GPU_CLIENT_THERMAL_POLICIES_POLICY_ID,
             /// shifted 8 bits
             pub temp_limit_C: u32,
@@ -232,18 +232,18 @@ pub mod private {
         }
     }
 
-    nvtag! { NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_ENTRY_V2.policy_id: NV_GPU_CLIENT_THERMAL_POLICIES_POLICY_ID / ThermalPolicyId @TaggedData }
+    nvtag! { NV_GPU_CLIENT_THERMAL_POLICY_STATUS_V2.policy_id: NV_GPU_CLIENT_THERMAL_POLICIES_POLICY_ID / ThermalPolicyId @TaggedData }
 
     nvstruct! {
         pub struct NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V2 {
             pub version: NvVersion,
             pub count: u32,
-            pub policies: Array<[NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_ENTRY_V2; NVAPI_MAX_THERMAL_LIMIT_ENTRIES]>,
+            pub policies: Array<[NV_GPU_CLIENT_THERMAL_POLICY_STATUS_V2; NVAPI_MAX_THERMAL_LIMIT_ENTRIES]>,
         }
     }
 
     nventries! { NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_V2.policies[..count]@(get_policies/set_policies/policies_mut):
-        [NV_GPU_CLIENT_THERMAL_POLICIES_STATUS_ENTRY_V2; NVAPI_MAX_THERMAL_LIMIT_ENTRIES]
+        [NV_GPU_CLIENT_THERMAL_POLICY_STATUS_V2; NVAPI_MAX_THERMAL_LIMIT_ENTRIES]
     }
 
     nvstruct! {
