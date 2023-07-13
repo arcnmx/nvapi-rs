@@ -122,7 +122,7 @@ pub trait StructVersionInfo<const VER: u16> {
     type Storage: VersionedStructField;
 }
 
-pub trait StructVersion<const VER: u16>: VersionedStruct {
+pub trait StructVersion<const VER: u16>: VersionedStruct + std::fmt::Debug {
     const NVAPI_VERSION: NvVersion;
     const API: Api;
     const API_SET: Option<Api>;

@@ -811,6 +811,31 @@ macro_rules! nvapi {
             let $arg_cstr = $arg_cstr.as_ptr();
         )*
     };
+    (@log(out $res:ident $fn:ident) ($($arg_input:ident: $arg_input_ty:ty,)*) $args_out:tt) => {
+        #[cfg(feature = "log")] {
+            match &$res {
+                #[cfg(feature = "log-kv")]
+                &Err(e) => log::trace!(target: "nvapi_sys::api",
+                    err = log::as_error!(e);
+                    "{:?}{:?} = {:?}", crate::nvid::Api::$fn, ($(&$arg_input,)*), e.status
+                ),
+                #[cfg(feature = "log-kv")]
+                Ok(res) => log::trace!(target: "nvapi_sys::api",
+                    out = log::as_debug!(res)
+                    $(, $arg_input = log::as_debug!(&$arg_input))*;
+                    "{:?}{:?} = {:?}", crate::nvid::Api::$fn, ($(&$arg_input,)*), res
+                ),
+                #[cfg(not(feature = "log-kv"))]
+                &Err(e) => log::trace!(target: "nvapi_sys::api",
+                    "{:?}{:?} error: {}", crate::nvid::Api::$fn, ($(&$arg_input,)*), e
+                ),
+                #[cfg(not(feature = "log-kv"))]
+                Ok(res) => log::trace!(target: "nvapi_sys::api",
+                    "{:?}{:?} = {:?}", crate::nvid::Api::$fn, ($(&$arg_input,)*), res
+                ),
+            }
+        }
+    };
     (@parse_args(StructVersion)($args_notsv:tt ())
         $(#[$meta:meta])*
         (($rest_body:tt ($($unsafe:ident)?) $($rest:tt)*))
@@ -826,12 +851,14 @@ macro_rules! nvapi {
             pub $($unsafe)? fn call(&self $(, $arg_input: $arg_input_ty)*) -> $crate::Result<nvapi! { @out(return) $args_out }> {
                 nvapi! { @out(let out) $args_out $args_sv }
                 nvapi! { @cstr $args_cstr }
-                unsafe {
+                let res = unsafe {
                     self.nvapi($($arg),*)
                         //.to_error_result(Api::$fn)
                         .to_result()
                         .map(|()| out)
-                }
+                };
+                nvapi! { @log(out res $fn) ($($arg_input: $arg_input_ty,)*) $args_out }
+                res
             }
         }
     };
@@ -857,12 +884,14 @@ macro_rules! nvapi {
                 nvapi! { @out(let out) $args_out $args_sv }
                 nvapi! { @cstr $args_cstr }
                 let $sv_arg = nvapi!(@storage_ptr($sv_arg: *$sv_mut));
-                unsafe {
+                let res = unsafe {
                     self.nvapi($($arg),*)
                         //.to_error_result(Api::$fn)
                         .to_result()
                         .map(|()| out)
-                }
+                };
+                nvapi! { @log(out res $fn) ($($arg_input: $arg_input_ty,)*) $args_out }
+                res
             }
         }
     };

@@ -29,6 +29,8 @@ zerocopy = "0.6"
 [features]
 default = []
 serde = ["dep:serde", "nvapi-sys/serde"]
+log = ["dep:log", "nvapi-sys/log"]
+log-kv = ["log?/kv_unstable", "nvapi-sys/log-kv"]
 
 [workspace]
 members = ["sys", "hi"]

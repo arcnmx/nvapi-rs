@@ -21,8 +21,11 @@ include = [
 [dependencies]
 nvapi = { version = "^0.2.0", path = "../", default-features = false }
 serde = { version = "^1.0.0", features = ["derive"], optional = true }
+log = { version = "0.4", optional = true }
 once_cell = "^1.12.0"
 
 [features]
 serde = ["dep:serde", "nvapi/serde"]
+log = ["dep:log", "nvapi/log"]
+log-kv = ["log?/kv_unstable", "nvapi/log-kv"]
 default = []
