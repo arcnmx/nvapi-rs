@@ -120,6 +120,7 @@ macro_rules! nvenum {
         #[allow(overflowing_literals)]
         #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
         #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+        #[non_exhaustive]
         #[repr(i32)]
         pub enum $enum_name {
             $(

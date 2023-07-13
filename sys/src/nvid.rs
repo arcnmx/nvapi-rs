@@ -9,6 +9,7 @@ macro_rules! nvapis {
     )*) => {
         #[repr(u32)]
         #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
+        #[non_exhaustive]
         pub enum Api {
         $(
             $(#[$($meta)*])*

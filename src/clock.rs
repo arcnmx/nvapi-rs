@@ -596,6 +596,7 @@ impl ClockLockValue {
                 Some(ClockLockValue::Voltage(Microvolts(raw.value))),
             clock::private::ClockLockMode::ManualFrequency =>
                 Some(ClockLockValue::Frequency(Kilohertz(raw.value))),
+            _ => return Err(sys::ArgumentRangeError),
         })
     }
 }
