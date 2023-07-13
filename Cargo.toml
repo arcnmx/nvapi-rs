@@ -28,6 +28,8 @@ log = "0.4"
 [features]
 default = ["serde"]
 serde = ["dep:serde", "nvapi-sys/serde"]
+log = ["nvapi-sys/log"]
+log-kv = ["log/kv_unstable", "nvapi-sys/log-kv"]
 
 [workspace]
 members = ["sys", "hi", "macros"]

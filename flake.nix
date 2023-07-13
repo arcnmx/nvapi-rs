@@ -103,6 +103,16 @@
         buildType = "debug";
         meta.name = "cargo test";
       };
+      test-features = { rustPlatform, outputs'devShells'plain, source }: rustPlatform.buildRustPackage {
+        pname = self.lib.crate.package.name;
+        inherit (self.lib.crate) cargoLock version;
+        inherit (outputs'devShells'plain.override { enableRust = false; }) buildInputs nativeBuildInputs;
+        src = source;
+        cargoBuildFeatures = [ "serde" "log" ];
+        cargoTestFlags = [ "--workspace" "--all-targets" ];
+        buildType = "debug";
+        meta.name = "cargo test --features serde,log";
+      };
       windows = { outputs'checks'test, rust-w64 }: rust-w64.releases."1.72.1".rustPlatform.buildRustPackage {
         inherit (outputs'checks'test) pname version src buildType cargoBuildNoDefaultFeatures cargoTestFlags;
         inherit (self.lib.crate) cargoLock;

@@ -28,8 +28,11 @@ libc = "0.2"
 bitflags = "1"
 serde = { version = "1", features = ["derive"], optional = true }
 zerocopy = "0.6"
+log = { version = "0.4", optional = true }
 nvapi-macros = { version = "0.1", path = "../macros" }
 
 [features]
 default = ["serde"]
 serde = ["dep:serde"]
+log = ["dep:log"]
+log-kv = ["log?/kv_unstable", "log?/kv_unstable_std"]

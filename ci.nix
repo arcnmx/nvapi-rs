@@ -12,7 +12,7 @@ in {
       nixpkgs = "23.05";
     };
     tasks = {
-      build.inputs = singleton checks.test;
+      build.inputs = [ checks.test checks.test-features ];
     };
     jobs = {
       nixos = {
