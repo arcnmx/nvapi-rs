@@ -40,9 +40,9 @@ pub struct GpuInfo {
     pub name: String,
     pub codename: String,
     pub bios_version: String,
-    pub driver_model: DriverModel,
+    pub driver_model: Option<DriverModel>,
     pub bus: BusInfo,
-    pub memory: MemoryInfo,
+    pub memory: Option<MemoryInfo>,
     pub system_type: SystemType,
     pub gpu_type: GpuType,
     pub arch: ArchInfo,
@@ -108,7 +108,7 @@ impl From<ClockRange> for VfpRange {
 pub struct GpuStatus {
     pub pstate: PState,
     pub clocks: ClockFrequencies,
-    pub memory: MemoryInfo,
+    pub memory: Option<MemoryInfo>,
     pub pcie_lanes: Option<u32>,
     pub ecc: EccStatus,
     pub voltage: Option<Microvolts>,
@@ -176,9 +176,9 @@ impl Gpu {
             name: self.gpu.full_name()?,
             codename: self.gpu.short_name()?,
             bios_version: self.gpu.vbios_version_string()?,
-            driver_model: self.gpu.driver_model()?,
+            driver_model: allowable_result(self.gpu.driver_model())?.ok(),
             bus: allowable_result_fallback(self.gpu.bus_info(), Default::default())?,
-            memory: self.gpu.memory_info()?,
+            memory: allowable_result(self.gpu.memory_info())?.ok(),
             ecc: EccInfo {
                 enabled_by_default: allowable_result_fallback(
                     self.gpu.ecc_configuration().map(|(_enabled, enabled_by_default)| enabled_by_default),
@@ -238,7 +238,7 @@ impl Gpu {
         Ok(GpuStatus {
             pstate: self.gpu.current_pstate()?,
             clocks: self.gpu.clock_frequencies(ClockFrequencyType::Current)?,
-            memory: self.gpu.memory_info()?,
+            memory: allowable_result(self.gpu.memory_info())?.ok(),
             pcie_lanes: match self.gpu.bus_type() {
                 Ok(BusType::PciExpress) => allowable_result_fallback(self.gpu.pcie_lanes().map(Some), None)?,
                 _ => None,
