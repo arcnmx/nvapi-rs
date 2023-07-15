@@ -458,7 +458,7 @@ pub mod private {
         }
     }
 
-    nvversion! { NV_VOLT_STATUS(NvAPI_GPU_GetVoltageDomainsStatus, NvAPI_GPU_GetVoltageStep):
+    nvversion! { NV_VOLT_STATUS(NvAPI_GPU_GetVoltageDomainsStatus/*, NvAPI_GPU_GetVoltageStep*/):
         NV_VOLT_STATUS_V1(1) = 140
     }
 
