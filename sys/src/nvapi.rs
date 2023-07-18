@@ -32,7 +32,7 @@ pub fn nvapi_QueryInterface(id: u32) -> crate::Result<usize> {
 #[cfg(target_os = "linux")]
 pub fn nvapi_QueryInterface(id: u32) -> crate::Result<usize> {
     use libc::{RTLD_LAZY, RTLD_LOCAL, dlopen, dlsym};
-    use std::os::raw::{c_char, c_int};
+    use std::os::raw::c_char;
     use std::mem;
 
     unsafe {

@@ -223,9 +223,9 @@ nvstruct! {
         /// ID of the voltage domain
         pub domainId: NV_GPU_PERF_VOLTAGE_INFO_DOMAIN_ID,
         pub bIsEditable: BoolU32,
-        /// Current base voltage settings in [uV]
+        /// Current base voltage settings in \[uV\]
         pub volt_uV: u32,
-        /// Current base voltage delta from nominal settings in [uV]
+        /// Current base voltage delta from nominal settings in \[uV\]
         pub voltDelta_uV: NV_GPU_PERF_PSTATES20_PARAM_DELTA,
     }
 }
@@ -250,7 +250,7 @@ nvstruct! {
 nvstruct! {
     /// Used in NvAPI_GPU_GetPstates20() interface call.
     pub struct NV_GPU_PERF_PSTATES20_INFO_V1 {
-        /// Version info of the structure (NV_GPU_PERF_PSTATES20_INFO_VER<n>)
+        /// Version info of the structure (`NV_GPU_PERF_PSTATES20_INFO_VER<n>`)
         pub version: NvVersion,
         pub bIsEditable: BoolU32,
         /// Number of populated pstates

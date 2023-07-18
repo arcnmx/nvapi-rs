@@ -22,13 +22,13 @@ nvenum_display! {
 }
 
 nvstruct! {
-    /// Used in NvAPI_GPU_GetAllClockFrequencies()
+    /// Used in [NvAPI_GPU_GetAllClockFrequencies]\(\)
     pub struct NV_GPU_CLOCK_FREQUENCIES_V1 {
         /// Structure version
         pub version: NvVersion,
         /// These bits are reserved for future use.
         ///
-        /// bits:2 is NV_GPU_CLOCK_FREQUENCIES_CLOCK_TYPE. Used to specify the type of clock to be returned.
+        /// `bits:2` is [NV_GPU_CLOCK_FREQUENCIES_CLOCK_TYPE]. Used to specify the type of clock to be returned.
         pub reserved: u32,
         pub domain: Array<[NV_GPU_CLOCK_FREQUENCIES_DOMAIN; NVAPI_MAX_GPU_PUBLIC_CLOCKS]>,
     }
@@ -49,7 +49,7 @@ nvversion! { NV_GPU_CLOCK_FREQUENCIES_V1(2) }
 nvversion! { @=NV_GPU_CLOCK_FREQUENCIES NV_GPU_CLOCK_FREQUENCIES_V1(3) }
 
 nvenum! {
-    /// Used in NvAPI_GPU_GetAllClockFrequencies()
+    /// Used in [NvAPI_GPU_GetAllClockFrequencies]\(\)
     pub enum NV_GPU_CLOCK_FREQUENCIES_CLOCK_TYPE / ClockFrequencyType {
         NV_GPU_CLOCK_FREQUENCIES_CURRENT_FREQ / Current = 0,
         NV_GPU_CLOCK_FREQUENCIES_BASE_CLOCK / Base = 1,
@@ -74,14 +74,14 @@ nvstruct! {
 nvapi! {
     pub type GPU_GetAllClockFrequenciesFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pClkFreqs: *mut NV_GPU_CLOCK_FREQUENCIES) -> NvAPI_Status;
 
-    /// This function retrieves the NV_GPU_CLOCK_FREQUENCIES structure for the specified physical GPU.
+    /// This function retrieves the [NV_GPU_CLOCK_FREQUENCIES] structure for the specified physical GPU.
     ///
     /// For each clock domain:
     /// - bIsPresent is set for each domain that is present on the GPU
     /// - frequency is the domain's clock freq in kHz
     ///
     /// Each domain's info is indexed in the array.  For example:
-    /// clkFreqs.domain[NVAPI_GPU_PUBLIC_CLOCK_MEMORY] holds the info for the MEMORY domain.
+    /// `clkFreqs.domain[NVAPI_GPU_PUBLIC_CLOCK_MEMORY]` holds the info for the MEMORY domain.
     pub unsafe fn NvAPI_GPU_GetAllClockFrequencies;
 }
 
@@ -132,8 +132,9 @@ pub mod private {
     nvapi! {
         pub type GPU_GetAllClocksFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pClocksInfo: *mut NV_CLOCKS_INFO) -> NvAPI_Status;
 
-        /// Undocumented function. Probably deprecated and replaced with NvAPI_GPU_GetAllClockFrequencies()
+        /// Undocumented function. Probably deprecated and replaced with [NvAPI_GPU_GetAllClockFrequencies()](super::NvAPI_GPU_GetAllClockFrequencies)
         ///
+        /// ```
         /// memory_clock = clocks[8] * 0.001f;
         ///
         /// if clocks[30] != 0 {
@@ -143,6 +144,7 @@ pub mod private {
         /// core_clock = clocks[0] * 0.001f
         /// shader_clock = clocks[14] * 0.001f
         /// }
+        /// ```
         pub unsafe fn NvAPI_GPU_GetAllClocks;
     }
 
