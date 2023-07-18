@@ -73,6 +73,61 @@ impl PhysicalGpu {
             .with_api(Api::NvAPI_GetDriverModel)
     }
 
+    pub fn system_type(&self) -> NvapiResult<NvValue<SystemType>> {
+        self.handle().GetSystemType()
+            .with_api(Api::NvAPI_GPU_GetSystemType)
+    }
+
+    pub fn gpu_type(&self) -> NvapiResult<NvValue<GpuType>> {
+        self.handle().GetGPUType()
+            .with_api(Api::NvAPI_GPU_GetGPUType)
+    }
+
+    pub fn foundry(&self) -> NvapiResult<NvValue<Foundry>> {
+        self.handle().GetFoundry()
+            .with_api(Api::NvAPI_GPU_GetFoundry)
+    }
+
+    pub fn core_count(&self) -> NvapiResult<u32> {
+        self.handle().GetGpuCoreCount()
+            .with_api(Api::NvAPI_GPU_GetGpuCoreCount)
+    }
+
+    pub fn shader_pipe_count(&self) -> NvapiResult<u32> {
+        self.handle().GetShaderPipeCount()
+            .with_api(Api::NvAPI_GPU_GetShaderPipeCount)
+    }
+
+    pub fn shader_sub_pipe_count(&self) -> NvapiResult<u32> {
+        self.handle().GetShaderSubPipeCount()
+            .with_api(Api::NvAPI_GPU_GetShaderSubPipeCount)
+    }
+
+    pub fn ram_type(&self) -> NvapiResult<NvValue<RamType>> {
+        self.handle().GetRamType()
+            .with_api(Api::NvAPI_GPU_GetRamType)
+    }
+
+    pub fn ram_maker(&self) -> NvapiResult<NvValue<RamMaker>> {
+        self.handle().GetRamMaker()
+            .with_api(Api::NvAPI_GPU_GetRamMaker)
+    }
+
+    pub fn ram_bus_width(&self) -> NvapiResult<u32> {
+        self.handle().GetRamBusWidth()
+            .with_api(Api::NvAPI_GPU_GetRamBusWidth)
+    }
+
+    pub fn ram_bank_count(&self) -> NvapiResult<u32> {
+        self.handle().GetRamBankCount()
+            .with_api(Api::NvAPI_GPU_GetRamBankCount)
+    }
+
+    pub fn ram_partition_count(&self) -> NvapiResult<u32> {
+        self.handle().GetPartitionCount()
+            .with_api(Api::NvAPI_GPU_GetPartitionCount)
+    }
+
     pub fn gpu_id(&self) -> NvapiResult<u32> {
         self.handle().GetGPUID()
             .with_api(Api::NvAPI_GetGPUIDfromPhysicalGPU)
@@ -86,24 +141,44 @@ impl PhysicalGpu {
             })
     }
 
+    pub fn bus_type(&self) -> NvapiResult<NvValue<BusType>> {
+        self.handle().GetBusType()
+            .with_api(Api::NvAPI_GPU_GetBusType)
+    }
+
+    pub fn bus_id(&self) -> NvapiResult<u32> {
+        self.handle().GetBusId()
+            .with_api(Api::NvAPI_GPU_GetBusId)
+    }
+
+    pub fn bus_slot_id(&self) -> NvapiResult<u32> {
+        self.handle().GetBusSlotId()
+            .with_api(Api::NvAPI_GPU_GetBusSlotId)
+    }
+
+    pub fn irq(&self) -> NvapiResult<u32> {
+        self.handle().GetIRQ()
+            .with_api(Api::NvAPI_GPU_GetIRQ)
+    }
+
+    pub fn current_pcie_downstream_width(&self) -> NvapiResult<u32> {
+        self.handle().GetCurrentPCIEDownstreamWidth()
+            .with_api(Api::NvAPI_GPU_GetCurrentPCIEDownstreamWidth)
+    }
+
     pub fn bus_info(&self) -> NvapiResult<BusInfo> {
-        let bus_type = self.handle().GetBusType()
-            .with_api(Api::NvAPI_GPU_GetBusType)?;
+        let bus_type = self.bus_type()?;
         Ok(BusInfo {
-            irq: self.handle().GetIRQ()
-                .with_api(Api::NvAPI_GPU_GetIRQ)?,
-            id: self.handle().GetBusId()
-                .with_api(Api::NvAPI_GPU_GetBusId)?,
-            slot_id: self.handle().GetBusSlotId()
-                .with_api(Api::NvAPI_GPU_GetBusSlotId)?,
+            irq: self.irq()?,
+            id: self.bus_id()?,
+            slot_id: self.bus_slot_id()?,
             bus: match bus_type {
                 NvValue::<BusType>::Pci => Bus::Pci {
                     ids: self.pci_identifiers()?,
                 },
                 NvValue::<BusType>::PciExpress => Bus::PciExpress {
                     ids: self.pci_identifiers()?,
-                    lanes: self.handle().GetCurrentPCIEDownstreamWidth()
-                        .with_api(Api::NvAPI_GPU_GetCurrentPCIEDownstreamWidth)?,
+                    lanes: self.current_pcie_downstream_width()?,
                 },
                 ty => Bus::Other(ty),
             },

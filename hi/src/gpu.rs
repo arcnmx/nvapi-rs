@@ -12,7 +12,7 @@ use nvapi::{self,
     BaseVoltage, PStates, ClockRange/*, VfpInfo*/,
     ThermalLimit, ThermalPolicyId/*, PffStatus*/,
     Error, ArgumentRangeError,
-    Api, NvapiResultExt,
+    NvValue, Api, NvapiResultExt,
 };
 pub use nvapi::{
     PhysicalGpu,
@@ -217,7 +217,7 @@ impl Gpu {
         };
 
         Ok(GpuInfo {
-            id: self.id(),
+            id: allowable_result_fallback(self.gpu.gpu_id().map(|id| id as usize), self.id())?,
             name: self.gpu.full_name()?,
             codename: self.gpu.short_name()?,
             bios_version: self.gpu.vbios_version_string()?,
@@ -231,43 +231,43 @@ impl Gpu {
                 )?,
                 info: allowable_result_fallback(self.gpu.ecc_status(), Default::default())?,
             },
-            system_type: allowable_result_fallback(self.gpu.handle().GetSystemType().with_api(Api::NvAPI_GPU_GetSystemType)
+            system_type: allowable_result_fallback(self.gpu.system_type()
                 .and_then(|v|
                     v.try_get().with_api(Api::NvAPI_GPU_GetSystemType)
                 ),
                 SystemType::Unknown
             )?,
-            gpu_type: allowable_result_fallback(self.gpu.handle().GetGPUType().with_api(Api::NvAPI_GPU_GetGPUType)
+            gpu_type: allowable_result_fallback(self.gpu.gpu_type()
                 .and_then(|v|
                     v.try_get().with_api(Api::NvAPI_GPU_GetGPUType)
                 ),
                 GpuType::Unknown
             )?,
             arch: allowable_result_fallback(self.gpu.architecture().map_err(Into::into).and_then(TryInto::try_into), Default::default())?,
-            ram_type: allowable_result_fallback(self.gpu.handle().GetRamType().with_api(Api::NvAPI_GPU_GetRamType)
+            ram_type: allowable_result_fallback(self.gpu.ram_type()
                 .and_then(|v|
                     v.try_get().with_api(Api::NvAPI_GPU_GetRamType)
                 ),
                 RamType::Unknown
             )?,
-            ram_maker: allowable_result_fallback(self.gpu.handle().GetRamMaker().with_api(Api::NvAPI_GPU_GetRamMaker)
+            ram_maker: allowable_result_fallback(self.gpu.ram_maker()
                 .and_then(|v|
                     v.try_get().with_api(Api::NvAPI_GPU_GetRamMaker)
                 ),
                 RamMaker::Unknown
             )?,
-            ram_bus_width: allowable_result_fallback(self.gpu.handle().GetRamBusWidth().with_api(Api::NvAPI_GPU_GetRamBusWidth), 0)?,
-            ram_bank_count: allowable_result_fallback(self.gpu.handle().GetRamBankCount().with_api(Api::NvAPI_GPU_GetRamBankCount), 0)?,
-            ram_partition_count: allowable_result_fallback(self.gpu.handle().GetPartitionCount().with_api(Api::NvAPI_GPU_GetPartitionCount), 0)?,
-            foundry: allowable_result_fallback(self.gpu.handle().GetFoundry().with_api(Api::NvAPI_GPU_GetFoundry)
+            ram_bus_width: allowable_result_fallback(self.gpu.ram_bus_width(), 0)?,
+            ram_bank_count: allowable_result_fallback(self.gpu.ram_bank_count(), 0)?,
+            ram_partition_count: allowable_result_fallback(self.gpu.ram_partition_count(), 0)?,
+            foundry: allowable_result_fallback(self.gpu.foundry()
                 .and_then(|v|
                     v.try_get().with_api(Api::NvAPI_GPU_GetFoundry)
                 ),
                 Foundry::Unknown
             )?,
-            core_count: self.gpu.handle().GetGpuCoreCount().with_api(Api::NvAPI_GPU_GetGpuCoreCount)?,
-            shader_pipe_count: self.gpu.handle().GetShaderPipeCount().with_api(Api::NvAPI_GPU_GetShaderPipeCount)?,
-            shader_sub_pipe_count: self.gpu.handle().GetShaderSubPipeCount().with_api(Api::NvAPI_GPU_GetShaderSubPipeCount)?,
+            core_count: self.gpu.core_count()?,
+            shader_pipe_count: self.gpu.shader_pipe_count()?,
+            shader_sub_pipe_count: self.gpu.shader_sub_pipe_count()?,
             base_clocks: self.gpu.clock_frequencies(ClockFrequencyType::Base)?,
             boost_clocks: self.gpu.clock_frequencies(ClockFrequencyType::Boost)?,
             sensors: match allowable_result(self.gpu.thermal_settings(None))? {
@@ -314,8 +314,8 @@ impl Gpu {
             pstate: self.gpu.current_pstate().and_then(|ps| ps.try_into().with_api(Api::NvAPI_GPU_GetCurrentPstate))?,
             clocks: self.gpu.clock_frequencies(ClockFrequencyType::Current)?,
             memory: allowable_result(self.gpu.memory_info())?,
-            pcie_lanes: match self.gpu.handle().GetBusType().with_api(Api::NvAPI_GPU_GetBusType) {
-                Ok(nvapi::NvValue::<BusType>::PciExpress) => allowable_result(self.gpu.handle().GetCurrentPCIEDownstreamWidth().with_api(Api::NvAPI_GPU_GetCurrentPCIEDownstreamWidth))?,
+            pcie_lanes: match self.gpu.bus_type() {
+                Ok(NvValue::<BusType>::PciExpress) => allowable_result(self.gpu.current_pcie_downstream_width())?,
                 _ => None,
             },
             ecc: EccStatus {
