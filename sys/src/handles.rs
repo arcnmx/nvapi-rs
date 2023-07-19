@@ -75,6 +75,11 @@ nv_declare_handle! {
     Nv3DVPGlassesHandle
 }
 
+nv_declare_handle! {
+    /// A handle for NVPCF clients
+    NvPcfClientHandle
+}
+
 /// A stereo handle, that corresponds to the device interface
 pub type StereoHandle = *const c_void;
 

@@ -118,15 +118,28 @@ nvstruct! {
     pub struct NV_DISPLAY_DRIVER_INFO_V1 {
         /// Structure Version.
         pub version: NvVersion,
-        /// Contains the driver version after successful return.
+        /// the driver version
         pub driverVersion: u32,
-        /// Contains the driver-branch string after successful return.
+        /// the driver-branch string
         pub szBuildBranch: NvAPI_ShortString,
         pub flags: NV_DISPLAY_DRIVER_INFO_FLAGS,
     }
 }
 
-nvversion! { @=NV_DISPLAY_DRIVER_INFO NV_DISPLAY_DRIVER_INFO_V1(1) }
+nvstruct! {
+    pub struct NV_DISPLAY_DRIVER_INFO_V2 {
+        pub v1: NV_DISPLAY_DRIVER_INFO_V1,
+        /// the driver base branch string
+        pub szBuildBaseBranch: NvAPI_ShortString,
+        /// Reserved for future use
+        pub reservedEx: u32,
+    }
+}
+
+nvinherit! { NV_DISPLAY_DRIVER_INFO_V2(v1: NV_DISPLAY_DRIVER_INFO_V1) }
+
+nvversion! { @=NV_DISPLAY_DRIVER_INFO NV_DISPLAY_DRIVER_INFO_V2(2) }
+nvversion! { NV_DISPLAY_DRIVER_INFO_V1(1) }
 
 nvapi! {
     /// This API will return information related to the NVIDIA Display Driver.

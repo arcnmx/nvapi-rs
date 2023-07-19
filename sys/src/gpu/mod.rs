@@ -256,6 +256,13 @@ nvapi! {
     pub unsafe fn NvAPI_GPU_GetBoardInfo(hPhysicalGpu: NvPhysicalGpuHandle, pBoardInfo: *mut NV_BOARD_INFO) -> NvAPI_Status;
 }
 
+nvapi! {
+    pub type GPU_GetRamBusWidthFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pBusWidth: *mut u32) -> NvAPI_Status;
+
+    /// This function returns the width of the GPU's RAM memory bus.
+    pub unsafe fn NvAPI_GPU_GetRamBusWidth;
+}
+
 nvbits! {
     /// Bit masks for knowing the exact reason for performance decrease
     ///
@@ -685,13 +692,6 @@ pub mod private {
 
         /// Undocumented function.
         pub unsafe fn NvAPI_GPU_GetRamMaker;
-    }
-
-    nvapi! {
-        pub type GPU_GetRamBusWidthFn = extern "C" fn(hPhysicalGPU: NvPhysicalGpuHandle, pRamBusWidth: *mut u32) -> NvAPI_Status;
-
-        /// Undocumented function.
-        pub unsafe fn NvAPI_GPU_GetRamBusWidth;
     }
 
     nvapi! {
