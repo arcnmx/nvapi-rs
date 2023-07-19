@@ -3,6 +3,8 @@
 use crate::prelude_::*;
 use std::os::raw::c_char;
 
+pub(crate) type LUID = (u32, i32);
+
 nvapi! {
     pub type EnumNvidiaDisplayHandleFn = extern "C" fn(thisEnum: u32, pNvDispHandle: *mut handles::NvDisplayHandle) -> NvAPI_Status;
 
@@ -115,4 +117,82 @@ nvapi! {
 nvapi! {
     /// This API gets HDR tonemapping method for the display.
     pub unsafe fn NvAPI_Disp_GetHdrToneMapping(displayId: u32, pHdrTonemapping: *mut NV_HDR_TONEMAPPING_METHOD) -> NvAPI_Status;
+}
+
+nvstruct! {
+    pub struct NV_DISPLAY_ID_INFO_DATA_V1 {
+        /// Structure version
+        pub version: NvVersion,
+        /// Locally unique ID (LUID) of the display adapter on which the given display is present.
+        pub adapterId: LUID,
+        /// The target identifier of the given display. This is also called AdapterRelativeId.
+        pub targetId: u32,
+        /// Reserved for future use.
+        pub reserved: Padding<[u32; 4]>,
+    }
+}
+
+nvversion! { @=NV_DISPLAY_ID_INFO_DATA NV_DISPLAY_ID_INFO_DATA_V1(1) }
+
+nvapi! {
+    /// This API returns information related to the given displayId.
+    ///
+    /// It returns adapterId and targetId (AdapterRelativeId) corresponding to the given displayId.
+    ///
+    /// If the displayId is part of a display grid (Mosaic/Surround), then every displayId that is part of the same display grid
+    /// outputs the same (adapterId, targetId) pair, and no other displayId outputs this pair.
+    /// Otherwise, the (adapterId, targetId) pair is unique to this displayId.
+    pub unsafe fn NvAPI_Disp_GetDisplayIdInfo(displayId: u32, pDisplayIdInfoData: *mut NV_DISPLAY_ID_INFO_DATA) -> NvAPI_Status;
+}
+
+nvstruct! {
+    pub struct NV_TARGET_INFO_DATA_V1 {
+        /// Structure version
+        pub version: NvVersion,
+        /// Locally unique ID (LUID) of the display adapter on which the target is presnt.
+        pub adapterId: LUID,
+        /// The target identifier. This is also called AdapterRelativeId.
+        pub targetId: u32,
+        /// An array of displayIds corresponding to the input adapterId and targetId.
+        ///
+        /// If the input (targetId, adapterId) pair is a display grid (Mosaic/Surround)
+        /// then the output contains the displayId of every display that is part of the display grid.
+        /// Otherwise, it contains exactly one displayId.
+        ///
+        /// These displayId values are unique to this (targetId, adapterId) pair.
+        pub displayId: Array<[u32; NVAPI_MAX_DISPLAYS]>,
+        /// The number of displays returned in displayId array.
+        pub displayIdCount: u32,
+        /// Reserved for future use.
+        pub reserved: Padding<[u32; 4]>,
+    }
+}
+
+nvversion! { @=NV_TARGET_INFO_DATA NV_TARGET_INFO_DATA_V1(1) }
+
+nvapi! {
+    /// This API returns displayId(s) corresponding to the given target.
+    ///
+    /// If the input (targetId, adapterId) pair is a display grid (Mosaic/Surround), then the output contains the displayId of every display
+    /// that is part of the display grid. Otherwise, it contains exactly one displayId.
+    ///
+    /// These displayId values are unique to this (targetId, adapterId) pair.
+    pub unsafe fn NvAPI_Disp_GetDisplayIdsFromTarget(displayId: u32, pTargetInfoData: *mut NV_TARGET_INFO_DATA) -> NvAPI_Status;
+}
+
+nvstruct! {
+    pub struct NV_GET_VRR_INFO_V1 {
+        /// Structure version
+        pub version: NvVersion,
+        /// Set if VRR Mode is currently enabled on given display.
+        pub bIsVRREnabled: BoolU32,
+        pub reservedEx: Padding<[u32; 4]>,
+    }
+}
+
+nvversion! { @=NV_GET_VRR_INFO NV_GET_VRR_INFO_V1(1) }
+
+nvapi! {
+    /// This API returns Variable Refresh Rate(VRR) information for the given display ID.
+    pub unsafe fn NvAPI_Disp_GetVRRInfo(displayId: u32, pVrrInfo: *mut NV_GET_VRR_INFO) -> NvAPI_Status;
 }

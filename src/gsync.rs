@@ -72,6 +72,7 @@ pub struct GSyncCapabilities {
     pub board_id: u32,
     pub revision: u32,
     pub extended_revision: u32,
+    pub max_mul_div: Option<u32>,
 }
 
 impl RawConversion for gsync::NV_GSYNC_CAPABILITIES_V1 {
@@ -95,6 +96,18 @@ impl RawConversion for gsync::NV_GSYNC_CAPABILITIES_V2 {
         self.v1.convert_raw().map(|v1| GSyncCapabilities {
             extended_revision: self.extendedRevision,
             .. v1
+        })
+    }
+}
+
+impl RawConversion for gsync::NV_GSYNC_CAPABILITIES_V3 {
+    type Target = GSyncCapabilities;
+    type Error = Infallible;
+
+    fn convert_raw(&self) -> Result<Self::Target, Self::Error> {
+        self.v2.convert_raw().map(|v2| GSyncCapabilities {
+            max_mul_div: self.maxMulDiv(),
+            .. v2
         })
     }
 }

@@ -50,10 +50,34 @@ nvstruct! {
     }
 }
 
+nvstruct! {
+    pub struct NV_GSYNC_CAPABILITIES_V3 {
+        pub v2: NV_GSYNC_CAPABILITIES_V2,
+        /// Indicates if multiplication/division of the frequency of house sync signal is supported.
+        pub bIsMulDivSupported: BoolU32,
+        /// This parameter returns the maximum possible value that can be programmed
+        /// for multiplying / dividing house sync.
+        ///
+        /// Only valid if bIsMulDivSupported is set to 1.
+        pub maxMulDivValue: u32,
+    }
+}
+
+impl NV_GSYNC_CAPABILITIES_V3 {
+    pub fn maxMulDiv(&self) -> Option<u32> {
+        match self.bIsMulDivSupported.get() {
+            true => Some(self.maxMulDivValue),
+            false => None,
+        }
+    }
+}
+
 nvinherit! { NV_GSYNC_CAPABILITIES_V2(v1: NV_GSYNC_CAPABILITIES_V1) }
+nvinherit! { NV_GSYNC_CAPABILITIES_V3(v2: NV_GSYNC_CAPABILITIES_V2) }
 
 nvversion! { NV_GSYNC_CAPABILITIES_V1(1) }
-nvversion! { @=NV_GSYNC_CAPABILITIES NV_GSYNC_CAPABILITIES_V2(2) }
+nvversion! { NV_GSYNC_CAPABILITIES_V2(2) }
+nvversion! { @=NV_GSYNC_CAPABILITIES NV_GSYNC_CAPABILITIES_V3(3) }
 
 nvapi! {
     pub type GSync_QueryCapabilitiesFn = extern "C" fn(hNvGSyncDevice: NvGSyncDeviceHandle, pNvGSyncCapabilities: *mut NV_GSYNC_CAPABILITIES) -> NvAPI_Status;
@@ -207,7 +231,7 @@ nvversion! { @NV_GSYNC_DELAY(1) }
 
 nvstruct! {
     /// Used in [NvAPI_GSync_GetControlParameters]\(\) and [NvAPI_GSync_SetControlParameters]\(\).
-    pub struct NV_GSYNC_CONTROL_PARAMS {
+    pub struct NV_GSYNC_CONTROL_PARAMS_V1 {
         /// Version of the structure
         pub version: NvVersion,
         /// Leading edge / Falling edge / both
@@ -226,7 +250,33 @@ nvstruct! {
     }
 }
 
-nvversion! { @NV_GSYNC_CONTROL_PARAMS(1) }
+nvenum! {
+    /// Used in [NV_GSYNC_CONTROL_PARAMS].
+    pub enum NVAPI_GSYNC_MULTIPLY_DIVIDE_MODE / GSyncMultiplyDivideMode {
+        NVAPI_GSYNC_UNDEFINED_MODE / Undefined = 0,
+        NVAPI_GSYNC_MULTIPLY_MODE / Multiply = 1,
+        NVAPI_GSYNC_DIVIDE_MODE / Divide = 2,
+    }
+}
+
+nvstruct! {
+    pub struct NV_GSYNC_CONTROL_PARAMS_V2 {
+        pub v1: NV_GSYNC_CONTROL_PARAMS_V1,
+        /// Indicates multiplier/divider mode for the housesync signal.
+        ///
+        /// While setting multiplyDivideMode, source needs to be set as [NVAPI_GSYNC_SYNC_SOURCE_HOUSESYNC].
+        pub multiplyDivideMode: NVAPI_GSYNC_MULTIPLY_DIVIDE_MODE,
+        /// Indicates the multiplier/divider value for the housesync signal.
+        ///
+        /// Only supported if bIsMulDivSupported field of the structure [NV_GSYNC_CAPABILITIES] is set to 1.
+        pub multiplyDivideValue: u8,
+    }
+}
+
+nvinherit! { NV_GSYNC_CONTROL_PARAMS_V2(v1: NV_GSYNC_CONTROL_PARAMS_V1) }
+
+nvversion! { NV_GSYNC_CONTROL_PARAMS_V1(1) }
+nvversion! { @=NV_GSYNC_CONTROL_PARAMS NV_GSYNC_CONTROL_PARAMS_V2(2) }
 
 nvapi! {
     pub type GSync_GetControlParametersFn = extern "C" fn(hNvGSyncDevice: NvGSyncDeviceHandle, pGsyncControls: *mut NV_GSYNC_CONTROL_PARAMS) -> NvAPI_Status;
