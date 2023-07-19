@@ -131,7 +131,7 @@ nvstruct! {
         pub version: NvVersion,
         /// display identifier for displays.
         ///
-        /// The GPU to which it is connected, can be retireved from [NvAPI_SYS_GetPhysicalGpuFromDisplayId]
+        /// The GPU to which it is connected, can be retireved from [NvAPI_SYS_GetPhysicalGpuFromDisplayId](crate::sysgeneral::NvAPI_SYS_GetPhysicalGpuFromDisplayId)
         pub displayId: u32,
         /// Can this display be the master? (Read only)
         pub isMasterable: BoolU32,
@@ -288,7 +288,7 @@ nvapi! {
 nvapi! {
     pub type GSync_SetControlParametersFn = extern "C" fn(hNvGSyncDevice: NvGSyncDeviceHandle, pGsyncControls: *mut NV_GSYNC_CONTROL_PARAMS) -> NvAPI_Status;
 
-    /// This API sets control parameters as defined in [NV_SYNC_CONTROL_PARAMS].
+    /// This API sets control parameters as defined in [NV_GSYNC_CONTROL_PARAMS].
     pub unsafe fn NvAPI_GSync_SetControlParameters;
 }
 

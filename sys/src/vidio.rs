@@ -38,7 +38,7 @@ pub const NVVIO_VALID_ACCESSRIGHTS: u32 = NVVIO_O_READ | NVVIO_O_WRITE_EXCLUSIVE
 
 /// `VIO_DATA.ulOwnerID` high-bit is set only if device has been initialized by VIOAPI
 ///
-/// examined at [NvAPI_GetCapabilities]|[NvAPI_VIO_Open] to determine
+/// examined at NvAPI_GetCapabilities|[NvAPI_VIO_Open] to determine
 /// if settings need to be applied from registry or POR state read
 pub const NVVIO_OWNERID_INITIALIZED: u32 = 0x80000000;
 
