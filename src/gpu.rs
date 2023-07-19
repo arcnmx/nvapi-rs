@@ -83,7 +83,7 @@ impl PhysicalGpu {
     pub fn gpu_id(&self) -> crate::NvapiResult<u32> {
         trace!("gpu.gpu_id()");
         unsafe {
-            nvcall!(NvAPI_GetGPUIDFromPhysicalGPU@get(self.0))
+            nvcall!(NvAPI_GetGPUIDfromPhysicalGPU@get(self.0))
         }
     }
 

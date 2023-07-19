@@ -767,7 +767,7 @@ pub mod private {
     }
 
     nvapi! {
-        pub unsafe fn NvAPI_GetGPUIDFromPhysicalGPU(hPhysicalGpu: NvPhysicalGpuHandle, gpuid: *mut u32) -> NvAPI_Status;
+        pub unsafe fn NvAPI_GetGPUIDfromPhysicalGPU(hPhysicalGpu: NvPhysicalGpuHandle, gpuid: *mut u32) -> NvAPI_Status;
     }
 
     nvapi! {
