@@ -24,6 +24,9 @@ pub mod driverapi;
 
 pub mod sysgeneral;
 
+/// Video Input Output (VIO) API
+pub mod vidio;
+
 /// The GPU APIs retrieve and control various attributes of the GPU, such as outputs, VBIOS revision, APG rate, frame buffer size, and thermal settings.
 pub mod gpu;
 
@@ -60,6 +63,7 @@ pub mod api {
     pub use crate::i2c::*;
     pub use crate::driverapi::*;
     pub use crate::sysgeneral::*;
+    pub use crate::vidio::*;
     pub use crate::nvapi::*;
     pub use self::private::*;
 
