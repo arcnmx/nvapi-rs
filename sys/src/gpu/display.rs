@@ -69,8 +69,7 @@ nvstruct! {
     pub struct NV_GPU_DISPLAYIDS {
         pub version: NvVersion,
         /// out: vga, tv, dvi, hdmi and dp. This is reserved for future use and clients should not
-        /// rely on this information. Instead get the
-        /// GPU connector type from `NvAPI_GPU_GetConnectorInfo`/`NvAPI_GPU_GetConnectorInfoEx`
+        /// rely on this information.
         pub connectorType: NV_MONITOR_CONN_TYPE,
         /// this is a unique identifier for each device
         pub displayId: u32,
