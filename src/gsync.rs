@@ -1,6 +1,6 @@
 use std::convert::Infallible;
 use log::trace;
-use crate::sys::{gsync, handles::NvGSyncDeviceHandle};
+use crate::sys::{Api, gsync, handles::NvGSyncDeviceHandle};
 use crate::types::RawConversion;
 use crate::PhysicalGpu;
 
@@ -22,12 +22,9 @@ impl GSyncDevice {
 
     pub fn enumerate() -> crate::NvapiResult<Vec<Self>> {
         trace!("gsync.enumerate()");
-        let mut handles = [Default::default(); gsync::NVAPI_MAX_GSYNC_DEVICES];
-        match unsafe { nvcall!(NvAPI_GSync_EnumSyncDevices@get(&mut handles)) } {
-            Err(e) if e.status() == crate::Status::NvidiaDeviceNotFound => Ok(Vec::new()),
-            Ok(len) => Ok(handles[..len as usize].iter().cloned().map(GSyncDevice::with_handle).collect()),
-            Err(e) => Err(e),
-        }
+        NvGSyncDeviceHandle::EnumSyncDevices().map(|handles|
+            handles.map(GSyncDevice::with_handle).collect()
+        ).map_err(|status| crate::NvapiError::new(status, Api::NvAPI_GSync_EnumSyncDevices))
     }
 
     pub fn sync_status(&self, gpu: &PhysicalGpu) -> crate::NvapiResult<<gsync::NV_GSYNC_STATUS as RawConversion>::Target> {

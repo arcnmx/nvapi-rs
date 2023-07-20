@@ -413,3 +413,16 @@ nvapi! {
         pub fn GetStatusParameters;
     }
 }
+
+impl NvGSyncDeviceHandle {
+    pub fn EnumSyncDevices() -> crate::Result<impl Iterator<Item = NvGSyncDeviceHandle>> {
+        use crate::nvid::NvAPI_GSync_EnumSyncDevices;
+
+        let res = match NvAPI_GSync_EnumSyncDevices.call() {
+            Err(NvAPI_Status::NvidiaDeviceNotFound) =>
+                Ok(([Default::default(); NVAPI_MAX_GSYNC_DEVICES], 0)),
+            res => res,
+        };
+        res.map(move |(handles, count)| handles.into_iter().take(count as usize))
+    }
+}
