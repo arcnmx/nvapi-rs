@@ -134,7 +134,7 @@ pub mod private {
 
         /// Undocumented function. Probably deprecated and replaced with [NvAPI_GPU_GetAllClockFrequencies()](super::NvAPI_GPU_GetAllClockFrequencies)
         ///
-        /// ```
+        /// ```c
         /// memory_clock = clocks[8] * 0.001f;
         ///
         /// if clocks[30] != 0 {
