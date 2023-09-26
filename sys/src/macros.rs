@@ -30,81 +30,11 @@ macro_rules! nv_declare_handle {
     };
 }
 
-macro_rules! nvinherit {
-    (
-        struct $v2:ident($id:ident: $v1:ty)
-    ) => {
-        impl ::std::ops::Deref for $v2 {
-            type Target = $v1;
-
-            fn deref(&self) -> &Self::Target {
-                &self.$id
-            }
-        }
-
-        impl ::std::ops::DerefMut for $v2 {
-            fn deref_mut(&mut self) -> &mut Self::Target {
-                &mut self.$id
-            }
-        }
-    };
-    (
-        $v2:ident($id:ident: $v1:ty)
-    ) => {
-        nvinherit! { struct $v2($id: $v1) }
-
-        impl crate::nvapi::VersionedStruct for $v2 {
-            fn nvapi_version_mut(&mut self) -> &mut crate::nvapi::NvVersion {
-                self.$id.nvapi_version_mut()
-            }
-
-            fn nvapi_version(&self) -> crate::nvapi::NvVersion {
-                self.$id.nvapi_version()
-            }
-        }
-    };
-}
-
 macro_rules! nvstruct {
-    (
-        $(#[$meta:meta])*
-        pub struct $name:ident {
-            $($tt:tt)*
-        }
-    ) => {
-        $(#[$meta])*
-        #[repr(C)]
-        #[derive(Copy, Clone, Debug)]
-        pub struct $name {
-            $($tt)*
-        }
-
-        unsafe impl zerocopy::AsBytes for $name {
-            fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized { }
-        }
-
-        unsafe impl zerocopy::FromBytes for $name {
-            fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized { }
-        }
-
-        nvstruct! { @int fields $name ($($tt)*) }
+    ($($tt:tt)*) => {
+        #[$crate::types::NvStruct]
+        $($tt)*
     };
-    (@int fields $name:ident (
-            $(#[$meta:meta])*
-            pub $id:ident: NvVersion,
-            $($tt:tt)*)
-        ) => {
-        impl crate::nvapi::VersionedStruct for $name {
-            fn nvapi_version_mut(&mut self) -> &mut NvVersion {
-                &mut self.$id
-            }
-
-            fn nvapi_version(&self) -> NvVersion {
-                self.$id
-            }
-        }
-    };
-    (@int fields $name:ident ($($tt:tt)*)) => { };
 }
 
 macro_rules! nvenum {

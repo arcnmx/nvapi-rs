@@ -17,6 +17,7 @@ nvstruct! {
 
 nvstruct! {
     pub struct NV_CHIPSET_INFO_v2 {
+        #[nv_inherit] #[nv_version_field]
         pub v1: NV_CHIPSET_INFO_v1,
         /// Chipset info flags - obsolete
         #[deprecated]
@@ -26,6 +27,7 @@ nvstruct! {
 
 nvstruct! {
     pub struct NV_CHIPSET_INFO_v3 {
+        #[nv_inherit] #[nv_version_field]
         pub v2: NV_CHIPSET_INFO_v2,
         /// subsystem vendor ID
         pub subSysVendorId: u32,
@@ -38,6 +40,7 @@ nvstruct! {
 
 nvstruct! {
     pub struct NV_CHIPSET_INFO_v4 {
+        #[nv_inherit] #[nv_version_field]
         pub v3: NV_CHIPSET_INFO_v3,
         /// Host bridge vendor identification
         pub HBvendorId: u32,
@@ -49,10 +52,6 @@ nvstruct! {
         pub HBsubSysDeviceId: u32,
     }
 }
-
-nvinherit! { NV_CHIPSET_INFO_v2(v1: NV_CHIPSET_INFO_v1) }
-nvinherit! { NV_CHIPSET_INFO_v3(v2: NV_CHIPSET_INFO_v2) }
-nvinherit! { NV_CHIPSET_INFO_v4(v3: NV_CHIPSET_INFO_v3) }
 
 nvversion! { NV_CHIPSET_INFO_v1(1) }
 nvversion! { NV_CHIPSET_INFO_v2(2) }

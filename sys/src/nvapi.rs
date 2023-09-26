@@ -1,8 +1,11 @@
 use std::mem::{MaybeUninit, size_of};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::os::raw::c_void;
+use zerocopy::{FromBytes, AsBytes};
 use crate::status::{Status, NvAPI_Status};
 use crate::types;
+
+pub use nvapi_macros::VersionedStruct;
 
 pub type QueryInterfaceFn = extern "C" fn(id: u32) -> *const c_void;
 
@@ -152,7 +155,7 @@ nvapi! {
 }
 
 /// NvAPI Version Definition
-#[derive(Default, Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Default, Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, FromBytes, AsBytes)]
 #[repr(transparent)]
 pub struct NvVersion {
     pub data: u32,
@@ -203,6 +206,16 @@ impl From<NvVersion> for u32 {
 pub trait VersionedStruct: Sized {
     fn nvapi_version_mut(&mut self) -> &mut NvVersion;
     fn nvapi_version(&self) -> NvVersion;
+}
+
+impl VersionedStruct for NvVersion {
+    fn nvapi_version_mut(&mut self) -> &mut NvVersion {
+        self
+    }
+
+    fn nvapi_version(&self) -> NvVersion {
+        *self
+    }
 }
 
 pub trait StructVersion<const VER: u16 = 0>: VersionedStruct {

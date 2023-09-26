@@ -26,16 +26,17 @@ nvstruct! {
 nvstruct! {
     /// Used in NvAPI_GPU_GetMemoryInfo().
     pub struct NV_DISPLAY_DRIVER_MEMORY_INFO_V2 {
+        #[nv_inherit] #[nv_version_field]
         pub v1: NV_DISPLAY_DRIVER_MEMORY_INFO_V1,
         /// Size(in kb) of the current available physical framebuffer for allocating video memory surfaces.
         pub curAvailableDedicatedVideoMemory: u32,
     }
 }
-nvinherit! { NV_DISPLAY_DRIVER_MEMORY_INFO_V2(v1: NV_DISPLAY_DRIVER_MEMORY_INFO_V1) }
 
 nvstruct! {
     /// Used in NvAPI_GPU_GetMemoryInfo().
     pub struct NV_DISPLAY_DRIVER_MEMORY_INFO_V3 {
+        #[nv_inherit] #[nv_version_field]
         pub v2: NV_DISPLAY_DRIVER_MEMORY_INFO_V2,
         /// Size(in kb) of the total size of memory released as a result of the evictions.
         pub dedicatedVideoMemoryEvictionsSize: u32,
@@ -44,7 +45,6 @@ nvstruct! {
         pub dedicatedVideoMemoryEvictionCount: u32,
     }
 }
-nvinherit! { NV_DISPLAY_DRIVER_MEMORY_INFO_V3(v2: NV_DISPLAY_DRIVER_MEMORY_INFO_V2) }
 
 nvversion! { NV_DISPLAY_DRIVER_MEMORY_INFO_V1(1) }
 nvversion! { NV_DISPLAY_DRIVER_MEMORY_INFO_V2(2) }
@@ -64,6 +64,8 @@ nvstruct! {
     pub struct NV_GPU_MEMORY_INFO_EX_V1 {
         /// Structure version
         pub version: NvVersion,
+        #[nv_align(32, u64)]
+        pub padding0: [u8; ALIGN],
         /// Size(in bytes) of the physical framebuffer.
         pub dedicatedVideoMemory: u64,
         /// Size(in bytes) of the available physical framebuffer for allocating video memory surfaces.

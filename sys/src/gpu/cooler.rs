@@ -180,13 +180,12 @@ pub mod private {
 
     nvstruct! {
         pub struct NV_GPU_GETCOOLER_SETTING_V3 {
+            #[nv_inherit]
             pub v1: NV_GPU_GETCOOLER_SETTING_V1,
             /// cooler tachometer info
             pub tachometer: NV_COOLER_TACHOMETER,
         }
     }
-
-    nvinherit! { struct NV_GPU_GETCOOLER_SETTING_V3(v1: NV_GPU_GETCOOLER_SETTING_V1) }
 
     nvstruct! {
         pub struct NV_GPU_GETCOOLER_SETTINGS_V3 {
@@ -206,12 +205,11 @@ pub mod private {
 
     nvstruct! {
         pub struct NV_GPU_GETCOOLER_SETTING_V4 {
+            #[nv_inherit]
             pub v3: NV_GPU_GETCOOLER_SETTING_V3,
             pub unknown: u32,
         }
     }
-
-    nvinherit! { struct NV_GPU_GETCOOLER_SETTING_V4(v3: NV_GPU_GETCOOLER_SETTING_V3) }
 
     nvstruct! {
         pub struct NV_GPU_GETCOOLER_SETTINGS_V4 {

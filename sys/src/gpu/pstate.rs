@@ -165,8 +165,8 @@ nvstruct! {
     }
 }
 
-#[repr(C)]
-#[derive(Copy, Clone, Debug)]
+#[NvStruct]
+#[repr(transparent)]
 pub struct NV_GPU_PSTATE20_CLOCK_ENTRY_DATA(NV_GPU_PSTATE20_CLOCK_ENTRY_RANGE);
 
 #[derive(Copy, Clone, Debug)]
@@ -268,6 +268,7 @@ nvstruct! {
 nvstruct! {
     /// Used in NvAPI_GPU_GetPstates20() interface call.
     pub struct NV_GPU_PERF_PSTATES20_INFO_V2 {
+        #[nv_inherit] #[nv_version_field]
         pub v1: NV_GPU_PERF_PSTATES20_INFO_V1,
         /// Number of populated voltages
         pub numVoltages: u32,
@@ -276,7 +277,6 @@ nvstruct! {
         pub voltages: Array<[NV_GPU_PERF_PSTATE20_BASE_VOLTAGE_ENTRY_V1; NVAPI_MAX_GPU_PSTATE20_BASE_VOLTAGES]>,
     }
 }
-nvinherit! { NV_GPU_PERF_PSTATES20_INFO_V2(v1: NV_GPU_PERF_PSTATES20_INFO_V1) }
 
 nvversion! { NV_GPU_PERF_PSTATES20_INFO_V1(1) }
 nvversion! { NV_GPU_PERF_PSTATES20_INFO_V2(2) }

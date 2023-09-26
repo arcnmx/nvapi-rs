@@ -1,0 +1,31 @@
+[package]
+name = "nvapi-macros"
+version = "0.1.0" # keep in sync with html_root_url
+authors = ["arcnmx"]
+edition = "2021"
+
+description = "NVIDIA NVAPI code generation"
+keywords = ["nvidia", "nvapi", "gtx"]
+categories = ["development-tools::build-utils"]
+
+documentation = "https://docs.rs/nvapi-macros/latest/nvapi_macros/"
+repository = "https://github.com/arcnmx/nvapi-rs"
+readme = "README.md"
+license = "MIT"
+
+include = [
+	"/src/**/*.rs",
+	"/README*",
+	"/COPYING*",
+]
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = "2"
+quote = "1"
+proc-macro2 = "1"
+
+[features]
+default = []

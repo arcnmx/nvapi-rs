@@ -7,6 +7,8 @@ use std::fmt;
 use zerocopy::{AsBytes, FromBytes};
 use crate::nvapi::NvVersion;
 
+pub use nvapi_macros::{NvStruct, NvInherit};
+
 pub type NvBool = u8;
 
 pub const NV_TRUE: NvBool = 1;

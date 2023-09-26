@@ -44,6 +44,7 @@ nvstruct! {
 
 nvstruct! {
     pub struct NV_GSYNC_CAPABILITIES_V2 {
+        #[nv_inherit] #[nv_version_field]
         pub v1: NV_GSYNC_CAPABILITIES_V1,
         /// FPGA minor revision
         pub extendedRevision: u32,
@@ -52,6 +53,7 @@ nvstruct! {
 
 nvstruct! {
     pub struct NV_GSYNC_CAPABILITIES_V3 {
+        #[nv_inherit] #[nv_version_field]
         pub v2: NV_GSYNC_CAPABILITIES_V2,
         /// Indicates if multiplication/division of the frequency of house sync signal is supported.
         pub bIsMulDivSupported: BoolU32,
@@ -71,9 +73,6 @@ impl NV_GSYNC_CAPABILITIES_V3 {
         }
     }
 }
-
-nvinherit! { NV_GSYNC_CAPABILITIES_V2(v1: NV_GSYNC_CAPABILITIES_V1) }
-nvinherit! { NV_GSYNC_CAPABILITIES_V3(v2: NV_GSYNC_CAPABILITIES_V2) }
 
 nvversion! { NV_GSYNC_CAPABILITIES_V1(1) }
 nvversion! { NV_GSYNC_CAPABILITIES_V2(2) }
@@ -110,16 +109,22 @@ nvstruct! {
     pub struct NV_GSYNC_GPU {
         /// Version of the structure
         pub version: NvVersion,
+        #[nv_align(32, NvPhysicalGpuHandle)]
+        pub padding0: [u8; ALIGN],
         /// GPU handle
         pub hPhysicalGpu: NvPhysicalGpuHandle,
         /// Indicates which connector on the device the GPU is connected to.
         pub connector: NVAPI_GSYNC_GPU_TOPOLOGY_CONNECTOR,
+        #[nv_align(32, NvPhysicalGpuHandle)]
+        pub padding1: [u8; ALIGN],
         /// GPU through which hPhysicalGpu is connected to the Sync device
         ///
         /// (if not directly connected) - this is NULL otherwise
         pub hProxyPhysicalGpu: NvPhysicalGpuHandle,
         /// Whether this GPU is sync'd or not.
         pub isSynced: BoolU32,
+        #[nv_align(32, NvPhysicalGpuHandle)]
+        pub padding2: [u8; ALIGN],
     }
 }
 
@@ -261,6 +266,7 @@ nvenum! {
 
 nvstruct! {
     pub struct NV_GSYNC_CONTROL_PARAMS_V2 {
+        #[nv_inherit] #[nv_version_field]
         pub v1: NV_GSYNC_CONTROL_PARAMS_V1,
         /// Indicates multiplier/divider mode for the housesync signal.
         ///
@@ -270,10 +276,10 @@ nvstruct! {
         ///
         /// Only supported if bIsMulDivSupported field of the structure [NV_GSYNC_CAPABILITIES] is set to 1.
         pub multiplyDivideValue: u8,
+        #[nv_align(8, u32)]
+        pub padding0: [u8; ALIGN],
     }
 }
-
-nvinherit! { NV_GSYNC_CONTROL_PARAMS_V2(v1: NV_GSYNC_CONTROL_PARAMS_V1) }
 
 nvversion! { NV_GSYNC_CONTROL_PARAMS_V1(1) }
 nvversion! { @=NV_GSYNC_CONTROL_PARAMS NV_GSYNC_CONTROL_PARAMS_V2(2) }
@@ -363,6 +369,7 @@ nvstruct! {
 
 nvstruct! {
     pub struct NV_GSYNC_STATUS_PARAMS_V2 {
+        #[nv_inherit] #[nv_version_field]
         pub v1: NV_GSYNC_STATUS_PARAMS_V1,
         /// Valid only for P2061 board.
         ///
@@ -370,8 +377,6 @@ nvstruct! {
         pub bInternalSlave: BoolU32,
     }
 }
-
-nvinherit! { NV_GSYNC_STATUS_PARAMS_V2(v1: NV_GSYNC_STATUS_PARAMS_V1) }
 
 nvversion! { NV_GSYNC_STATUS_PARAMS_V1(1) }
 nvversion! { @=NV_GSYNC_STATUS_PARAMS NV_GSYNC_STATUS_PARAMS_V2(2) }

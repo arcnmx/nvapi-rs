@@ -44,14 +44,18 @@ nvstruct! {
         /// here as 0xA0.  This matches the position within the byte sent by the master,
         /// the last bit is reserved to specify the read or write direction.
         pub i2cDevAddress: u8,
+        #[nv_align(16, usize)]
+        pub padding0: [u8; ALIGN],
         /// The I2C target register address.  May be NULL, which indicates no register
         /// address should be sent.
-        pub pbI2cRegAddress: *mut u8,
+        pub pbI2cRegAddress: usize,
         /// The size in bytes of target register address.  If pbI2cRegAddress is NULL, this
         /// field must be 0.
         pub regAddrSize: u32,
+        #[nv_align(32, usize)]
+        pub padding1: [u8; ALIGN],
         /// The buffer of data which is to be read or written (depending on the command).
-        pub pbData: *mut u8,
+        pub pbData: usize,
         /// The size of the data buffer, pbData, to be read or written.
         pub cbSize: u32,
         /// The target speed of the transaction (between 28Kbps to 40Kbps; not guaranteed).
@@ -80,20 +84,26 @@ nvstruct! {
         /// here as 0xA0.  This matches the position within the byte sent by the master,
         /// the last bit is reserved to specify the read or write direction.
         pub i2cDevAddress: u8,
+        #[nv_align(16, usize)]
+        pub padding0: [u8; ALIGN],
         /// The I2C target register address.  May be NULL, which indicates no register
         /// address should be sent.
-        pub pbI2cRegAddress: *mut u8,
+        pub pbI2cRegAddress: usize,
         /// The size in bytes of target register address.  If pbI2cRegAddress is NULL, this
         /// field must be 0.
         pub regAddrSize: u32,
+        #[nv_align(32, usize)]
+        pub padding1: [u8; ALIGN],
         /// The buffer of data which is to be read or written (depending on the command).
-        pub pbData: *mut u8,
+        pub pbData: usize,
         /// The size of the data buffer, pbData, to be read or written.
         pub cbSize: u32,
         /// Deprecated - must be set to `NVAPI_I2C_SPEED_DEPRECATED`.
         pub i2cSpeed: u32,
         /// The target speed of the transaction in (kHz) (Chosen from the enum `NV_I2C_SPEED`).
         pub i2cSpeedKhz: NV_I2C_SPEED,
+        #[nv_align(32, usize)]
+        pub padding2: [u8; ALIGN],
     }
 }
 
@@ -113,14 +123,18 @@ nvstruct! {
         /// here as 0xA0.  This matches the position within the byte sent by the master,
         /// the last bit is reserved to specify the read or write direction.
         pub i2cDevAddress: u8,
+        #[nv_align(16, usize)]
+        pub padding0: [u8; ALIGN],
         /// The I2C target register address.  May be NULL, which indicates no register
         /// address should be sent.
-        pub pbI2cRegAddress: *mut u8,
+        pub pbI2cRegAddress: usize,
         /// The size in bytes of target register address.  If pbI2cRegAddress is NULL, this
         /// field must be 0.
         pub regAddrSize: u32,
+        #[nv_align(32, usize)]
+        pub padding1: [u8; ALIGN],
         /// The buffer of data which is to be read or written (depending on the command).
-        pub pbData: *mut u8,
+        pub pbData: usize,
         /// The size of the data buffer, pbData, to be read or written.
         pub cbSize: u32,
         /// Deprecated - must be set to `NVAPI_I2C_SPEED_DEPRECATED`.
@@ -131,8 +145,12 @@ nvstruct! {
         ///
         /// Optional for pre-Kepler
         pub portId: u8,
+        #[nv_align(8, u32)]
+        pub padding2: [u8; ALIGN],
         /// set this flag on if and only if portid value is set
         pub bIsPortIdSet: u32,
+        #[nv_align(32, usize)]
+        pub padding3: [u8; ALIGN],
     }
 }
 
@@ -210,14 +228,18 @@ pub mod private {
             /// here as 0xA0.  This matches the position within the byte sent by the master,
             /// the last bit is reserved to specify the read or write direction.
             pub i2cDevAddress: u8,
+            #[nv_align(16, usize)]
+            pub padding0: [u8; ALIGN],
             /// The I2C target register address.  May be NULL, which indicates no register
             /// address should be sent.
-            pub pbI2cRegAddress: *mut u8,
+            pub pbI2cRegAddress: usize,
             /// The size in bytes of target register address.  If pbI2cRegAddress is NULL, this
             /// field must be 0.
             pub regAddrSize: u32,
+            #[nv_align(32, usize)]
+            pub padding1: [u8; ALIGN],
             /// The buffer of data which is to be read or written (depending on the command).
-            pub pbData: *mut u8,
+            pub pbData: usize,
             /// bytes to read ??? seems required on write too
             pub pbRead: u32,
             /// The size of the data buffer, pbData, to be read or written.
@@ -228,8 +250,12 @@ pub mod private {
             ///
             /// Optional for pre-Kepler
             pub portId: u8,
+            #[nv_align(8, u32)]
+            pub padding2: [u8; ALIGN],
             /// set this flag on if and only if portid value is set
             pub bIsPortIdSet: u32,
+            #[nv_align(32, usize)]
+            pub padding3: [u8; ALIGN],
         }
     }
 

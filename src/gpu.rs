@@ -886,9 +886,9 @@ impl PhysicalGpu {
         data.displayMask = display_mask;
         data.bIsDDCPort = if port_is_ddc { sys::NV_TRUE } else { sys::NV_FALSE } as _;
         data.i2cDevAddress = address << 1;
-        data.pbI2cRegAddress = if register.is_empty() { ptr::null_mut() } else { register.as_ptr() as *mut _ };
+        data.pbI2cRegAddress = if register.is_empty() { 0 } else { register.as_ptr() as usize };
         data.regAddrSize = register.len() as _;
-        data.pbData = bytes.as_mut_ptr();
+        data.pbData = bytes.as_mut_ptr() as usize;
         data.cbSize = bytes.len() as _;
         data.i2cSpeed = i2c::NVAPI_I2C_SPEED_DEPRECATED;
         data.i2cSpeedKhz = speed.raw();
@@ -909,9 +909,9 @@ impl PhysicalGpu {
         data.displayMask = display_mask;
         data.bIsDDCPort = if port_is_ddc { sys::NV_TRUE } else { sys::NV_FALSE } as _;
         data.i2cDevAddress = address << 1;
-        data.pbI2cRegAddress = if register.is_empty() { ptr::null_mut() } else { register.as_ptr() as *mut _ };
+        data.pbI2cRegAddress = if register.is_empty() { 0 } else { register.as_ptr() as usize };
         data.regAddrSize = register.len() as _;
-        data.pbData = bytes.as_ptr() as *mut _;
+        data.pbData = bytes.as_ptr() as usize;
         data.cbSize = bytes.len() as _;
         data.i2cSpeed = i2c::NVAPI_I2C_SPEED_DEPRECATED;
         data.i2cSpeedKhz = speed.raw();

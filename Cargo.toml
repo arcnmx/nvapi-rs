@@ -30,4 +30,4 @@ default = ["serde"]
 serde = ["dep:serde", "nvapi-sys/serde"]
 
 [workspace]
-members = ["sys", "hi"]
+members = ["sys", "hi", "macros"]

@@ -671,6 +671,7 @@ nvstruct! {
 
 nvstruct! {
     pub struct NV_DISPLAY_DRIVER_INFO_V2 {
+        #[nv_inherit] #[nv_version_field]
         pub v1: NV_DISPLAY_DRIVER_INFO_V1,
         /// the driver base branch string
         pub szBuildBaseBranch: NvAPI_ShortString,
@@ -678,8 +679,6 @@ nvstruct! {
         pub reservedEx: u32,
     }
 }
-
-nvinherit! { NV_DISPLAY_DRIVER_INFO_V2(v1: NV_DISPLAY_DRIVER_INFO_V1) }
 
 nvversion! { @=NV_DISPLAY_DRIVER_INFO NV_DISPLAY_DRIVER_INFO_V2(2) }
 nvversion! { NV_DISPLAY_DRIVER_INFO_V1(1) }

@@ -3,7 +3,8 @@
 use crate::prelude_::*;
 use std::os::raw::c_char;
 
-pub(crate) type LUID = (u32, i32);
+#[NvStruct]
+pub struct LUID(pub u32, pub i32);
 
 nvapi! {
     pub type EnumNvidiaDisplayHandleFn = extern "C" fn(thisEnum: u32, pNvDispHandle: *mut handles::NvDisplayHandle) -> NvAPI_Status;
