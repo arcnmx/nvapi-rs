@@ -5,6 +5,7 @@ use {crate::util::result_stream, proc_macro::TokenStream};
 pub(crate) mod inherit;
 pub(crate) mod nvstruct;
 pub(crate) mod util;
+pub(crate) mod value;
 pub(crate) mod version;
 
 pub(crate) mod prelude {
@@ -41,4 +42,14 @@ pub fn derive_inherit(input: TokenStream) -> TokenStream {
 #[proc_macro_attribute]
 pub fn NvStruct(attr: TokenStream, input: TokenStream) -> TokenStream {
     result_stream(self::nvstruct::NvStruct(attr.into(), input.into()))
+}
+
+#[proc_macro]
+pub fn nvenum(input: TokenStream) -> TokenStream {
+    result_stream(self::value::nvenum(input.into()))
+}
+
+#[proc_macro]
+pub fn nvbits(input: TokenStream) -> TokenStream {
+    result_stream(self::value::nvbits(input.into()))
 }

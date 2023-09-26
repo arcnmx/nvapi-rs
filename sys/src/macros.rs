@@ -38,131 +38,17 @@ macro_rules! nvstruct {
 }
 
 macro_rules! nvenum {
-    (
-        $(#[$meta:meta])*
-        pub enum $enum:ident / $enum_name:ident {
-            $(
-                $(#[$metai:meta])*
-                $symbol:ident / $name:ident = $value:expr,
-            )*
-        }
-    ) => {
-        $(#[$meta])*
-        pub type $enum = ::std::os::raw::c_int;
-        $(
-            $(#[$metai])*
-            #[allow(overflowing_literals)]
-            pub const $symbol: $enum = $value as _;
-        )*
-
-        $(#[$meta])*
-        #[allow(overflowing_literals)]
-        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-        #[derive(Debug, Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
-        #[non_exhaustive]
-        #[repr(i32)]
-        pub enum $enum_name {
-            $(
-                $(#[$metai])*
-                $name = $symbol as _,
-            )*
-        }
-
-        impl $enum_name {
-            #[allow(overflowing_literals)]
-            pub fn from_raw(raw: $enum) -> ::std::result::Result<Self, crate::ArgumentRangeError> {
-                match raw {
-                    $(
-                        $symbol
-                    )|* => Ok(unsafe { ::std::mem::transmute(raw) }),
-                    _ => Err(Default::default()),
-                }
-            }
-
-            pub fn raw(&self) -> $enum {
-                *self as _
-            }
-
-            pub fn values() -> impl Iterator<Item=Self> {
-                [
-                    $(
-                        $enum_name::$name
-                    ),*
-                ].into_iter()
-            }
-        }
-
-        impl Into<$enum> for $enum_name {
-            fn into(self) -> $enum {
-                self as _
-            }
-        }
-
-        impl TryFrom<$enum> for $enum_name {
-            type Error = crate::ArgumentRangeError;
-
-            fn try_from(raw: $enum) -> ::std::result::Result<Self, crate::ArgumentRangeError> {
-                Self::from_raw(raw)
-            }
+    ($($tt:tt)*) => {
+        nvapi_macros::nvenum! {
+            $($tt)*
         }
     };
 }
 
 macro_rules! nvbits {
-    (
-        $(#[$meta:meta])*
-        pub enum $enum:ident / $enum_name:ident {
-            $(
-                $(#[$($metai:tt)*])*
-                $symbol:ident / $name:ident = $value:expr,
-            )*
-        }
-    ) => {
-        $(#[$meta])*
-        pub type $enum = u32;
-        $(
-            $(#[$($metai)*])*
-            pub const $symbol: $enum = $value as _;
-        )*
-
-        bitflags::bitflags! {
-            $(#[$meta])*
-            #[derive(Default)]
-            #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-            pub struct $enum_name: $enum {
-            $(
-                $(#[$($metai)*])*
-                const $name = $value;
-            )*
-            }
-        }
-
-        impl Iterator for $enum_name {
-            type Item = Self;
-
-            fn next(&mut self) -> Option<Self::Item> {
-                $(
-                    if self.contains($enum_name::$name) {
-                        self.remove($enum_name::$name);
-                        Some($enum_name::$name)
-                    } else
-                 )*
-                { None }
-            }
-        }
-
-        impl TryFrom<$enum> for $enum_name {
-            type Error = crate::ArgumentRangeError;
-
-            fn try_from(v: $enum) -> Result<Self, Self::Error> {
-                Self::from_bits(v).ok_or(crate::ArgumentRangeError)
-            }
-        }
-
-        impl From<$enum_name> for $enum {
-            fn from(v: $enum_name) -> $enum {
-                v.bits()
-            }
+    ($($tt:tt)*) => {
+        nvapi_macros::nvbits! {
+            $($tt)*
         }
     };
 }
