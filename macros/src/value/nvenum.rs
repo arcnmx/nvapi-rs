@@ -205,7 +205,131 @@ impl Parse for NvEnumValue {
     }
 }
 
+pub struct NvEnumDisplayBody {
+    pub ident: Ident,
+    pub arrow: Token![=>],
+    pub brace_token: Option<Brace>,
+    pub variants: Punctuated<NvEnumDisplayValue, Token![,]>,
+}
+
+impl Parse for NvEnumDisplayBody {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let ident = input.parse()?;
+        let arrow = input.parse()?;
+
+        let res = if input.peek(Token![_]) {
+            let _: Token![_] = input.parse()?;
+            Self {
+                ident,
+                arrow,
+                brace_token: None,
+                variants: Punctuated::new(),
+            }
+        } else {
+            let content;
+            Self {
+                ident,
+                arrow,
+                brace_token: Some(braced!(content in input)),
+                variants: content.parse_terminated(NvEnumDisplayValue::parse, Token![,])?,
+            }
+        };
+        let _: ParseEof = input.parse()?;
+        Ok(res)
+    }
+}
+
+impl NvEnumDisplayBody {
+    pub fn output(&self) -> TokenStream {
+        let NvEnumDisplayBody { ident, .. } = self;
+
+        let fmt = quote!(::core::fmt);
+        let f = call_ident("f");
+
+        let body = if self.variants.is_empty() {
+            quote! {
+                #fmt::Debug::fmt(self, #f)
+            }
+        } else {
+            let branches = self.variants.iter().map(|v| v.output_display_branch(ident, &f));
+            quote! {
+                match *self {
+                    #(#branches,)*
+                }
+            }
+        };
+
+        quote! {
+            impl #fmt::Display for #ident {
+                fn fmt(&self, #f: &mut #fmt::Formatter) -> #fmt::Result {
+                    #body
+                }
+            }
+        }
+    }
+}
+
+#[derive(Clone)]
+pub enum NvEnumDisplayValue {
+    Wildcard {
+        underscore: Token![_],
+        eq_token: Token![=],
+        value: Option<Expr>,
+    },
+    Value {
+        ident: Ident,
+        eq_token: Token![=],
+        value: Expr,
+    },
+}
+
+impl NvEnumDisplayValue {
+    pub fn output_display_branch(&self, enum_ident: &Ident, f: &Ident) -> TokenStream {
+        let fmt = quote!(::core::fmt);
+        match self {
+            Self::Wildcard { value: None, .. } => quote! {
+                ref v => #fmt::Debug::fmt(v, #f)
+            },
+            Self::Wildcard { value: Some(..), .. } => todo!(),
+            Self::Value { ident, value, .. } => quote! {
+                #enum_ident::#ident => write!(#f, "{}", #value)
+            },
+        }
+    }
+}
+
+impl Parse for NvEnumDisplayValue {
+    fn parse(input: ParseStream) -> Result<Self> {
+        Ok(if input.peek(Token![_]) {
+            let underscore = input.parse()?;
+            let eq_token = input.parse()?;
+            let value = if input.peek(Token![_]) {
+                let _: Token![_] = input.parse()?;
+                None
+            } else {
+                Some(input.parse()?)
+            };
+            Self::Wildcard {
+                underscore,
+                eq_token,
+                value,
+            }
+        } else {
+            let ident = input.parse()?;
+            let eq_token = input.parse()?;
+            let value = input.parse()?;
+
+            Self::Value { ident, eq_token, value }
+        })
+    }
+}
+
 pub fn nvenum(input: TokenStream) -> Result<TokenStream> {
     let body: NvEnumBody = parse(input)?;
+    Ok(body.output())
+}
+
+pub fn nvenum_display(input: TokenStream) -> Result<TokenStream> {
+    let body: NvEnumDisplayBody = parse(input)?;
     Ok(body.output())
 }

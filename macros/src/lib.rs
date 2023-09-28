@@ -50,6 +50,11 @@ pub fn nvenum(input: TokenStream) -> TokenStream {
 }
 
 #[proc_macro]
+pub fn nvenum_display(input: TokenStream) -> TokenStream {
+    result_stream(self::value::nvenum_display(input.into()))
+}
+
+#[proc_macro]
 pub fn nvbits(input: TokenStream) -> TokenStream {
     result_stream(self::value::nvbits(input.into()))
 }

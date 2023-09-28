@@ -54,40 +54,10 @@ macro_rules! nvbits {
 }
 
 macro_rules! nvenum_display {
-    ($enum:ident => _) => {
-        impl ::std::fmt::Display for $enum {
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-                ::std::fmt::Debug::fmt(self, f)
-            }
+    ($($tt:tt)*) => {
+        nvapi_macros::nvenum_display! {
+            $($tt)*
         }
-    };
-    ($enum:ident => {
-        $(
-            $name:tt = $value:tt,
-        )*
-    }) => {
-        impl ::std::fmt::Display for $enum {
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-                match *self {
-                $(
-                    nvenum_display!(@q $enum $name) => nvenum_display!(@expr self f $value),
-                    //$enum::$name => nvenum_display!(@expr self f $value),
-                )*
-                }
-            }
-        }
-    };
-    (@q $enum:ident _) => {
-        _
-    };
-    (@q $enum:ident $name:ident) => {
-        $enum::$name
-    };
-    (@expr $this:tt $fmt:ident _) => {
-        ::std::fmt::Debug::fmt($this, $fmt)
-    };
-    (@expr $this:tt $fmt:ident $expr:expr) => {
-        write!($fmt, "{}", $expr)
     };
 }
 
