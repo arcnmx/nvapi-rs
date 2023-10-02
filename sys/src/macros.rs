@@ -62,31 +62,9 @@ macro_rules! nvenum_display {
 }
 
 macro_rules! nvapi {
-    (
-        $(#[$meta:meta])*
-        pub unsafe fn $fn:ident($($arg:ident: $arg_ty:ty),*) -> $ret:ty;
-    ) => {
-        $(#[$meta])*
-        pub unsafe fn $fn($($arg: $arg_ty),*) -> $ret {
-            static CACHE: ::std::sync::atomic::AtomicUsize = ::std::sync::atomic::AtomicUsize::new(0);
-
-            match crate::nvapi::query_interface(crate::nvid::Api::$fn.id(), &CACHE) {
-                Ok(ptr) => ::std::mem::transmute::<_, extern "C" fn($($arg: $arg_ty),*) -> $ret>(ptr)($($arg),*),
-                Err(e) => e.raw(),
-            }
-        }
-    };
-    (
-        pub type $name:ident = extern "C" fn($($arg:ident: $arg_ty:ty),*) -> $ret:ty;
-
-        $(#[$meta:meta])*
-        pub unsafe fn $fn:ident;
-    ) => {
-        pub type $name = extern "C" fn($($arg: $arg_ty),*) -> $ret;
-
-        nvapi! {
-            $(#[$meta])*
-            pub unsafe fn $fn($($arg: $arg_ty),*) -> $ret;
+    ($($tt:tt)*) => {
+        nvapi_macros::nvapi! {
+            $($tt)*
         }
     };
 }

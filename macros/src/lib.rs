@@ -2,6 +2,7 @@
 
 use {crate::util::result_stream, proc_macro::TokenStream};
 
+pub(crate) mod api;
 pub(crate) mod inherit;
 pub(crate) mod nvstruct;
 pub(crate) mod util;
@@ -57,4 +58,9 @@ pub fn nvenum_display(input: TokenStream) -> TokenStream {
 #[proc_macro]
 pub fn nvbits(input: TokenStream) -> TokenStream {
     result_stream(self::value::nvbits(input.into()))
+}
+
+#[proc_macro]
+pub fn nvapi(input: TokenStream) -> TokenStream {
+    result_stream(self::api::nvapi(input.into()))
 }
