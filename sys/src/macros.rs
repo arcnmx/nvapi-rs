@@ -5,6 +5,7 @@ macro_rules! nv_declare_handle {
     ) => {
         $(#[$meta])*
         #[derive(Copy, Clone, Debug)]
+        #[repr(transparent)]
         pub struct $name(*const ::std::os::raw::c_void);
 
         impl $name {
@@ -17,6 +18,14 @@ macro_rules! nv_declare_handle {
             fn default() -> Self {
                 $name(::std::ptr::null())
             }
+        }
+
+        unsafe impl zerocopy::AsBytes for $name {
+            fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized { }
+        }
+
+        unsafe impl zerocopy::FromBytes for $name {
+            fn only_derive_is_allowed_to_implement_this_trait() where Self: Sized { }
         }
     };
 }
