@@ -1,5 +1,5 @@
 { pkgs, lib, ... }: with pkgs; with lib; let
-  inherit (import ./. { inherit pkgs; }) checks;
+  inherit (import ./. { pkgs = null; }) checks;
 in {
   config = {
     name = "nvapi";

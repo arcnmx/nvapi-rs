@@ -50,7 +50,7 @@
     };
     packages = {
     };
-    legacyPackages = { callPackageSet }: callPackageSet {
+    legacyPackages = {
       source = { rust'builders }: rust'builders.wrapSource self.lib.crate.src;
 
       rust-w64 = { pkgsCross'mingwW64 }: import inputs.rust { inherit (pkgsCross'mingwW64) pkgs; };
@@ -77,7 +77,7 @@
       outputHashes = { rust'builders }: rust'builders.cargoOutputHashes {
         inherit (self.lib) crate;
       };
-    } { };
+    };
     checks = {
       versions = { rust'builders, source }: rust'builders.check-contents {
         src = source;
@@ -103,7 +103,7 @@
         buildType = "debug";
         meta.name = "cargo test";
       };
-      windows = { outputs'checks'test, rust-w64 }: rust-w64.latest.rustPlatform.buildRustPackage {
+      windows = { outputs'checks'test, rust-w64 }: rust-w64.releases."1.72.1".rustPlatform.buildRustPackage {
         inherit (outputs'checks'test) pname version src buildType cargoBuildNoDefaultFeatures cargoTestFlags;
         inherit (self.lib.crate) cargoLock;
 
